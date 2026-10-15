@@ -1,0 +1,75 @@
+# Tourne Desktop's own Power Menu, after JDKamalakar's DMS Fullscreen Power Menu (ideas only; fresh code).
+
+id = "tourne/power-menu"
+name = "Power Menu"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (after JDKamalakar's Fullscreen Power Menu)"
+license = "MIT"
+dependencies = []
+tags = ["power", "system"]
+icon = "power"
+description = "A full-screen power menu over a blurred, dimmed desktop: big buttons for lock, sleep, hibernate, sign out, restart and shut down, with the keyboard or the mouse."
+
+[[setting]]
+key = "hotkey"
+type = "string"
+label = "Hotkey"
+description = "Opens the menu from anywhere, like Ctrl+Alt+Delete's screen (for example Ctrl+Alt+End). Empty: none"
+default = ""
+
+[[setting]]
+key = "confirm"
+type = "bool"
+label = "Ask before sign out, restart and shut down"
+description = "The first press arms it, a second press (or Enter) does it"
+default = true
+
+[[setting]]
+key = "lock"
+type = "bool"
+label = "Lock"
+default = true
+
+[[setting]]
+key = "sleep"
+type = "bool"
+label = "Sleep"
+default = true
+
+[[setting]]
+key = "hibernate"
+type = "bool"
+label = "Hibernate"
+description = "Only works when hibernation is turned on in Windows"
+default = false
+
+[[setting]]
+key = "signout"
+type = "bool"
+label = "Sign out"
+default = true
+
+[[setting]]
+key = "restart"
+type = "bool"
+label = "Restart"
+default = true
+
+[[setting]]
+key = "shutdown"
+type = "bool"
+label = "Shut down"
+default = true
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"
+
+[[panel]]
+id = "menu"
+entry = "panel.luau"
+width = 880
+height = 320
+placement = "fullscreen"
+capture_keys = ["Left", "Right", "Up", "Down", "Tab", "Shift+Tab", "Backtab", "Return", "Enter", "Space", "Escape", "1", "2", "3", "4", "5", "6"]

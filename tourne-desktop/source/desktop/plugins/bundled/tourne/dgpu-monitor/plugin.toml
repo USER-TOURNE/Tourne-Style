@@ -1,0 +1,35 @@
+id = "tourne/dgpu-monitor"
+name = "dGPU Sleep Monitor"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from xantrk's dGPU Sleep Monitor)"
+license = "MIT"
+dependencies = []
+tags = ["system", "laptop", "gpu"]
+icon = "cpu"
+description = "Shows whether the graphics card is awake (D0) or asleep (D3), and the battery's draw in watts."
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "showBattery"
+  type = "bool"
+  label = "Battery watts on the bar"
+  default = true
+
+  [[widget.setting]]
+  key = "refreshInterval"
+  type = "int"
+  label = "Refresh every (seconds)"
+  default = 5
+  min = 1
+  max = 30
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 300
+placement = "attached"

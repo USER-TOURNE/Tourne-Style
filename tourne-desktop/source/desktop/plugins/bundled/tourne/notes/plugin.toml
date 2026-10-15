@@ -1,0 +1,87 @@
+id = "tourne/notes"
+name = "Tourne Notes"
+version = "2.0.0"
+plugin_api = 9
+author = "Tourne (from Noctalia's Notes)"
+license = "MIT"
+dependencies = []
+tags = ["productivity"]
+icon = "notes"
+description = "Markdown notes in a side panel: pictures pasted or dropped in, a preview with tick-off checklists, search, and a trash you can restore from."
+
+[[setting]]
+key = "notes_dir"
+type = "folder"
+label_key = "settings.notes_dir.label"
+description_key = "settings.notes_dir.description"
+default = "~/Documents/Notes"
+
+[[setting]]
+key = "extension"
+type = "string"
+label_key = "settings.extension.label"
+description_key = "settings.extension.description"
+default = "md"
+
+[[setting]]
+key = "editor_font"
+type = "select"
+label_key = "settings.editor_font.label"
+description_key = "settings.editor_font.description"
+default = "pixel"
+
+  [[setting.options]]
+  value = "pixel"
+  label_key = "settings.editor_font.pixel"
+
+  [[setting.options]]
+  value = "mono"
+  label_key = "settings.editor_font.mono"
+
+  [[setting.options]]
+  value = "smooth"
+  label_key = "settings.editor_font.smooth"
+
+[[setting]]
+key = "editor_size"
+type = "select"
+label_key = "settings.editor_size.label"
+description_key = "settings.editor_size.description"
+default = "16"
+
+  [[setting.options]]
+  value = "11"
+  label_key = "settings.editor_size.small"
+
+  [[setting.options]]
+  value = "13"
+  label_key = "settings.editor_size.medium"
+
+  [[setting.options]]
+  value = "16"
+  label_key = "settings.editor_size.large"
+
+[[setting]]
+key = "hotkey"
+type = "string"
+label_key = "settings.hotkey.label"
+description_key = "settings.hotkey.description"
+default = ""
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 420
+height = "fill"
+placement = "floating"
+position = "center_right"
+
+[[widget]]
+id = "notes"
+entry = "notes.luau"
+
+  [[widget.setting]]
+  key = "glyph"
+  type = "glyph"
+  label_key = "settings.glyph.label"
+  default = "notes"

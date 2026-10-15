@@ -1,0 +1,64 @@
+# Ported to Tourne Desktop from Noctalia's Wallpaper Depth (MIT): the helper runs on Windows' Python
+# (py or python), its private environment's interpreter is runtime\.venv\Scripts\python.exe.
+
+id = "tourne/wallpaper-depth"
+name = "Wallpaper Depth"
+version = "1.0.6"
+plugin_api = 26
+author = "Tourne (from Noctalia's Wallpaper Depth)"
+license = "MIT"
+dependencies = ["python"]
+tags = ["wallpaper", "desktop", "ai"]
+icon = "layers-subtract"
+description = "Generate depth masks that place desktop widgets behind wallpaper foregrounds."
+
+[[setting]]
+key = "auto_generate"
+type = "bool"
+label_key = "settings.auto_generate.label"
+description_key = "settings.auto_generate.description"
+default = true
+
+[[setting]]
+key = "threshold"
+type = "int"
+label_key = "settings.threshold.label"
+description_key = "settings.threshold.description"
+default = 30
+min = 0
+max = 100
+step = 1
+
+[[setting]]
+key = "feather"
+type = "int"
+label_key = "settings.feather.label"
+description_key = "settings.feather.description"
+default = 8
+min = 0
+max = 50
+step = 1
+
+[[setting]]
+key = "python"
+type = "string"
+label = "Python"
+description = "python.exe's full path, or empty for py or python on the PATH (python.org, the Microsoft Store or winget). Python 3.11 to 3.14"
+default = ""
+advanced = true
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[panel]]
+id = "manager"
+entry = "panel.luau"
+width = 500
+height = 660
+placement = "attached"
+position = "auto"

@@ -1,0 +1,92 @@
+id = "tourne/keybind-guide"
+name = "Keybind Guide"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from kenn's Keybind Cheatsheet for Noctalia)"
+license = "MIT"
+dependencies = []
+tags = ["keyboard", "productivity", "tiling"]
+icon = "keyboard"
+description = "Every key Tourne takes on one searchable sheet: your binds (grouped by their # headings and key modes, numbered ones as one row), Tourne's own hotkeys and the plugins'. Hide rows or rename them; nothing runs until it opens."
+
+[[setting]]
+key = "columns"
+type = "select"
+label = "Columns"
+default = "3"
+
+  [[setting.options]]
+  value = "1"
+  label = "1"
+
+  [[setting.options]]
+  value = "2"
+  label = "2"
+
+  [[setting.options]]
+  value = "3"
+  label = "3"
+
+  [[setting.options]]
+  value = "4"
+  label = "4"
+
+[[setting]]
+key = "showCommands"
+type = "bool"
+label = "Show the command under each description"
+default = false
+
+[[setting]]
+key = "mergeNumbered"
+type = "bool"
+label = "Numbered binds as one row"
+description = "Win+Alt+1 to 9 going to desktops 1 to 9 shows as one row, \"Go to desktop 1-9\""
+default = true
+
+[[setting]]
+key = "showTourne"
+type = "bool"
+label = "Tourne's own hotkeys"
+description = "The taskbar's, the desktops', the tiling leader and plugin panels'"
+default = true
+
+[[setting]]
+key = "showWindows"
+type = "bool"
+label = "Windows' own shortcuts"
+description = "Win+E, Win+D, Win+L and the rest, as a group of their own"
+default = false
+
+[[setting]]
+key = "modifierStyle"
+type = "select"
+label = "Modifier names"
+default = "words"
+
+  [[setting.options]]
+  value = "words"
+  label = "Win, Ctrl, Alt, Shift"
+
+  [[setting.options]]
+  value = "symbols"
+  label = "Symbols (⊞ ⌃ ⎇ ⇧)"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 1080
+height = 700
+placement = "floating"
+position = "center"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens and closes the guide, e.g. Win+Alt+/ or Ctrl+Alt+K. Empty: none (a bind can open it too: exec, TourneDesktop.exe --msg panel-toggle tourne/keybind-guide:panel)"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

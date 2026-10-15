@@ -1,0 +1,69 @@
+{
+  "panel": {
+    "automatic": "Automatic",
+    "clear_cache": "Clear cache",
+    "description": "Generate a foreground depth mask for each wallpaper so desktop widgets can pass behind nearby scenery.",
+    "feather": "Edge feather",
+    "generate": "Generate masks",
+    "no_outputs": "No connected outputs.",
+    "off": "Off",
+    "on": "On",
+    "output": {
+      "cached": "cached depth",
+      "error": "Generation failed",
+      "no_wallpaper": "No image wallpaper",
+      "processing": "Estimating depth",
+      "ready": "Mask applied",
+      "ready_time": "Mask applied in {seconds} s",
+      "waiting": "Waiting to generate"
+    },
+    "outputs": "Outputs",
+    "parameters": "Mask parameters",
+    "settings": "Settings",
+    "setup": {
+      "checking": "Checking local model",
+      "disclosure": "Setup creates a private Python environment and downloads the 99 MB Apache-2.0 Depth Anything V2 Small model from Hugging Face. No wallpaper is uploaded.",
+      "error": "Setup failed",
+      "install": "Install model",
+      "missing": "Setup required",
+      "offline": "Shell offline mode blocks setup downloads.",
+      "prerequisites": "Install the required commands first: {commands}.",
+      "ready": "Model ready",
+      "retry": "Retry setup",
+      "running": "Setting up depth model"
+    },
+    "threshold": "Foreground threshold"
+  },
+  "service": {
+    "busy": "Wait for the current operation to finish.",
+    "clear_cache_failed": "Could not clear the cache.",
+    "generation_failed": "Depth generation failed.",
+    "invalid_result": "The depth helper returned an invalid result.",
+    "invalid_settings": "Plugin settings are invalid.",
+    "offline": "Disable shell offline mode before setup.",
+    "python_missing": "Python is not installed.",
+    "setup_failed": "Setup failed.",
+    "setup_missing": "The model and runtime are not installed.",
+    "setup_running": "Installing the runtime and downloading the 99 MB model.",
+    "start_clear_cache_failed": "Could not start cache cleanup.",
+    "start_helper_failed": "Could not start the depth helper.",
+    "start_setup_failed": "Could not start setup.",
+    "start_validation_failed": "Could not start setup validation.",
+    "validation_failed": "Setup validation failed."
+  },
+  "settings": {
+    "auto_generate": {
+      "description": "Regenerate the output mask when its wallpaper or mask parameters change.",
+      "label": "Generate automatically"
+    },
+    "feather": {
+      "description": "Width of the soft transition around the depth threshold.",
+      "label": "Edge feather"
+    },
+    "threshold": {
+      "description": "Normalized depth above which the wallpaper erases desktop widgets. Lower values place more of the scene in front.",
+      "label": "Foreground threshold"
+    }
+  },
+  "title": "Wallpaper Depth"
+}

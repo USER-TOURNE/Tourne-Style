@@ -1,0 +1,3100 @@
+# Tourne'Suite Tweaks: the options from Winaero Tweaker 1.65 that are a
+# setting (pages that only run a tool, create a shortcut or link to a
+# download are left out), written from the documented Windows settings behind
+# each one. Options Windows itself offers (in Settings, Folder Options,
+# Windows Security or Edge's own settings) are left out too; each group's
+# description says where to find them. Build-TourneSuiteRedirect.ps1 turns
+# this file into the Tweaks part: the settings schema, with defaults read
+# from this PC's registry, and the table the part applies.
+#
+# Groups are in the order the settings page shows them, most used first.
+# Every group but general gets a "Use these tweaks" switch at its top
+# (setting <group>.use, made by Build-Tweaks.ps1), off to begin with: the
+# part applies nothing in a group until it's on.
+#
+# Syntax
+#   define NAME value          $NAME in any later line becomes value
+#   group id "Title"           following tweaks are settings "id.<tweak>"
+#   toggle id "Title" [after=explorer|signout|restart] [default=true|false]
+#   number id "Title" default=N [min=N] [max=N] [after=...]
+#   text id "Title" [default="..."] [after=...] [keep-empty] [private]
+#   choice id "Title" default=key [after=...]
+#   | text                     description line (joined)
+#   uses: group.id ...         other settings this tweak's ops read as {@group.id}
+#   on: / off:                 toggle ops
+#   set: / unset:              number/text ops; unset: runs when the value is
+#                              the Windows default (or empty for text)
+#   read: KEY | name [as=twips|drives|logfont|px]  where the build reads the
+#                              current value (number/text)
+#   detect:                    ops that must all match for "on"; several
+#                              detect: blocks mean any of them (toggle)
+#   option key "Label":        choice option, its ops follow
+#
+# Ops (indented under a block)
+#   KEY | -                    delete the key and everything under it
+#   KEY | +                    create the key
+#   KEY | name = type:value    set a value; name @ is the default value;
+#                              types: sz expand dword qword multi (; between)
+#   KEY | name -               delete a value
+#   run COMMAND                run as the user, hidden
+#   admin COMMAND              run elevated (with the machine-wide changes)
+#   spi ui|pv CODE VALUE       SystemParametersInfo, saved and broadcast
+#   metric FIELD VALUE         window metric, applied live in one call
+#   font FIELD VALUE           window metric font, "Face, size, bold, italic"
+#   notify AREA                WM_SETTINGCHANGE broadcast for AREA
+#   style PATH                 switch the visual style live
+# In values, {} is the setting's value, {twips} is -15 times it, {drives} is
+# the NoDrives mask for a list of letters, {@group.id} is another setting.
+# HKCU keys are written directly and live; HKLM and HKU keys are collected
+# into one elevated step, which asks for admin once per save.
+
+define ADV $CUEXP\Advanced
+define CUEXP HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer
+define LMEXP HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer
+define CDM HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager
+define DESK HKCU\Control Panel\Desktop
+define PSYS HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+define LMPEXP HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+define CUPEXP HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+define WPOL HKLM\SOFTWARE\Policies\Microsoft\Windows
+define CUWPOL HKCU\Software\Policies\Microsoft\Windows
+define EDGE HKLM\SOFTWARE\Policies\Microsoft\Edge
+define CLS HKCU\Software\Classes
+define LMCLS HKLM\SOFTWARE\Classes
+define DB HKCU\Software\Classes\DesktopBackground\Shell
+define LMDB HKLM\SOFTWARE\Classes\DesktopBackground\Shell
+define PERS HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+define WM HKCU\Control Panel\Desktop\WindowMetrics
+define BLOCK HKCU\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked
+define LMBLOCK HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked
+define THISPC $CLS\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell
+define LMNS $LMEXP\MyComputer\NameSpace
+define WOWNS HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace
+define PS powershell.exe -NoProfile -WindowStyle Hidden -Command
+
+##################################################### how tweaks are applied
+group general "How tweaks are applied"
+| Every group below starts switched off and changes nothing. To use one,
+| switch on "Use these tweaks" at its top, then change what you want in it
+| and Save. Switching a group on applies nothing by itself: the suite only
+| notes how each tweak is set. Settings that Windows already offers in
+| Settings, Folder Options or Edge aren't repeated here.
+
+toggle restartExplorer "Restart Explorer when a change needs it" default=false
+| Some changes only show once Explorer (the taskbar, desktop and File
+| Explorer) restarts. On: the suite restarts it for you after a Save that
+| needs it. Off: they show the next time you sign in.
+
+toggle liveFontSwap "Show a new system font straight away" default=false
+| Goes with Fonts and sizes > System font. Programs already running switch
+| to the new font at once, instead of after you sign out. Only programs that
+| draw text with GDI follow; newer ones still need a sign-out.
+
+############################################### privacy, ads and suggestions
+group privacy "Privacy, ads and suggestions"
+| Windows' own switches for ads and suggestions are in Settings > Privacy &
+| security > General, Settings > Personalization > Start and Lock screen,
+| and Settings > System > Notifications > Additional settings. These are the
+| ones Settings doesn't have.
+
+toggle adsSilentApps "Don't install suggested apps without asking"
+| Stops Windows quietly installing the apps it suggests, such as games
+| pinned to Start after setup.
+on:
+  $CDM | SilentInstalledAppsEnabled = dword:0
+  $CDM | PreInstalledAppsEnabled = dword:0
+  $CDM | OemPreInstalledAppsEnabled = dword:0
+off:
+  $CDM | SilentInstalledAppsEnabled = dword:1
+  $CDM | PreInstalledAppsEnabled = dword:1
+  $CDM | OemPreInstalledAppsEnabled = dword:1
+
+toggle adsConsumer "No suggested apps and content (policy)" after=signout
+| The policy behind the one above, which also stops Windows promoting apps
+| and content. Windows only follows it on the Enterprise and Education
+| editions.
+on:
+  $WPOL\CloudContent | DisableWindowsConsumerFeatures = dword:1
+off:
+  $WPOL\CloudContent | DisableWindowsConsumerFeatures -
+
+toggle copilot "Turn off Copilot" after=signout
+| Turns Copilot off for this PC and removes its taskbar button. (Settings
+| can only hide the button.)
+on:
+  $CUWPOL\WindowsCopilot | TurnOffWindowsCopilot = dword:1
+  $WPOL\WindowsCopilot | TurnOffWindowsCopilot = dword:1
+  $ADV | ShowCopilotButton = dword:0
+off:
+  $CUWPOL\WindowsCopilot | TurnOffWindowsCopilot -
+  $WPOL\WindowsCopilot | TurnOffWindowsCopilot -
+  $ADV | ShowCopilotButton -
+detect:
+  $CUWPOL\WindowsCopilot | TurnOffWindowsCopilot = dword:1
+
+toggle noWebSearch "No web results in Windows search"
+| Search on the taskbar and in Start only looks on this PC; Bing results
+| leave.
+on:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | BingSearchEnabled = dword:0
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | CortanaConsent = dword:0
+off:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | BingSearchEnabled -
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | CortanaConsent -
+detect:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | BingSearchEnabled = dword:0
+
+toggle noTelemetry "Send Microsoft as little diagnostic data as allowed" after=restart
+| Lowers diagnostic data to the minimum this edition of Windows allows.
+| Settings can only turn off the optional part.
+on:
+  $WPOL\DataCollection | AllowTelemetry = dword:0
+off:
+  $WPOL\DataCollection | AllowTelemetry -
+
+toggle noErrorReporting "Turn off Windows Error Reporting"
+| Crashes are no longer reported to Microsoft, and the "Looking for a
+| solution" dialog stops.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting | Disabled = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting | Disabled -
+
+toggle backgroundApps "Stop all Store apps running in the background" after=signout
+| One switch for every Store app at once. Settings only offers this per app.
+on:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | GlobalUserDisabled = dword:1
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | BackgroundAppGlobalToggle = dword:0
+  $WPOL\AppPrivacy | LetAppsRunInBackground = dword:2
+off:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | GlobalUserDisabled -
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Search | BackgroundAppGlobalToggle -
+  $WPOL\AppPrivacy | LetAppsRunInBackground -
+detect:
+  $WPOL\AppPrivacy | LetAppsRunInBackground = dword:2
+detect:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | GlobalUserDisabled = dword:1
+
+toggle noStoreLookup "No \"Look for an app in the Store\" when opening a file"
+| Opening a file no program handles goes straight to the list of programs on
+| this PC.
+on:
+  $WPOL\Explorer | NoUseStoreOpenWith = dword:1
+off:
+  $WPOL\Explorer | NoUseStoreOpenWith -
+
+toggle noNewAppAlert "No \"You have new apps that can open this type of file\""
+| Stops the notice that pops up after installing a program that can open a
+| file type you already use.
+on:
+  $WPOL\Explorer | NoNewAppAlert = dword:1
+off:
+  $WPOL\Explorer | NoNewAppAlert -
+
+################################################# start, taskbar and desktop
+group start "Start, taskbar and desktop"
+| For Windows' own Start menu, taskbar and desktop. The suite's Taskbar and
+| Start menu parts have their own settings.
+
+toggle hideRecommended "Hide Recommended in Start completely" after=restart
+| Removes the whole Recommended section. Windows only allows it on education
+| PCs, so this marks the PC as one; Windows Spotlight may stop working while
+| it's on. To just empty the section, use Settings > Personalization > Start
+| instead.
+on:
+  $WPOL\Explorer | HideRecommendedSection = dword:1
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start | HideRecommendedSection = dword:1
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Education | IsEducationEnvironment = dword:1
+off:
+  $WPOL\Explorer | HideRecommendedSection -
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start | HideRecommendedSection -
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Education | IsEducationEnvironment -
+detect:
+  $WPOL\Explorer | HideRecommendedSection = dword:1
+
+choice colorizeTaskbar "Accent colour on the taskbar only"
+| Settings can paint the accent colour on Start and the taskbar together.
+| "Taskbar only" uses a value Windows 11 doesn't document; if it shows no
+| change, pick another option.
+option disabled "Nowhere":
+  $PERS | ColorPrevalence = dword:0
+  notify ImmersiveColorSet
+option both "Taskbar and Start":
+  $PERS | ColorPrevalence = dword:1
+  notify ImmersiveColorSet
+option taskbar "Taskbar only":
+  $PERS | ColorPrevalence = dword:2
+  notify ImmersiveColorSet
+
+toggle notificationsStayOpen "Notification Center stays open"
+| Clicking away no longer closes it; click the clock again to close it, as
+| in Windows 10's Action Center.
+on:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell\Launcher | DisableLightDismiss = dword:1
+off:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\ImmersiveShell\Launcher | DisableLightDismiss -
+
+toggle spotlightIcon "Hide the Windows Spotlight desktop icon" after=explorer
+| Removes the "Learn about this picture" icon Windows Spotlight puts on the
+| desktop.
+on:
+  $CUEXP\HideDesktopIcons\NewStartPanel | {2cc5ca98-6485-489a-920e-b3e88a6ccce3} = dword:1
+off:
+  $CUEXP\HideDesktopIcons\NewStartPanel | {2cc5ca98-6485-489a-920e-b3e88a6ccce3} -
+
+toggle stickers "Desktop stickers" after=restart
+| Adds "Add or edit stickers" to the desktop's right-click menu, for
+| stickers on top of the wallpaper.
+on:
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Stickers | EnableStickers = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Stickers | EnableStickers -
+
+toggle desktopVersion "Show the Windows version on the desktop" after=signout
+| Writes the Windows edition and build number in the bottom corner of the
+| desktop.
+on:
+  $DESK | PaintDesktopVersion = dword:1
+off:
+  $DESK | PaintDesktopVersion = dword:0
+
+number wallpaperQuality "JPEG wallpaper quality (%)" default=85 min=60 max=100
+| Windows re-encodes JPEG wallpapers at 85%. 100 keeps them sharp. Applies
+| to the next wallpaper you set.
+set:
+  $DESK | JPEGImportQuality = dword:{}
+unset:
+  $DESK | JPEGImportQuality -
+read: $DESK | JPEGImportQuality
+
+choice shutdownDefault "Alt + F4 on the desktop selects" after=explorer
+| What the Shut Down Windows box has picked when you press Alt + F4 on the
+| desktop.
+option default "Windows default":
+  $ADV | Start_PowerButtonAction -
+option shutdown "Shut down":
+  $ADV | Start_PowerButtonAction = dword:2
+option restart "Restart":
+  $ADV | Start_PowerButtonAction = dword:4
+option signout "Sign out":
+  $ADV | Start_PowerButtonAction = dword:1
+option sleep "Sleep":
+  $ADV | Start_PowerButtonAction = dword:16
+option hibernate "Hibernate":
+  $ADV | Start_PowerButtonAction = dword:64
+option switch "Switch user":
+  $ADV | Start_PowerButtonAction = dword:256
+detect-choice: $ADV | Start_PowerButtonAction
+  2 = shutdown
+  4 = restart
+  1 = signout
+  16 = sleep
+  64 = hibernate
+  256 = switch
+default: default
+
+toggle runAsUserStart "\"Run as different user\" in Start" after=explorer
+| Adds it to the right-click menu of programs in Start, for running one with
+| another account.
+on:
+  $CUWPOL\Explorer | ShowRunAsDifferentUserInStart = dword:1
+off:
+  $CUWPOL\Explorer | ShowRunAsDifferentUserInStart -
+
+############################################## colours, style and animations
+group look "Colours, style and animations"
+| Dark mode, accent colour and transparency are in Settings >
+| Personalization > Colors.
+
+choice visualStyle "Window style"
+| Switches the style windows are drawn in, live. "Aero Lite" is the flat
+| style Windows keeps hidden. "Leave it as it is" keeps whatever is in use,
+| including a third-party style.
+option keep "Leave it as it is":
+option aero "Windows default":
+  style %SystemRoot%\Resources\Themes\aero\aero.msstyles
+option lite "Aero Lite":
+  style %SystemRoot%\Resources\Themes\aero\aerolite.msstyles
+detect-choice: HKCU\Software\Microsoft\Windows\CurrentVersion\ThemeManager | DllName
+  aerolite.msstyles = lite
+  aero.msstyles = aero
+
+text accentColors "Extra accent colours"
+| Up to eight colours added to the choices in Settings > Personalization >
+| Colors, as #RRGGBB separated by commas. Windows 11 may not show them all.
+set:
+  accents {}
+unset:
+  accents
+read: accents
+
+text inactiveTitleColor "Title bar colour of windows in the background" format=colorRgb
+| As RRGGBB. Used when Settings > Personalization > Colors > "Show accent
+| colour on title bars" is on. Empty: the Windows default.
+set:
+  HKCU\Software\Microsoft\Windows\DWM | AccentColorInactive = dword:{abgr}
+  notify ImmersiveColorSet
+unset:
+  HKCU\Software\Microsoft\Windows\DWM | AccentColorInactive -
+  notify ImmersiveColorSet
+read: HKCU\Software\Microsoft\Windows\DWM | AccentColorInactive as=abgr
+
+toggle displayAnimation "No animation when a display changes" after=restart
+| Skips the fade Windows 11 plays when a screen is connected or its
+| resolution changes.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows\Dwm | ForceDisableModeChangeAnimation = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\Windows\Dwm | ForceDisableModeChangeAnimation -
+
+toggle slowAnimations "Slow window animations while Shift is held" after=signout
+| Minimising or opening a window with Shift held plays it in slow motion, as
+| in Windows 7. For fun, or for checking animations.
+on:
+  HKCU\Software\Microsoft\Windows\DWM | AnimationsShiftKey = dword:1
+off:
+  HKCU\Software\Microsoft\Windows\DWM | AnimationsShiftKey -
+
+############################################################ fonts and sizes
+group metrics "Fonts and sizes"
+| The fonts and sizes of classic window parts, as Windows 7's Window Color
+| and Appearance dialog set them. A font is written "Face, size in pixels",
+| with ", bold" or ", italic" if wanted, e.g. Segoe UI, 12. Empty: the
+| Windows default. Newer programs draw their own and don't follow these.
+| They apply live. Windows defaults: icon spacing 75, menu height 19, scroll
+| bars 17, title bars 22, border 1, border padding 4.
+
+text systemFont "System font" after=signout format=fontFamily
+| Replaces Segoe UI everywhere, the way Winaero Tweaker does it: the font is
+| substituted and Segoe UI's own files are unregistered, so programs can't
+| pick it directly. Empty restores Segoe UI. To see it before signing out,
+| see How tweaks are applied > Show a new system font straight away.
+set:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes | Segoe UI = sz:{}
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI (TrueType) = sz:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Bold (TrueType) = sz:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Bold Italic (TrueType) = sz:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Italic (TrueType) = sz:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Light (TrueType) = sz:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Semibold (TrueType) = sz:
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes | Segoe UI -
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI (TrueType) = sz:segoeui.ttf
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Bold (TrueType) = sz:segoeuib.ttf
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Bold Italic (TrueType) = sz:segoeuiz.ttf
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Italic (TrueType) = sz:segoeuii.ttf
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Light (TrueType) = sz:segoeuil.ttf
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts | Segoe UI Semibold (TrueType) = sz:seguisb.ttf
+read: HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes | Segoe UI
+
+text captionFont "Title bar font"
+| In window title bars.
+set:
+  font caption {}
+unset:
+  font caption Segoe UI, 12
+read: $WM | CaptionFont as=logfont
+
+text menuFont "Menu font"
+| In menu bars and right-click menus.
+set:
+  font menu {}
+unset:
+  font menu Segoe UI, 12
+read: $WM | MenuFont as=logfont
+
+text messageFont "Message box font"
+| In message boxes and many dialogs.
+set:
+  font message {}
+unset:
+  font message Segoe UI, 12
+read: $WM | MessageFont as=logfont
+
+text statusFont "Status bar and tooltip font"
+| In status bars and tooltips.
+set:
+  font status {}
+unset:
+  font status Segoe UI, 12
+read: $WM | StatusFont as=logfont
+
+text iconFont "Icon label font"
+| Under desktop icons and in File Explorer's lists.
+set:
+  font icon {}
+unset:
+  font icon Segoe UI, 12
+read: $WM | IconFont as=logfont
+
+number captionHeight "Title bar height (px)" default=22 min=10 max=100
+| The height of title bars and the size of their buttons.
+set:
+  metric captionHeight {}
+read: $WM | CaptionHeight as=twips
+
+number menuHeight "Menu height (px)" default=19 min=10 max=100
+| The height of each row in menu bars.
+set:
+  metric menuHeight {}
+read: $WM | MenuHeight as=twips
+
+number scrollWidth "Scroll bar width (px)" default=17 min=8 max=100
+| How wide vertical scroll bars are.
+set:
+  metric scrollWidth {}
+read: $WM | ScrollWidth as=twips
+
+number scrollHeight "Scroll bar button size (px)" default=17 min=8 max=100
+| The size of the arrow buttons at the ends of scroll bars.
+set:
+  metric scrollHeight {}
+read: $WM | ScrollHeight as=twips
+
+number borderWidth "Window border width (px)" default=1 min=1 max=10
+| Shows with the Aero Lite style; the default style draws its own borders.
+set:
+  metric borderWidth {}
+read: $WM | BorderWidth as=twips
+
+number borderPadding "Window border padding (px)" default=4 min=0 max=10
+| Extra space around the window border, which also widens the area you can
+| grab to resize.
+set:
+  metric borderPadding {}
+read: $WM | PaddedBorderWidth as=twips
+
+number iconSpacingH "Desktop icon spacing, across (px)" default=75 min=32 max=182
+set:
+  metric iconSpacingH {}
+read: $WM | IconSpacing as=twips
+
+number iconSpacingV "Desktop icon spacing, down (px)" default=75 min=32 max=182
+set:
+  metric iconSpacingV {}
+read: $WM | IconVerticalSpacing as=twips
+
+################################################ mouse, keyboard and windows
+group input "Mouse, keyboard and windows"
+| Snap windows itself and title bar shake are in Settings > System >
+| Multitasking.
+
+toggle snapDockMoving "Snap: dragging to a side fills half the screen"
+| Needs Snap windows on in Settings. Off: dragging a window to the left or
+| right edge leaves it where it is.
+on:
+  spi ui 0x0091 1
+off:
+  spi ui 0x0091 0
+detect:
+  $DESK | DockMoving = sz:1
+
+toggle snapSizing "Snap: dragging the top edge to the screen stretches the window"
+| Dragging a window's top or bottom border to the screen's edge makes it
+| full height, keeping its width.
+on:
+  spi ui 0x008F 1
+off:
+  spi ui 0x008F 0
+detect:
+  $DESK | SnapSizing = sz:1
+
+toggle snapDragMaximized "Snap: drag a maximised window to restore it"
+| Off: a maximised window can't be dragged off the top of the screen.
+on:
+  spi ui 0x008D 1
+off:
+  spi ui 0x008D 0
+detect:
+  $DESK | DragFromMaximize = sz:1
+
+toggle xmouseTracking "Focus follows the mouse"
+| The window under the pointer becomes the active one, without a click.
+on:
+  spi pv 0x1001 1
+off:
+  spi pv 0x1001 0
+detect:
+  spiget 0x1000
+
+number xmouseDelay "Focus follows the mouse: delay (ms)" default=0 min=0 max=9000
+| How long the pointer rests on a window before it becomes active.
+set:
+  spi pv 0x2003 {}
+read: spiget 0x2002
+
+toggle xmouseRaise "Focus follows the mouse: bring the window to the front"
+| Off: the window becomes active but stays behind the others.
+on:
+  spi pv 0x100D 1
+off:
+  spi pv 0x100D 0
+detect:
+  spiget 0x100C
+
+choice wheelRouting "Mouse wheel scrolls"
+| Settings > Bluetooth & devices > Mouse only switches between the first and
+| last options.
+option focus "The active window only":
+  spi pv 0x201D 0
+option hybrid "The active window, and Store apps under the pointer":
+  spi pv 0x201D 1
+option pointer "Whatever window is under the pointer":
+  spi pv 0x201D 2
+detect-choice: $DESK | MouseWheelRouting
+  0 = focus
+  1 = hybrid
+  2 = pointer
+default: hybrid
+
+number menuShowDelay "Submenu delay (ms)" default=400 min=0 max=1000
+| How long the pointer rests on a menu item before its submenu opens.
+set:
+  spi ui 0x006B {}
+read: $DESK | MenuShowDelay
+
+number dragThreshold "Drag starts after moving (px)" default=4 min=1 max=100
+| How far the pointer moves with the button held before a drag begins.
+| Higher stops accidental drags.
+set:
+  spi ui 0x004C {}
+  spi ui 0x004D {}
+read: $DESK | DragWidth
+
+choice dragDrop "Dragging files with the left button"
+| Windows moves files dragged within a drive and copies them between drives.
+| These make it always do one thing (dragging with the right button still
+| asks).
+option default "Windows default (move on the same drive, copy between drives)":
+  $CLS\* | DefaultDropEffect -
+  $CLS\AllFilesystemObjects | DefaultDropEffect -
+option copy "Always copy":
+  $CLS\* | DefaultDropEffect = dword:1
+  $CLS\AllFilesystemObjects | DefaultDropEffect = dword:1
+option move "Always move":
+  $CLS\* | DefaultDropEffect = dword:2
+  $CLS\AllFilesystemObjects | DefaultDropEffect = dword:2
+option link "Always make a shortcut":
+  $CLS\* | DefaultDropEffect = dword:4
+  $CLS\AllFilesystemObjects | DefaultDropEffect = dword:4
+detect-choice: $CLS\AllFilesystemObjects | DefaultDropEffect
+  1 = copy
+  2 = move
+  4 = link
+default: default
+
+toggle emojiAllLanguages "Emoji panel (Win + .) for every keyboard language" after=signout
+| Windows only offers it for some keyboard languages.
+on:
+  HKLM\SOFTWARE\Microsoft\Input\Settings | EnableExpressiveInputShellHotkey = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\Input\Settings | EnableExpressiveInputShellHotkey -
+
+text printScreenSound "Print Screen sound" format=filePath
+| A .wav file played when you press Print Screen. Empty: no sound.
+set:
+  HKCU\AppEvents\Schemes\Apps\.Default\SnapShot\.Current | @ = sz:{}
+unset:
+  HKCU\AppEvents\Schemes\Apps\.Default\SnapShot\.Current | @ = sz:
+read: HKCU\AppEvents\Schemes\Apps\.Default\SnapShot\.Current | @
+
+text appKeyMail "Keyboard Mail key opens"
+| For keyboards with extra keys. Empty: the Windows default. "none": the key
+| does nothing. Anything else: that program or command. The same goes for
+| the keys below.
+set:
+  $CUEXP\AppKey\15 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\15 | -
+read: $CUEXP\AppKey\15 | ShellExecute
+
+text appKeyCalculator "Keyboard Calculator key opens"
+set:
+  $CUEXP\AppKey\18 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\18 | -
+read: $CUEXP\AppKey\18 | ShellExecute
+
+text appKeyComputer "Keyboard My Computer key opens"
+set:
+  $CUEXP\AppKey\17 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\17 | -
+read: $CUEXP\AppKey\17 | ShellExecute
+
+text appKeyBrowser "Keyboard Browser home key opens"
+set:
+  $CUEXP\AppKey\7 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\7 | -
+read: $CUEXP\AppKey\7 | ShellExecute
+
+text appKeyMedia "Keyboard Media key opens"
+set:
+  $CUEXP\AppKey\16 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\16 | -
+read: $CUEXP\AppKey\16 | ShellExecute
+
+text appKeySearch "Keyboard Search key opens"
+set:
+  $CUEXP\AppKey\5 | ShellExecute = sz:{cmd}
+unset:
+  $CUEXP\AppKey\5 | -
+read: $CUEXP\AppKey\5 | ShellExecute
+
+############################################################## file explorer
+group explorer "File Explorer"
+| Folder Options (View > Options in File Explorer) has hidden files, file
+| extensions, drive letters on or off, Libraries in the navigation pane and
+| what File Explorer opens to. These are the ones it doesn't have.
+
+toggle ribbon "Windows 10 ribbon instead of the command bar" after=explorer
+| File Explorer gets the Windows 10 ribbon back in place of Windows 11's
+| command bar.
+on:
+  $CLS\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0} | @ = sz:CLSID_ItemsViewAdapter
+  $CLS\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32 | @ = sz:C:\Windows\System32\Windows.UI.FileExplorer.dll_
+  $CLS\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32 | ThreadingModel = sz:Apartment
+  $CLS\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33} | @ = sz:File Explorer Xaml Island View Adapter
+  $CLS\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32 | @ = sz:C:\Windows\System32\Windows.UI.FileExplorer.dll_
+  $CLS\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32 | ThreadingModel = sz:Apartment
+off:
+  $CLS\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0} | -
+  $CLS\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33} | -
+detect:
+  $CLS\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32 | +
+
+choice startFolder "File Explorer opens to" after=explorer
+| Folder Options offers Home and This PC; this adds Downloads and a folder
+| of your own.
+uses: explorer.startFolderPath
+option home "Home":
+  $ADV | LaunchTo = dword:2
+  $CLS\CLSID\{52205fd8-5dfb-447d-801a-d0b52f2e83e1} | -
+option thispc "This PC":
+  $ADV | LaunchTo = dword:1
+  $CLS\CLSID\{52205fd8-5dfb-447d-801a-d0b52f2e83e1} | -
+option downloads "Downloads":
+  $ADV | LaunchTo = dword:3
+  $CLS\CLSID\{52205fd8-5dfb-447d-801a-d0b52f2e83e1} | -
+option custom "The folder below":
+  $ADV | LaunchTo = dword:1
+  $CLS\CLSID\{52205fd8-5dfb-447d-801a-d0b52f2e83e1}\shell\opennewwindow\command | @ = sz:explorer.exe "{@explorer.startFolderPath}"
+  $CLS\CLSID\{52205fd8-5dfb-447d-801a-d0b52f2e83e1}\shell\opennewwindow\command | DelegateExecute = sz:
+detect-choice: $ADV | LaunchTo
+  2 = home
+  1 = thispc
+  3 = downloads
+default: home
+
+text startFolderPath "File Explorer opens to: your own folder" format=folderPath
+| Used when "File Explorer opens to" is "The folder below".
+
+toggle classicSearch "Classic search" after=explorer
+| File Explorer's search box looks only on this PC, with the old search
+| filters, and stops suggesting web results.
+on:
+  $CLS\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs | @ = sz:{64bc32b5-4eec-4de7-972d-bd8bd0324537}
+  $CLS\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs | @ = sz:{64bc32b5-4eec-4de7-972d-bd8bd0324537}
+off:
+  $CLS\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e} | -
+  $CLS\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e} | -
+detect:
+  $CLS\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs | @ = sz:{64bc32b5-4eec-4de7-972d-bd8bd0324537}
+
+toggle noSearchHistory "No search history in File Explorer" after=explorer
+| The search box stops remembering and suggesting what you searched for.
+on:
+  $CUWPOL\Explorer | DisableSearchBoxSuggestions = dword:1
+off:
+  $CUWPOL\Explorer | DisableSearchBoxSuggestions -
+
+toggle autoComplete "Complete paths as you type"
+| In the Run box, the address bar, and Open and Save dialogs.
+on:
+  $CUEXP\AutoComplete | Append Completion = sz:yes
+off:
+  $CUEXP\AutoComplete | Append Completion = sz:no
+detect:
+  $CUEXP\AutoComplete | Append Completion = sz:yes
+
+toggle noFolderTypeDiscovery "Same view in every folder" after=explorer
+| Every folder uses the same general view, instead of a pictures or music
+| layout Windows guesses from its contents. Views you set yourself are kept.
+on:
+  $CLS\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell | FolderType = sz:NotSpecified
+off:
+  $CLS\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell | FolderType -
+
+number folderViews "Folder views to remember" default=5000 min=5000 max=20000
+| How many folders keep their own view (icons, details, sorting) before the
+| oldest are forgotten.
+set:
+  $CLS\Local Settings\Software\Microsoft\Windows\Shell | BagMRU Size = dword:{}
+unset:
+  $CLS\Local Settings\Software\Microsoft\Windows\Shell | BagMRU Size -
+read: $CLS\Local Settings\Software\Microsoft\Windows\Shell | BagMRU Size
+
+toggle doForAll "\"Do this for all current items\" ticked by default"
+| When copying runs into several conflicts, the box to do the same for all
+| of them starts ticked.
+on:
+  $CUEXP\OperationStatusManager | ConfirmationCheckBoxDoForAll = dword:1
+off:
+  $CUEXP\OperationStatusManager | ConfirmationCheckBoxDoForAll -
+
+toggle removableRecycleBin "Recycle Bin on USB drives" after=explorer
+| Files deleted from USB sticks and memory cards go to the Recycle Bin
+| instead of being deleted straight away.
+on:
+  $CUPEXP | RecycleBinDrives = dword:0xffffffff
+off:
+  $CUPEXP | RecycleBinDrives -
+
+number jumpListItems "Items in jump lists" default=12 min=2 max=30 after=explorer
+| How many recent files show when you right-click a program on the taskbar.
+set:
+  $ADV | JumpListItems_Maximum = dword:{}
+unset:
+  $ADV | JumpListItems_Maximum -
+read: $ADV | JumpListItems_Maximum
+
+toggle keepThumbnailCache "Keep picture thumbnails between restarts"
+| Windows clears its thumbnail cache now and then, so folders of pictures
+| load slowly again; this keeps it.
+on:
+  $LMEXP\VolumeCaches\Thumbnail Cache | Autorun = dword:0
+  HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache | Autorun = dword:0
+off:
+  $LMEXP\VolumeCaches\Thumbnail Cache | Autorun = dword:1
+  HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache | Autorun = dword:1
+detect:
+  $LMEXP\VolumeCaches\Thumbnail Cache | Autorun = dword:0
+
+################################# file explorer: navigation pane and this pc
+group navpane "File Explorer: navigation pane and This PC"
+| What shows in File Explorer's left pane, and in This PC.
+
+toggle navHome "Navigation pane: Home" after=explorer
+on:
+  $CLS\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903} | System.IsPinnedToNameSpaceTree -
+off:
+  $CLS\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903} | System.IsPinnedToNameSpaceTree = dword:0
+detect:
+  $CLS\CLSID\{f874310e-b6b7-47dc-bc84-b9e6b38f5903} | System.IsPinnedToNameSpaceTree -
+
+toggle navGallery "Navigation pane: Gallery" after=explorer
+on:
+  $CLS\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c} | System.IsPinnedToNameSpaceTree -
+off:
+  $CLS\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c} | System.IsPinnedToNameSpaceTree = dword:0
+detect:
+  $CLS\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c} | System.IsPinnedToNameSpaceTree -
+
+toggle navOneDrive "Navigation pane: OneDrive" after=explorer
+on:
+  $CLS\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6} | System.IsPinnedToNameSpaceTree = dword:1
+off:
+  $CLS\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6} | System.IsPinnedToNameSpaceTree = dword:0
+
+toggle navThisPc "Navigation pane: This PC" after=explorer
+on:
+  $CLS\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D} | System.IsPinnedToNameSpaceTree -
+off:
+  $CLS\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D} | System.IsPinnedToNameSpaceTree = dword:0
+detect:
+  $CLS\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D} | System.IsPinnedToNameSpaceTree -
+
+toggle navNetwork "Navigation pane: Network" after=explorer
+on:
+  $CLS\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C} | System.IsPinnedToNameSpaceTree -
+off:
+  $CLS\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C} | System.IsPinnedToNameSpaceTree = dword:0
+detect:
+  $CLS\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C} | System.IsPinnedToNameSpaceTree -
+
+toggle navRemovable "Navigation pane: USB drives on their own" after=explorer
+| On: USB drives also show as their own entries. Off: only under This PC.
+on:
+  $LMEXP\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83} | @ = sz:Removable Drives
+  HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83} | @ = sz:Removable Drives
+off:
+  $LMEXP\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83} | -
+  HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83} | -
+detect:
+  $LMEXP\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83} | +
+
+text navPaneFolders "Navigation pane: your own folders" after=explorer
+| Folders added to the left pane, as Name > Path > Icon, with | between
+| them. The icon is optional, e.g. Projects > D:\Projects
+set:
+  folders Desktop {}
+unset:
+  folders Desktop
+read: folders Desktop
+
+toggle thisPcDesktop "This PC: Desktop folder" after=explorer
+on:
+  $LMNS\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641} | HiddenByDefault -
+  $WOWNS\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641} | HiddenByDefault -
+off:
+  $LMNS\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641} | HiddenByDefault = dword:1
+  $WOWNS\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641} | HiddenByDefault = dword:1
+
+toggle thisPcDocuments "This PC: Documents folder" after=explorer
+on:
+  $LMNS\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0} | HiddenByDefault -
+  $WOWNS\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0} | HiddenByDefault -
+off:
+  $LMNS\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0} | HiddenByDefault = dword:1
+  $WOWNS\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0} | HiddenByDefault = dword:1
+
+toggle thisPcDownloads "This PC: Downloads folder" after=explorer
+on:
+  $LMNS\{374DE290-123F-4565-9164-39C4925E467B} | HiddenByDefault -
+  $WOWNS\{374DE290-123F-4565-9164-39C4925E467B} | HiddenByDefault -
+off:
+  $LMNS\{374DE290-123F-4565-9164-39C4925E467B} | HiddenByDefault = dword:1
+  $WOWNS\{374DE290-123F-4565-9164-39C4925E467B} | HiddenByDefault = dword:1
+
+toggle thisPcMusic "This PC: Music folder" after=explorer
+on:
+  $LMNS\{1CF1260C-4DD0-4ebb-811F-33C572699FDE} | HiddenByDefault -
+  $WOWNS\{1CF1260C-4DD0-4ebb-811F-33C572699FDE} | HiddenByDefault -
+off:
+  $LMNS\{1CF1260C-4DD0-4ebb-811F-33C572699FDE} | HiddenByDefault = dword:1
+  $WOWNS\{1CF1260C-4DD0-4ebb-811F-33C572699FDE} | HiddenByDefault = dword:1
+
+toggle thisPcPictures "This PC: Pictures folder" after=explorer
+on:
+  $LMNS\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA} | HiddenByDefault -
+  $WOWNS\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA} | HiddenByDefault -
+off:
+  $LMNS\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA} | HiddenByDefault = dword:1
+  $WOWNS\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA} | HiddenByDefault = dword:1
+
+toggle thisPcVideos "This PC: Videos folder" after=explorer
+on:
+  $LMNS\{A0953C92-50DC-43bf-BE83-3742FED03C9C} | HiddenByDefault -
+  $WOWNS\{A0953C92-50DC-43bf-BE83-3742FED03C9C} | HiddenByDefault -
+off:
+  $LMNS\{A0953C92-50DC-43bf-BE83-3742FED03C9C} | HiddenByDefault = dword:1
+  $WOWNS\{A0953C92-50DC-43bf-BE83-3742FED03C9C} | HiddenByDefault = dword:1
+
+text thisPcFolders "This PC: your own folders" after=explorer
+| Folders added to This PC, as Name > Path > Icon, with | between them. The
+| icon is optional, e.g. Downloads > X:\Downloads > C:\Icons\dl.ico
+set:
+  folders MyComputer {}
+unset:
+  folders MyComputer
+read: folders MyComputer
+
+choice driveLetters "Drive letters in This PC" after=explorer
+| Folder Options can only show or hide them; this can also put them first.
+option after "After the name (Windows default)":
+  $CUEXP | ShowDriveLettersFirst -
+  $LMEXP | ShowDriveLettersFirst -
+option before "Before the name":
+  $CUEXP | ShowDriveLettersFirst = dword:4
+option network "Before the name for network drives only":
+  $CUEXP | ShowDriveLettersFirst = dword:1
+option hidden "Hidden":
+  $CUEXP | ShowDriveLettersFirst = dword:2
+detect-choice: $CUEXP | ShowDriveLettersFirst
+  4 = before
+  1 = network
+  2 = hidden
+default: after
+
+text hiddenDrives "Hidden drives" after=explorer
+| Drive letters hidden from This PC, e.g. F,H,I. They still open when typed
+| in the address bar. Empty: all drives show.
+set:
+  $LMPEXP | NoDrives = dword:{drives}
+unset:
+  $LMPEXP | NoDrives -
+read: $LMPEXP | NoDrives as=drives
+
+text librariesName "Libraries: name" after=explorer
+| Empty: the Windows default. Libraries themselves show once Folder Options
+| > Show libraries is on.
+set:
+  $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5} | LocalizedString = sz:{}
+unset:
+  $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5} | LocalizedString -
+read: $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5} | LocalizedString
+
+text librariesIcon "Libraries: icon" after=explorer format=filePath
+| An .ico file. Empty: the Windows default.
+set:
+  $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\DefaultIcon | @ = sz:{}
+unset:
+  $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\DefaultIcon | -
+read: $CLS\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\DefaultIcon | @
+
+############################################ icons, shortcuts and thumbnails
+group icons "Icons, shortcuts and thumbnails"
+
+text shortcutArrow "Shortcut arrow" after=explorer
+| The arrow on shortcut icons. Empty: the Windows default. "none": no arrow.
+| "classic": Windows XP's arrow. Or an .ico file.
+set:
+  shellicon 29 {}
+unset:
+  shellicon 29
+read: $LMEXP\Shell Icons | 29 as=shellicon
+
+toggle noShortcutText "No \" - Shortcut\" on new shortcuts"
+on:
+  $CUEXP\NamingTemplates | ShortcutNameTemplate = sz:"%s.lnk"
+off:
+  $CUEXP\NamingTemplates | ShortcutNameTemplate -
+detect:
+  $CUEXP\NamingTemplates | ShortcutNameTemplate = sz:"%s.lnk"
+
+text compressedOverlay "Compressed file arrows" after=explorer
+| The blue arrows on files NTFS has compressed. Empty: the Windows default.
+| "none": no arrows. Or an .ico file.
+set:
+  shellicon 179 {}
+unset:
+  shellicon 179
+read: $LMEXP\Shell Icons | 179 as=shellicon
+
+text driveIcon "One icon for every drive" after=explorer format=filePath
+| An .ico file used for all drives. Empty: the Windows default.
+set:
+  shellicon 8 {}
+unset:
+  shellicon 8
+read: $LMEXP\Shell Icons | 8 as=shellicon
+
+text driveIcons "Icons for single drives" after=explorer
+| Letter and .ico pairs, e.g. D=C:\Icons\games.ico|E=C:\Icons\media.ico.
+| These win over the one above.
+set:
+  driveicons {}
+unset:
+  driveicons
+read: driveicons
+
+toggle noFolderThumbnails "Plain folder icons" after=explorer
+| Folders show a plain icon instead of a preview of what's in them; files
+| keep their thumbnails.
+on:
+  $CLS\Folder\ShellEx\{e357fccd-a995-4576-b01f-234630154e96} | @ = sz:
+off:
+  $CLS\Folder\ShellEx\{e357fccd-a995-4576-b01f-234630154e96} | -
+detect:
+  $CLS\Folder\ShellEx\{e357fccd-a995-4576-b01f-234630154e96} | +
+
+choice thumbnailFrame "Picture thumbnail frame" after=explorer
+| The frame drawn around picture thumbnails.
+option default "Windows default":
+  $CLS\SystemFileAssociations\image | Treatment -
+option none "None":
+  $CLS\SystemFileAssociations\image | Treatment = dword:0
+option shadow "Drop shadow":
+  $CLS\SystemFileAssociations\image | Treatment = dword:1
+option photo "Photo border":
+  $CLS\SystemFileAssociations\image | Treatment = dword:2
+option film "Film strip":
+  $CLS\SystemFileAssociations\image | Treatment = dword:3
+detect-choice: $CLS\SystemFileAssociations\image | Treatment
+  0 = none
+  1 = shadow
+  2 = photo
+  3 = film
+default: default
+
+number iconCacheKB "Icon cache size (KB)" default=500 min=100 max=100000 after=restart
+| Raise it if icons go blank or turn into the wrong ones.
+set:
+  $LMEXP | Max Cached Icons = sz:{}
+unset:
+  $LMEXP | Max Cached Icons -
+read: $LMEXP | Max Cached Icons
+
+##################################### right-click menu: windows' own entries
+group menu "Right-click menu: Windows' own entries"
+| Hide the entries Windows and its apps add to right-click menus, or change
+| how they behave.
+
+toggle classicMenus "Full right-click menus" after=explorer
+| Right-click menus open in full, as in Windows 10, without "Show more
+| options". The entries below show in either menu.
+on:
+  $CLS\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32 | @ = sz:
+off:
+  $CLS\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2} | -
+detect:
+  $CLS\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32 | +
+
+number multiSelectLimit "Open, Print and Edit for up to this many files" default=15 min=5 max=200
+| With more files selected than this, Windows leaves Open, Print and Edit
+| out of the menu.
+set:
+  $CUEXP | MultipleInvokePromptMinimum = dword:{}
+unset:
+  $CUEXP | MultipleInvokePromptMinimum -
+read: $CUEXP | MultipleInvokePromptMinimum
+
+text editImageApp "Program for Edit on pictures"
+| What right-click > Edit opens pictures with, as a command line with "%1"
+| for the file. Empty: Paint.
+set:
+  $LMCLS\SystemFileAssociations\image\shell\edit\command | @ = expand:{}
+unset:
+  $LMCLS\SystemFileAssociations\image\shell\edit\command | @ = expand:"%systemroot%\system32\mspaint.exe" "%1"
+read: $LMCLS\SystemFileAssociations\image\shell\edit\command | @
+
+toggle runAsUserAlways "\"Run as different user\" without Shift"
+| Windows only shows it on programs while Shift is held.
+on:
+  $CLS\exefile\shell\runasuser | @ = sz:@shell32.dll,-50944
+  $CLS\exefile\shell\runasuser\command | DelegateExecute = sz:{ea72d00e-4960-42fa-ba92-7792a7944c1d}
+  $CLS\Msi.Package\shell\runasuser | @ = sz:@shell32.dll,-50944
+  $CLS\Msi.Package\shell\runasuser\command | DelegateExecute = sz:{ea72d00e-4960-42fa-ba92-7792a7944c1d}
+  $CLS\batfile\shell\runasuser | @ = sz:@shell32.dll,-50944
+  $CLS\batfile\shell\runasuser\command | DelegateExecute = sz:{ea72d00e-4960-42fa-ba92-7792a7944c1d}
+  $CLS\cmdfile\shell\runasuser | @ = sz:@shell32.dll,-50944
+  $CLS\cmdfile\shell\runasuser\command | DelegateExecute = sz:{ea72d00e-4960-42fa-ba92-7792a7944c1d}
+off:
+  $CLS\exefile\shell\runasuser | -
+  $CLS\Msi.Package\shell\runasuser | -
+  $CLS\batfile\shell\runasuser | -
+  $CLS\cmdfile\shell\runasuser | -
+detect:
+  $CLS\exefile\shell\runasuser\command | +
+
+toggle newProcessAlways "\"Open in new process\" without Shift"
+| Opens a folder in a separate Explorer, so a crash there can't take the
+| taskbar down. Windows only shows it while Shift is held.
+on:
+  $CLS\Folder\shell\opennewprocess | MUIVerb = sz:@shell32.dll,-8518
+  $CLS\Folder\shell\opennewprocess | MultiSelectModel = sz:Document
+  $CLS\Folder\shell\opennewprocess | LaunchExplorerFlags = dword:3
+  $CLS\Folder\shell\opennewprocess | ExplorerHost = sz:{ceff45ee-c862-41de-aee2-a022c81eda92}
+  $CLS\Folder\shell\opennewprocess\command | DelegateExecute = sz:{11dbb47c-a525-400b-9e80-a54615a090c0}
+off:
+  $CLS\Folder\shell\opennewprocess | -
+
+toggle removeAskCopilot "Remove \"Ask Copilot\""
+on:
+  $BLOCK | {CB3B0003-8088-4EDE-8769-8B354AB2FF8C} = sz:
+off:
+  $BLOCK | {CB3B0003-8088-4EDE-8769-8B354AB2FF8C} -
+  $LMBLOCK | {CB3B0003-8088-4EDE-8769-8B354AB2FF8C} -
+detect:
+  $BLOCK | {CB3B0003-8088-4EDE-8769-8B354AB2FF8C} = sz:
+detect:
+  $LMBLOCK | {CB3B0003-8088-4EDE-8769-8B354AB2FF8C} = sz:
+
+toggle removeClipchamp "Remove \"Edit in Clipchamp\""
+on:
+  $BLOCK | {8AB635F8-9A67-4698-AB99-784AD929F3B4} = sz:
+off:
+  $BLOCK | {8AB635F8-9A67-4698-AB99-784AD929F3B4} -
+  $LMBLOCK | {8AB635F8-9A67-4698-AB99-784AD929F3B4} -
+detect:
+  $BLOCK | {8AB635F8-9A67-4698-AB99-784AD929F3B4} = sz:
+detect:
+  $LMBLOCK | {8AB635F8-9A67-4698-AB99-784AD929F3B4} = sz:
+
+toggle removeEditNotepad "Remove \"Edit in Notepad\""
+on:
+  $BLOCK | {CA6CC9F1-867A-481E-951E-A28C5E4F01EA} = sz:
+off:
+  $BLOCK | {CA6CC9F1-867A-481E-951E-A28C5E4F01EA} -
+  $LMBLOCK | {CA6CC9F1-867A-481E-951E-A28C5E4F01EA} -
+detect:
+  $BLOCK | {CA6CC9F1-867A-481E-951E-A28C5E4F01EA} = sz:
+detect:
+  $LMBLOCK | {CA6CC9F1-867A-481E-951E-A28C5E4F01EA} = sz:
+
+toggle removeEditPhotos "Remove \"Edit with Photos\""
+on:
+  $BLOCK | {BFE0E2A4-C70C-4AD7-AC3D-10D1ECEBB5B4} = sz:
+off:
+  $BLOCK | {BFE0E2A4-C70C-4AD7-AC3D-10D1ECEBB5B4} -
+  $LMBLOCK | {BFE0E2A4-C70C-4AD7-AC3D-10D1ECEBB5B4} -
+detect:
+  $BLOCK | {BFE0E2A4-C70C-4AD7-AC3D-10D1ECEBB5B4} = sz:
+detect:
+  $LMBLOCK | {BFE0E2A4-C70C-4AD7-AC3D-10D1ECEBB5B4} = sz:
+
+toggle removePaint3d "Remove \"Edit with Paint 3D\""
+on:
+  $CLS\SystemFileAssociations\.bmp\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.gif\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.jpg\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.jpeg\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.png\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.tif\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+  $CLS\SystemFileAssociations\.tiff\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\SystemFileAssociations\.bmp\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.gif\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.jpg\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.jpeg\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.png\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.tif\Shell\3D Edit | -
+  $CLS\SystemFileAssociations\.tiff\Shell\3D Edit | -
+detect:
+  $CLS\SystemFileAssociations\.png\Shell\3D Edit | ProgrammaticAccessOnly = sz:
+
+toggle removeCreateVideo "Remove \"Create a new video\""
+on:
+  $BLOCK | {1100CBCD-B822-43F0-84CB-16814C2F6B44} = sz:
+off:
+  $BLOCK | {1100CBCD-B822-43F0-84CB-16814C2F6B44} -
+  $LMBLOCK | {1100CBCD-B822-43F0-84CB-16814C2F6B44} -
+detect:
+  $BLOCK | {1100CBCD-B822-43F0-84CB-16814C2F6B44} = sz:
+detect:
+  $LMBLOCK | {1100CBCD-B822-43F0-84CB-16814C2F6B44} = sz:
+
+toggle removeRotate "Remove \"Rotate left/right\""
+| On pictures.
+on:
+  $BLOCK | {FFE2A43C-56B9-4bf5-9A79-CC6D4285608A} = sz:
+off:
+  $BLOCK | {FFE2A43C-56B9-4bf5-9A79-CC6D4285608A} -
+  $LMBLOCK | {FFE2A43C-56B9-4bf5-9A79-CC6D4285608A} -
+detect:
+  $BLOCK | {FFE2A43C-56B9-4bf5-9A79-CC6D4285608A} = sz:
+detect:
+  $LMBLOCK | {FFE2A43C-56B9-4bf5-9A79-CC6D4285608A} = sz:
+
+toggle removeMediaPlayer "Remove Windows Media Player entries"
+| Add to playlist and Play with Windows Media Player.
+on:
+  $BLOCK | {F1B9284F-E9DC-4e68-9D7E-42362A59F0FD} = sz:
+  $BLOCK | {CE3FB1D1-02AE-4a5f-A6E9-D9F1B4073E6C} = sz:
+  $BLOCK | {8A734961-C4AA-4741-AC1E-791ACEBF5B39} = sz:
+off:
+  $BLOCK | {F1B9284F-E9DC-4e68-9D7E-42362A59F0FD} -
+  $BLOCK | {CE3FB1D1-02AE-4a5f-A6E9-D9F1B4073E6C} -
+  $BLOCK | {8A734961-C4AA-4741-AC1E-791ACEBF5B39} -
+  $LMBLOCK | {F1B9284F-E9DC-4e68-9D7E-42362A59F0FD} -
+  $LMBLOCK | {CE3FB1D1-02AE-4a5f-A6E9-D9F1B4073E6C} -
+  $LMBLOCK | {8A734961-C4AA-4741-AC1E-791ACEBF5B39} -
+detect:
+  $BLOCK | {F1B9284F-E9DC-4e68-9D7E-42362A59F0FD} = sz:
+detect:
+  $LMBLOCK | {F1B9284F-E9DC-4e68-9D7E-42362A59F0FD} = sz:
+
+toggle removeCast "Remove \"Cast to device\""
+on:
+  $BLOCK | {7AD84985-87B4-4a16-BE58-8B72A5B390F7} = sz:
+off:
+  $BLOCK | {7AD84985-87B4-4a16-BE58-8B72A5B390F7} -
+  $LMBLOCK | {7AD84985-87B4-4a16-BE58-8B72A5B390F7} -
+detect:
+  $BLOCK | {7AD84985-87B4-4a16-BE58-8B72A5B390F7} = sz:
+detect:
+  $LMBLOCK | {7AD84985-87B4-4a16-BE58-8B72A5B390F7} = sz:
+
+toggle removeShare "Remove \"Share\""
+on:
+  $BLOCK | {e2bf9676-5f8f-435c-97eb-11607a5bedf7} = sz:
+off:
+  $BLOCK | {e2bf9676-5f8f-435c-97eb-11607a5bedf7} -
+  $LMBLOCK | {e2bf9676-5f8f-435c-97eb-11607a5bedf7} -
+detect:
+  $BLOCK | {e2bf9676-5f8f-435c-97eb-11607a5bedf7} = sz:
+detect:
+  $LMBLOCK | {e2bf9676-5f8f-435c-97eb-11607a5bedf7} = sz:
+
+toggle removeGiveAccess "Remove \"Give access to\""
+| Sharing with other people on the network.
+on:
+  $BLOCK | {f81e9010-6ea4-11ce-a7ff-00aa003ca9f6} = sz:
+off:
+  $BLOCK | {f81e9010-6ea4-11ce-a7ff-00aa003ca9f6} -
+  $LMBLOCK | {f81e9010-6ea4-11ce-a7ff-00aa003ca9f6} -
+detect:
+  $BLOCK | {f81e9010-6ea4-11ce-a7ff-00aa003ca9f6} = sz:
+detect:
+  $LMBLOCK | {f81e9010-6ea4-11ce-a7ff-00aa003ca9f6} = sz:
+
+toggle removeOneDrive "Remove OneDrive entries"
+on:
+  $BLOCK | {CB3D0F55-BC2C-4C1A-85ED-23ED75B5106B} = sz:
+off:
+  $BLOCK | {CB3D0F55-BC2C-4C1A-85ED-23ED75B5106B} -
+  $LMBLOCK | {CB3D0F55-BC2C-4C1A-85ED-23ED75B5106B} -
+detect:
+  $BLOCK | {CB3D0F55-BC2C-4C1A-85ED-23ED75B5106B} = sz:
+detect:
+  $LMBLOCK | {CB3D0F55-BC2C-4C1A-85ED-23ED75B5106B} = sz:
+
+toggle removeFavorites "Remove \"Add to Favorites\""
+on:
+  $CLS\*\shell\pintohomefile | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\*\shell\pintohomefile | -
+
+toggle removeIncludeLibrary "Remove \"Include in library\""
+on:
+  $BLOCK | {3dad6c5d-2167-4cae-9914-f99e41c12cfa} = sz:
+off:
+  $BLOCK | {3dad6c5d-2167-4cae-9914-f99e41c12cfa} -
+  $LMBLOCK | {3dad6c5d-2167-4cae-9914-f99e41c12cfa} -
+detect:
+  $BLOCK | {3dad6c5d-2167-4cae-9914-f99e41c12cfa} = sz:
+detect:
+  $LMBLOCK | {3dad6c5d-2167-4cae-9914-f99e41c12cfa} = sz:
+
+toggle removePinTaskbar "Remove \"Pin to taskbar\""
+on:
+  $BLOCK | {90AA3A4E-1CBA-4233-B8BB-535773D48449} = sz:
+off:
+  $BLOCK | {90AA3A4E-1CBA-4233-B8BB-535773D48449} -
+  $LMBLOCK | {90AA3A4E-1CBA-4233-B8BB-535773D48449} -
+detect:
+  $BLOCK | {90AA3A4E-1CBA-4233-B8BB-535773D48449} = sz:
+detect:
+  $LMBLOCK | {90AA3A4E-1CBA-4233-B8BB-535773D48449} = sz:
+
+toggle removePinStart "Remove \"Pin to Start\""
+on:
+  $BLOCK | {470C0EBD-5D73-4d58-9CED-E91E22E23282} = sz:
+off:
+  $BLOCK | {470C0EBD-5D73-4d58-9CED-E91E22E23282} -
+  $LMBLOCK | {470C0EBD-5D73-4d58-9CED-E91E22E23282} -
+detect:
+  $BLOCK | {470C0EBD-5D73-4d58-9CED-E91E22E23282} = sz:
+detect:
+  $LMBLOCK | {470C0EBD-5D73-4d58-9CED-E91E22E23282} = sz:
+
+toggle removeOpenInTerminal "Remove \"Open in Terminal\""
+| Windows Terminal's own entry. Folders > Windows Terminal, below, can add a
+| better one.
+on:
+  $BLOCK | {9F156763-7844-4DC4-B2B1-901F640F5155} = sz:
+  $BLOCK | {02DB545A-3E20-46DE-83A5-1329B1E88B6B} = sz:
+off:
+  $BLOCK | {9F156763-7844-4DC4-B2B1-901F640F5155} -
+  $BLOCK | {02DB545A-3E20-46DE-83A5-1329B1E88B6B} -
+  $LMBLOCK | {9F156763-7844-4DC4-B2B1-901F640F5155} -
+  $LMBLOCK | {02DB545A-3E20-46DE-83A5-1329B1E88B6B} -
+detect:
+  $BLOCK | {9F156763-7844-4DC4-B2B1-901F640F5155} = sz:
+detect:
+  $LMBLOCK | {9F156763-7844-4DC4-B2B1-901F640F5155} = sz:
+
+toggle removePrint "Remove \"Print\" (images, text and scripts)"
+on:
+  $CLS\SystemFileAssociations\image\shell\print | ProgrammaticAccessOnly = sz:
+  $CLS\txtfile\shell\print | ProgrammaticAccessOnly = sz:
+  $CLS\batfile\shell\print | ProgrammaticAccessOnly = sz:
+  $CLS\cmdfile\shell\print | ProgrammaticAccessOnly = sz:
+  $CLS\regfile\shell\print | ProgrammaticAccessOnly = sz:
+  $CLS\VBSFile\shell\Print | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\SystemFileAssociations\image\shell\print | -
+  $CLS\txtfile\shell\print | -
+  $CLS\batfile\shell\print | -
+  $CLS\cmdfile\shell\print | -
+  $CLS\regfile\shell\print | -
+  $CLS\VBSFile\shell\Print | -
+detect:
+  $CLS\txtfile\shell\print | ProgrammaticAccessOnly = sz:
+
+toggle removeCompatibility "Remove \"Troubleshoot compatibility\""
+| On programs.
+on:
+  $BLOCK | {1d27f844-3a1f-4410-85ac-14651078412d} = sz:
+off:
+  $BLOCK | {1d27f844-3a1f-4410-85ac-14651078412d} -
+  $LMBLOCK | {1d27f844-3a1f-4410-85ac-14651078412d} -
+detect:
+  $BLOCK | {1d27f844-3a1f-4410-85ac-14651078412d} = sz:
+detect:
+  $LMBLOCK | {1d27f844-3a1f-4410-85ac-14651078412d} = sz:
+
+toggle removePreviousVersions "Remove \"Restore previous versions\""
+on:
+  $BLOCK | {596AB062-B4D2-4215-9F74-E9109B0A8153} = sz:
+off:
+  $BLOCK | {596AB062-B4D2-4215-9F74-E9109B0A8153} -
+  $LMBLOCK | {596AB062-B4D2-4215-9F74-E9109B0A8153} -
+detect:
+  $BLOCK | {596AB062-B4D2-4215-9F74-E9109B0A8153} = sz:
+detect:
+  $LMBLOCK | {596AB062-B4D2-4215-9F74-E9109B0A8153} = sz:
+
+toggle removeBurnImage "Remove \"Burn disc image\""
+| On .iso files.
+on:
+  $CLS\Windows.IsoFile\shell\burn | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\Windows.IsoFile\shell\burn | -
+
+toggle removeExtractAll "Remove \"Extract all\""
+| On .zip files.
+on:
+  $BLOCK | {b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af} = sz:
+off:
+  $BLOCK | {b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af} -
+  $LMBLOCK | {b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af} -
+detect:
+  $BLOCK | {b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af} = sz:
+detect:
+  $LMBLOCK | {b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af} = sz:
+
+toggle removeEfsOwnership "Remove \"File ownership\" (EFS)"
+| Only shows on PCs using the Encrypting File System.
+on:
+  $CLS\*\shell\UpdateEncryptionSettingsWork | ProgrammaticAccessOnly = sz:
+  $CLS\Directory\shell\UpdateEncryptionSettings | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\*\shell\UpdateEncryptionSettingsWork | -
+  $CLS\Directory\shell\UpdateEncryptionSettings | -
+detect:
+  $CLS\*\shell\UpdateEncryptionSettingsWork | ProgrammaticAccessOnly = sz:
+
+toggle removeBitlocker "Remove BitLocker entries from drives"
+on:
+  $CLS\Drive\shell\encrypt-bde | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\encrypt-bde-elev | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\manage-bde | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\resume-bde | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\resume-bde-elev | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\unlock-bde | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\change-passphrase | ProgrammaticAccessOnly = sz:
+  $CLS\Drive\shell\change-pin | ProgrammaticAccessOnly = sz:
+off:
+  $CLS\Drive\shell\encrypt-bde | -
+  $CLS\Drive\shell\encrypt-bde-elev | -
+  $CLS\Drive\shell\manage-bde | -
+  $CLS\Drive\shell\resume-bde | -
+  $CLS\Drive\shell\resume-bde-elev | -
+  $CLS\Drive\shell\unlock-bde | -
+  $CLS\Drive\shell\change-passphrase | -
+  $CLS\Drive\shell\change-pin | -
+detect:
+  $CLS\Drive\shell\manage-bde | ProgrammaticAccessOnly = sz:
+
+toggle removeDefenderScan "Remove \"Scan with Microsoft Defender\""
+on:
+  $BLOCK | {09A47860-11B0-4DA5-AFA5-26D86198A780} = sz:
+off:
+  $BLOCK | {09A47860-11B0-4DA5-AFA5-26D86198A780} -
+  $LMBLOCK | {09A47860-11B0-4DA5-AFA5-26D86198A780} -
+detect:
+  $BLOCK | {09A47860-11B0-4DA5-AFA5-26D86198A780} = sz:
+detect:
+  $LMBLOCK | {09A47860-11B0-4DA5-AFA5-26D86198A780} = sz:
+
+############################## right-click menu: files, folders and programs
+group menuFiles "Right-click menu: files, folders and programs"
+| Entries added to the menus of files, folders, drives and programs. Each
+| one is off until you switch it on. New entries are for your account only
+| and show straight away; entries Winaero Tweaker added are taken over, so
+| turning one off removes it too.
+
+choice cmdHere "Folders: Command prompt here"
+| "With Shift held" keeps it out of the way until you hold Shift while
+| right-clicking. The same goes for the ones below.
+option disabled "Off":
+  $CLS\Directory\shell\TourneCmd | -
+  $CLS\Directory\Background\shell\TourneCmd | -
+  $CLS\Drive\shell\TourneCmd | -
+option enabled "On":
+  $CLS\Directory\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Directory\shell\TourneCmd | Extended -
+  $CLS\Directory\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Directory\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+  $CLS\Directory\Background\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Directory\Background\shell\TourneCmd | Extended -
+  $CLS\Directory\Background\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Directory\Background\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+  $CLS\Drive\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Drive\shell\TourneCmd | Extended -
+  $CLS\Drive\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Drive\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+option shift "On, with Shift held":
+  $CLS\Directory\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Directory\shell\TourneCmd | Extended = sz:
+  $CLS\Directory\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Directory\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+  $CLS\Directory\Background\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Directory\Background\shell\TourneCmd | Extended = sz:
+  $CLS\Directory\Background\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Directory\Background\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+  $CLS\Drive\shell\TourneCmd | MUIVerb = sz:Open command window here
+  $CLS\Drive\shell\TourneCmd | Extended = sz:
+  $CLS\Drive\shell\TourneCmd | Icon = sz:cmd.exe
+  $CLS\Drive\shell\TourneCmd\command | @ = sz:cmd.exe /s /k pushd "%V"
+detect-choice: $CLS\Directory\shell\TourneCmd | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+choice cmdHereAdmin "Folders: Command prompt here as administrator"
+option disabled "Off":
+  $CLS\Directory\shell\TourneCmdAdmin | -
+  $CLS\Directory\Background\shell\TourneCmdAdmin | -
+  $CLS\Drive\shell\TourneCmdAdmin | -
+option enabled "On":
+  $CLS\Directory\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Directory\shell\TourneCmdAdmin | Extended -
+  $CLS\Directory\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+  $CLS\Directory\Background\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Directory\Background\shell\TourneCmdAdmin | Extended -
+  $CLS\Directory\Background\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+  $CLS\Drive\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Drive\shell\TourneCmdAdmin | Extended -
+  $CLS\Drive\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Drive\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+option shift "On, with Shift held":
+  $CLS\Directory\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Directory\shell\TourneCmdAdmin | Extended = sz:
+  $CLS\Directory\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+  $CLS\Directory\Background\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Directory\Background\shell\TourneCmdAdmin | Extended = sz:
+  $CLS\Directory\Background\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+  $CLS\Drive\shell\TourneCmdAdmin | MUIVerb = sz:Command prompt here (administrator)
+  $CLS\Drive\shell\TourneCmdAdmin | Extended = sz:
+  $CLS\Drive\shell\TourneCmdAdmin | HasLUAShield = sz:
+  $CLS\Drive\shell\TourneCmdAdmin\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/s','/k','pushd','\"%V\"'"
+detect-choice: $CLS\Directory\shell\TourneCmdAdmin | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+choice psHereAdmin "Folders: PowerShell here as administrator"
+option disabled "Off":
+  $CLS\Directory\shell\TournePsAdmin | -
+  $CLS\Directory\Background\shell\TournePsAdmin | -
+  $CLS\Drive\shell\TournePsAdmin | -
+option enabled "On":
+  $CLS\Directory\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Directory\shell\TournePsAdmin | Extended -
+  $CLS\Directory\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+  $CLS\Directory\Background\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Directory\Background\shell\TournePsAdmin | Extended -
+  $CLS\Directory\Background\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+  $CLS\Drive\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Drive\shell\TournePsAdmin | Extended -
+  $CLS\Drive\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Drive\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+option shift "On, with Shift held":
+  $CLS\Directory\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Directory\shell\TournePsAdmin | Extended = sz:
+  $CLS\Directory\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+  $CLS\Directory\Background\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Directory\Background\shell\TournePsAdmin | Extended = sz:
+  $CLS\Directory\Background\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+  $CLS\Drive\shell\TournePsAdmin | MUIVerb = sz:PowerShell here (administrator)
+  $CLS\Drive\shell\TournePsAdmin | Extended = sz:
+  $CLS\Drive\shell\TournePsAdmin | HasLUAShield = sz:
+  $CLS\Drive\shell\TournePsAdmin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoExit','-Command','Set-Location -LiteralPath ''%V'''"
+detect-choice: $CLS\Directory\shell\TournePsAdmin | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+choice terminalMenu "Folders: Windows Terminal"
+| Opens Windows Terminal in the folder, with a choice of profile.
+option disabled "Off":
+  $CLS\Directory\shell\TourneTerminal | -
+  $CLS\Directory\Background\shell\TourneTerminal | -
+option enabled "On":
+  $CLS\Directory\shell\TourneTerminal | -
+  $CLS\Directory\Background\shell\TourneTerminal | -
+  terminal Directory {}
+  terminal Directory\Background {}
+option shift "On, with Shift held":
+  $CLS\Directory\shell\TourneTerminal | -
+  $CLS\Directory\Background\shell\TourneTerminal | -
+  terminal Directory {}
+  terminal Directory\Background {}
+detect-choice: $CLS\Directory\shell\TourneTerminal | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+choice terminalAdminMenu "Folders: Windows Terminal as administrator"
+option disabled "Off":
+  $CLS\Directory\shell\TourneTerminalAdmin | -
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | -
+option enabled "On":
+  $CLS\Directory\shell\TourneTerminalAdmin | MUIVerb = sz:Terminal here (administrator)
+  $CLS\Directory\shell\TourneTerminalAdmin | Extended -
+  $CLS\Directory\shell\TourneTerminalAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneTerminalAdmin\command | @ = sz:$PS "Start-Process wt.exe -Verb RunAs -ArgumentList '-d','\"%V\"'"
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | MUIVerb = sz:Terminal here (administrator)
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | Extended -
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TourneTerminalAdmin\command | @ = sz:$PS "Start-Process wt.exe -Verb RunAs -ArgumentList '-d','\"%V\"'"
+option shift "On, with Shift held":
+  $CLS\Directory\shell\TourneTerminalAdmin | MUIVerb = sz:Terminal here (administrator)
+  $CLS\Directory\shell\TourneTerminalAdmin | Extended = sz:
+  $CLS\Directory\shell\TourneTerminalAdmin | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneTerminalAdmin\command | @ = sz:$PS "Start-Process wt.exe -Verb RunAs -ArgumentList '-d','\"%V\"'"
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | MUIVerb = sz:Terminal here (administrator)
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | Extended = sz:
+  $CLS\Directory\Background\shell\TourneTerminalAdmin | HasLUAShield = sz:
+  $CLS\Directory\Background\shell\TourneTerminalAdmin\command | @ = sz:$PS "Start-Process wt.exe -Verb RunAs -ArgumentList '-d','\"%V\"'"
+detect-choice: $CLS\Directory\shell\TourneTerminalAdmin | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+toggle bashHere "Folders: Linux shell here"
+| Opens WSL in the folder, when it's installed.
+on:
+  $CLS\Directory\shell\TourneWsl | MUIVerb = sz:Open Linux shell here
+  $CLS\Directory\shell\TourneWsl | Icon = sz:wsl.exe
+  $CLS\Directory\shell\TourneWsl\command | @ = sz:wsl.exe --cd "%V"
+  $CLS\Directory\Background\shell\TourneWsl | MUIVerb = sz:Open Linux shell here
+  $CLS\Directory\Background\shell\TourneWsl | Icon = sz:wsl.exe
+  $CLS\Directory\Background\shell\TourneWsl\command | @ = sz:wsl.exe --cd "%V"
+off:
+  $CLS\Directory\shell\TourneWsl | -
+  $CLS\Directory\Background\shell\TourneWsl | -
+
+toggle caseSensitivity "Folders: Case sensitivity"
+| Makes a folder treat File.txt and file.txt as two files, or not, for Linux
+| tools.
+on:
+  $CLS\Directory\shell\TourneCase | MUIVerb = sz:Case sensitivity
+  $CLS\Directory\shell\TourneCase | SubCommands = sz:
+  $CLS\Directory\shell\TourneCase\shell\1on | MUIVerb = sz:Turn on
+  $CLS\Directory\shell\TourneCase\shell\1on | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneCase\shell\1on\command | @ = sz:$PS "Start-Process fsutil.exe -Verb RunAs -ArgumentList 'file','setCaseSensitiveInfo','\"%1\"','enable'"
+  $CLS\Directory\shell\TourneCase\shell\2off | MUIVerb = sz:Turn off
+  $CLS\Directory\shell\TourneCase\shell\2off | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneCase\shell\2off\command | @ = sz:$PS "Start-Process fsutil.exe -Verb RunAs -ArgumentList 'file','setCaseSensitiveInfo','\"%1\"','disable'"
+  $CLS\Directory\shell\TourneCase\shell\3query | MUIVerb = sz:Show state
+  $CLS\Directory\shell\TourneCase\shell\3query\command | @ = sz:cmd.exe /k fsutil.exe file queryCaseSensitiveInfo "%1"
+off:
+  $CLS\Directory\shell\TourneCase | -
+
+toggle attributes "Files and folders: Attributes"
+| Hide, show, make read-only and the like, without opening Properties.
+on:
+  $CLS\AllFilesystemObjects\shell\TourneAttributes | MUIVerb = sz:Attributes
+  $CLS\AllFilesystemObjects\shell\TourneAttributes | SubCommands = sz:
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\1hide | MUIVerb = sz:Hide
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\1hide\command | @ = sz:attrib.exe +h "%1"
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\2show | MUIVerb = sz:Unhide
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\2show\command | @ = sz:attrib.exe -h "%1"
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\3ro | MUIVerb = sz:Make read-only
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\3ro\command | @ = sz:attrib.exe +r "%1"
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\4rw | MUIVerb = sz:Make writable
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\4rw\command | @ = sz:attrib.exe -r "%1"
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\5sys | MUIVerb = sz:Mark as system
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\5sys\command | @ = sz:attrib.exe +s "%1"
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\6nosys | MUIVerb = sz:Unmark as system
+  $CLS\AllFilesystemObjects\shell\TourneAttributes\shell\6nosys\command | @ = sz:attrib.exe -s "%1"
+off:
+  $CLS\AllFilesystemObjects\shell\TourneAttributes | -
+
+toggle viewOwner "Files and folders: Show owner"
+| Shows which account owns it.
+on:
+  $CLS\AllFilesystemObjects\shell\TourneViewOwner | MUIVerb = sz:Show owner
+  $CLS\AllFilesystemObjects\shell\TourneViewOwner\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "(Get-Acl -LiteralPath '%1').Owner"
+off:
+  $CLS\AllFilesystemObjects\shell\TourneViewOwner | -
+
+toggle takeOwnership "Files and folders: Take ownership"
+| Makes your account the owner, so you can change or delete files Windows
+| protects.
+on:
+  $CLS\*\shell\TourneTakeOwn | MUIVerb = sz:Take ownership
+  $CLS\*\shell\TourneTakeOwn | HasLUAShield = sz:
+  $CLS\*\shell\TourneTakeOwn\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','takeown /f \"%1\" && icacls \"%1\" /grant *S-1-5-32-544:F'"
+  $CLS\Directory\shell\TourneTakeOwn | MUIVerb = sz:Take ownership
+  $CLS\Directory\shell\TourneTakeOwn | HasLUAShield = sz:
+  $CLS\Directory\shell\TourneTakeOwn\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','takeown /f \"%1\" /r /d y && icacls \"%1\" /grant *S-1-5-32-544:F /t'"
+off:
+  $CLS\*\shell\TourneTakeOwn | -
+  $CLS\Directory\shell\TourneTakeOwn | -
+
+toggle changeOwner "Files and folders: Change owner"
+| Hands ownership to Administrators, Everyone, SYSTEM, TrustedInstaller or
+| you.
+on:
+  $CLS\AllFilesystemObjects\shell\TourneOwner | MUIVerb = sz:Change owner
+  $CLS\AllFilesystemObjects\shell\TourneOwner | SubCommands = sz:
+  $CLS\AllFilesystemObjects\shell\TourneOwner | HasLUAShield = sz:
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\1admins | MUIVerb = sz:Administrators
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\1admins\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/setowner','*S-1-5-32-544','/T','/C'"
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\2everyone | MUIVerb = sz:Everyone
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\2everyone\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/setowner','*S-1-1-0','/T','/C'"
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\3system | MUIVerb = sz:SYSTEM
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\3system\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/setowner','*S-1-5-18','/T','/C'"
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\4ti | MUIVerb = sz:TrustedInstaller
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\4ti\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/setowner','\"NT SERVICE\TrustedInstaller\"','/T','/C'"
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\5me | MUIVerb = sz:Me
+  $CLS\AllFilesystemObjects\shell\TourneOwner\shell\5me\command | @ = sz:$PS "Start-Process takeown.exe -Verb RunAs -ArgumentList '/F','\"%1\"','/R','/D','Y'"
+off:
+  $CLS\AllFilesystemObjects\shell\TourneOwner | -
+
+toggle resetPermissions "Files and folders: Reset permissions"
+| Puts back the permissions it would get from its folder.
+on:
+  $CLS\AllFilesystemObjects\shell\TourneResetAcl | MUIVerb = sz:Reset permissions
+  $CLS\AllFilesystemObjects\shell\TourneResetAcl | HasLUAShield = sz:
+  $CLS\AllFilesystemObjects\shell\TourneResetAcl\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/reset','/T','/C','/Q'"
+off:
+  $CLS\AllFilesystemObjects\shell\TourneResetAcl | -
+
+toggle inheritanceMenu "Files and folders: Inherited permissions"
+| Turns taking permissions from the folder above on or off.
+on:
+  $CLS\AllFilesystemObjects\shell\TourneInherit | MUIVerb = sz:Inherited permissions
+  $CLS\AllFilesystemObjects\shell\TourneInherit | SubCommands = sz:
+  $CLS\AllFilesystemObjects\shell\TourneInherit | HasLUAShield = sz:
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\1on | MUIVerb = sz:Turn on
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\1on\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/inheritance:e'"
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\2copy | MUIVerb = sz:Turn off, keep a copy
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\2copy\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/inheritance:d'"
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\3remove | MUIVerb = sz:Turn off and remove
+  $CLS\AllFilesystemObjects\shell\TourneInherit\shell\3remove\command | @ = sz:$PS "Start-Process icacls.exe -Verb RunAs -ArgumentList '\"%1\"','/inheritance:r'"
+off:
+  $CLS\AllFilesystemObjects\shell\TourneInherit | -
+
+toggle encryptMenu "Files and folders: Encrypt and Decrypt"
+| Uses the Encrypting File System, on editions of Windows that have it.
+on:
+  $ADV | EncryptionContextMenu = dword:1
+off:
+  $ADV | EncryptionContextMenu -
+
+toggle hashMenu "Files: Hash"
+| Shows a file's SHA256, SHA1 or MD5 checksum, for checking a download.
+on:
+  $CLS\*\shell\TourneHash | MUIVerb = sz:Hash
+  $CLS\*\shell\TourneHash | SubCommands = sz:
+  $CLS\*\shell\TourneHash\shell\1sha256 | MUIVerb = sz:SHA256
+  $CLS\*\shell\TourneHash\shell\1sha256\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "Get-FileHash -LiteralPath '%1' -Algorithm SHA256 | Format-List"
+  $CLS\*\shell\TourneHash\shell\2sha1 | MUIVerb = sz:SHA1
+  $CLS\*\shell\TourneHash\shell\2sha1\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "Get-FileHash -LiteralPath '%1' -Algorithm SHA1 | Format-List"
+  $CLS\*\shell\TourneHash\shell\3sha384 | MUIVerb = sz:SHA384
+  $CLS\*\shell\TourneHash\shell\3sha384\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "Get-FileHash -LiteralPath '%1' -Algorithm SHA384 | Format-List"
+  $CLS\*\shell\TourneHash\shell\4sha512 | MUIVerb = sz:SHA512
+  $CLS\*\shell\TourneHash\shell\4sha512\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "Get-FileHash -LiteralPath '%1' -Algorithm SHA512 | Format-List"
+  $CLS\*\shell\TourneHash\shell\5md5 | MUIVerb = sz:MD5
+  $CLS\*\shell\TourneHash\shell\5md5\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "Get-FileHash -LiteralPath '%1' -Algorithm MD5 | Format-List"
+  $CLS\*\shell\TourneHash\shell\6all | MUIVerb = sz:All of them
+  $CLS\*\shell\TourneHash\shell\6all\command | @ = sz:powershell.exe -NoProfile -NoExit -Command "'SHA256','SHA1','SHA384','SHA512','MD5' | ForEach-Object { Get-FileHash -LiteralPath '%1' -Algorithm $_ } | Format-List"
+off:
+  $CLS\*\shell\TourneHash | -
+
+toggle unblockMenu "Files: Unblock"
+| Removes the "came from the internet" mark that makes Windows warn before
+| opening it.
+on:
+  $CLS\*\shell\TourneUnblock | MUIVerb = sz:Unblock
+  $CLS\*\shell\TourneUnblock\command | @ = sz:$PS "Unblock-File -LiteralPath '%1'"
+  $CLS\Directory\shell\TourneUnblock | MUIVerb = sz:Unblock everything inside
+  $CLS\Directory\shell\TourneUnblock\command | @ = sz:$PS "Get-ChildItem -LiteralPath '%1' -Recurse -File | Unblock-File"
+off:
+  $CLS\*\shell\TourneUnblock | -
+  $CLS\Directory\shell\TourneUnblock | -
+
+toggle runWithPriority "Programs: Run with priority"
+| Starts a program at a CPU priority you pick.
+on:
+  $CLS\exefile\shell\TournePriority | MUIVerb = sz:Run with priority
+  $CLS\exefile\shell\TournePriority | SubCommands = sz:
+  $CLS\exefile\shell\TournePriority\shell\1realtime | MUIVerb = sz:Realtime
+  $CLS\exefile\shell\TournePriority\shell\1realtime\command | @ = sz:cmd.exe /c start "" /realtime "%1"
+  $CLS\exefile\shell\TournePriority\shell\2high | MUIVerb = sz:High
+  $CLS\exefile\shell\TournePriority\shell\2high\command | @ = sz:cmd.exe /c start "" /high "%1"
+  $CLS\exefile\shell\TournePriority\shell\3above | MUIVerb = sz:Above normal
+  $CLS\exefile\shell\TournePriority\shell\3above\command | @ = sz:cmd.exe /c start "" /abovenormal "%1"
+  $CLS\exefile\shell\TournePriority\shell\4normal | MUIVerb = sz:Normal
+  $CLS\exefile\shell\TournePriority\shell\4normal\command | @ = sz:cmd.exe /c start "" /normal "%1"
+  $CLS\exefile\shell\TournePriority\shell\5below | MUIVerb = sz:Below normal
+  $CLS\exefile\shell\TournePriority\shell\5below\command | @ = sz:cmd.exe /c start "" /belownormal "%1"
+  $CLS\exefile\shell\TournePriority\shell\6low | MUIVerb = sz:Low
+  $CLS\exefile\shell\TournePriority\shell\6low\command | @ = sz:cmd.exe /c start "" /low "%1"
+off:
+  $CLS\exefile\shell\TournePriority | -
+
+toggle runAsPs1 "PowerShell scripts: Run as administrator"
+on:
+  $CLS\SystemFileAssociations\.ps1\Shell\runas | HasLUAShield = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\runas | MUIVerb = sz:Run as administrator
+  $CLS\SystemFileAssociations\.ps1\Shell\runas\command | @ = sz:powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%1"
+off:
+  $CLS\SystemFileAssociations\.ps1\Shell\runas | -
+
+choice ps1Menu "PowerShell scripts: \"Run or modify\" menu"
+| Run, run as administrator, or edit a .ps1 file.
+uses: menuFiles.ps1MenuPwsh
+option disabled "Off":
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | -
+option enabled "On":
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | -
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | MUIVerb = sz:Run or modify
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | SubCommands = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | Icon = sz:powershell.exe
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\1run | MUIVerb = sz:Run with PowerShell
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\1run\command | @ = sz:powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%1"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin | MUIVerb = sz:Run as administrator
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin | HasLUAShield = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-File','\"%1\"'"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\3ise | MUIVerb = sz:Edit with PowerShell ISE
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\3ise\command | @ = sz:powershell_ise.exe "%1"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\4notepad | MUIVerb = sz:Edit in Notepad
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\4notepad\command | @ = sz:notepad.exe "%1"
+  pwsh {@menuFiles.ps1MenuPwsh}
+option shift "On, with Shift held":
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | -
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | MUIVerb = sz:Run or modify
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | Extended = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | SubCommands = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | Icon = sz:powershell.exe
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\1run | MUIVerb = sz:Run with PowerShell
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\1run\command | @ = sz:powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%1"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin | MUIVerb = sz:Run as administrator
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin | HasLUAShield = sz:
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\2admin\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-NoExit','-File','\"%1\"'"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\3ise | MUIVerb = sz:Edit with PowerShell ISE
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\3ise\command | @ = sz:powershell_ise.exe "%1"
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\4notepad | MUIVerb = sz:Edit in Notepad
+  $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify\shell\4notepad\command | @ = sz:notepad.exe "%1"
+  pwsh {@menuFiles.ps1MenuPwsh}
+detect-choice: $CLS\SystemFileAssociations\.ps1\Shell\TourneRunModify | Extended
+  exists = shift
+  key = enabled
+default: disabled
+
+toggle ps1MenuPwsh "PowerShell scripts: PowerShell 7 in that menu"
+| Adds "Run with PowerShell 7" to the menu above, when PowerShell 7 is
+| installed.
+
+toggle runAsVbs "VBScript files: Run as administrator"
+on:
+  $CLS\VBSFile\Shell\runas | HasLUAShield = sz:
+  $CLS\VBSFile\Shell\runas\command | @ = sz:WScript.exe "%1" %*
+off:
+  $CLS\VBSFile\Shell\runas | -
+
+toggle openWithBatch "Batch files: Open with"
+| Windows leaves Open with out for .bat and .cmd files.
+on:
+  $CLS\SystemFileAssociations\.bat\shell\TourneOpenWith | MUIVerb = sz:Open with...
+  $CLS\SystemFileAssociations\.bat\shell\TourneOpenWith\command | @ = expand:"%SystemRoot%\System32\rundll32.exe" "%SystemRoot%\System32\shell32.dll",OpenAs_RunDLL %1
+  $CLS\SystemFileAssociations\.cmd\shell\TourneOpenWith | MUIVerb = sz:Open with...
+  $CLS\SystemFileAssociations\.cmd\shell\TourneOpenWith\command | @ = expand:"%SystemRoot%\System32\rundll32.exe" "%SystemRoot%\System32\shell32.dll",OpenAs_RunDLL %1
+off:
+  $CLS\SystemFileAssociations\.bat\shell\TourneOpenWith | -
+  $CLS\SystemFileAssociations\.cmd\shell\TourneOpenWith | -
+  $CLS\batfile\shell\TourneOpenWith | -
+  $CLS\cmdfile\shell\TourneOpenWith | -
+detect:
+  $CLS\SystemFileAssociations\.bat\shell\TourneOpenWith\command | +
+
+toggle runAsMsi "Installers (.msi): Install as administrator"
+on:
+  $CLS\Msi.Package\shell\runas | MUIVerb = sz:Install as administrator
+  $CLS\Msi.Package\shell\runas | HasLUAShield = sz:
+  $CLS\Msi.Package\shell\runas\command | @ = sz:msiexec.exe /i "%1"
+off:
+  $CLS\Msi.Package\shell\runas | -
+
+toggle msiExtract "Installers (.msi): Extract the contents"
+| Unpacks an installer into a folder beside it, without installing.
+on:
+  $CLS\Msi.Package\shell\Extract | MUIVerb = sz:Extract the contents
+  $CLS\Msi.Package\shell\Extract\command | @ = sz:msiexec.exe /a "%1" /qb TARGETDIR="%1 Contents"
+off:
+  $CLS\Msi.Package\shell\Extract | -
+  $LMCLS\Msi.Package\shell\Extract | -
+detect:
+  $CLS\Msi.Package\shell\Extract\command | +
+detect:
+  $LMCLS\Msi.Package\shell\Extract\command | +
+
+toggle cabInstall "Update packages (.cab): Install"
+| Installs a Windows update or language pack from a .cab file.
+on:
+  $CLS\CABFolder\Shell\TourneInstall | MUIVerb = sz:Install this update
+  $CLS\CABFolder\Shell\TourneInstall | HasLUAShield = sz:
+  $CLS\CABFolder\Shell\TourneInstall\command | @ = sz:$PS "Start-Process dism.exe -Verb RunAs -ArgumentList '/Online','/Add-Package','/PackagePath:\"%1\"'"
+off:
+  $CLS\CABFolder\Shell\TourneInstall | -
+
+toggle bitlockerLock "Drives: Lock with BitLocker"
+| Locks an unlocked BitLocker drive again without restarting.
+on:
+  $CLS\Drive\shell\TourneLockBde | MUIVerb = sz:Lock drive
+  $CLS\Drive\shell\TourneLockBde | AppliesTo = sz:System.Volume.BitLockerProtection:=1
+  $CLS\Drive\shell\TourneLockBde | HasLUAShield = sz:
+  $CLS\Drive\shell\TourneLockBde\command | @ = sz:$PS "Start-Process manage-bde.exe -Verb RunAs -ArgumentList '-lock','%1','-ForceDismount'"
+off:
+  $CLS\Drive\shell\TourneLockBde | -
+
+toggle advancedSystemProps "This PC: Advanced system properties"
+| Performance, environment variables, startup and recovery.
+on:
+  $THISPC\advproperties | MUIVerb = sz:Advanced system properties
+  $THISPC\advproperties | Icon = sz:SystemPropertiesAdvanced.exe
+  $THISPC\advproperties\command | @ = sz:SystemPropertiesAdvanced.exe
+off:
+  $THISPC\advproperties | -
+detect:
+  $THISPC\advproperties\command | +
+
+toggle classicSystemProps "This PC: System properties (classic)"
+| The old System Properties window: computer name, hardware, remote.
+on:
+  $THISPC\TourneSysProps | MUIVerb = sz:System properties (classic)
+  $THISPC\TourneSysProps | Icon = sz:sysdm.cpl
+  $THISPC\TourneSysProps\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL sysdm.cpl
+off:
+  $THISPC\TourneSysProps | -
+
+################################################## right-click menu: desktop
+group menuDesktop "Right-click menu: desktop"
+| Shortcuts added to the menu you get by right-clicking the desktop. Each
+| one is off until you switch it on. New entries are for your account only
+| and show straight away; entries Winaero Tweaker added are taken over, so
+| turning one off removes it too.
+
+toggle settingsMenu "Settings"
+on:
+  $DB\TourneSettings | MUIVerb = sz:Settings
+  $DB\TourneSettings | SubCommands = sz:
+  $DB\TourneSettings | Icon = sz:shell32.dll,-16826
+  $DB\TourneSettings\shell\01home | MUIVerb = sz:Settings
+  $DB\TourneSettings\shell\01home\command | @ = sz:explorer.exe ms-settings:
+  $DB\TourneSettings\shell\02system | MUIVerb = sz:System
+  $DB\TourneSettings\shell\02system\command | @ = sz:explorer.exe ms-settings:display
+  $DB\TourneSettings\shell\03devices | MUIVerb = sz:Bluetooth and devices
+  $DB\TourneSettings\shell\03devices\command | @ = sz:explorer.exe ms-settings:bluetooth
+  $DB\TourneSettings\shell\04network | MUIVerb = sz:Network and internet
+  $DB\TourneSettings\shell\04network\command | @ = sz:explorer.exe ms-settings:network
+  $DB\TourneSettings\shell\05personal | MUIVerb = sz:Personalization
+  $DB\TourneSettings\shell\05personal\command | @ = sz:explorer.exe ms-settings:personalization
+  $DB\TourneSettings\shell\06apps | MUIVerb = sz:Apps
+  $DB\TourneSettings\shell\06apps\command | @ = sz:explorer.exe ms-settings:appsfeatures
+  $DB\TourneSettings\shell\07accounts | MUIVerb = sz:Accounts
+  $DB\TourneSettings\shell\07accounts\command | @ = sz:explorer.exe ms-settings:yourinfo
+  $DB\TourneSettings\shell\08time | MUIVerb = sz:Time and language
+  $DB\TourneSettings\shell\08time\command | @ = sz:explorer.exe ms-settings:dateandtime
+  $DB\TourneSettings\shell\09gaming | MUIVerb = sz:Gaming
+  $DB\TourneSettings\shell\09gaming\command | @ = sz:explorer.exe ms-settings:gaming-gamebar
+  $DB\TourneSettings\shell\10access | MUIVerb = sz:Accessibility
+  $DB\TourneSettings\shell\10access\command | @ = sz:explorer.exe ms-settings:easeofaccess
+  $DB\TourneSettings\shell\11privacy | MUIVerb = sz:Privacy and security
+  $DB\TourneSettings\shell\11privacy\command | @ = sz:explorer.exe ms-settings:privacy
+  $DB\TourneSettings\shell\12update | MUIVerb = sz:Windows Update
+  $DB\TourneSettings\shell\12update\command | @ = sz:explorer.exe ms-settings:windowsupdate
+off:
+  $DB\TourneSettings | -
+
+toggle controlPanelMenu "Control Panel"
+on:
+  $DB\TourneControlPanel | MUIVerb = sz:Control Panel
+  $DB\TourneControlPanel | SubCommands = sz:
+  $DB\TourneControlPanel | Icon = sz:imageres.dll,-27
+  $DB\TourneControlPanel\shell\1category | MUIVerb = sz:Category view
+  $DB\TourneControlPanel\shell\1category\command | @ = sz:explorer.exe shell:::{26EE0668-A00A-44D7-9371-BEB064C98683}
+  $DB\TourneControlPanel\shell\2icons | MUIVerb = sz:All items
+  $DB\TourneControlPanel\shell\2icons\command | @ = sz:explorer.exe shell:::{21EC2020-3AEA-1069-A2DD-08002B30309D}
+  $DB\TourneControlPanel\shell\3all | MUIVerb = sz:All tasks
+  $DB\TourneControlPanel\shell\3all\command | @ = sz:explorer.exe shell:::{ED7BA470-8E54-465E-825C-99712043E01C}
+off:
+  $DB\TourneControlPanel | -
+
+toggle personalizeMenu "Personalization"
+| The classic Personalization window.
+on:
+  $DB\TournePersonalize | MUIVerb = sz:Appearance
+  $DB\TournePersonalize | SubCommands = sz:
+  $DB\TournePersonalize | Icon = sz:themecpl.dll,-1
+  $DB\TournePersonalize\shell\1background | MUIVerb = sz:Desktop background
+  $DB\TournePersonalize\shell\1background\command | @ = sz:explorer.exe shell:::{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} -Microsoft.Personalization\pageWallpaper
+  $DB\TournePersonalize\shell\2colour | MUIVerb = sz:Colour and appearance
+  $DB\TournePersonalize\shell\2colour\command | @ = sz:explorer.exe shell:::{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} -Microsoft.Personalization\pageColorization
+  $DB\TournePersonalize\shell\3icons | MUIVerb = sz:Desktop icons
+  $DB\TournePersonalize\shell\3icons\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL desk.cpl,,0
+  $DB\TournePersonalize\shell\4saver | MUIVerb = sz:Screen saver
+  $DB\TournePersonalize\shell\4saver\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL desk.cpl,screensaver,@screensaver
+  $DB\TournePersonalize\shell\5sounds | MUIVerb = sz:Sounds
+  $DB\TournePersonalize\shell\5sounds\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL mmsys.cpl,,2
+  $DB\TournePersonalize\shell\6pointers | MUIVerb = sz:Mouse pointers
+  $DB\TournePersonalize\shell\6pointers\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL main.cpl,,1
+off:
+  $DB\TournePersonalize | -
+
+toggle taskManagerMenu "Task Manager"
+on:
+  $DB\taskmgr | MUIVerb = sz:Task Manager
+  $DB\taskmgr | Icon = sz:taskmgr.exe
+  $DB\taskmgr\command | @ = sz:taskmgr.exe
+off:
+  $DB\taskmgr | -
+  $LMDB\taskmgr | -
+detect:
+  $DB\taskmgr | +
+detect:
+  $LMDB\taskmgr | +
+
+toggle windowsToolsMenu "Windows Tools"
+| The folder of administrative tools.
+on:
+  $DB\TourneWindowsTools | MUIVerb = sz:Windows Tools
+  $DB\TourneWindowsTools | Icon = sz:imageres.dll,-114
+  $DB\TourneWindowsTools\command | @ = sz:explorer.exe shell:::{D20EA4E1-3957-11d2-A40B-0C5020524153}
+off:
+  $DB\TourneWindowsTools | -
+
+toggle envVarsMenu "Environment variables"
+on:
+  $DB\TourneEnvVars | MUIVerb = sz:Environment variables
+  $DB\TourneEnvVars\command | @ = sz:rundll32.exe sysdm.cpl,EditEnvironmentVariables
+off:
+  $DB\TourneEnvVars | -
+
+toggle gpeditMenu "Group Policy"
+| The Local Group Policy Editor, on Pro and higher.
+on:
+  $DB\TourneGpedit | MUIVerb = sz:Group Policy
+  $DB\TourneGpedit | Icon = sz:gpedit.dll
+  $DB\TourneGpedit\command | @ = sz:mmc.exe gpedit.msc
+off:
+  $DB\TourneGpedit | -
+
+toggle defaultAppsMenu "Default apps"
+on:
+  $DB\TourneDefaultApps | MUIVerb = sz:Default apps
+  $DB\TourneDefaultApps\command | @ = sz:explorer.exe ms-settings:defaultapps
+off:
+  $DB\TourneDefaultApps | -
+
+toggle accountsMenu "User accounts"
+on:
+  $DB\TourneAccounts | MUIVerb = sz:User accounts
+  $DB\TourneAccounts | SubCommands = sz:
+  $DB\TourneAccounts | Icon = sz:imageres.dll,-88
+  $DB\TourneAccounts\shell\1info | MUIVerb = sz:Your info
+  $DB\TourneAccounts\shell\1info\command | @ = sz:explorer.exe ms-settings:yourinfo
+  $DB\TourneAccounts\shell\2email | MUIVerb = sz:Email and accounts
+  $DB\TourneAccounts\shell\2email\command | @ = sz:explorer.exe ms-settings:emailandaccounts
+  $DB\TourneAccounts\shell\3signin | MUIVerb = sz:Sign-in options
+  $DB\TourneAccounts\shell\3signin\command | @ = sz:explorer.exe ms-settings:signinoptions
+  $DB\TourneAccounts\shell\4work | MUIVerb = sz:Access work or school
+  $DB\TourneAccounts\shell\4work\command | @ = sz:explorer.exe ms-settings:workplace
+  $DB\TourneAccounts\shell\5others | MUIVerb = sz:Other users
+  $DB\TourneAccounts\shell\5others\command | @ = sz:explorer.exe ms-settings:otherusers
+  $DB\TourneAccounts\shell\6netplwiz | MUIVerb = sz:User accounts (classic)
+  $DB\TourneAccounts\shell\6netplwiz\command | @ = sz:netplwiz.exe
+off:
+  $DB\TourneAccounts | -
+
+toggle securityMenu "Windows Security"
+on:
+  $DB\TourneSecurity | MUIVerb = sz:Windows Security
+  $DB\TourneSecurity | SubCommands = sz:
+  $DB\TourneSecurity | Icon = sz:%ProgramFiles%\Windows Defender\EppManifest.dll,-101
+  $DB\TourneSecurity\shell\1home | MUIVerb = sz:Security at a glance
+  $DB\TourneSecurity\shell\1home\command | @ = sz:explorer.exe windowsdefender:
+  $DB\TourneSecurity\shell\2virus | MUIVerb = sz:Virus and threat protection
+  $DB\TourneSecurity\shell\2virus\command | @ = sz:explorer.exe windowsdefender://threat
+  $DB\TourneSecurity\shell\3firewall | MUIVerb = sz:Firewall and network protection
+  $DB\TourneSecurity\shell\3firewall\command | @ = sz:explorer.exe windowsdefender://network
+  $DB\TourneSecurity\shell\4apps | MUIVerb = sz:App and browser control
+  $DB\TourneSecurity\shell\4apps\command | @ = sz:explorer.exe windowsdefender://appbrowser
+  $DB\TourneSecurity\shell\5device | MUIVerb = sz:Device security
+  $DB\TourneSecurity\shell\5device\command | @ = sz:explorer.exe windowsdefender://devicesecurity
+  $DB\TourneSecurity\shell\6perf | MUIVerb = sz:Device performance and health
+  $DB\TourneSecurity\shell\6perf\command | @ = sz:explorer.exe windowsdefender://perfcenter
+off:
+  $DB\TourneSecurity | -
+
+toggle firewallMenu "Firewall"
+on:
+  $DB\TourneFirewall | MUIVerb = sz:Firewall
+  $DB\TourneFirewall | SubCommands = sz:
+  $DB\TourneFirewall | Icon = sz:FirewallControlPanel.dll,-1
+  $DB\TourneFirewall\shell\1basic | MUIVerb = sz:Windows Defender Firewall
+  $DB\TourneFirewall\shell\1basic\command | @ = sz:control.exe firewall.cpl
+  $DB\TourneFirewall\shell\2advanced | MUIVerb = sz:Advanced security
+  $DB\TourneFirewall\shell\2advanced\command | @ = sz:mmc.exe wf.msc
+  $DB\TourneFirewall\shell\3apps | MUIVerb = sz:Allowed apps
+  $DB\TourneFirewall\shell\3apps\command | @ = sz:explorer.exe shell:::{4026492F-2F69-46B8-B9BF-5654FC07E423} -Microsoft.WindowsFirewall\pageConfigureApps
+off:
+  $DB\TourneFirewall | -
+
+toggle updateMenu "Windows Update"
+on:
+  $DB\TourneUpdate | MUIVerb = sz:Windows Update
+  $DB\TourneUpdate | SubCommands = sz:
+  $DB\TourneUpdate | Icon = sz:shell32.dll,-47
+  $DB\TourneUpdate\shell\1open | MUIVerb = sz:Windows Update
+  $DB\TourneUpdate\shell\1open\command | @ = sz:explorer.exe ms-settings:windowsupdate
+  $DB\TourneUpdate\shell\2check | MUIVerb = sz:Check for updates
+  $DB\TourneUpdate\shell\2check\command | @ = sz:explorer.exe ms-settings:windowsupdate-action
+  $DB\TourneUpdate\shell\3history | MUIVerb = sz:Update history
+  $DB\TourneUpdate\shell\3history\command | @ = sz:explorer.exe ms-settings:windowsupdate-history
+  $DB\TourneUpdate\shell\4options | MUIVerb = sz:Advanced options
+  $DB\TourneUpdate\shell\4options\command | @ = sz:explorer.exe ms-settings:windowsupdate-options
+off:
+  $DB\TourneUpdate | -
+
+toggle appModeMenu "Light or dark mode for apps"
+| Switches apps between light and dark.
+on:
+  $DB\TourneAppMode | MUIVerb = sz:App mode
+  $DB\TourneAppMode | SubCommands = sz:
+  $DB\TourneAppMode | Icon = sz:themecpl.dll,-1
+  $DB\TourneAppMode\shell\1light | MUIVerb = sz:Light
+  $DB\TourneAppMode\shell\1light\command | @ = sz:reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f
+  $DB\TourneAppMode\shell\2dark | MUIVerb = sz:Dark
+  $DB\TourneAppMode\shell\2dark\command | @ = sz:reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+off:
+  $DB\TourneAppMode | -
+
+toggle windowsModeMenu "Light or dark mode for Windows"
+| Switches the taskbar and Start between light and dark.
+on:
+  $DB\TourneWindowsMode | MUIVerb = sz:Windows mode
+  $DB\TourneWindowsMode | SubCommands = sz:
+  $DB\TourneWindowsMode | Icon = sz:themecpl.dll,-1
+  $DB\TourneWindowsMode\shell\1light | MUIVerb = sz:Light
+  $DB\TourneWindowsMode\shell\1light\command | @ = sz:reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 1 /f
+  $DB\TourneWindowsMode\shell\2dark | MUIVerb = sz:Dark
+  $DB\TourneWindowsMode\shell\2dark\command | @ = sz:reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+off:
+  $DB\TourneWindowsMode | -
+
+toggle wallpaperLocation "Open the wallpaper's location"
+| Opens the folder of the picture on the desktop now.
+on:
+  $DB\TourneWallpaper | MUIVerb = sz:Open wallpaper location
+  $DB\TourneWallpaper | Icon = sz:imageres.dll,-5346
+  $DB\TourneWallpaper\command | @ = sz:$PS "$p = (Get-ItemProperty 'HKCU:\Control Panel\Desktop').WallPaper; if ($p -and (Test-Path -LiteralPath $p)) { explorer.exe /select,$p }"
+off:
+  $DB\TourneWallpaper | -
+
+toggle bluetoothMenu "Bluetooth"
+on:
+  $DB\TourneBluetooth | MUIVerb = sz:Bluetooth
+  $DB\TourneBluetooth | SubCommands = sz:
+  $DB\TourneBluetooth | Icon = sz:bthprops.cpl,-1
+  $DB\TourneBluetooth\shell\1devices | MUIVerb = sz:Bluetooth devices
+  $DB\TourneBluetooth\shell\1devices\command | @ = sz:explorer.exe ms-settings:bluetooth
+  $DB\TourneBluetooth\shell\2send | MUIVerb = sz:Send or receive files
+  $DB\TourneBluetooth\shell\2send\command | @ = sz:fsquirt.exe
+  $DB\TourneBluetooth\shell\3options | MUIVerb = sz:More Bluetooth options
+  $DB\TourneBluetooth\shell\3options\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL bthprops.cpl,,1
+  $DB\TourneBluetooth\shell\4com | MUIVerb = sz:COM ports
+  $DB\TourneBluetooth\shell\4com\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL bthprops.cpl,,2
+  $DB\TourneBluetooth\shell\5hw | MUIVerb = sz:Hardware
+  $DB\TourneBluetooth\shell\5hw\command | @ = sz:rundll32.exe shell32.dll,Control_RunDLL bthprops.cpl,,3
+off:
+  $DB\TourneBluetooth | -
+
+toggle networkLocation "Network location"
+| Switches the current network between Private and Public.
+on:
+  $DB\TourneNetLocation | MUIVerb = sz:Network location
+  $DB\TourneNetLocation | SubCommands = sz:
+  $DB\TourneNetLocation | HasLUAShield = sz:
+  $DB\TourneNetLocation\shell\1private | MUIVerb = sz:Private
+  $DB\TourneNetLocation\shell\1private\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList '-NoProfile','-Command','Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private'"
+  $DB\TourneNetLocation\shell\2public | MUIVerb = sz:Public
+  $DB\TourneNetLocation\shell\2public\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList '-NoProfile','-Command','Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Public'"
+off:
+  $DB\TourneNetLocation | -
+
+toggle projectMenu "Project display"
+| Duplicate, extend or switch screens.
+on:
+  $DB\TourneProject | MUIVerb = sz:Project
+  $DB\TourneProject | SubCommands = sz:
+  $DB\TourneProject | Icon = sz:DisplaySwitch.exe
+  $DB\TourneProject\shell\1internal | MUIVerb = sz:PC screen only
+  $DB\TourneProject\shell\1internal\command | @ = sz:DisplaySwitch.exe /internal
+  $DB\TourneProject\shell\2clone | MUIVerb = sz:Duplicate
+  $DB\TourneProject\shell\2clone\command | @ = sz:DisplaySwitch.exe /clone
+  $DB\TourneProject\shell\3extend | MUIVerb = sz:Extend
+  $DB\TourneProject\shell\3extend\command | @ = sz:DisplaySwitch.exe /extend
+  $DB\TourneProject\shell\4external | MUIVerb = sz:Second screen only
+  $DB\TourneProject\shell\4external\command | @ = sz:DisplaySwitch.exe /external
+off:
+  $DB\TourneProject | -
+
+toggle clipboardMenu "Clipboard"
+| Opens the clipboard history, or clears it.
+on:
+  $DB\TourneClipboard | MUIVerb = sz:Clipboard
+  $DB\TourneClipboard | SubCommands = sz:
+  $DB\TourneClipboard | Icon = sz:shell32.dll,-16763
+  $DB\TourneClipboard\shell\1settings | MUIVerb = sz:Clipboard history settings
+  $DB\TourneClipboard\shell\1settings\command | @ = sz:explorer.exe ms-settings:clipboard
+  $DB\TourneClipboard\shell\2clear | MUIVerb = sz:Clear the clipboard
+  $DB\TourneClipboard\shell\2clear\command | @ = sz:$PS "Set-Clipboard -Value $null; [Windows.ApplicationModel.DataTransfer.Clipboard,Windows.ApplicationModel.DataTransfer,ContentType=WindowsRuntime]::ClearHistory() | Out-Null"
+off:
+  $DB\TourneClipboard | -
+
+toggle screenSnipMenu "Screen snip"
+| Takes a screenshot of part of the screen.
+on:
+  $DB\TourneScreenSnip | MUIVerb = sz:Screen snip
+  $DB\TourneScreenSnip | Icon = sz:SnippingTool.exe
+  $DB\TourneScreenSnip\command | @ = sz:explorer.exe ms-screenclip:
+off:
+  $DB\TourneScreenSnip | -
+
+toggle snippingToolMenu "Snipping Tool"
+on:
+  $DB\TourneSnippingTool | MUIVerb = sz:Snipping Tool
+  $DB\TourneSnippingTool | Icon = sz:SnippingTool.exe
+  $DB\TourneSnippingTool\command | @ = sz:explorer.exe ms-screensketch:
+off:
+  $DB\TourneSnippingTool | -
+
+toggle copilotMenu "Copilot"
+on:
+  $DB\TourneCopilot | MUIVerb = sz:Copilot
+  $DB\TourneCopilot\command | @ = sz:explorer.exe ms-copilot:
+off:
+  $DB\TourneCopilot | -
+
+toggle speechMenu "Speech recognition"
+on:
+  $DB\TourneSpeech | MUIVerb = sz:Speech recognition
+  $DB\TourneSpeech | Icon = sz:%windir%\Speech\Common\sapisvr.exe
+  $DB\TourneSpeech\command | @ = sz:%windir%\Speech\Common\sapisvr.exe -SpeechUX
+off:
+  $DB\TourneSpeech | -
+
+toggle killHung "Close programs that aren't responding"
+| Ends every program Windows marks as not responding, at once.
+on:
+  $DB\TourneKillHung | MUIVerb = sz:Close programs that aren't responding
+  $DB\TourneKillHung | Icon = sz:taskmgr.exe,-30651
+  $DB\TourneKillHung\command | @ = sz:taskkill.exe /f /fi "status eq NOT RESPONDING"
+off:
+  $DB\TourneKillHung | -
+
+toggle restartExplorerMenu "Restart Explorer"
+| Restarts the taskbar, desktop and File Explorer.
+on:
+  $DB\RestartExplorer | MUIVerb = sz:Restart Explorer
+  $DB\RestartExplorer | SubCommands = sz:
+  $DB\RestartExplorer | Icon = sz:explorer.exe
+  $DB\RestartExplorer | Position = sz:Bottom
+  $DB\RestartExplorer\shell\1now | MUIVerb = sz:Restart now
+  $DB\RestartExplorer\shell\1now\command | @ = sz:cmd.exe /c taskkill.exe /f /im explorer.exe & start explorer.exe
+  $DB\RestartExplorer\shell\2pause | MUIVerb = sz:Stop, then restart with a key press
+  $DB\RestartExplorer\shell\2pause\command | @ = sz:cmd.exe /c taskkill.exe /f /im explorer.exe & echo Explorer stopped. Press any key to start it again. & pause >nul & start explorer.exe
+off:
+  $DB\RestartExplorer | -
+  $LMDB\RestartExplorer | -
+detect:
+  $DB\RestartExplorer | +
+detect:
+  $LMDB\RestartExplorer | +
+
+toggle restartStartMenu "Restart Start menu"
+on:
+  $DB\TourneRestartStart | MUIVerb = sz:Restart Start menu
+  $DB\TourneRestartStart\command | @ = sz:taskkill.exe /f /im StartMenuExperienceHost.exe
+off:
+  $DB\TourneRestartStart | -
+
+toggle powerPlanMenu "Switch power plan"
+on:
+  $DB\TournePowerPlan | MUIVerb = sz:Power plan
+  $DB\TournePowerPlan | SubCommands = sz:
+  $DB\TournePowerPlan | Icon = sz:powercpl.dll,-1
+  $DB\TournePowerPlan\shell\1saver | MUIVerb = sz:Power saver
+  $DB\TournePowerPlan\shell\1saver\command | @ = sz:powercfg.exe /setactive a1841308-3541-4fab-bc81-f71556f20b4a
+  $DB\TournePowerPlan\shell\2balanced | MUIVerb = sz:Balanced
+  $DB\TournePowerPlan\shell\2balanced\command | @ = sz:powercfg.exe /setactive 381b4222-f694-41f0-9685-ff5bb260df2e
+  $DB\TournePowerPlan\shell\3high | MUIVerb = sz:High performance
+  $DB\TournePowerPlan\shell\3high\command | @ = sz:powercfg.exe /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+  $DB\TournePowerPlan\shell\4ultimate | MUIVerb = sz:Ultimate performance
+  $DB\TournePowerPlan\shell\4ultimate\command | @ = sz:powercfg.exe /setactive e9a42b02-d5df-448d-aa00-03f14749eb61
+off:
+  $DB\TournePowerPlan | -
+
+toggle powerMenu "Power options"
+| Shut down, restart, sleep and the rest.
+on:
+  $DB\TournePower | MUIVerb = sz:Power options
+  $DB\TournePower | SubCommands = sz:
+  $DB\TournePower | Icon = sz:powercpl.dll,-1
+  $DB\TournePower\shell\1options | MUIVerb = sz:Power options
+  $DB\TournePower\shell\1options\command | @ = sz:control.exe powercfg.cpl
+  $DB\TournePower\shell\2plan | MUIVerb = sz:Edit current plan
+  $DB\TournePower\shell\2plan\command | @ = sz:control.exe powercfg.cpl,,3
+  $DB\TournePower\shell\3buttons | MUIVerb = sz:What the power buttons do
+  $DB\TournePower\shell\3buttons\command | @ = sz:explorer.exe shell:::{025A5937-A6BE-4686-A844-36FE4BEC8B6D} -Microsoft.PowerOptions\pageGlobalSettings
+  $DB\TournePower\shell\4settings | MUIVerb = sz:Power settings
+  $DB\TournePower\shell\4settings\command | @ = sz:explorer.exe ms-settings:powersleep
+off:
+  $DB\TournePower | -
+
+toggle shutdownMenu "Shut down"
+on:
+  $DB\TourneShutdown | MUIVerb = sz:Shut down
+  $DB\TourneShutdown | SubCommands = sz:
+  $DB\TourneShutdown | Icon = sz:shell32.dll,-28
+  $DB\TourneShutdown | Position = sz:Bottom
+  $DB\TourneShutdown\shell\1off | MUIVerb = sz:Shut down
+  $DB\TourneShutdown\shell\1off\command | @ = sz:shutdown.exe /s /t 0
+  $DB\TourneShutdown\shell\2offwarn | MUIVerb = sz:Shut down in 30 seconds
+  $DB\TourneShutdown\shell\2offwarn\command | @ = sz:shutdown.exe /s /t 30
+  $DB\TourneShutdown\shell\3restart | MUIVerb = sz:Restart
+  $DB\TourneShutdown\shell\3restart\command | @ = sz:shutdown.exe /r /t 0
+  $DB\TourneShutdown\shell\4restartwarn | MUIVerb = sz:Restart in 30 seconds
+  $DB\TourneShutdown\shell\4restartwarn\command | @ = sz:shutdown.exe /r /t 30
+  $DB\TourneShutdown\shell\5hybrid | MUIVerb = sz:Shut down (fast startup)
+  $DB\TourneShutdown\shell\5hybrid\command | @ = sz:shutdown.exe /s /hybrid /t 0
+  $DB\TourneShutdown\shell\6signout | MUIVerb = sz:Sign out
+  $DB\TourneShutdown\shell\6signout\command | @ = sz:shutdown.exe /l
+  $DB\TourneShutdown\shell\7lock | MUIVerb = sz:Lock
+  $DB\TourneShutdown\shell\7lock\command | @ = sz:rundll32.exe user32.dll,LockWorkStation
+  $DB\TourneShutdown\shell\8cancel | MUIVerb = sz:Cancel a timed shutdown
+  $DB\TourneShutdown\shell\8cancel\command | @ = sz:shutdown.exe /a
+off:
+  $DB\TourneShutdown | -
+
+toggle safeModeMenu "Safe Mode"
+| Sets the next start to Safe Mode and restarts.
+on:
+  $DB\TourneSafeMode | MUIVerb = sz:Safe Mode
+  $DB\TourneSafeMode | SubCommands = sz:
+  $DB\TourneSafeMode | HasLUAShield = sz:
+  $DB\TourneSafeMode | Position = sz:Bottom
+  $DB\TourneSafeMode\shell\1min | MUIVerb = sz:Restart in Safe Mode
+  $DB\TourneSafeMode\shell\1min\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','bcdedit /set {current} safeboot minimal && shutdown /r /t 0'"
+  $DB\TourneSafeMode\shell\2net | MUIVerb = sz:Restart in Safe Mode with networking
+  $DB\TourneSafeMode\shell\2net\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','bcdedit /set {current} safeboot network && shutdown /r /t 0'"
+  $DB\TourneSafeMode\shell\3cmd | MUIVerb = sz:Restart in Safe Mode with command prompt
+  $DB\TourneSafeMode\shell\3cmd\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','bcdedit /set {current} safeboot minimal && bcdedit /set {current} safebootalternateshell yes && shutdown /r /t 0'"
+  $DB\TourneSafeMode\shell\4normal | MUIVerb = sz:Restart normally
+  $DB\TourneSafeMode\shell\4normal\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/c','bcdedit /deletevalue {current} safeboot & bcdedit /deletevalue {current} safebootalternateshell & shutdown /r /t 0'"
+off:
+  $DB\TourneSafeMode | -
+
+toggle advancedStartup "Advanced startup"
+| Restarts into the recovery options: Safe Mode, firmware settings, repair.
+on:
+  $DB\TourneAdvancedStartup | MUIVerb = sz:Advanced startup
+  $DB\TourneAdvancedStartup | Icon = sz:bootux.dll,-1032
+  $DB\TourneAdvancedStartup | Position = sz:Bottom
+  $DB\TourneAdvancedStartup\command | @ = sz:shutdown.exe /r /o /f /t 0
+off:
+  $DB\TourneAdvancedStartup | -
+
+toggle firmwareMenu "Restart to firmware (UEFI)"
+| Restarts straight into the PC's firmware settings.
+on:
+  $DB\TourneFirmware | MUIVerb = sz:Restart to firmware settings
+  $DB\TourneFirmware | HasLUAShield = sz:
+  $DB\TourneFirmware | Position = sz:Bottom
+  $DB\TourneFirmware\command | @ = sz:$PS "Start-Process shutdown.exe -Verb RunAs -ArgumentList '/r','/fw','/t','0'"
+off:
+  $DB\TourneFirmware | -
+
+toggle restorePointMenu "Create restore point"
+on:
+  $DB\TourneRestorePoint | MUIVerb = sz:Create restore point
+  $DB\TourneRestorePoint | Icon = sz:rstrui.exe
+  $DB\TourneRestorePoint | HasLUAShield = sz:
+  $DB\TourneRestorePoint\command | @ = sz:$PS "Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoProfile','-Command','Checkpoint-Computer -Description (Get-Date -Format g) -RestorePointType MODIFY_SETTINGS; pause'"
+off:
+  $DB\TourneRestorePoint | -
+
+toggle sfcMenu "Check system files (sfc)"
+| Runs sfc /scannow, which repairs damaged Windows files.
+on:
+  $DB\TourneSfc | MUIVerb = sz:Check system files
+  $DB\TourneSfc | HasLUAShield = sz:
+  $DB\TourneSfc\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','sfc /scannow'"
+off:
+  $DB\TourneSfc | -
+
+toggle repairImage "Repair Windows image"
+| Runs DISM to check or repair the Windows image that sfc repairs from.
+on:
+  $DB\TourneDism | MUIVerb = sz:Repair Windows image
+  $DB\TourneDism | SubCommands = sz:
+  $DB\TourneDism | HasLUAShield = sz:
+  $DB\TourneDism\shell\1check | MUIVerb = sz:Check health
+  $DB\TourneDism\shell\1check\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','DISM /Online /Cleanup-Image /CheckHealth'"
+  $DB\TourneDism\shell\2scan | MUIVerb = sz:Scan health
+  $DB\TourneDism\shell\2scan\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','DISM /Online /Cleanup-Image /ScanHealth'"
+  $DB\TourneDism\shell\3repair | MUIVerb = sz:Repair
+  $DB\TourneDism\shell\3repair\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','DISM /Online /Cleanup-Image /RestoreHealth'"
+off:
+  $DB\TourneDism | -
+
+toggle compactOs "Compact OS"
+| Compresses or decompresses Windows' own files to save space.
+on:
+  $DB\TourneCompactOs | MUIVerb = sz:Compact OS
+  $DB\TourneCompactOs | SubCommands = sz:
+  $DB\TourneCompactOs | HasLUAShield = sz:
+  $DB\TourneCompactOs\shell\1query | MUIVerb = sz:Show state
+  $DB\TourneCompactOs\shell\1query\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','compact /compactos:query'"
+  $DB\TourneCompactOs\shell\2on | MUIVerb = sz:Compress Windows
+  $DB\TourneCompactOs\shell\2on\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','compact /compactos:always'"
+  $DB\TourneCompactOs\shell\3off | MUIVerb = sz:Decompress Windows
+  $DB\TourneCompactOs\shell\3off\command | @ = sz:$PS "Start-Process cmd.exe -Verb RunAs -ArgumentList '/k','compact /compactos:never'"
+off:
+  $DB\TourneCompactOs | -
+
+###################################################### right-click menu: new
+group menuNew "Right-click menu: New"
+| File types added to New in right-click menus.
+
+toggle newBat "Batch file (.bat)"
+on:
+  $CLS\.bat\ShellNew | NullFile = sz:
+off:
+  $CLS\.bat\ShellNew | -
+
+toggle newCmd "Command script (.cmd)"
+on:
+  $CLS\.cmd\ShellNew | NullFile = sz:
+off:
+  $CLS\.cmd\ShellNew | -
+
+toggle newPs1 "PowerShell script (.ps1)"
+on:
+  $CLS\.ps1\ShellNew | NullFile = sz:
+off:
+  $CLS\.ps1\ShellNew | -
+
+toggle newVbs "VBScript file (.vbs)"
+on:
+  $CLS\.vbs\ShellNew | NullFile = sz:
+off:
+  $CLS\.vbs\ShellNew | -
+
+toggle newReg "Registration entries (.reg)"
+on:
+  $CLS\.reg\ShellNew | NullFile = sz:
+off:
+  $CLS\.reg\ShellNew | -
+
+#################################################### lock screen and sign-in
+group signin "Lock screen and sign-in"
+| The lock screen picture and its fun facts are in Settings >
+| Personalization > Lock screen; sign-in options are in Settings > Accounts.
+
+toggle noLockScreen "Skip the lock screen"
+| Waking or starting the PC goes straight to the sign-in screen.
+on:
+  $WPOL\Personalization | NoLockScreen = dword:1
+off:
+  $WPOL\Personalization | NoLockScreen -
+
+text lockScreenImage "Lock screen picture for everyone" after=signout format=filePath
+| A picture shown on the lock and sign-in screens for every account. While
+| it's set, Settings can't change the lock screen picture. Empty: off.
+set:
+  $WPOL\Personalization | LockScreenImage = sz:{}
+unset:
+  $WPOL\Personalization | LockScreenImage -
+read: $WPOL\Personalization | LockScreenImage
+
+number slideshowDuration "Lock screen slideshow length (s)" default=0 min=0 max=86400
+| How long a lock screen slideshow plays before the screen turns off. 0: the
+| Windows default.
+set:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Lock Screen | SlideshowDuration = dword:{ms}
+unset:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Lock Screen | SlideshowDuration -
+read: HKCU\Software\Microsoft\Windows\CurrentVersion\Lock Screen | SlideshowDuration as=ms
+
+toggle hideLockedUser "Hide your name on the lock screen"
+on:
+  $PSYS | DontDisplayLockedUserId = dword:3
+off:
+  $PSYS | DontDisplayLockedUserId -
+
+toggle noLockNetworkIcon "No network icon on the lock screen"
+on:
+  $WPOL\System | DontDisplayNetworkSelectionUI = dword:1
+off:
+  $WPOL\System | DontDisplayNetworkSelectionUI -
+
+toggle noLogonBlur "Sign-in screen: sharp background"
+| The lock screen picture stays sharp behind the sign-in box instead of
+| blurred.
+on:
+  $WPOL\System | DisableAcrylicBackgroundOnLogon = dword:1
+off:
+  $WPOL\System | DisableAcrylicBackgroundOnLogon -
+
+toggle noLogonImage "Sign-in screen: plain colour background"
+| The accent colour instead of the lock screen picture. Wins over the one
+| above.
+on:
+  $WPOL\System | DisableLogonBackgroundImage = dword:1
+off:
+  $WPOL\System | DisableLogonBackgroundImage = dword:0
+
+toggle hideLastUser "Sign-in screen: don't show the last user"
+| Everyone types their user name.
+on:
+  $PSYS | dontdisplaylastusername = dword:1
+off:
+  $PSYS | dontdisplaylastusername = dword:0
+
+toggle noLogonPowerButton "Sign-in screen: no power button"
+on:
+  $PSYS | shutdownwithoutlogon = dword:0
+off:
+  $PSYS | shutdownwithoutlogon = dword:1
+
+toggle numLockAtLogon "Sign-in screen: Num Lock on"
+on:
+  HKU\.DEFAULT\Control Panel\Keyboard | InitialKeyboardIndicators = sz:2
+off:
+  HKU\.DEFAULT\Control Panel\Keyboard | InitialKeyboardIndicators = sz:2147483648
+
+toggle requireCtrlAltDel "Press Ctrl + Alt + Del to sign in"
+on:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon | DisableCAD = dword:0
+off:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon | DisableCAD = dword:1
+
+toggle autoLogonCheckbox "Bring back automatic sign-in in netplwiz"
+| Shows the "Users must enter a user name and password" box in netplwiz
+| again, which is how you set up signing in without a password.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device | DevicePasswordLessBuildVersion = dword:0
+off:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device | DevicePasswordLessBuildVersion = dword:2
+
+text signInTitle "Message before sign-in: title"
+| Shown to everyone before they sign in. Empty: no message.
+set:
+  $PSYS | legalnoticecaption = sz:{}
+unset:
+  $PSYS | legalnoticecaption = sz:
+read: $PSYS | legalnoticecaption
+
+text signInText "Message before sign-in: text"
+set:
+  $PSYS | legalnoticetext = sz:{}
+unset:
+  $PSYS | legalnoticetext = sz:
+read: $PSYS | legalnoticetext
+
+toggle verboseStatus "Detailed status messages"
+| Signing in and shutting down show what Windows is doing ("Applying user
+| settings...") instead of "Please wait".
+on:
+  $PSYS | VerboseStatus = dword:1
+off:
+  $PSYS | VerboseStatus -
+
+toggle noPasswordReveal "No password reveal button"
+| Removes the eye button that shows a password as you type it.
+on:
+  $WPOL\CredUI | DisablePasswordReveal = dword:1
+off:
+  $WPOL\CredUI | DisablePasswordReveal -
+
+############################################## startup, recovery and crashes
+group boot "Startup, recovery and crashes"
+
+toggle autoRepair "Automatic repair after failed starts" default=true after=restart
+| After two failed starts Windows tries to repair itself. The build can't
+| read this without admin, so it starts on, the Windows default.
+on:
+  admin bcdedit /set {current} recoveryenabled Yes
+off:
+  admin bcdedit /set {current} recoveryenabled No
+
+toggle legacyBootMenu "F8 boot menu" default=false after=restart
+| The Windows 7 style menu: press F8 while the PC starts for Safe Mode and
+| the other startup options. Starts off, the Windows default.
+on:
+  admin bcdedit /set {current} bootmenupolicy Legacy
+off:
+  admin bcdedit /set {current} bootmenupolicy Standard
+
+toggle bootLogo "Boot logo and spinner" default=true after=restart
+on:
+  admin bcdedit /deletevalue {current} quietboot
+off:
+  admin bcdedit /set {current} quietboot Yes
+
+number chkdskTimeout "Disk check countdown at startup (s)" default=8 min=0 max=259200
+| How long you have to skip a scheduled disk check.
+set:
+  HKLM\SYSTEM\CurrentControlSet\Control\Session Manager | AutoChkTimeout = dword:{}
+read: HKLM\SYSTEM\CurrentControlSet\Control\Session Manager | AutoChkTimeout
+
+toggle bsodNoSmiley "Stop screen without the sad face" after=restart
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\CrashControl | DisableEmoticon = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\CrashControl | DisableEmoticon -
+
+toggle bsodDetails "Stop screen shows technical details" after=restart
+| The blue screen lists the error's parameters, for tracking down a crash.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\CrashControl | DisplayParameters = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\CrashControl | DisplayParameters -
+
+toggle crashOnScroll "Crash on purpose with Ctrl + Scroll Lock" after=restart
+| For debugging: hold right Ctrl and press Scroll Lock twice to blue screen
+| and write a crash dump.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Services\kbdhid\Parameters | CrashOnCtrlScroll = dword:1
+  HKLM\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters | CrashOnCtrlScroll = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Services\kbdhid\Parameters | CrashOnCtrlScroll -
+  HKLM\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters | CrashOnCtrlScroll -
+detect:
+  HKLM\SYSTEM\CurrentControlSet\Services\kbdhid\Parameters | CrashOnCtrlScroll = dword:1
+
+toggle registryBackup "Automatic registry backup" after=restart
+| Windows stopped backing up the registry in 2018; this turns it back on (to
+| C:\Windows\System32\config\RegBack).
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Configuration Manager | EnablePeriodicBackup = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Configuration Manager | EnablePeriodicBackup -
+
+toggle restorePointAnyTime "Create restore points without the 24-hour limit"
+| Windows skips a new restore point when one was made in the last 24 hours.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore | SystemRestorePointCreationFrequency = dword:0
+off:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore | SystemRestorePointCreationFrequency -
+
+#################################################### updates and maintenance
+group updates "Updates and maintenance"
+| Pausing updates is in Settings > Windows Update.
+
+toggle noWindowsUpdate "No automatic Windows updates"
+| Stops automatic downloads, installs and restarts. You can still check for
+| updates by hand in Settings.
+on:
+  $WPOL\WindowsUpdate\AU | NoAutoUpdate = dword:1
+  $WPOL\WindowsUpdate\AU | AUOptions = dword:1
+  $WPOL\WindowsUpdate\AU | NoAutoRebootWithLoggedOnUsers = dword:1
+off:
+  $WPOL\WindowsUpdate\AU | NoAutoUpdate -
+  $WPOL\WindowsUpdate\AU | AUOptions -
+  $WPOL\WindowsUpdate\AU | NoAutoRebootWithLoggedOnUsers -
+detect:
+  $WPOL\WindowsUpdate\AU | NoAutoUpdate = dword:1
+
+toggle noDriverUpdates "No driver updates from Windows Update"
+| Windows Update stops replacing drivers, such as the graphics driver you
+| installed yourself.
+on:
+  $WPOL\WindowsUpdate | ExcludeWUDriversInQualityUpdate = dword:1
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching | SearchOrderConfig = dword:0
+off:
+  $WPOL\WindowsUpdate | ExcludeWUDriversInQualityUpdate -
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching | SearchOrderConfig = dword:1
+detect:
+  $WPOL\WindowsUpdate | ExcludeWUDriversInQualityUpdate = dword:1
+
+toggle noMrt "Don't install the Malicious Software Removal Tool"
+| Windows Update stops installing and running the monthly Malicious Software
+| Removal Tool.
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\MRT | DontOfferThroughWUAU = dword:1
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\MRT | DontOfferThroughWUAU -
+
+toggle noMaintenance "Turn off automatic maintenance"
+| Stops the cleanup, scans and updates Windows runs while the PC is idle.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance | MaintenanceDisabled = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance | MaintenanceDisabled -
+
+############################################# security, accounts and network
+group security "Security, accounts and network"
+| Windows Security has SmartScreen and blocking potentially unwanted apps.
+| Turning any of these off makes the PC less safe.
+
+choice uac "User Account Control" after=restart
+| Off lets every program run with full rights, silently. The slider in
+| Control Panel can't turn it fully off; this can.
+option enabled "On (Windows default)":
+  $PSYS | EnableLUA = dword:1
+option disabled "Off":
+  $PSYS | EnableLUA = dword:0
+detect-choice: $PSYS | EnableLUA
+  1 = enabled
+  0 = disabled
+default: enabled
+
+toggle adminApproval "UAC for the built-in Administrator" after=restart
+| Whether the built-in Administrator account also gets UAC prompts.
+on:
+  $PSYS | FilterAdministratorToken = dword:1
+off:
+  $PSYS | FilterAdministratorToken = dword:0
+
+toggle builtinAdmin "Built-in Administrator account"
+| Turns on the hidden account named Administrator.
+on:
+  admin net user Administrator /active:yes
+off:
+  admin net user Administrator /active:no
+detect:
+  localuser Administrator
+
+toggle noDefender "Turn off Microsoft Defender Antivirus" after=restart
+| Only works with Tamper Protection off (Windows Security > Virus & threat
+| protection > Manage settings).
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\Windows Defender | DisableAntiSpyware = dword:1
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\Windows Defender | DisableAntiSpyware -
+
+toggle noDownloadBlocking "Don't mark downloaded files"
+| New downloads skip the "this file came from another computer" warning.
+on:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments | SaveZoneInformation = dword:1
+off:
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments | SaveZoneInformation -
+
+toggle usbWriteProtect "Write-protect USB drives" after=restart
+| Nothing can be written to USB drives, only read.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\StorageDevicePolicies | WriteProtect = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\StorageDevicePolicies | WriteProtect -
+
+toggle msiSafeMode "Windows Installer works in Safe Mode"
+| Lets you uninstall programs while in Safe Mode.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Minimal\MSIServer | @ = sz:Service
+  HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Network\MSIServer | @ = sz:Service
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Minimal\MSIServer | -
+  HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Network\MSIServer | -
+detect:
+  HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Minimal\MSIServer | @ = sz:Service
+
+toggle adminShares "Administrative shares (C$, ADMIN$)" after=restart
+| The hidden C$ and ADMIN$ shares remote administration tools use.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters | AutoShareWks -
+off:
+  HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters | AutoShareWks = dword:0
+detect:
+  HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters | AutoShareWks -
+
+toggle linkedConnections "Mapped drives in programs run as administrator" after=restart
+| Mapped network drives also show in programs run as administrator.
+on:
+  $PSYS | EnableLinkedConnections = dword:1
+off:
+  $PSYS | EnableLinkedConnections -
+
+number rdpPort "Remote Desktop port" default=3389 min=1 max=65535 after=restart
+| Open the new port in the firewall too.
+set:
+  HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp | PortNumber = dword:{}
+read: HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp | PortNumber
+
+toggle ipRouting "IP routing (forwarding)" after=restart
+| Lets this PC pass network traffic between its connections, like a router.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters | IPEnableRouter = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters | IPEnableRouter = dword:0
+
+###################################################### power and performance
+group power "Power and performance"
+
+choice hibernation "Hibernation"
+option disabled "Off (also turns off fast startup)":
+  admin powercfg.exe /hibernate off
+option enabled "On":
+  admin powercfg.exe /hibernate on
+  admin powercfg.exe /hibernate /type full
+option reduced "Fast startup only (small file)":
+  admin powercfg.exe /hibernate on
+  admin powercfg.exe /hibernate /type reduced
+detect-choice: HKLM\SYSTEM\CurrentControlSet\Control\Power | HibernateEnabled
+  0 = disabled
+  1 = enabled
+default: enabled
+
+number hiberFileSize "Hibernation file size (% of RAM)" default=0 min=0 max=100 zero-off
+| 0: leave it as it is (with hibernation off there's no file). 40 to 100:
+| the file's size as a share of RAM, used when hibernation is on.
+set:
+  admin powercfg.exe /hibernate /size {}
+read: HKLM\SYSTEM\CurrentControlSet\Control\Power | HiberFileSizePercent
+
+toggle noPowerThrottling "Turn off power throttling" after=restart
+| Windows slows down programs in the background to save battery; this stops
+| it.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling | PowerThrottlingOff = dword:1
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling | PowerThrottlingOff -
+
+toggle wakePassword "Show \"Require a password on wakeup\" in Power Options"
+| Windows hides this choice in a power plan's advanced settings; this shows
+| it.
+on:
+  HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51 | Attributes = dword:2
+off:
+  HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51 | Attributes = dword:1
+
+number screenSaverGrace "Screen saver lock grace period (s)" default=5 min=0 max=3600
+| Seconds a password-protected screen saver runs before it locks.
+set:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon | ScreenSaverGracePeriod = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon | ScreenSaverGracePeriod -
+read: HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon | ScreenSaverGracePeriod
+
+number svchostSplitKB "Svchost split threshold (KB)" default=3670016 min=0 max=2147483647
+| Above this much RAM, each service gets its own svchost.exe. Set it above
+| your RAM (e.g. 33554432 for 32 GB) for fewer svchost processes.
+set:
+  HKLM\SYSTEM\CurrentControlSet\Control | SvcHostSplitThresholdInKB = dword:{}
+read: HKLM\SYSTEM\CurrentControlSet\Control | SvcHostSplitThresholdInKB
+
+############################################################## built-in apps
+group apps "Built-in apps"
+| Store app updates are in the Microsoft Store's own settings.
+
+toggle photoViewer "Windows Photo Viewer in \"Open with\""
+| Registers the old viewer for common image types; choose it once in Open
+| with or Default apps.
+on:
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .jpg = sz:PhotoViewer.FileAssoc.Tiff
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .jpeg = sz:PhotoViewer.FileAssoc.Tiff
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .png = sz:PhotoViewer.FileAssoc.Tiff
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .bmp = sz:PhotoViewer.FileAssoc.Tiff
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .gif = sz:PhotoViewer.FileAssoc.Tiff
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .ico = sz:PhotoViewer.FileAssoc.Tiff
+off:
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .jpg -
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .jpeg -
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .png -
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .bmp -
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .gif -
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .ico -
+detect:
+  HKLM\SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations | .png = sz:PhotoViewer.FileAssoc.Tiff
+
+toggle noInk "Turn off Windows Ink Workspace"
+| Removes the Windows Ink Workspace pen menu.
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace | AllowWindowsInkWorkspace = dword:0
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace | AllowWindowsInkWorkspace -
+
+toggle noOneDriveBackup "Don't move Desktop, Documents and Pictures to OneDrive"
+| Stops OneDrive offering to move these folders into OneDrive. Folders it
+| already moved stay where they are.
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\OneDrive | KFMBlockOptIn = dword:1
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\OneDrive | KFMBlockOptIn -
+
+############################################# control panel and settings app
+group panels "Control Panel and Settings app"
+| Classic pages added back to Control Panel, and pages taken out of
+| Settings.
+
+toggle netplwiz "Control Panel: User Accounts (classic)" after=explorer
+on:
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | @ = sz:User Accounts (classic)
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | InfoTip = sz:User Accounts (classic)
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | System.ControlPanel.Category = sz:1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01}\DefaultIcon | @ = expand:%SystemRoot%\System32\netplwiz.exe
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01}\Shell\Open\Command | @ = expand:%SystemRoot%\System32\netplwiz.exe
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | @ = sz:User Accounts (classic)
+off:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | -
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B01} | +
+
+toggle classicBackground "Control Panel: Desktop Background" after=explorer
+on:
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | @ = sz:Desktop Background
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | InfoTip = sz:Desktop Background
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | System.ControlPanel.Category = sz:1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02}\DefaultIcon | @ = expand:%SystemRoot%\System32\imageres.dll,-110
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02}\Shell\Open\Command | @ = expand:%SystemRoot%\explorer.exe shell:::{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} -Microsoft.Personalization\pageWallpaper
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | @ = sz:Desktop Background
+off:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | -
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B02} | +
+
+toggle classicColor "Control Panel: Color and Appearance" after=explorer
+on:
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | @ = sz:Color and Appearance
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | InfoTip = sz:Color and Appearance
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | System.ControlPanel.Category = sz:1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03}\DefaultIcon | @ = expand:%SystemRoot%\System32\themecpl.dll,-2
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03}\Shell\Open\Command | @ = expand:%SystemRoot%\explorer.exe shell:::{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} -Microsoft.Personalization\pageColorization
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | @ = sz:Color and Appearance
+off:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | -
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B03} | +
+
+toggle classicPersonalization "Control Panel: Personalization (classic)" after=explorer
+on:
+  $LMEXP\ControlPanel\NameSpace\{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} | @ = sz:Personalization
+off:
+  $LMEXP\ControlPanel\NameSpace\{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{ED834ED6-4B5A-4bfe-8F11-A626DCB6A921} | +
+
+toggle modernPersonalization "Control Panel: Personalization (Settings)" after=explorer
+| A link to Settings > Personalization in Control Panel.
+on:
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | @ = sz:Personalization
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | InfoTip = sz:Personalization
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | System.ControlPanel.Category = sz:1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04}\DefaultIcon | @ = expand:%SystemRoot%\System32\themecpl.dll,-1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04}\Shell\Open\Command | @ = expand:%SystemRoot%\explorer.exe ms-settings:personalization
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | @ = sz:Personalization
+off:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | -
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B04} | +
+
+toggle windowsUpdate "Control Panel: Windows Update" after=explorer
+| A link to Settings > Windows Update in Control Panel.
+on:
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | @ = sz:Windows Update
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | InfoTip = sz:Windows Update
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | System.ControlPanel.Category = sz:1
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05}\DefaultIcon | @ = expand:%SystemRoot%\System32\shell32.dll,-47
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05}\Shell\Open\Command | @ = expand:%SystemRoot%\explorer.exe ms-settings:windowsupdate
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | @ = sz:Windows Update
+off:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | -
+  $LMCLS\CLSID\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | -
+detect:
+  $LMEXP\ControlPanel\NameSpace\{5A1E7B1C-3E2F-4D0A-9C1B-7E0F2A6D4B05} | +
+
+toggle noOnlineTips "No online tips and videos in Settings"
+| Settings stops showing tips and videos it fetches from the internet.
+on:
+  $LMPEXP | AllowOnlineTips = dword:0
+off:
+  $LMPEXP | AllowOnlineTips -
+
+text settingsPages "Settings pages to hide or show"
+| "hide:" or "showonly:" followed by page names separated by ";", e.g.
+| hide:home;gaming-gamebar. Page names are the ms-settings: links without
+| the prefix. Empty: every page shows.
+set:
+  $LMPEXP | SettingsPageVisibility = sz:{}
+unset:
+  $LMPEXP | SettingsPageVisibility -
+read: $LMPEXP | SettingsPageVisibility
+
+toggle hideInsider "Hide the Windows Insider page"
+on:
+  HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility | HideInsiderPage = dword:1
+off:
+  HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility | HideInsiderPage -
+
+############################################################# microsoft edge
+group edge "Microsoft Edge"
+| Policies for Edge, which it shows as "managed by your organization".
+| Edge's own settings page has the sidebar, shopping, Microsoft Rewards,
+| sync, SmartScreen, startup boost and the new tab page. Edge picks these up
+| at its next start.
+
+toggle firstRun "No first run experience"
+on:
+  $EDGE | HideFirstRunExperience = dword:1
+off:
+  $EDGE | HideFirstRunExperience -
+
+toggle autoImport "No import from other browsers on first run"
+on:
+  $EDGE | AutoImportAtFirstRun = dword:4
+off:
+  $EDGE | AutoImportAtFirstRun -
+
+toggle defaultPrompts "No \"make Edge your default browser\" prompts"
+on:
+  $EDGE | DefaultBrowserSettingsCampaignEnabled = dword:0
+  $EDGE | ShowPDFDefaultRecommendationsEnabled = dword:0
+off:
+  $EDGE | DefaultBrowserSettingsCampaignEnabled -
+  $EDGE | ShowPDFDefaultRecommendationsEnabled -
+detect:
+  $EDGE | DefaultBrowserSettingsCampaignEnabled = dword:0
+
+toggle implicitSignIn "No automatic sign-in with the Windows account"
+on:
+  $EDGE | ImplicitSignInEnabled = dword:0
+off:
+  $EDGE | ImplicitSignInEnabled -
+
+toggle personalization "No personalisation of ads, news and the browser"
+on:
+  $EDGE | PersonalizationReportingEnabled = dword:0
+off:
+  $EDGE | PersonalizationReportingEnabled -
+
+toggle recommendations "No recommendations and desktop notifications"
+on:
+  $EDGE | ShowRecommendationsEnabled = dword:0
+off:
+  $EDGE | ShowRecommendationsEnabled -
+
+toggle follow "No Follow creators"
+on:
+  $EDGE | EdgeFollowEnabled = dword:0
+off:
+  $EDGE | EdgeFollowEnabled -
+
+toggle standaloneSidebar "No standalone sidebar"
+| The Copilot sidebar Edge can pin to the side of the screen, outside the
+| browser.
+on:
+  $EDGE | StandaloneHubsSidebarEnabled = dword:0
+off:
+  $EDGE | StandaloneHubsSidebarEnabled -
+
+toggle collections "No Collections"
+on:
+  $EDGE | EdgeCollectionsEnabled = dword:0
+off:
+  $EDGE | EdgeCollectionsEnabled -
+
+toggle splitScreen "No split screen"
+on:
+  $EDGE | SplitScreenEnabled = dword:0
+off:
+  $EDGE | SplitScreenEnabled -
+
+toggle feedback "No feedback prompts"
+on:
+  $EDGE | UserFeedbackAllowed = dword:0
+off:
+  $EDGE | UserFeedbackAllowed -
+
+toggle searchBar "No floating Bing search bar"
+on:
+  $EDGE | SearchbarAllowed = dword:0
+off:
+  $EDGE | SearchbarAllowed -
+
+toggle restoreDialog "No \"Restore pages\" prompt after a crash"
+on:
+  $EDGE | HideRestoreDialogEnabled = dword:1
+off:
+  $EDGE | HideRestoreDialogEnabled -
+
+toggle ntpTopSites "New tab: hide Microsoft's pinned sites"
+on:
+  $EDGE | NewTabPageHideDefaultTopSites = dword:1
+off:
+  $EDGE | NewTabPageHideDefaultTopSites -
+
+toggle desktopShortcut "No desktop shortcut after Edge updates"
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | CreateDesktopShortcutDefault = dword:0
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | CreateDesktopShortcutDefault -
+
+toggle noUpdates "No Edge updates"
+| Edge stops updating itself. Security fixes stop too.
+on:
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | UpdateDefault = dword:0
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | AutoUpdateCheckPeriodMinutes = dword:0
+off:
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | UpdateDefault -
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | AutoUpdateCheckPeriodMinutes -
+detect:
+  HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate | UpdateDefault = dword:0
+
+############################################################## about this pc
+group system "About this PC"
+| What Settings > System > About and winver show. Empty leaves each one as
+| it is.
+
+text oemManufacturer "Manufacturer"
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Manufacturer = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Manufacturer -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Manufacturer
+
+text oemModel "Model"
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Model = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Model -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Model
+
+text oemSupportHours "Support hours"
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportHours = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportHours -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportHours
+
+text oemSupportPhone "Support phone"
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportPhone = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportPhone -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportPhone
+
+text oemSupportUrl "Support website"
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportURL = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportURL -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | SupportURL
+
+text oemLogo "Logo (.bmp, 120 x 120)" format=filePath
+set:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Logo = sz:{}
+unset:
+  HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Logo -
+read: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation | Logo
+
+text registeredOwner "Registered owner" keep-empty private
+| Shown in winver. Empty: left as it is.
+set:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion | RegisteredOwner = sz:{}
+
+text registeredOrganization "Registered organisation" keep-empty private
+| Empty: left as it is.
+set:
+  HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion | RegisteredOrganization = sz:{}

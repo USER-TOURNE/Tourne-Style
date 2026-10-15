@@ -1,0 +1,206 @@
+id = "tourne/media-downloader"
+name = "Media Downloader"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Media Downloader)"
+license = "MIT"
+dependencies = ["yt-dlp"]
+tags = ["download", "video", "music"]
+icon = "download"
+description = "Download video or sound from a web link with yt-dlp: format, size, SponsorBlock, cover art and tags, a speed limit, a queue with progress."
+
+[[setting]]
+key = "ytdlp"
+type = "string"
+label = "yt-dlp"
+description = "yt-dlp's name on the PATH, or its full path (winget install yt-dlp.yt-dlp). Joining video with sound and cover art also need ffmpeg"
+default = "yt-dlp"
+
+[[setting]]
+key = "videoFolder"
+type = "folder"
+label = "Videos go to"
+default = "~/Videos"
+
+[[setting]]
+key = "audioFolder"
+type = "folder"
+label = "Sound goes to"
+default = "~/Music"
+
+[[setting]]
+key = "videoFormat"
+type = "select"
+label = "Video file type"
+default = "mp4"
+
+  [[setting.options]]
+  value = "mp4"
+  label = "MP4 (plays everywhere)"
+
+  [[setting.options]]
+  value = "mkv"
+  label = "MKV"
+
+  [[setting.options]]
+  value = "webm"
+  label = "WebM"
+
+[[setting]]
+key = "videoRes"
+type = "select"
+label = "Largest video size"
+default = "1080p"
+
+  [[setting.options]]
+  value = "best"
+  label = "Best there is"
+
+  [[setting.options]]
+  value = "2160p"
+  label = "2160p (4K)"
+
+  [[setting.options]]
+  value = "1440p"
+  label = "1440p"
+
+  [[setting.options]]
+  value = "1080p"
+  label = "1080p"
+
+  [[setting.options]]
+  value = "720p"
+  label = "720p"
+
+  [[setting.options]]
+  value = "480p"
+  label = "480p"
+
+[[setting]]
+key = "audioFormat"
+type = "select"
+label = "Sound file type"
+default = "mp3"
+
+  [[setting.options]]
+  value = "mp3"
+  label = "MP3 (plays everywhere)"
+
+  [[setting.options]]
+  value = "m4a"
+  label = "M4A"
+
+  [[setting.options]]
+  value = "opus"
+  label = "Opus (small)"
+
+  [[setting.options]]
+  value = "flac"
+  label = "FLAC (lossless)"
+
+  [[setting.options]]
+  value = "wav"
+  label = "WAV"
+
+[[setting]]
+key = "audioQuality"
+type = "select"
+label = "Sound quality"
+default = "best"
+
+  [[setting.options]]
+  value = "best"
+  label = "Best there is"
+
+  [[setting.options]]
+  value = "320k"
+  label = "320 kbps"
+
+  [[setting.options]]
+  value = "192k"
+  label = "192 kbps"
+
+  [[setting.options]]
+  value = "128k"
+  label = "128 kbps"
+
+[[setting]]
+key = "playlists"
+type = "bool"
+label = "Whole playlists"
+description = "Off: a link to a video in a playlist gets only that video"
+default = false
+
+[[setting]]
+key = "sponsorBlock"
+type = "bool"
+label = "Cut sponsor segments (SponsorBlock)"
+default = true
+
+[[setting]]
+key = "embedThumbnail"
+type = "bool"
+label = "Add the cover art"
+default = true
+
+[[setting]]
+key = "cropThumbnail"
+type = "bool"
+label = "Square cover art"
+description = "Crops the cover to a square, like an album"
+default = false
+
+[[setting]]
+key = "embedMetadata"
+type = "bool"
+label = "Add title, artist and date"
+default = true
+
+[[setting]]
+key = "embedSubs"
+type = "bool"
+label = "Add subtitles (video)"
+default = false
+
+[[setting]]
+key = "maxRate"
+type = "int"
+label = "Speed limit (KB/s)"
+description = "0: no limit"
+default = 0
+
+[[setting]]
+key = "parallel"
+type = "select"
+label = "At once"
+default = "2"
+
+  [[setting.options]]
+  value = "1"
+  label = "1"
+
+  [[setting.options]]
+  value = "2"
+  label = "2"
+
+  [[setting.options]]
+  value = "3"
+  label = "3"
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 560
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the downloader. Empty: none"
+  default = ""

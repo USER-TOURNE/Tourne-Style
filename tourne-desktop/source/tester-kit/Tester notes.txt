@@ -1,0 +1,41 @@
+Tourne'Suite tester notes
+=========================
+
+About your PC
+-------------
+Windows version (Win+R, winver):
+Windhawk version:
+StartAllBack installed? (yes/no, version):
+Other Windhawk mods that are on:
+Screens (how many, resolutions, scaling %):
+Light or dark mode, and your visual style if it isn't Windows' own:
+
+Installing
+----------
+Did each step in START HERE.txt work? Anything unclear?
+What did "3. Fill in my settings" report? (copy its window text if you can)
+
+First look
+----------
+What changed that you noticed straight away?
+Did anything look broken, out of place or hard to read?
+
+Part by part (works / problems / ideas)
+---------------------------------------
+Tray icons and flyouts:
+Windows Security scan:
+Clock and calendar:
+Colour schemes:
+Icon Redirect:
+Tweaks:
+Explorer:
+Taskbar and desktops pager (if tried):
+Alt+Tab switcher (if tried):
+
+Stability and speed
+-------------------
+Any Explorer crashes or restarts? When, and what were you doing?
+Anything slow, laggy or flickering?
+
+Anything else
+-------------

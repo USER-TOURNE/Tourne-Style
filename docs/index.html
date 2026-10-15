@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tourne'Table Styles</title>
+<meta name="description" content="Community styles for Tourne'Table, the Windows desktop audio visualizer. Copy a code, paste it in the Style Editor, keep it or not.">
+<style>
+  :root {
+    --ground: #121c21; --panel: #172429; --raised: #1e3036; --edge: #2c444b;
+    --text: #d3d6d8; --dim: #8d989c; --coral: #e57474; --green: #64aa89; --teal: #5f9993; --peach: #f7cca1;
+    --mono: ui-monospace, "Cascadia Mono", "Consolas", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--text); font: 15px/1.55 system-ui, "Segoe UI", sans-serif; }
+  a { color: var(--green); }
+  header, main, footer { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 40px; padding-bottom: 8px; }
+  .mark { font-family: var(--mono); color: var(--coral); letter-spacing: .08em; font-size: 13px; }
+  h1 { font-size: 30px; margin: 6px 0 8px; font-weight: 650; }
+  h1 span { color: var(--green); }
+  .lede { color: var(--dim); max-width: 720px; margin: 0 0 18px; }
+  .steps { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px; padding: 0; list-style: none; }
+  .steps li { background: var(--panel); border: 1px solid var(--edge); padding: 8px 12px; font-size: 13.5px; }
+  .steps b { color: var(--peach); font-family: var(--mono); margin-right: 6px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  input[type=search] { flex: 1 1 240px; background: var(--panel); border: 1px solid var(--edge); color: var(--text); padding: 9px 12px; font: inherit; }
+  .btn { background: var(--raised); color: var(--text); border: 1px solid var(--edge); padding: 8px 12px; font: inherit; font-size: 13.5px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--green); }
+  .btn.primary { background: var(--green); color: #0d1518; border-color: var(--green); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--edge); display: flex; flex-direction: column; min-width: 0; }
+  canvas { width: 100%; height: 150px; display: block; background: #0c1417; border-bottom: 1px solid var(--edge); }
+  .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .name { font-weight: 650; font-size: 16px; }
+  .by { color: var(--dim); font-size: 13px; }
+  .about { font-size: 13.5px; flex: 1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--mono); font-size: 11.5px; color: var(--dim); }
+  .tags span { border: 1px solid var(--edge); padding: 1px 6px; }
+  .swatches { display: flex; gap: 4px; }
+  .swatches i { width: 14px; height: 14px; border: 1px solid var(--edge); display: inline-block; }
+  .actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .note { color: var(--dim); font-size: 13px; margin: 18px 0; }
+  .empty { padding: 40px; text-align: center; color: var(--dim); border: 1px dashed var(--edge); }
+  footer { color: var(--dim); font-size: 13px; padding-top: 30px; padding-bottom: 40px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--green); color: #0d1518; padding: 8px 14px; font-weight: 600; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { canvas { animation: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">// TOURNE'TABLE</div>
+  <h1>Community <span>styles</span></h1>
+  <p class="lede">Styles people made in Tourne'Table, the desktop audio visualizer. Try one in seconds: it plays at once, and you choose Keep or No. Your audio device, hotkeys, paths and hardware are never part of a style.</p>
+  <ol class="steps">
+    <li><b>1</b>Copy a style's code</li>
+    <li><b>2</b>Right-click the visualizer, My Styles, Style Editor</li>
+    <li><b>3</b>Paste code, then Keep or No</li>
+  </ol>
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search by name, author or shape" aria-label="Search styles">
+    <a class="btn primary" id="share" href="#">Share yours</a>
+    <a class="btn" id="get" href="#">Get Tourne'Table</a>
+  </div>
+</header>
+<main>
+  <div class="grid" id="grid"></div>
+  <p class="note">Previews are drawn from each style's shape and colours with made-up audio, so they're a hint, not a recording. The same list is in Tourne'Table's own Community button.</p>
+</main>
+<footer>Part of <a id="repo" href="#">Tourne</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares.</footer>
+<div class="toast" id="toast">Copied. Paste it in the Style Editor.</div>
+<script>
+const REPO = 'USER-TOURNE/Tourne';
+// (?local reads the styles beside this page in a checkout, for previewing before a push.)
+const RAW = new URLSearchParams(location.search).has('local') ? '../community/setups/'
+  : `https://raw.githubusercontent.com/${REPO}/main/community/setups/`;
+document.getElementById('repo').href = `https://github.com/${REPO}`;
+document.getElementById('get').href = `https://github.com/${REPO}/tree/main/windhawk-mods/tourne-table`;
+document.getElementById('share').href = `https://github.com/${REPO}/issues/new?template=share-a-style.md&title=${encodeURIComponent('Setup: ')}`;
+
+function parse(text) {
+  const s = { name: '', author: '', parts: [], values: {} };
+  let started = false;
+  for (let line of text.split(/\r?\n/)) {
+    line = line.trim();
+    if (!started) { started = line.startsWith("Tourne'Table setup"); continue; }
+    if (!line || line[0] === '#' || line.startsWith('```')) continue;
+    const eq = line.indexOf('=');
+    if (eq <= 0) continue;
+    const k = line.slice(0, eq), v = line.slice(eq + 1);
+    if (k === 'name') s.name = v; else if (k === 'author') s.author = v;
+    else if (k === 'parts') s.parts = v.split(',').map(x => x.trim()).filter(Boolean);
+    else s.values[k] = v;
+  }
+  return started ? s : null;
+}
+
+// Tourne's colours: #RRGGBB, #AARRGGBB (alpha first), rgba(r, g, b, a).
+function colour(v, fallback) {
+  if (!v) return fallback;
+  v = v.trim();
+  let m = v.match(/^#([0-9a-f]{8})$/i);
+  if (m) { const n = m[1]; return `rgba(${parseInt(n.slice(2,4),16)},${parseInt(n.slice(4,6),16)},${parseInt(n.slice(6,8),16)},${(parseInt(n.slice(0,2),16)/255).toFixed(2)})`; }
+  if (/^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(v)) return v;
+  if (/^rgba?\(/i.test(v)) return v;
+  return fallback;
+}
+const opaque = c => c.replace(/rgba\(([^,]+),([^,]+),([^,]+),[^)]+\)/, 'rgb($1,$2,$3)');
+
+function look(s) {
+  const V = s.values, q = k => V['quick.' + k];
+  const mode = q('colorMode') || V['appearance.colorMode'] || 'solid';
+  let c1 = colour(q('color') || V['appearance.color'], '#ffffff');
+  let g1 = colour(q('grad1') || V['appearance.gradientColor1'], '#1ed760');
+  let g2 = colour(q('grad2') || V['appearance.gradientColor2'], '#00b4ff');
+  if (mode === 'tourne') { g1 = '#5f9993'; g2 = '#e57474'; }
+  if (mode === 'rainbow') { g1 = 'hsl(0,80%,60%)'; g2 = 'hsl(220,80%,60%)'; }
+  const grad = ['gradient', 'reactive_gradient', 'dynamic_album', 'tourne', 'rainbow'].includes(mode);
+  return {
+    shape: q('shape') || V['appearance.shape'] || 'stereo',
+    grad, c1, g1, g2, mode,
+    bars: Math.max(8, Math.min(96, parseInt(V['appearance.barCount'] || '64', 10) || 64)),
+    gap: parseFloat(q('barGap') || V['appearance.barGap'] || '2') || 2,
+    reflect: (parseFloat(q('reflection') || V['appearance.reflection'] || '0') || 0) / 100,
+    glow: (parseFloat(q('fxGlow') || V['appearance.fxGlow'] || '0') || 0) / 100,
+    peak: (q('peakHold') || V['appearance.peakHoldEnabled']) === '1',
+    peakColour: colour(V['appearance.peakHoldColor'], '#ffffff'),
+    panel: V['background.enabled'] === '1' ? colour(V['background.color'], null) : null,
+    edge: V['background.enabled'] === '1' && V['background.borderSize'] !== '0' ? colour(V['background.borderColor'], null) : null,
+  };
+}
+
+function swatchesOf(L) { return L.grad ? [L.g1, L.g2] : [L.c1]; }
+
+const cards = [];
+function draw(card, t) {
+  const { cv, L } = card, ctx = cv.getContext('2d');
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const pad = 14;
+  if (L.panel) { ctx.fillStyle = L.panel; ctx.fillRect(pad - 6, pad - 6, W - 2 * pad + 12, H - 2 * pad + 12); }
+  if (L.edge) { ctx.strokeStyle = L.edge; ctx.lineWidth = 1; ctx.strokeRect(pad - 5.5, pad - 5.5, W - 2 * pad + 11, H - 2 * pad + 11); }
+  const n = L.bars, base = L.reflect > 0 ? H * 0.68 : H - pad, top = pad;
+  const amp = i => { const x = i / n; return Math.max(0.04, (0.55 + 0.45 * Math.sin(t * 2.1 + x * 9) * Math.sin(t * 1.3 + x * 3.7)) * (1 - x * 0.55) * (0.6 + 0.4 * Math.abs(Math.sin(t * 3 + i)))); };
+  const fill = (y0, y1) => { if (!L.grad) return L.c1; const g = ctx.createLinearGradient(0, y1, 0, y0); g.addColorStop(0, L.g1); g.addColorStop(1, L.g2); return g; };
+  ctx.shadowBlur = L.glow * 18; ctx.shadowColor = L.grad ? opaque(L.g2) : opaque(L.c1);
+  const shape = L.shape, w = (W - 2 * pad) / n;
+  if (['oscilloscope', 'wave', 'line', 'goniometer', 'mountain', 'bloom'].includes(shape)) {
+    ctx.beginPath();
+    for (let i = 0; i <= 160; i++) {
+      const x = pad + (W - 2 * pad) * i / 160;
+      const y = shape === 'oscilloscope' || shape === 'goniometer'
+        ? (top + base) / 2 + Math.sin(i * 0.31 + t * 6) * Math.sin(i * 0.05 + t) * (base - top) * 0.42
+        : base - amp(Math.floor(i * n / 161)) * (base - top);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    if (shape === 'line' || shape === 'mountain' || shape === 'bloom') { ctx.lineTo(W - pad, base); ctx.lineTo(pad, base); ctx.closePath(); ctx.globalAlpha = .55; ctx.fillStyle = fill(top, base); ctx.fill(); ctx.globalAlpha = 1; }
+    ctx.lineWidth = 2; ctx.strokeStyle = L.grad ? L.g2 : L.c1; ctx.stroke();
+  } else if (shape === 'radial') {
+    const cx = W / 2, cy = H / 2, r0 = H * 0.18;
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2, r1 = r0 + amp(i) * H * 0.3;
+      ctx.strokeStyle = L.grad ? (i % 2 ? L.g1 : L.g2) : L.c1; ctx.lineWidth = Math.max(1, w * 0.6);
+      ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); ctx.stroke();
+    }
+  } else if (shape === 'terminal' || shape === 'led' || shape === 'dots') {
+    const rows = 10;
+    for (let i = 0; i < n; i += 1) {
+      const lit = Math.round(amp(i) * rows);
+      for (let r = 0; r < lit; r++) {
+        ctx.fillStyle = shape === 'led' ? (r > rows * 0.8 ? '#e5484d' : r > rows * 0.6 ? '#f2b84b' : '#4cc38a') : (L.grad ? (r > rows / 2 ? L.g2 : L.g1) : L.c1);
+        const y = base - (r + 1) * (base - top) / rows;
+        if (shape === 'dots') { ctx.beginPath(); ctx.arc(pad + i * w + w / 2, y + 4, Math.max(1, w / 2 - 1), 0, 7); ctx.fill(); }
+        else ctx.fillRect(pad + i * w, y + 1, Math.max(1, w - Math.min(L.gap, w / 2)), (base - top) / rows - 2);
+      }
+    }
+  } else {
+    const mirror = shape === 'mirror' || shape === 'stereo_field' || shape === 'breathe';
+    const mid = mirror ? (top + base) / 2 : base;
+    for (let i = 0; i < n; i++) {
+      const h = amp(i) * (mirror ? (base - top) / 2 : (base - top));
+      const x = pad + i * w, bw = Math.max(1, w - Math.min(L.gap, w * 0.6));
+      ctx.fillStyle = fill(mid - h, mid);
+      ctx.fillRect(x, mid - h, bw, mirror ? h * 2 : h);
+      if (L.peak) { ctx.fillStyle = L.peakColour; ctx.fillRect(x, mid - h - 4 - 3 * Math.abs(Math.sin(t + i)), bw, 2); }
+    }
+  }
+  ctx.shadowBlur = 0;
+  if (L.reflect > 0) {
+    ctx.save(); ctx.globalAlpha = L.reflect * 0.45; ctx.translate(0, base * 2); ctx.scale(1, -1);
+    ctx.drawImage(cv, 0, 0, cv.width, base * dpr, 0, 0, W, base); ctx.restore();
+    const fade = ctx.createLinearGradient(0, base, 0, H); fade.addColorStop(0, 'rgba(12,20,23,0)'); fade.addColorStop(1, 'rgba(12,20,23,1)');
+    ctx.fillStyle = fade; ctx.fillRect(0, base, W, H - base);
+  }
+}
+
+function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1600); }
+const b64 = text => btoa(String.fromCharCode(...new TextEncoder().encode(text)));
+
+function card(entry, text) {
+  const s = parse(text); if (!s) return null;
+  const L = look(s);
+  const el = document.createElement('article'); el.className = 'card';
+  el.dataset.search = `${entry.name} ${entry.author} ${entry.about} ${L.shape}`.toLowerCase();
+  const cv = document.createElement('canvas'); el.appendChild(cv);
+  const body = document.createElement('div'); body.className = 'body';
+  const add = (tag, cls, txt) => { const e = document.createElement(tag); e.className = cls; if (txt != null) e.textContent = txt; body.appendChild(e); return e; };
+  add('div', 'name', entry.name);
+  add('div', 'by', 'by ' + entry.author);
+  add('div', 'about', entry.about);
+  const tags = add('div', 'tags');
+  [L.shape, ...(s.parts.length ? s.parts : ['look'])].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
+  const sw = add('div', 'swatches');
+  swatchesOf(L).forEach(c => { const i = document.createElement('i'); i.style.background = c; sw.appendChild(i); });
+  const actions = add('div', 'actions');
+  const copy = document.createElement('button'); copy.className = 'btn primary'; copy.textContent = 'Copy code';
+  copy.onclick = async () => { try { await navigator.clipboard.writeText('TT2T:' + b64(text)); toast('Copied. Paste it in the Style Editor.'); } catch { toast('Copy failed: select the file text instead.'); } };
+  const dl = document.createElement('a'); dl.className = 'btn'; dl.textContent = 'Download .ttstyle';
+  dl.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); dl.download = entry.file;
+  const src = document.createElement('a'); src.className = 'btn'; src.textContent = 'View'; src.href = `https://github.com/${REPO}/blob/main/community/setups/${entry.file}`;
+  actions.append(copy, dl, src);
+  el.appendChild(body);
+  cards.push({ el, cv, L });
+  return el;
+}
+
+async function load() {
+  const grid = document.getElementById('grid');
+  let index;
+  try { index = await (await fetch(RAW + 'index.txt', { cache: 'no-store' })).text(); }
+  catch { grid.innerHTML = '<div class="empty">Couldn\'t reach the style list. Try again in a moment.</div>'; return; }
+  const entries = index.split(/\r?\n/).filter(l => l && !l.startsWith('#')).map(l => { const f = l.split('|'); return { file: f[0], name: f[1], author: f[2], about: f.slice(3).join('|') }; })
+    .filter(e => /^[A-Za-z0-9_.-]+\.ttstyle$/.test(e.file));
+  if (!entries.length) { grid.innerHTML = '<div class="empty">No styles yet: be the first to share one.</div>'; return; }
+  const texts = await Promise.all(entries.map(e => fetch(RAW + e.file).then(r => r.ok ? r.text() : '').catch(() => '')));
+  entries.forEach((e, i) => { const c = card(e, texts[i]); if (c) grid.appendChild(c); });
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const frame = ts => { cards.forEach(c => { if (c.el.style.display !== 'none') draw(c, still ? 1.7 : ts / 1000); }); if (!still) requestAnimationFrame(frame); };
+  requestAnimationFrame(frame);
+}
+document.getElementById('q').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  cards.forEach(c => c.el.style.display = !q || c.el.dataset.search.includes(q) ? '' : 'none');
+});
+load();
+</script>
+</body>
+</html>

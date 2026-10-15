@@ -1,0 +1,643 @@
+{
+  "plugins": [
+    {
+      "id": "tourne/notes",
+      "name": "Tourne Notes",
+      "version": "2.0.0",
+      "api": 9,
+      "author": "Tourne (from Noctalia's Notes)",
+      "license": "MIT",
+      "description": "Markdown notes in a side panel: pictures pasted or dropped in, a preview with tick-off checklists, search, and a trash you can restore from.",
+      "tags": ["productivity"],
+      "icon": "notes",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "files"},
+        {"kind": "clipboardRead"},
+        {"kind": "notify"},
+        {"kind": "open"}
+      ]
+    },
+    {
+      "id": "tourne/wallpaper-carousel",
+      "name": "Wallpaper Carousel",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from motor-dev's Wallpaper Carousel)",
+      "license": "MIT",
+      "description": "Browse your wallpaper folder as a carousel and set one with a click.",
+      "tags": ["wallpaper", "theming"],
+      "icon": "carousel-horizontal",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "wallpaper"},
+        {"kind": "files"},
+        {"kind": "open"}
+      ]
+    },
+    {
+      "id": "tourne/process-list",
+      "name": "Process List",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from Mithgroth's Process List)",
+      "license": "MIT",
+      "description": "Live processes with CPU and memory: grouped by program, sorted any way, apps or Windows' own, and an End button.",
+      "tags": ["system", "monitor"],
+      "icon": "list-details",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "systemInfo"},
+        {"kind": "processes"}
+      ]
+    },
+    {
+      "id": "tourne/dgpu-monitor",
+      "name": "dGPU Sleep Monitor",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from xantrk's dGPU Sleep Monitor)",
+      "license": "MIT",
+      "description": "Shows whether the graphics card is awake (D0) or asleep (D3), and the battery's draw in watts.",
+      "tags": ["system", "laptop", "gpu"],
+      "icon": "cpu",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "systemInfo"}
+      ]
+    },
+    {
+      "id": "tourne/power-modes",
+      "name": "Power Modes",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from psyreactor's Alienware Command Center)",
+      "license": "MIT",
+      "description": "Windows' power mode, power plan and CPU turbo from the bar, the way AWCC switches thermal modes.",
+      "tags": ["system", "power", "laptop"],
+      "icon": "bolt",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "power"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/screen-recorder",
+      "name": "Screen Recorder",
+      "version": "1.1.0",
+      "api": 9,
+      "author": "Tourne (from YoungJurry's Screen Recorder YS)",
+      "license": "MIT",
+      "description": "Record a screen with ffmpeg from the bar: frame rate, quality, size, encoder (CPU or NVIDIA, AMD, Intel), cursor, the PC's sound, a microphone, a countdown.",
+      "tags": ["recording", "video"],
+      "icon": "video",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "ffmpeg"},
+        {"kind": "files"},
+        {"kind": "notify"},
+        {"kind": "open"},
+        {"kind": "systemSound"}
+      ]
+    },
+    {
+      "id": "tourne/timer",
+      "name": "Timer",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Timer)",
+      "license": "MIT",
+      "description": "A countdown on the bar: preset minutes, your own, pause, a sound and a notification at the end, and an optional lock, sleep or shut down.",
+      "tags": ["productivity", "time"],
+      "icon": "clock-hour-4",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "sound"},
+        {"kind": "notify"},
+        {"kind": "power"}
+      ]
+    },
+    {
+      "id": "tourne/hydrate",
+      "name": "Hydrate",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Hydrate)",
+      "license": "MIT",
+      "description": "A water reminder on the bar: it changes when it's time to drink, right click logs a cup, and the panel shows today's progress.",
+      "tags": ["health", "productivity"],
+      "icon": "glass-full",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "files"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/caffeine",
+      "name": "Caffeine",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (after the DMS Caffeine plugins)",
+      "license": "MIT",
+      "description": "Keeps the PC (and the screen) awake for 5 minutes up to as long as you like. Click the cup to start or stop; right-click to pick how long.",
+      "tags": ["power", "utility"],
+      "icon": "coffee",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "power"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/power-menu",
+      "name": "Power Menu",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (after JDKamalakar's Fullscreen Power Menu)",
+      "license": "MIT",
+      "description": "A full-screen power menu over a blurred, dimmed desktop: big buttons for lock, sleep, hibernate, sign out, restart and shut down, with the keyboard or the mouse.",
+      "tags": ["power", "system"],
+      "icon": "power",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "power"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/control-center",
+      "name": "Control Center",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne",
+      "license": "MIT",
+      "description": "Every plugin's bar button as a tile in one panel: click a tile as you'd click its button, right-click for its own menu.",
+      "tags": ["utility", "bar"],
+      "icon": "layout-grid",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/alienware-command-center",
+      "name": "Alienware Command Center",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (after psyreactor's Alienware Command Center)",
+      "license": "MIT",
+      "description": "Thermal modes, G-Mode and fan boosts of an Alienware PC through its own firmware interface; set the administrator helper up once and it never asks again.",
+      "tags": ["alienware", "power", "fans", "system"],
+      "icon": "alien",
+      "entries": ["service", "panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "powershell, schtasks, alienfx-cli"},
+        {"kind": "power"},
+        {"kind": "files"},
+        {"kind": "notify"},
+        {"kind": "processes"}
+      ]
+    },
+    {
+      "id": "tourne/gmk87",
+      "name": "GMK87",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne",
+      "license": "MIT",
+      "description": "Your Zuoya GMK87: backlight effect, colour, brightness and speed (also through its 2.4 GHz dongle), and with its cable in, the screen's pictures and GIFs, its clock and its own settings.",
+      "tags": ["keyboard", "lighting", "device"],
+      "icon": "keyboard",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "powershell"},
+        {"kind": "files"}
+      ]
+    },
+    {
+      "id": "tourne/take-a-break",
+      "name": "Take a Break",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Take a Break)",
+      "license": "MIT",
+      "description": "Short eye breaks and longer stretch breaks on a cycle, a heads-up first, a break screen with a countdown, and no breaks over games or full-screen video.",
+      "tags": ["health", "productivity"],
+      "icon": "eye",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/breathing",
+      "name": "Breathing",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Breathing)",
+      "license": "MIT",
+      "description": "Guided breathing in a panel: six techniques, a circle that grows and shrinks with each phase, and a chime between phases.",
+      "tags": ["health", "focus"],
+      "icon": "wind",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "sound"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/kaomoji",
+      "name": "Kaomoji Picker",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Kaomoji Picker)",
+      "license": "MIT",
+      "description": "Search about 3,200 kaomoji by mood or tag and copy one with a click.",
+      "tags": ["productivity", "text"],
+      "icon": "mood-happy",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "clipboardWrite"},
+        {"kind": "files"}
+      ]
+    },
+    {
+      "id": "tourne/keystrokes",
+      "name": "Keystrokes",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from Tz-slayer's Keystrokes and hthienloc's Screenkey)",
+      "license": "MIT",
+      "description": "A bar button that shows or hides the keycaps on screen (Studio > Keystrokes): the keys you press and the clicks you make, for screencasts and demos. Right click: its settings.",
+      "tags": ["keyboard", "screencast", "productivity"],
+      "icon": "keyboard",
+      "entries": ["widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/typing-sounds",
+      "name": "Typing Sounds",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Typing Sounds)",
+      "license": "MIT",
+      "description": "A click for every key you press, like a mechanical keyboard or a typewriter. Made by the plugin, nothing downloaded. Only that a key went down reaches it, never which key.",
+      "tags": ["sound", "keyboard", "fun"],
+      "icon": "keyboard",
+      "entries": ["widget"],
+      "bundled": true,
+      "needs": [{"kind": "sound"}, {"kind": "files"}]
+    },
+    {
+      "id": "tourne/test-notifications",
+      "name": "Test Notifications",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne",
+      "license": "MIT",
+      "description": "A bar button that sends test notifications: real ones, shown as Tourne's pop-ups and kept in the notification centre. Right-click it for how many, how urgent, the words, and your phone too through an ntfy topic.",
+      "tags": ["notifications", "testing", "utility"],
+      "icon": "bell-ringing",
+      "entries": ["widget", "panel"],
+      "bundled": true,
+      "needs": [{"kind": "program", "label": "powershell"}, {"kind": "files"}, {"kind": "notify"}]
+    },
+    {
+      "id": "tourne/bongo-cat",
+      "name": "Bongo Cat",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Bongo Cat)",
+      "license": "MIT",
+      "description": "A cat on the bar that drums its paws as you type and click. Only that a key went down reaches it, never which key.",
+      "tags": ["fun", "keyboard", "bar"],
+      "icon": "cat",
+      "entries": ["widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/activate-watermark",
+      "name": "Activate Watermark",
+      "version": "1.1.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Activate Linux)",
+      "license": "MIT",
+      "description": "The \"Activate Windows\" watermark on your desktop, with your own words, faint in the corner. Drawn once; nothing runs after.",
+      "tags": ["fun", "desktop"],
+      "icon": "brand-windows",
+      "entries": ["desktop_widget", "widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/desktop-widget-toggle",
+      "name": "Desktop Widget Toggle",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Desktop Widget Toggle)",
+      "license": "MIT",
+      "description": "A bar button that hides every plugin's desktop widgets and shows them again.",
+      "tags": ["desktop", "bar", "utility"],
+      "icon": "layout-dashboard",
+      "entries": ["widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/display-profiles",
+      "name": "Display Profiles",
+      "version": "1.1.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Niri Display Settings)",
+      "license": "MIT",
+      "description": "Screens' resolution and refresh rate from the launcher (dp): each screen's modes, and profiles that set every screen at once.",
+      "tags": ["display", "launcher", "utility"],
+      "icon": "device-desktop",
+      "entries": ["launcher_provider", "widget"],
+      "bundled": true,
+      "needs": [{"kind": "files"}]
+    },
+    {
+      "id": "tourne/game-launcher",
+      "name": "Game Launcher",
+      "version": "1.1.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Lutris Launcher)",
+      "license": "MIT",
+      "description": "Your Steam and Epic games in the launcher (g): Enter starts one through its store. Read from this PC; nothing goes online.",
+      "tags": ["games", "launcher"],
+      "icon": "device-gamepad-2",
+      "entries": ["launcher_provider", "widget"],
+      "bundled": true,
+      "needs": []
+    },
+    {
+      "id": "tourne/keybind-guide",
+      "name": "Keybind Guide",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from kenn's Keybind Cheatsheet for Noctalia)",
+      "license": "MIT",
+      "description": "Every key Tourne takes on one searchable sheet: your binds (grouped by their # headings and key modes, numbered ones as one row), Tourne's own hotkeys and the plugins'. Hide rows or rename them; nothing runs until it opens.",
+      "tags": ["keyboard", "productivity", "tiling"],
+      "icon": "keyboard",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "files"}
+      ]
+    },
+    {
+      "id": "tourne/emoji",
+      "name": "Emoji Picker",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Emoji Picker (idea only; its data is GPL, so the list here is Unicode's own))",
+      "license": "MIT",
+      "description": "Search every Unicode emoji by name or group and copy one with a click.",
+      "tags": ["productivity", "text"],
+      "icon": "mood-smile",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "clipboardWrite"},
+        {"kind": "files"}
+      ]
+    },
+    {
+      "id": "tourne/ip-indicator",
+      "name": "IP Indicator",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's IP Indicator)",
+      "license": "MIT",
+      "description": "Your public IP, country and provider on the bar, a VPN check, the round trip time, and your local addresses. Middle click hides the IP.",
+      "tags": ["network", "privacy"],
+      "icon": "world-www",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "internet", "hosts": ["ipwho.is"]},
+        {"kind": "systemInfo"},
+        {"kind": "clipboardWrite"}
+      ]
+    },
+    {
+      "id": "tourne/media-downloader",
+      "name": "Media Downloader",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (from hthienloc's Media Downloader)",
+      "license": "MIT",
+      "description": "Download video or sound from a web link with yt-dlp: format, size, SponsorBlock, cover art and tags, a speed limit, a queue with progress.",
+      "tags": ["download", "video", "music"],
+      "icon": "download",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "yt-dlp"},
+        {"kind": "files"},
+        {"kind": "open"},
+        {"kind": "notify"},
+        {"kind": "clipboardRead"}
+      ]
+    },
+    {
+      "id": "tourne/ocr",
+      "name": "OCR Scanner",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's OCR Scanner)",
+      "license": "MIT",
+      "description": "Turn text in a picture into text you can paste: snip part of the screen, or read the picture on the clipboard or a file, with Tesseract. Keeps a history.",
+      "tags": ["text", "screenshot", "clipboard"],
+      "icon": "text-recognition",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "tesseract"},
+        {"kind": "clipboardRead"},
+        {"kind": "clipboardWrite"},
+        {"kind": "files"},
+        {"kind": "open"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/ambient-sound",
+      "name": "Ambient Sounds",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne (idea from hthienloc's Ambient Sounds)",
+      "license": "MIT",
+      "description": "Mix background sounds for focus or sleep: white, pink and brown noise built in, plus your own sound files, each with its own volume, saved mixes and a sleep timer.",
+      "tags": ["focus", "sound", "noise"],
+      "icon": "headphones",
+      "entries": ["panel", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "sound"},
+        {"kind": "files"},
+        {"kind": "open"},
+        {"kind": "power"}
+      ]
+    },
+    {
+      "id": "tourne/table-panel",
+      "name": "Tourne'Table Panel",
+      "version": "1.0.0",
+      "api": 9,
+      "author": "Tourne",
+      "license": "MIT",
+      "description": "A bar button for Tourne'Table's panel: click to show or hide the visualizer's window, right click to keep it on top. Set Tourne'Table's Place In to Panel first.",
+      "tags": ["music", "visualizer"],
+      "icon": "wave-sine",
+      "entries": ["widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/syncthing",
+      "name": "Syncthing",
+      "version": "2.1.1",
+      "api": 9,
+      "author": "Tourne (from Marco Ziliani's Syncthing)",
+      "license": "MIT",
+      "description": "Syncthing on the bar: sync state and progress, a panel to pause, resume and rescan folders and devices, notifications, and a desktop card.",
+      "tags": ["network", "sync", "utility"],
+      "icon": "cloud-network",
+      "entries": ["service", "widget", "panel", "desktop_widget", "shortcut", "launcher_provider"],
+      "bundled": true,
+      "needs": [
+        {"kind": "internet"},
+        {"kind": "reads", "label": "Syncthing's config.xml (its address and API key)", "paths": ["%LOCALAPPDATA%\\Syncthing\\config.xml", "%APPDATA%\\Syncthing\\config.xml", "%APPDATA%\\SyncTrayzor\\syncthing\\config.xml"]},
+        {"kind": "open"},
+        {"kind": "notify"}
+      ]
+    },
+    {
+      "id": "tourne/wallpaper-depth",
+      "name": "Wallpaper Depth",
+      "version": "1.0.6",
+      "api": 26,
+      "author": "Tourne (from Noctalia's Wallpaper Depth)",
+      "license": "MIT",
+      "description": "Depth masks made on your PC from each wallpaper (Depth Anything V2 in Python), so desktop widgets pass behind the scenery's foreground.",
+      "tags": ["wallpaper", "desktop", "ai"],
+      "icon": "layers-subtract",
+      "entries": ["service", "widget", "panel"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "python, py"},
+        {"kind": "files"},
+        {"kind": "wallpaper"},
+        {"kind": "internet", "hosts": ["pypi.org", "files.pythonhosted.org", "huggingface.co"]}
+      ]
+    },
+    {
+      "id": "tourne/discord-voice",
+      "name": "Discord Voice",
+      "version": "0.3.2",
+      "api": 9,
+      "author": "Tourne (from raycursive's Discord Voice)",
+      "license": "MIT",
+      "description": "Discord's voice call on the bar and in a panel: who's in it and speaking, mute, deafen, volumes, latency, saved channels.",
+      "tags": ["audio", "bar", "network", "panel", "privacy", "service"],
+      "icon": "brand-discord",
+      "entries": ["panel", "service", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "python, Update, Discord, DiscordPTB, DiscordCanary"},
+        {"kind": "internet", "hosts": ["cdn.discordapp.com", "streamkit.discord.com"]},
+        {"kind": "files"}
+      ]
+    },
+    {
+      "id": "tourne/git-companion",
+      "name": "Git Companion",
+      "version": "1.4.0",
+      "api": 24,
+      "author": "Tourne (from thomas-philippot's Git Companion)",
+      "license": "MIT",
+      "description": "Your pull requests, merge requests and issues on GitHub, GitLab or Gitea from the bar, through gh, glab or tea.",
+      "tags": ["development", "bar", "panel", "service", "productivity"],
+      "icon": "brand-git",
+      "entries": ["panel", "service", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "gh, glab, tea, git"},
+        {"kind": "internet"},
+        {"kind": "files"},
+        {"kind": "notify"},
+        {"kind": "open"}
+      ]
+    },
+    {
+      "id": "tourne/screen-toolkit",
+      "name": "Screen Toolkit",
+      "version": "1.5.4",
+      "api": 13,
+      "author": "Tourne (from alexander's Screen Toolkit)",
+      "license": "MIT",
+      "description": "Screen tools: colour picker, OCR, QR, palette, Google Lens, markup, measure, recording (ffmpeg) and image sharing.",
+      "tags": ["screenshot", "recording", "ocr", "color", "utility"],
+      "icon": "crosshair",
+      "entries": ["panel", "widget", "shortcut", "service"],
+      "bundled": true,
+      "needs": [
+        {"kind": "program", "label": "tesseract, magick, zbarimg, curl, ffmpeg, ffprobe, trans, mspaint, paintdotnet, krita, gimp, gimp-2.10, gimp-3, gimp-3.0, pinta, ksnip"},
+        {"kind": "screen"},
+        {"kind": "files"},
+        {"kind": "clipboardWrite"},
+        {"kind": "notify"},
+        {"kind": "open"},
+        {"kind": "systemSound"},
+        {"kind": "internet", "hosts": ["uguu.se", "up.x02.me"]}
+      ]
+    },
+    {
+      "id": "tourne/claude-cockpit",
+      "name": "Claude Cockpit",
+      "version": "1.0.0",
+      "api": 31,
+      "author": "Tourne (from nightwatch75's Claude Cockpit)",
+      "license": "MIT",
+      "description": "Live Claude Code sessions and usage on the bar; manage sessions, skills and mods, edit CLAUDE.md files.",
+      "tags": ["ai", "development", "bar", "panel", "service", "productivity"],
+      "icon": "robot",
+      "entries": ["panel", "service", "widget"],
+      "bundled": true,
+      "needs": [
+        {"kind": "reads", "label": "Claude Code's files, with your login token for the usage query", "paths": ["%USERPROFILE%\\.claude", "%USERPROFILE%\\.agents"]},
+        {"kind": "reads", "label": "your user folder, to find CLAUDE.md files", "paths": ["%USERPROFILE%"]},
+        {"kind": "deletes", "label": "Claude Code sessions and skill folders", "paths": ["%USERPROFILE%\\.claude\\projects", "%USERPROFILE%\\.claude\\skills"]},
+        {"kind": "internet", "hosts": ["api.anthropic.com", "raw.githubusercontent.com", "api.frankfurter.dev", "api.frankfurter.app"]},
+        {"kind": "program", "label": "claude, code, zed, wt"},
+        {"kind": "systemInfo"},
+        {"kind": "files"},
+        {"kind": "notify"},
+        {"kind": "open"}
+      ]
+    }
+  ]
+}

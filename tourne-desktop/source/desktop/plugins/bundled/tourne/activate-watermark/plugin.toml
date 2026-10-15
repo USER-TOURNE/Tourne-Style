@@ -1,0 +1,36 @@
+id = "tourne/activate-watermark"
+name = "Activate Watermark"
+version = "1.1.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Activate Linux)"
+license = "MIT"
+dependencies = []
+tags = ["fun", "desktop"]
+icon = "brand-windows"
+description = "The famous \"Activate Windows\" watermark on your desktop, as a joke you choose: any title and line, faint in the corner. Drawn once; nothing runs after."
+
+[[setting]]
+key = "title"
+type = "string"
+label = "Title"
+default = "Activate Tourne"
+
+[[setting]]
+key = "line"
+type = "string"
+label = "Line under it"
+default = "Go to Settings to activate Tourne."
+
+[[setting]]
+key = "opacity"
+type = "int"
+label = "How visible (10 to 100)"
+default = 45
+
+[[desktop_widget]]
+id = "watermark"
+entry = "desktop.luau"
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"

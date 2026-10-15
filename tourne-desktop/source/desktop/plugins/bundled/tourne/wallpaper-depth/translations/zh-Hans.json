@@ -1,0 +1,69 @@
+{
+  "panel": {
+    "automatic": "自动",
+    "clear_cache": "清除缓存",
+    "description": "为每张壁纸生成前景深度蒙版，使桌面小组件可以显示在近处场景之后。",
+    "feather": "边缘羽化",
+    "generate": "生成蒙版",
+    "no_outputs": "没有连接的显示输出。",
+    "off": "关闭",
+    "on": "开启",
+    "output": {
+      "cached": "已缓存深度",
+      "error": "生成失败",
+      "no_wallpaper": "非图像壁纸",
+      "processing": "正在估算深度",
+      "ready": "已应用蒙版",
+      "ready_time": "已应用蒙版（耗时 {seconds} s）",
+      "waiting": "等待生成"
+    },
+    "outputs": "显示输出",
+    "parameters": "蒙版参数",
+    "settings": "设置",
+    "setup": {
+      "checking": "正在检查本地模型",
+      "disclosure": "安装过程会创建独立 Python 环境，并从 Hugging Face 下载 99 MB 的 Apache-2.0 Depth Anything V2 Small 模型。不会上传壁纸。",
+      "error": "安装失败",
+      "install": "安装模型",
+      "missing": "需要安装",
+      "offline": "Shell 离线模式阻止安装下载。",
+      "prerequisites": "请先安装所需命令：{commands}。",
+      "ready": "模型就绪",
+      "retry": "重新安装",
+      "running": "正在配置深度模型"
+    },
+    "threshold": "前景阈值"
+  },
+  "service": {
+    "busy": "请等待当前操作完成。",
+    "clear_cache_failed": "无法清除缓存。",
+    "generation_failed": "深度生成失败。",
+    "invalid_result": "深度处理程序返回了无效结果。",
+    "invalid_settings": "插件设置无效。",
+    "offline": "请在安装前禁用 Shell 离线模式。",
+    "python_missing": "未安装 Python。",
+    "setup_failed": "安装失败。",
+    "setup_missing": "未安装模型和运行环境。",
+    "setup_running": "正在安装运行环境并下载 99 MB 模型。",
+    "start_clear_cache_failed": "无法启动缓存清理。",
+    "start_helper_failed": "无法启动深度处理程序。",
+    "start_setup_failed": "无法启动安装。",
+    "start_validation_failed": "无法启动安装验证。",
+    "validation_failed": "安装验证失败。"
+  },
+  "settings": {
+    "auto_generate": {
+      "description": "壁纸或蒙版参数变化时重新生成输出蒙版。",
+      "label": "自动生成"
+    },
+    "feather": {
+      "description": "深度阈值周围柔和过渡区域的宽度。",
+      "label": "边缘羽化"
+    },
+    "threshold": {
+      "description": "超过该阈值的深度区域会覆盖桌面小组件。较低值会使更多场景位于前景。",
+      "label": "前景阈值"
+    }
+  },
+  "title": "壁纸深度"
+}

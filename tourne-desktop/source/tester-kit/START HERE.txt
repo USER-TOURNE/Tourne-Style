@@ -1,0 +1,181 @@
+Tourne'Suite: tester kit
+========================
+
+Thanks for testing! Tourne'Suite is one Windhawk mod that themes and extends
+Windows: its own tray icons and flyouts (volume, network, Bluetooth, battery,
+security, notifications and a calendar), tray folders, a restyled clock, icon
+themes, Explorer styling, Winaero-style tweaks, and an experimental taskbar and
+Alt+Tab of its own.
+
+This copy is set up for a first-time user. Nothing in it comes from anyone
+else's PC: the colours follow your own visual style, and the kit fills the rest
+in from how YOUR PC is already set up. Nothing leaves your PC unless you switch
+on one of the few online options, each marked "online" in the settings.
+
+What's in this folder
+* 1. Back up my PC first.cmd       Records how your PC is set up now.
+* 2. Copy the suite to the clipboard.cmd
+* 3. Fill in my settings.cmd       Reads your PC into the suite's settings.
+* Reset my PC to before.cmd        Puts everything back as step 1 found it.
+* Tester notes.txt                 For telling me how it went.
+* tourne-suite-test.wh.cpp         The suite itself.
+* Fonts, Setup                     Used by the steps above.
+
+
+=======================================================================
+HOW TO INSTALL
+=======================================================================
+
+What you need
+* Windows 11, 64-bit (built and tested on 24H2 and later).
+* Windhawk, free from https://windhawk.net (version 1.7.3 or newer).
+* Optional: StartAllBack. The Clock and Classic Tray Folders parts restyle
+  StartAllBack's classic taskbar and do nothing without it. Everything else
+  works on Windows' own taskbar.
+
+Steps (about 5 minutes)
+
+1. BACK UP FIRST. Double-click "1. Back up my PC first.cmd".
+   It records every Windows setting the suite is able to change, before
+   anything is installed, into the Backup folder here. It only reads; it
+   changes nothing. Keep this folder (with Backup in it) until you're done
+   testing: it's what "Reset my PC to before" puts back.
+   It then offers to make a Windows restore point too (say Y if you can: it's
+   a second safety net, see HOW TO RESET). That part needs admin and turns
+   on System Protection for your system drive if it was off.
+
+2. Install Windhawk (if you haven't) and open it. Then put the suite in:
+   a. Double-click "2. Copy the suite to the clipboard.cmd".
+   b. In Windhawk, choose "Create a new mod". An editor opens with an example.
+   c. Click in it, press Ctrl+A, then Ctrl+V to replace it with the suite.
+   d. Click "Compile Mod". It's a big mod: compiling takes a minute or two.
+   e. Click "Exit editing mode". "Tourne'Suite (test build)" is now installed
+      and on.
+
+3. Double-click "3. Fill in my settings.cmd" (see HOW TO APPLY below), say Y
+   to import, and accept the admin prompt.
+
+4. In Windhawk, open the suite, switch it off and on again so it reads your
+   settings. Signing out and back in once is the cleanest start.
+
+
+=======================================================================
+HOW TO APPLY (your own settings)
+=======================================================================
+
+"3. Fill in my settings.cmd" reads this PC and shows what it found:
+* Tweaks: all 276 read as your PC has them now, so the settings page shows
+  your real setup instead of guesses.
+* StartAllBack, if you have it: your Start menu and taskbar choices.
+* Windows' taskbar: its position and how its buttons line up and combine.
+* Resource Redirect, if you have it: your icon theme, theme folders and
+  redirection rules move over to the suite's Icon Redirect. Once your icons
+  show, turn Resource Redirect off in Windhawk so the two don't both do it.
+* Device batteries: only the readers for devices you own are turned on.
+* The Tourne pixel fonts (CozetteVector and scientifica), installed for your
+  account only. Their licences are in the Fonts folder.
+
+Then it asks before importing (one admin prompt: Windhawk keeps mod settings
+where only an admin can write). The file it imports, my-settings.reg, stays in
+this folder. It holds your own paths, so please don't send it to anyone.
+
+Run it again any time (say after installing StartAllBack or pairing a new
+headset); it re-reads everything. The backup is never overwritten.
+
+
+=======================================================================
+HOW TO USE
+=======================================================================
+
+Everything is in Windhawk: open Tourne'Suite, then its Settings tab. Each
+part has an Enabled switch at the top; its options show while it's on.
+Click Save after changing anything.
+
+What starts on
+  System Icons (tray icons and flyouts), Classic Tray Folders, Clock,
+  Change Tray Icons, Icon Redirect, Tweaks, Explorer Style, Theme Gaps,
+  Menu No Duplicates.
+What starts off (switch on to try)
+  Taskbar and Switcher (experimental: they replace Windows' taskbar and
+  Alt+Tab), Explorer Colours, Dark Magic, System Text Color, Menu No Icons
+  and Classic Menus.
+
+Tweaks never change anything by themselves. Every group of them starts
+switched off: turn on "Use these tweaks" at the top of a group first, then
+change a tweak in it and click Save. Switching a group on only notes how
+things are set; it applies nothing. A Save that would change more than 5
+tweaks at once asks first. Ones that need admin rights ask once per save, and
+if you say no, they're left alone until you change them again. Settings
+Windows already has (dark mode, Snap, ads in Start and so on) aren't in
+Tweaks; each group says where to find them in Windows.
+
+Things to try
+* The tray: click, right-click and scroll on each Tourne icon (volume,
+  network, Bluetooth, battery, Windows Security, notifications). Do the
+  flyouts open where you expect, look right, and do their buttons work?
+* Windows Security's flyout: run a quick scan.
+* The clock (with StartAllBack): its look, and clicking it (notifications and
+  calendar).
+* System Icons > Colour scheme: try a few (Gruvbox, Catppuccin, Nord...). Do
+  the flyouts, tooltips and menus all follow?
+* Icon Redirect: pick an icon theme from its list (that one downloads once).
+* A few tweaks you'd actually use: change, Save, check Windows did it.
+* If you're brave: the Taskbar part, with its desktops pager (hover a desktop
+  for its preview), and the Switcher (Alt+Tab).
+Then just use your PC as usual for a few days.
+
+Safety net: if Explorer restarts four times within two minutes, the suite
+stops loading into it by itself and says so. Saving any setting in the suite
+turns it back on.
+
+Telling me how it went
+Fill in "Tester notes.txt" and send it with any screenshots or recordings
+(Win+Shift+S, or Win+Alt+R to record). Useful extras:
+* If Explorer crashed: the newest explorer.exe.*.dmp files from
+  %LOCALAPPDATA%\CrashDumps (paste that into File Explorer's address bar).
+* If something misbehaves: Windhawk's log. Open the suite in Windhawk, set
+  logging to verbose on its Advanced tab, make it happen again, and copy the
+  log shown there.
+* With the Taskbar part on: %LOCALAPPDATA%\Tourne\startup.txt (load times).
+
+
+=======================================================================
+HOW TO RESET TO WHAT YOU HAD BEFORE
+=======================================================================
+
+1. In Windhawk, open Tourne'Suite and click Remove. Its hooks and its
+   settings go with it, so Windows' own taskbar, tray, menus and Explorer are
+   back straight away.
+2. Double-click "Reset my PC to before.cmd". Using the backup from step 1 of
+   installing, it puts back:
+   * every Windows setting a Tweak changed (values put back as they were,
+     anything a Tweak added taken away, context menu entries included),
+   * folders added to This PC or the desktop, drive and shell icons, accent
+     colours, window metrics, font sizes, menu delay and the other live
+     settings,
+   * StartAllBack's on/off switch and Windows' taskbar auto-hide,
+   * your theme, if it changed,
+   * the suite's own leftovers in your account, and the fonts the kit
+     installed (unless you had them before).
+   It asks for admin once, for the machine-wide part, and asks before
+   deleting %LOCALAPPDATA%\Tourne (where you may have put themes yourself).
+3. Sign out and back in, or restart.
+4. If you installed Windhawk only for this, remove it in Settings > Apps.
+
+Not covered by the backup, because Windows needs admin rights just to read
+them: the Tweaks for boot options (F8 boot menu, boot logo, automatic repair),
+hibernation and its file size, and the built-in Administrator account. If you
+changed any of those, set them back in the suite before removing it.
+
+The reset only touches what the backup recorded, and only removes things that
+weren't there at backup time. Anything you changed yourself in Windows'
+Settings during testing outside those areas stays as you left it.
+
+The restore point (if you made one in step 1)
+It's the second safety net, for anything the reset couldn't reach (like those
+boot and account Tweaks). Use the reset first. If something still isn't
+right: press Win+R, type rstrui and press Enter, choose "Before Tourne'Suite",
+and follow the steps. Know before you do: it rolls back EVERYTHING on the PC
+to that moment (apps installed and Windows updates since then too), though
+not your personal files. Windows deletes old restore points when space runs
+low, so it may not be there after a long time.

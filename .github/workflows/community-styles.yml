@@ -1,0 +1,83 @@
+# Tourne'Table community styles: reads a "Setup: ..." issue and answers with what it found (and a code to
+# try it), adds it to community/setups when a maintainer labels the issue "approved", and checks the
+# folder on every push. The issue text is only ever read by community.py from the event file, never
+# put into a shell command.
+name: Community styles
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+  push:
+    branches: [main]
+    paths: ["community/**", "windhawk-mods/tourne-table/**"]
+  pull_request:
+    paths: ["community/**"]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: community-styles
+  cancel-in-progress: false
+
+jobs:
+  read-issue:
+    if: >-
+      github.event_name == 'issues' && github.event.action != 'labeled' &&
+      startsWith(github.event.issue.title, 'Setup:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the style in the issue
+        run: python3 community/tools/community.py issue "$RUNNER_TEMP/result.json"
+      - name: Answer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const r = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/result.json', 'utf8'));
+            const issue_number = context.issue.number;
+            await github.rest.issues.createComment({ ...context.repo, issue_number, body: r.comment });
+            try {
+              await github.rest.issues.addLabels({ ...context.repo, issue_number, labels: ['community-style'] });
+            } catch (e) { core.info('label: ' + e.message); }
+
+  add-style:
+    if: >-
+      github.event_name == 'issues' && github.event.action == 'labeled' &&
+      github.event.label.name == 'approved' && startsWith(github.event.issue.title, 'Setup:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add the style
+        run: python3 community/tools/community.py add "$RUNNER_TEMP/result.json"
+      - name: Commit
+        run: |
+          git config user.name "tourne-community-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add community
+          if git diff --cached --quiet; then echo "nothing to add"; exit 0; fi
+          git commit -m "Community: add a style from #${{ github.event.issue.number }}"
+          git push
+      - name: Answer and close
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const r = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/result.json', 'utf8'));
+            const issue_number = context.issue.number;
+            await github.rest.issues.createComment({ ...context.repo, issue_number, body: r.comment });
+            if (r.ok) await github.rest.issues.update({ ...context.repo, issue_number, state: 'closed' });
+
+  check:
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every style
+        run: python3 community/tools/community.py check
+      - name: Gallery is up to date
+        run: |
+          python3 community/tools/community.py gallery
+          git diff --exit-code community/README.md || (echo "Run: python community/tools/community.py gallery" && exit 1)

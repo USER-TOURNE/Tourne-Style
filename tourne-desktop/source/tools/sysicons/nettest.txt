@@ -1,0 +1,8 @@
+wlan handle 0000000000000001
+adapter 1, wifi off 0, needs location 0, connections 2, networks 6
+   Labyrinth  90%  (connected)
+  MceachinWifi-2.4-5  97%
+  xfinitywifi  90%
+  Flow  89%
+  Xfinity Mobile  87%
+  Satisguard  82%

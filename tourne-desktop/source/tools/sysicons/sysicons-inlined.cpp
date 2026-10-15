@@ -1,0 +1,14769 @@
+// ==WindhawkMod==
+// @id              tourne-tray-system-icons
+// @name            Tourne'Tray [System Icons]
+// @description     Pixel-art tray icons for network, volume, battery, notifications, privacy and more, with live state and Windows 7 style flyouts
+// @version         1.1.0
+// @author          USER-TOURNE
+// @github          https://github.com/USER-TOURNE
+// @include         explorer.exe
+// @architecture    x86-64
+// @compilerOptions -lole32 -loleaut32 -lwlanapi -liphlpapi -lpowrprof -lshell32 -lgdi32 -ladvapi32 -lcomctl32 -luxtheme -luuid -lmsimg32 -ldxva2 -lwscapi -lcfgmgr32 -ldwmapi -lversion -lshlwapi -lruntimeobject -lurlmon -lwininet -lhid
+// @license         MIT
+// ==/WindhawkMod==
+
+// ==WindhawkModReadme==
+/*
+# `Tourne'Tray` **[System Icons]**
+
+Adds the Tourne pixel tray icons as real tray icons, for the system indicators
+that no icon theme can reach: StartAllBack draws its network icon from a font,
+the battery meter is built from sprite strips, and Windows 11 has no tray icon
+at all for notifications, focus, night light or brightness.
+
+Each icon is a normal tray icon, so it shows up in **Settings > Personalization
+> Taskbar > Other system tray icons** (listed as Windows Explorer, told apart by
+its picture) and can be turned on there or dragged onto the taskbar.
+
+## Icons
+
+| Icon | Shows | Left click | Right click |
+|---|---|---|---|
+| Network | Wi-Fi bars, no internet, off, not connected, Ethernet, unplugged, airplane mode | Network flyout | The real network icon's menu |
+| Volume | Level, muted, no device | Volume Mixer | The real volume icon's menu |
+| VPN | Connected or not | VPN settings | Network settings |
+| Battery | Level, charging, battery saver, no battery | Power flyout | The real power icon's menu |
+| Notifications | Bell, or Do not disturb | Notification center | Settings |
+| Focus | Moon | Notification center | Focus settings |
+| Night light | On or off | Night light settings | Display settings |
+| Brightness | Sun | Brightness flyout | Display settings |
+| Microphone, Camera, Location | Only while an app uses them, with the app names | Privacy settings | Privacy settings |
+| Accessibility | Figure | Accessibility settings | Settings |
+| Power | Power symbol | Lock, sign out, sleep, restart, shut down | Same |
+| Input | Keyboard, with the current language | Input switcher | Language settings |
+| Recycle Bin | Item count | Opens the Recycle Bin | Open, empty |
+| Clipboard | Clipboard | Clipboard history | Settings |
+| Screen capture | Camera | Snipping | Capture now |
+| Show hidden icons | Up arrow, down while open | Hidden icons flyout: click, right-click or middle-click an icon as in the tray | Taskbar settings |
+| Bluetooth | On, off, or connected with the device names | Bluetooth flyout: on or off, paired devices, connect or disconnect audio devices | Windows' own Bluetooth menu |
+| Device batteries | One per wireless device: its level as a halo, charging, asleep, low | Devices flyout | Check now, Bluetooth settings |
+
+## Device batteries
+
+Headsets, mice, keyboards and controllers are read straight from the device,
+the way HaloBattery (MIT) does it: Alienware, Razer, Logitech, SteelSeries,
+HyperX, Audeze, MCHOSE, WLmouse, PlayStation and Xbox controllers, plus any
+Bluetooth device that reports to Windows. Pick the brands you own under
+**Devices you have**. Each can show as its own tray icon, inside the mixer
+and Bluetooth flyouts, or both. Only read commands are ever sent.
+
+On the volume icon, **middle click** switches to the next output device and
+**scrolling** changes the volume in steps of 2. Scrolling needs Windows'
+"Scroll inactive windows when hovering over them" setting, which is on by
+default.
+
+## Flyouts
+
+The network, power and brightness flyouts follow the Windows 7 layouts in the
+Tourne style:
+
+* **Network**: what you're connected to, then every Wi-Fi network with its
+  signal. Click a network for Connect or Disconnect. A secured network you
+  haven't joined before opens Windows' own sign-in, since that's where the
+  password is entered.
+* **Power**: battery status and the power plans, one click to switch.
+* **Brightness**: a slider per monitor, over DDC/CI. Monitors that don't
+  answer DDC/CI say so.
+
+## Forwarded clicks
+
+Right-clicking network, volume or battery opens the menu of the system icon
+it stands in for, so the original has to stay enabled. It can live in the "^"
+popup, or in a Classic Tray Folders folder, out of sight. If it's gone, a
+short menu of the matching settings pages is shown instead.
+
+## Not covered
+
+The unread notification count has no public source, so the bell shows Do not
+disturb but not unread.
+*/
+// ==/WindhawkModReadme==
+
+// ==WindhawkModSettings==
+/*
+- scheme: tourne
+  $name: Colour scheme
+  $description: >-
+    The colours of the flyouts, the tray icons, the hidden icons flyout and the
+    Tourne tooltips. Tourne is the original; the rest are the palettes of the
+    ricing community, to match a system themed with one of them. The first two
+    take the colours of a theme's menus: the taskbar's theme (or the one
+    StartAllBack is set to), or Windows' own visual style, and follow it when it
+    changes. A taskbar theme without menus of its own uses Windows' visual
+    style.
+  $options:
+  - tourne: Tourne
+  - taskbarStyle: From the taskbar's visual style
+  - visualStyle: From Windows' visual style
+  - gruvboxDarkHard: Gruvbox dark (hard)
+  - gruvboxDark: Gruvbox dark
+  - gruvboxDarkSoft: Gruvbox dark (soft)
+  - gruvboxLight: Gruvbox light
+  - monokai: Monokai
+  - catppuccinMocha: Catppuccin Mocha
+  - catppuccinMacchiato: Catppuccin Macchiato
+  - catppuccinFrappe: Catppuccin Frappé
+  - catppuccinLatte: Catppuccin Latte
+  - everforestDarkHard: Everforest dark (hard)
+  - everforestDark: Everforest dark
+  - everforestDarkSoft: Everforest dark (soft)
+  - everforestLightHard: Everforest light (hard)
+  - everforestLight: Everforest light
+  - everforestLightSoft: Everforest light (soft)
+  - nord: Nord
+  - dracula: Dracula
+  - tokyoNight: Tokyo Night
+  - tokyoNightStorm: Tokyo Night Storm
+  - rosePine: Rosé Pine
+  - rosePineMoon: Rosé Pine Moon
+  - rosePineDawn: Rosé Pine Dawn
+  - kanagawa: Kanagawa
+  - oneDark: One Dark
+  - solarizedDark: Solarized dark
+  - solarizedLight: Solarized light
+- tone: ink
+  $name: Icon tone
+  $description: >-
+    Which of the colour scheme's colours the icons are drawn in; they change
+    with the scheme.
+  $options:
+  - ink: Text (Ink)
+  - sage: Secondary text (Sage)
+  - alt: Faint text (Alt)
+- shade: true
+  $name: Pixel shade
+  $description: The one-pixel darker step under each icon.
+- trayTheme: true
+  $name: Other apps in the Tourne design
+  $description: >-
+    Tray icons of Discord, OneDrive, Steam, Windscribe, Windows Security and
+    others are drawn in the design, following their state where their
+    tooltip tells it.
+- tourneTooltips: true
+  $name: Tourne tooltips
+  $description: The tray's tooltips in the Tourne style.
+- calendarAdd: false
+  $name: Right-click a day to add an event (Google Calendar, online)
+  $description: >-
+    A right click on a day in the notification centre's calendar opens a
+    small window for a new event: its title, day, all day or a time, place,
+    importance and notes. "Add to Google Calendar" then opens Google
+    Calendar's own new-event page in your browser with all of it filled in,
+    and one click there saves it. It then reaches your other devices, and
+    this agenda the next time it reads your calendar (Google can take a
+    while to update its .ics address). This part is online because Google
+    Calendar itself saves the event, in a browser signed in to your Google
+    account: the suite only opens that page, and sends nothing anywhere
+    itself or keeps any account or password. Google Calendar has no
+    importance of its own, so High puts "!" before the title and the
+    importance is written in the notes. Tasks can't be made this way:
+    Google Tasks has no such page.
+- calendarAccounts: ""
+  $name: Google accounts for new events
+  $description: >-
+    The email of the Google account whose calendar new events go to, when
+    it isn't your browser's default Google account (several, separated by
+    commas, to pick one in the event window; the first is chosen to begin
+    with). The page then opens as that account, which has to be signed in
+    in the browser. Empty uses the browser's default account.
+- calendarIcs: ""
+  $name: Calendar (.ics)
+  $description: >-
+    A local file or web address of an .ics calendar for the notification
+    centre's agenda. Empty uses the Agenda in Calendar View mod's.
+- doubleClickApps: steam.exe
+  $name: Open with a double click
+  $description: >-
+    Programs, by executable name and separated by commas, that open their
+    window on a double click of their tray icon. In the hidden icons flyout a
+    left click on one sends it a double click.
+- flyoutWidth: auto
+  $name: Flyout width
+  $description: >-
+    Auto widens a flyout until its longest line fits, up to the maximum
+    below. Fixed keeps each flyout at its standard width and shortens long
+    lines with "...".
+  $options:
+  - auto: Auto, fit the text
+  - fixed: Fixed
+- flyoutMaxWidth: 480
+  $name: Flyout maximum width (px)
+  $description: >-
+    How wide Auto may make a flyout, at 100% display scaling. Lines longer
+    than this are still shortened with "...".
+  #! $min: 300
+  #! $max: 1200
+- flyoutAway: 0
+  $name: Flyout extra distance from the taskbar (px)
+  $description: >-
+    Added to the usual 8 px between a flyout and the taskbar's edge, at 100%
+    display scaling; negative brings it closer.
+- flyoutAlong: 0
+  $name: Flyout shift along the taskbar (px)
+  $description: >-
+    Moves every flyout sideways from its icon (up or down on a taskbar at the
+    side); negative goes left (or up).
+- menuPlace: pointer
+  $name: Where the icons' right-click menus open
+  $description: >-
+    At the pointer, as Windows opens them, or clear of the taskbar next to
+    the icon, so the menu covers neither the taskbar nor its tooltips.
+  $options:
+  - pointer: At the pointer
+  - taskbar: Clear of the taskbar, by the icon
+- menuAlign: centre
+  $name: Menu lined up with the icon
+  $description: >-
+    With "Clear of the taskbar": which way the menu reaches from its icon.
+  $options:
+  - after: Starting at the icon (reaching right, or down)
+  - centre: Centred on the icon
+  - before: Ending at the icon (reaching left, or up)
+- menuAway: 0
+  $name: Menu distance from the taskbar (px)
+  $description: >-
+    With "Clear of the taskbar": the gap between the taskbar and the menu, at
+    100% display scaling.
+- menuAlong: 0
+  $name: Menu shift along the taskbar (px)
+  $description: >-
+    With "Clear of the taskbar": moves the menu sideways from its icon;
+    negative goes left (or up).
+- overflowFolders: true
+  $name: Folders in the hidden icons flyout
+  $description: >-
+    Groups the hidden icons into the folders set up under Classic Tray
+    Folders (whether or not that part is on), as tiles that open to their
+    icons. Works with or without StartAllBack.
+- nearbyWifi: list
+  $name: Nearby Wi-Fi networks
+  $description: >-
+    Windows treats the list of nearby Wi-Fi networks as location data. So
+    when the network flyout lists them, Windows may ask whether to allow
+    location access, or show Windhawk under "Recently used" in its location
+    settings. Nothing about your location is read or sent anywhere; the
+    flyout only gets network names and signal strength. If Windows withholds
+    the list, the flyout says so, with a link to location settings. Without
+    the note keeps the list but drops that message (for location turned off
+    on purpose). Off never asks Windows for nearby networks: the flyout shows
+    only your current connection, plus a link to Windows' own list.
+  $options:
+  - list: List them
+  - quiet: List them, without the location note
+  - off: "Off"
+- icons:
+  - network: true
+    $name: Network
+  - volume: true
+    $name: Volume
+  - vpn: true
+    $name: VPN
+  - battery: true
+    $name: Battery
+  - notifications: true
+    $name: Notifications
+  - focus: true
+    $name: Focus
+  - nightLight: true
+    $name: Night light
+  - brightness: true
+    $name: Brightness
+  - microphone: true
+    $name: Microphone in use
+  - camera: true
+    $name: Camera in use
+  - location: true
+    $name: Location in use
+  - accessibility: true
+    $name: Accessibility
+  - power: true
+    $name: Power
+  - input: true
+    $name: Input language
+  - recycleBin: true
+    $name: Recycle Bin
+  - clipboard: true
+    $name: Clipboard history
+  - capture: true
+    $name: Screen capture
+  - overflow: true
+    $name: Show hidden icons
+    $description: >-
+      A flyout of the icons hidden from the taskbar, standing in for the "^"
+      button. StartAllBack's own "^" can then be turned off.
+  - security: true
+    $name: Windows Security
+  - bluetooth: true
+    $name: Bluetooth
+    $description: >-
+      On, off or connected, with a flyout to turn Bluetooth on or off and to
+      connect or disconnect paired audio devices.
+  $name: Icons
+  $description: >-
+    Icons to add. Which ones show on the taskbar is then chosen in Windows
+    Settings, like any other tray icon.
+- batteries:
+  - trayIcons: true
+    $name: Tray icon per device
+    $description: >-
+      A tray icon for each wireless device with a battery reading, its level
+      drawn as a halo around the device's pictogram. Click it for the devices
+      flyout.
+  - inFlyouts: true
+    $name: In the flyouts
+    $description: >-
+      Headset batteries in the volume mixer, and the other devices in the
+      Bluetooth flyout.
+  - pollInterval: 1min
+    $name: Check every
+    $description: >-
+      How often the devices are asked for their level: a number followed by
+      hr for hours, min for minutes or sec for seconds, e.g. 9hr, 9min, 1.5hr
+      or 30sec. A number on its own counts as minutes. The longest allowed is
+      24 hours (24hr) between checks, and the shortest 5 seconds. A device
+      being plugged in or removed is checked at once, whatever this is.
+  - lowAlert: 20
+    $name: Low battery alert (%)
+    $description: >-
+      A notification once when a device drops to this level, again only after
+      it was charged. 0 turns it off.
+    #! $min: 0
+    #! $max: 50
+  - pictogram: true
+    $name: Device pictogram
+    $description: The headset, mouse, keyboard or gamepad inside the halo.
+  - chargingAnimation: true
+    $name: Charging animation
+    $description: The halo breathes while a device charges.
+  - vendors:
+    - alienware: true
+      $name: Alienware
+      $description: Pro Wireless headset, AW720M mouse
+    - razer: false
+      $name: Razer
+    - logitech: false
+      $name: Logitech
+    - steelseries: false
+      $name: SteelSeries
+    - hyperx: false
+      $name: HyperX
+    - audeze: false
+      $name: Audeze
+    - mchose: false
+      $name: MCHOSE
+    - wlmouse: false
+      $name: WLmouse
+    - playstation: false
+      $name: PlayStation controllers
+    - xbox: true
+      $name: Xbox controllers
+      $description: And other controllers that speak the Xbox protocol.
+    - bluetooth: true
+      $name: Windows Bluetooth devices
+      $description: Any Bluetooth device that reports its battery to Windows.
+    $name: Devices you have
+    $description: >-
+      Only the readers turned on here run, so devices you don't own cost
+      nothing.
+  $name: Device batteries
+  $description: >-
+    Battery levels of wireless headsets, mice, keyboards and controllers, read
+    straight from the device (ported from HaloBattery, MIT).
+*/
+// ==/WindhawkModSettings==
+
+#include <winsock2.h>
+#include <ws2ipdef.h>
+
+#include <windhawk_utils.h>
+
+#include <windows.h>
+#include <cfgmgr32.h>
+#include <commctrl.h>
+#include <dwmapi.h>
+#include <audiopolicy.h>
+#include <devicetopology.h>
+#include <endpointvolume.h>
+#include <hidusage.h>
+#include <hidpi.h>
+#include <hidsdi.h>
+#include <highlevelmonitorconfigurationapi.h>
+#include <iphlpapi.h>
+#include <mmdeviceapi.h>
+#include <netioapi.h>
+#include <netlistmgr.h>
+#include <physicalmonitorenumerationapi.h>
+#include <powrprof.h>
+#include <shellapi.h>
+#include <shlobj.h>
+#include <shlwapi.h>
+#include <wlanapi.h>
+#include <wscapi.h>
+#include <wuapi.h>
+#include <tlhelp32.h>
+#include <urlmon.h>
+#include <uxtheme.h>
+#include <vssym32.h>
+#include <wininet.h>
+#include <windowsx.h>
+
+#include <algorithm>
+#include <array>
+#include <atomic>
+#include <cmath>
+#include <cstdint>
+#include <functional>
+#include <iterator>
+#include <functional>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <set>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <vector>
+
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Devices.Power.h>
+#include <winrt/Windows.Devices.Radios.h>
+#include <winrt/Windows.Gaming.Input.h>
+#include <winrt/Windows.System.Power.h>
+#include <winrt/Windows.UI.Notifications.h>
+
+////////////////////////////////////////////////////////////////////////////////
+// Icons, ids and messages
+
+// New kinds go at the end: the tray id is kIconIdBase + kind, and Windows
+// remembers each icon's taskbar placement by that id.
+enum IconKind : int {
+    kNetwork,
+    kVpn,
+    kBattery,
+    kNotifications,
+    kFocus,
+    kNightLight,
+    kBrightness,
+    kMicrophone,
+    kCamera,
+    kLocation,
+    kAccessibility,
+    kPower,
+    kInput,
+    kRecycleBin,
+    kClipboard,
+    kCapture,
+    kVolume,
+    kOverflow,
+    kSecurity,
+    kBluetooth,
+    kIconCount
+};
+
+constexpr PCWSTR kIconKeys[kIconCount] = {
+    L"network",       L"vpn",        L"battery",       L"notifications",
+    L"focus",         L"nightLight", L"brightness",    L"microphone",
+    L"camera",        L"location",   L"accessibility", L"power",
+    L"input",         L"recycleBin", L"clipboard",     L"capture",
+    L"volume",        L"overflow",   L"security",      L"bluetooth",
+};
+
+// Tray ids fit in 16 bits, since NOTIFYICON_VERSION_4 callbacks carry the id in
+// HIWORD(lParam). Chosen away from Explorer's own icons and Classic Tray
+// Folders (0xC100+).
+constexpr UINT kIconIdBase = 0x7E00;
+
+constexpr UINT kNetworkBits = (1u << kNetwork) | (1u << kVpn);
+constexpr UINT kAllBits = (1u << kIconCount) - 1;
+
+constexpr UINT WM_APP_TRAY = WM_APP + 1;
+constexpr UINT WM_APP_REFRESH = WM_APP + 2;
+constexpr UINT WM_APP_SETTINGS = WM_APP + 3;
+constexpr UINT WM_APP_EXIT = WM_APP + 4;
+constexpr UINT WM_APP_BIN = WM_APP + 5;
+constexpr UINT WM_APP_WHEEL = WM_APP + 6;
+constexpr UINT WM_APP_MIDDLE = WM_APP + 7;
+constexpr UINT WM_APP_AUDIO_DEVICE = WM_APP + 8;
+constexpr UINT WM_APP_FLYOUT_RELOAD = WM_APP + 9;
+constexpr UINT WM_APP_BRIGHTNESS_READY = WM_APP + 10;
+constexpr UINT WM_APP_JOB_DONE = WM_APP + 11;
+constexpr UINT WM_APP_CALENDAR_READY = WM_APP + 12;
+
+constexpr UINT_PTR kTimerPeriodic = 1;
+constexpr UINT_PTR kTimerFindTray = 2;
+constexpr UINT_PTR kTimerNotifications = 4;
+constexpr UINT kPeriodicMs = 30000;
+
+// Volume changes per wheel notch, in percent.
+constexpr int kVolumeStep = 2;
+
+// Power setting GUIDs, spelled out so no import library is needed.
+constexpr GUID kGuidBatteryPercentage = {
+    0xA7AD8041, 0xB45A, 0x4CAE, {0x87, 0xA3, 0xEE, 0xCB, 0xB4, 0x68, 0xA9, 0xE1}};
+constexpr GUID kGuidAcDcPowerSource = {
+    0x5D3E9A59, 0xE9D5, 0x4B00, {0xA6, 0xBD, 0xFF, 0x34, 0xFF, 0x51, 0x65, 0x48}};
+constexpr GUID kGuidPowerSavingStatus = {
+    0xE00958C0, 0xC213, 0x4ACE, {0xAC, 0x77, 0xFE, 0xCC, 0xED, 0x2E, 0xEE, 0xA5}};
+
+constexpr GUID kClsidNetworkListManager = {
+    0xDCB00C01, 0x570F, 0x4A9B, {0x8D, 0x69, 0x19, 0x9F, 0xDB, 0xA5, 0x72, 0x3B}};
+constexpr GUID kIidNetworkListManager = {
+    0xDCB00000, 0x570F, 0x4A9B, {0x8D, 0x69, 0x19, 0x9F, 0xDB, 0xA5, 0x72, 0x3B}};
+constexpr GUID kIidNetworkListManagerEvents = {
+    0xDCB00001, 0x570F, 0x4A9B, {0x8D, 0x69, 0x19, 0x9F, 0xDB, 0xA5, 0x72, 0x3B}};
+
+constexpr GUID kClsidMMDeviceEnumerator = {
+    0xBCDE0395, 0xE52F, 0x467C, {0x8E, 0x3D, 0xC4, 0x57, 0x92, 0x91, 0x69, 0x2E}};
+constexpr GUID kIidMMDeviceEnumerator = {
+    0xA95664D2, 0x9614, 0x4F35, {0xA7, 0x46, 0xDE, 0x8D, 0xB6, 0x36, 0x17, 0xE6}};
+constexpr GUID kIidAudioEndpointVolume = {
+    0x5CDF2C82, 0x841E, 0x4546, {0x97, 0x22, 0x0C, 0xF7, 0x40, 0x78, 0x22, 0x9A}};
+constexpr GUID kIidAudioEndpointVolumeCallback = {
+    0x657804FA, 0xD6AD, 0x4496, {0x8A, 0x60, 0x35, 0x27, 0x52, 0xAF, 0x4F, 0x89}};
+constexpr GUID kIidMMNotificationClient = {
+    0x7991EEC9, 0x7E89, 0x4D85, {0x83, 0x90, 0x6C, 0x70, 0x3C, 0xEC, 0x60, 0xC0}};
+constexpr PROPERTYKEY kPkeyDeviceFriendlyName = {
+    {0xA45C254E, 0xDF1C, 0x4EFD, {0x80, 0x20, 0x67, 0xD1, 0x46, 0xA8, 0x50, 0xE0}}, 14};
+
+// Undocumented, but stable since Windows 7 and the only way to change the
+// default audio device. Same definition as the AudioSwap mod uses.
+constexpr GUID kClsidPolicyConfigClient = {
+    0x870AF99C, 0x171D, 0x4F9E, {0xAF, 0x0D, 0xE6, 0x3D, 0xF4, 0x0C, 0x2B, 0xC9}};
+constexpr GUID kIidPolicyConfig = {
+    0xF8679F50, 0x850A, 0x41CF, {0x9C, 0x72, 0x43, 0x0F, 0x29, 0x02, 0x90, 0xC8}};
+
+struct IPolicyConfig : public IUnknown {
+    virtual HRESULT STDMETHODCALLTYPE GetMixFormat(PCWSTR, void**) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetDeviceFormat(PCWSTR, INT, void**) = 0;
+    virtual HRESULT STDMETHODCALLTYPE ResetDeviceFormat(PCWSTR) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetDeviceFormat(PCWSTR, void*, void*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetProcessingPeriod(PCWSTR, INT, PINT, PINT) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetProcessingPeriod(PCWSTR, PINT) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetShareMode(PCWSTR, void*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetShareMode(PCWSTR, void*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetPropertyValue(PCWSTR, const PROPERTYKEY&, PROPVARIANT*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetPropertyValue(PCWSTR, const PROPERTYKEY&, PROPVARIANT*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetDefaultEndpoint(PCWSTR deviceId, ERole role) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetEndpointVisibility(PCWSTR, INT) = 0;
+};
+
+std::atomic<HWND> g_wnd;
+std::atomic<UINT> g_pendingBits;
+std::atomic<bool> g_refreshPosted;
+
+void RequestRefresh(UINT bits) {
+    g_pendingBits |= bits;
+    HWND wnd = g_wnd;
+    if (wnd && !g_refreshPosted.exchange(true)) {
+        PostMessageW(wnd, WM_APP_REFRESH, 0, 0);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Settings
+
+// Colour schemes: Tourne's own, and the palettes the ricing community lives
+// in, so the flyouts, tray icons and taskbar can match a system themed with
+// any of them. Placed into System Icons and the taskbar by the build
+// ("// @inline palettes.cpp").
+//
+// Each scheme fills the same roles:
+//   ground  the flyout and bar background
+//   raised  a selected row, a pressed or active button
+//   line    dividers
+//   edge    borders
+//   text    main text, and the "ink" icon tone
+//   accent  links, headings, switches, the "green" tone
+//   muted   secondary text, the "sage" tone
+//   dim     faint text, the "alt" tone
+//   warn    warnings and values, the "coral" tone
+//   bad     errors, the "red" tone
+// Hover is text at 16% over ground, as in the original design.
+
+struct Scheme {
+    PCWSTR key;
+    uint32_t ground, raised, line, edge, text, accent, muted, dim, warn, bad;
+};
+
+constexpr Scheme kSchemes[] = {
+    {L"tourne",              0x121C21, 0x1B2A31, 0x1E2F36, 0x4F8F6A, 0x66EA97, 0x15FFA2, 0x64AA89, 0x5D8D6F, 0xFF6F77, 0xFF8F8F},
+    {L"gruvboxDarkHard",     0x1D2021, 0x3C3836, 0x32302F, 0x665C54, 0xEBDBB2, 0xB8BB26, 0xA89984, 0x7C6F64, 0xFE8019, 0xFB4934},
+    {L"gruvboxDark",         0x282828, 0x3C3836, 0x3C3836, 0x665C54, 0xEBDBB2, 0xB8BB26, 0xA89984, 0x7C6F64, 0xFE8019, 0xFB4934},
+    {L"gruvboxDarkSoft",     0x32302F, 0x504945, 0x3C3836, 0x665C54, 0xEBDBB2, 0xB8BB26, 0xA89984, 0x7C6F64, 0xFE8019, 0xFB4934},
+    {L"gruvboxLight",        0xFBF1C7, 0xEBDBB2, 0xD5C4A1, 0xBDAE93, 0x3C3836, 0x79740E, 0x7C6F64, 0x928374, 0xAF3A03, 0x9D0006},
+    {L"monokai",             0x272822, 0x3E3D32, 0x3E3D32, 0x75715E, 0xF8F8F2, 0xA6E22E, 0xCFCFC2, 0x75715E, 0xFD971F, 0xF92672},
+    {L"catppuccinMocha",     0x1E1E2E, 0x313244, 0x313244, 0x45475A, 0xCDD6F4, 0xCBA6F7, 0xA6ADC8, 0x6C7086, 0xFAB387, 0xF38BA8},
+    {L"catppuccinMacchiato", 0x24273A, 0x363A4F, 0x363A4F, 0x494D64, 0xCAD3F5, 0xC6A0F6, 0xA5ADCB, 0x6E738D, 0xF5A97F, 0xED8796},
+    {L"catppuccinFrappe",    0x303446, 0x414559, 0x414559, 0x51576D, 0xC6D0F5, 0xCA9EE6, 0xA5ADCE, 0x737994, 0xEF9F76, 0xE78284},
+    {L"catppuccinLatte",     0xEFF1F5, 0xCCD0DA, 0xCCD0DA, 0xBCC0CC, 0x4C4F69, 0x8839EF, 0x6C6F85, 0x9CA0B0, 0xFE640B, 0xD20F39},
+    {L"everforestDarkHard",  0x272E33, 0x374145, 0x2E383C, 0x495156, 0xD3C6AA, 0xA7C080, 0x9DA9A0, 0x7A8478, 0xE69875, 0xE67E80},
+    {L"everforestDark",      0x2D353B, 0x3D484D, 0x343F44, 0x4F585E, 0xD3C6AA, 0xA7C080, 0x9DA9A0, 0x7A8478, 0xE69875, 0xE67E80},
+    {L"everforestDarkSoft",  0x333C43, 0x434F55, 0x3A464C, 0x555F66, 0xD3C6AA, 0xA7C080, 0x9DA9A0, 0x7A8478, 0xE69875, 0xE67E80},
+    {L"everforestLightHard", 0xFFFBEF, 0xF2EFDF, 0xF8F5E4, 0xBEC5B2, 0x5C6A72, 0x8DA101, 0x829181, 0xA6B0A0, 0xF57D26, 0xF85552},
+    {L"everforestLight",     0xFDF6E3, 0xEFEBD4, 0xF4F0D9, 0xBDC3AF, 0x5C6A72, 0x8DA101, 0x829181, 0xA6B0A0, 0xF57D26, 0xF85552},
+    {L"everforestLightSoft", 0xF3EAD3, 0xE5DFC5, 0xEAE4CA, 0xB9C0AB, 0x5C6A72, 0x8DA101, 0x829181, 0xA6B0A0, 0xF57D26, 0xF85552},
+    {L"nord",                0x2E3440, 0x3B4252, 0x3B4252, 0x4C566A, 0xECEFF4, 0x88C0D0, 0x81A1C1, 0x616E88, 0xD08770, 0xBF616A},
+    {L"dracula",             0x282A36, 0x44475A, 0x44475A, 0x6272A4, 0xF8F8F2, 0xBD93F9, 0x8BE9FD, 0x6272A4, 0xFFB86C, 0xFF5555},
+    {L"tokyoNight",          0x1A1B26, 0x292E42, 0x292E42, 0x414868, 0xC0CAF5, 0x7AA2F7, 0xA9B1D6, 0x565F89, 0xFF9E64, 0xF7768E},
+    {L"tokyoNightStorm",     0x24283B, 0x292E42, 0x292E42, 0x414868, 0xC0CAF5, 0x7AA2F7, 0xA9B1D6, 0x565F89, 0xFF9E64, 0xF7768E},
+    {L"rosePine",            0x191724, 0x26233A, 0x1F1D2E, 0x403D52, 0xE0DEF4, 0xC4A7E7, 0x908CAA, 0x6E6A86, 0xF6C177, 0xEB6F92},
+    {L"rosePineMoon",        0x232136, 0x393552, 0x2A273F, 0x44415A, 0xE0DEF4, 0xC4A7E7, 0x908CAA, 0x6E6A86, 0xF6C177, 0xEB6F92},
+    {L"rosePineDawn",        0xFAF4ED, 0xF2E9E1, 0xFFFAF3, 0xDFDAD9, 0x575279, 0x907AA9, 0x797593, 0x9893A5, 0xEA9D34, 0xB4637A},
+    {L"kanagawa",            0x1F1F28, 0x2A2A37, 0x2A2A37, 0x54546D, 0xDCD7BA, 0x7E9CD8, 0xC8C093, 0x727169, 0xFFA066, 0xFF5D62},
+    {L"oneDark",             0x282C34, 0x2C313A, 0x2C313A, 0x3E4451, 0xABB2BF, 0x61AFEF, 0x828997, 0x5C6370, 0xD19A66, 0xE06C75},
+    {L"solarizedDark",       0x002B36, 0x073642, 0x073642, 0x586E75, 0x93A1A1, 0x268BD2, 0x839496, 0x586E75, 0xCB4B16, 0xDC322F},
+    {L"solarizedLight",      0xFDF6E3, 0xEEE8D5, 0xEEE8D5, 0x93A1A1, 0x586E75, 0x268BD2, 0x657B83, 0x93A1A1, 0xCB4B16, 0xDC322F},
+};
+
+struct Palette {
+    uint32_t ground, raised, line, edge, text, accent, muted, dim, warn, bad, hover;
+    bool tourne;
+};
+
+// b over a at t (0..1), per channel.
+constexpr uint32_t MixRgb(uint32_t a, uint32_t b, double t) {
+    auto ch = [&](int shift) {
+        double x = ((a >> shift) & 0xFF) * (1 - t) + ((b >> shift) & 0xFF) * t;
+        return (uint32_t)(x + 0.5) << shift;
+    };
+    return ch(16) | ch(8) | ch(0);
+}
+
+Palette SchemePalette(std::wstring_view key) {
+    Scheme const* s = &kSchemes[0];
+    for (auto const& each : kSchemes) {
+        if (key == each.key) s = &each;
+    }
+    return {s->ground, s->raised, s->line,  s->edge, s->text,
+            s->accent, s->muted,  s->dim,   s->warn, s->bad,
+            MixRgb(s->ground, s->text, 0.16), s == &kSchemes[0]};
+}
+
+// The one-step darker shade drawn under icon pixels. Tourne keeps its
+// hand-picked shades; other schemes take the colour halfway to the ground.
+uint32_t PaletteShade(Palette const& p, uint32_t color) {
+    if (p.tourne) {
+        switch (color) {
+            case 0x64AA89: return 0x3D6657;
+            case 0x66EA97: return 0x3C865C;
+            case 0x15FFA2: return 0x1B9650;
+            case 0xFF8F8F: return 0x8D585A;
+            case 0xFF6F77: return 0xA95D5D;
+            case 0x5D8D6F: return 0x366E53;
+        }
+        return color;
+    }
+    return MixRgb(p.ground, color, 0.5);
+}
+
+constexpr COLORREF PaletteRef(uint32_t rgb) {
+    return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+}
+// Theme files, and colour schemes taken from them. Shared by System Icons, the
+// taskbar and the Switcher ("// @inline theme-palette.cpp", after
+// palettes.cpp).
+//
+// Windows only offers visual styles for the whole system, so a theme file is
+// loaded the way theme tools do it: uxtheme #92 (LoaderLoadTheme) parses it
+// into two memory sections, and #16 (OpenThemeDataFromFile) opens a class
+// from them. A class like "Taskbar2Composited::TaskBar" is the app name
+// "Taskbar2Composited", set on a window with SetWindowTheme, plus "TaskBar".
+//
+// Two schemes come from a theme instead of the list in palettes.cpp:
+//   visualStyle   the .msstyles Windows is using
+//   taskbarStyle  the taskbar's theme (its Visual style setting, else the one
+//                 StartAllBack is set to), else the visual style
+// Both read the theme's menu look (its popup background, border, hot item and
+// text), as Windows draws menus and flyouts with it. A theme without one, or
+// no theme, gives Windows' own colours.
+
+using LoaderLoadTheme_t = HRESULT(WINAPI*)(HANDLE themeFile, HINSTANCE instance, LPCWSTR fileName, LPCWSTR color,
+                                           LPCWSTR size, HANDLE* sharableSection, LPWSTR sharableName,
+                                           int sharableChars, HANDLE* nonSharableSection, LPWSTR nonSharableName,
+                                           int nonSharableChars, PVOID customLoadHandler, HANDLE* reuseSection,
+                                           int a, int b, BOOL emulateGlobal);
+
+struct ThemeFileData {
+    char header[7];
+    void* sharableView;
+    HANDLE sharableSection;
+    void* nonSharableView;
+    HANDLE nonSharableSection;
+    char end[3];
+};
+
+using OpenThemeDataFromFile_t = HTHEME(WINAPI*)(ThemeFileData* themeFile, HWND wnd, LPCWSTR classList, DWORD flags);
+
+OpenThemeDataFromFile_t ThemeFileOpener() {
+    HMODULE ux = GetModuleHandleW(L"uxtheme.dll");
+    return ux ? (OpenThemeDataFromFile_t)GetProcAddress(ux, MAKEINTRESOURCEA(16)) : nullptr;
+}
+
+bool LoadThemeFile(std::wstring const& path, ThemeFileData* file) {
+    *file = {};
+    HMODULE ux = GetModuleHandleW(L"uxtheme.dll");
+    auto load = ux ? (LoaderLoadTheme_t)GetProcAddress(ux, MAKEINTRESOURCEA(92)) : nullptr;
+    if (!load || !ThemeFileOpener() || path.empty() || GetFileAttributesW(path.c_str()) == INVALID_FILE_ATTRIBUTES)
+        return false;
+    HANDLE sharable = nullptr, nonSharable = nullptr;
+    // No section names: with names it tries to create named sections and
+    // gets access denied.
+    HRESULT hr = load(nullptr, nullptr, path.c_str(), L"NormalColor", L"NormalSize", &sharable, nullptr, 0,
+                      &nonSharable, nullptr, 0, nullptr, nullptr, 0, 0, FALSE);
+    if (FAILED(hr) || !sharable || !nonSharable) {
+        Wh_Log(L"Couldn't load %s: 0x%08X", path.c_str(), hr);
+        if (sharable) CloseHandle(sharable);
+        if (nonSharable) CloseHandle(nonSharable);
+        return false;
+    }
+    memcpy(file->header, "thmfile", 7);
+    memcpy(file->end, "end", 3);
+    file->sharableSection = sharable;
+    file->nonSharableSection = nonSharable;
+    file->sharableView = MapViewOfFile(sharable, FILE_MAP_READ, 0, 0, 0);
+    file->nonSharableView = MapViewOfFile(nonSharable, FILE_MAP_READ, 0, 0, 0);
+    return true;
+}
+
+void CloseThemeFile(ThemeFileData* file) {
+    if (file->sharableView) UnmapViewOfFile(file->sharableView);
+    if (file->nonSharableView) UnmapViewOfFile(file->nonSharableView);
+    if (file->sharableSection) CloseHandle(file->sharableSection);
+    if (file->nonSharableSection) CloseHandle(file->nonSharableSection);
+    *file = {};
+}
+
+// One pixel of a part drawn into a small bitmap, or the fallback when the
+// part isn't defined or draws nothing there.
+uint32_t PartPixel(HTHEME theme, int part, int state, int x, int y, uint32_t fallback) {
+    constexpr int kSize = 9;
+    if (!IsThemePartDefined(theme, part, 0)) return fallback;
+    HDC dc = CreateCompatibleDC(nullptr);
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), kSize, -kSize, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HBITMAP bitmap = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    uint32_t result = fallback;
+    if (bitmap) {
+        HGDIOBJ old = SelectObject(dc, bitmap);
+        memset(bits, 0, kSize * kSize * 4);
+        RECT r{0, 0, kSize, kSize};
+        if (SUCCEEDED(DrawThemeBackground(theme, dc, part, state, &r, nullptr))) {
+            GdiFlush();
+            uint32_t pixel = ((uint32_t*)bits)[y * kSize + x];
+            if (pixel) result = pixel & 0xFFFFFF;
+        }
+        SelectObject(dc, old);
+        DeleteObject(bitmap);
+    }
+    DeleteDC(dc);
+    return result;
+}
+
+// A theme file's menu class. In dark mode, the style's dark menus first (as
+// Windows draws them for apps in dark mode), then its plain ones; in light
+// mode the other way round. A style made for one mode may only have that
+// one. Null when the style has no menu look of its own.
+HTHEME OpenThemeFileMenu(ThemeFileData* file, HWND host, bool dark) {
+    auto open = ThemeFileOpener();
+    if (!open) return nullptr;
+    PCWSTR darkFirst[] = {L"DarkMode_ImmersiveStart", L"ImmersiveStartDark", L"DarkMode", L""};
+    PCWSTR lightFirst[] = {L"", L"DarkMode_ImmersiveStart", L"ImmersiveStartDark", L"DarkMode"};
+    HTHEME found = nullptr;
+    for (PCWSTR app : dark ? darkFirst : lightFirst) {
+        SetWindowTheme(host, app, nullptr);
+        HTHEME menu = open(file, host, L"Menu", 0);
+        if (menu && IsThemePartDefined(menu, MENU_POPUPITEM, 0)) {
+            found = menu;
+            break;
+        }
+        if (menu) CloseThemeData(menu);
+    }
+    SetWindowTheme(host, L"", nullptr);
+    return found;
+}
+
+// The visual style Windows is using now.
+std::wstring CurrentThemeFile() {
+    WCHAR file[MAX_PATH] = L"";
+    if (FAILED(GetCurrentThemeName(file, ARRAYSIZE(file), nullptr, 0, nullptr, 0))) return {};
+    return file;
+}
+
+// The taskbar and its flyouts follow the system mode, not the apps' one.
+bool SystemUsesLightTheme() {
+    DWORD light = 0, size = sizeof(light);
+    RegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                 L"SystemUsesLightTheme", RRF_RT_REG_DWORD, nullptr, &light, &size);
+    return light != 0;
+}
+
+// Windows' accent colour, as RGB.
+uint32_t WindowsAccent() {
+    DWORD abgr = 0, size = sizeof(abgr);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\DWM", L"AccentColor", RRF_RT_REG_DWORD,
+                     nullptr, &abgr, &size) != ERROR_SUCCESS)
+        return 0x0078D4;
+    return ((abgr & 0xFF) << 16) | (abgr & 0xFF00) | ((abgr >> 16) & 0xFF);
+}
+
+double PaletteLuma(uint32_t rgb) {
+    return (0.299 * ((rgb >> 16) & 0xFF) + 0.587 * ((rgb >> 8) & 0xFF) + 0.114 * (rgb & 0xFF)) / 255;
+}
+
+// Windows' own colours, for what no theme sets.
+Palette NativePalette(bool light) {
+    uint32_t accent = WindowsAccent();
+    Palette p = light ? Palette{0xF3F3F3, 0xE5E5E5, 0xD6D6D6, 0xB8B8B8, 0x1A1A1A, accent,
+                                0x5C5C5C, 0x8A8A8A, 0x9D5D00, 0xC42B1C, 0xE5E5E5, false}
+                      : Palette{0x202020, 0x2D2D2D, 0x3A3A3A, 0x4A4A4A, 0xFFFFFF, accent,
+                                0xC8C8C8, 0x8A8A8A, 0xFCE100, 0xFF99A4, 0x2D2D2D, false};
+    if (std::abs(PaletteLuma(p.accent) - PaletteLuma(p.ground)) < 0.25) p.accent = MixRgb(p.accent, p.text, 0.5);
+    return p;
+}
+
+// A theme file's colours, from its menu look. False when it has none.
+bool PaletteFromThemeFile(std::wstring const& path, bool light, Palette* out) {
+    // Loading a theme takes a moment, and settings are read often: the last
+    // one read is kept, until its file or the mode changes.
+    static SRWLOCK lock = SRWLOCK_INIT;
+    static std::wstring cachedKey;
+    static bool cachedOk = false;
+    static Palette cached{};
+    WIN32_FILE_ATTRIBUTE_DATA info{};
+    if (path.empty() || !GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &info)) return false;
+    std::wstring key = path + L"|" + std::to_wstring(info.ftLastWriteTime.dwLowDateTime) + L"|" +
+                       std::to_wstring(info.ftLastWriteTime.dwHighDateTime) + (light ? L"|light" : L"|dark") +
+                       L"|" + std::to_wstring(WindowsAccent());
+    AcquireSRWLockExclusive(&lock);
+    if (key == cachedKey) {
+        bool ok = cachedOk;
+        if (ok) *out = cached;
+        ReleaseSRWLockExclusive(&lock);
+        return ok;
+    }
+    ReleaseSRWLockExclusive(&lock);
+
+    ThemeFileData file;
+    if (!LoadThemeFile(path, &file)) return false;
+    HWND host = CreateWindowExW(0, L"STATIC", L"", 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, nullptr, nullptr);
+    HTHEME menu = host ? OpenThemeFileMenu(&file, host, !light) : nullptr;
+    Palette p = NativePalette(light);
+    bool ok = menu != nullptr;
+    if (menu) {
+        // The style's own system colours (its sysmetrics, which become Windows' colours when it's applied)
+        // fill in what its menu look doesn't say. Only a full style has a menu class, and only a full
+        // style's system colours mean anything: a StartAllBack-only style carries Plain8's light defaults.
+        auto sys = [&](int index) {
+            COLORREF c = GetThemeSysColor(menu, index);
+            return (uint32_t)((GetRValue(c) << 16) | (GetGValue(c) << 8) | GetBValue(c));
+        };
+        uint32_t sysGround = sys(COLOR_MENU), sysText = sys(COLOR_MENUTEXT);
+        bool sysUsable = std::abs(PaletteLuma(sysGround) - PaletteLuma(sysText)) >= 0.25;
+        if (sysUsable) {
+            p.ground = sysGround;
+            p.text = sysText;
+            p.edge = sys(COLOR_ACTIVEBORDER);
+        }
+        p.ground = PartPixel(menu, MENU_POPUPBACKGROUND, 0, 4, 4, p.ground);
+        p.edge = PartPixel(menu, MENU_POPUPBORDERS, 0, 0, 0, p.edge);
+        uint32_t hot = PartPixel(menu, MENU_POPUPITEM, MPI_HOT, 4, 4, MixRgb(p.ground, p.text, 0.16));
+        COLORREF text;
+        if (SUCCEEDED(GetThemeColor(menu, MENU_POPUPITEM, MPI_NORMAL, TMT_TEXTCOLOR, &text))) {
+            p.text = (GetRValue(text) << 16) | (GetGValue(text) << 8) | GetBValue(text);
+        } else if (!sysUsable) {
+            p.text = PaletteLuma(p.ground) < 0.5 ? 0xFFFFFF : 0x000000;
+        }
+        // The theme's own hot item for hovering, unless it hardly shows on
+        // the ground; a quieter step of it for a selected row or a pressed
+        // button.
+        if (std::abs(PaletteLuma(hot) - PaletteLuma(p.ground)) < 0.06) hot = MixRgb(p.ground, p.text, 0.16);
+        p.hover = hot;
+        p.raised = MixRgb(p.ground, hot, 0.5);
+        p.line = PartPixel(menu, MENU_POPUPSEPARATOR, 0, 4, 4, MixRgb(p.ground, p.text, 0.2));
+        if (p.line == p.ground) p.line = MixRgb(p.ground, p.text, 0.2);
+        p.muted = MixRgb(p.ground, p.text, 0.72);
+        p.dim = MixRgb(p.ground, p.text, 0.45);
+        // Its own grey text for faint text, when that can be read on the ground.
+        if (sysUsable && std::abs(PaletteLuma(sys(COLOR_GRAYTEXT)) - PaletteLuma(p.ground)) >= 0.18)
+            p.dim = sys(COLOR_GRAYTEXT);
+        // Warnings and errors keep their meaning; only their lightness
+        // follows the ground.
+        bool dark = PaletteLuma(p.ground) < 0.5;
+        p.warn = dark ? 0xF5A97F : 0xB35A00;
+        p.bad = dark ? 0xF38BA8 : 0xC42B1C;
+        // Its own highlight as the accent, when it stands out from the
+        // ground; then the style's Highlight system colour; Windows' accent
+        // colour last.
+        uint32_t styleAccent = sysUsable ? sys(COLOR_HIGHLIGHT) : WindowsAccent();
+        if (std::abs(PaletteLuma(styleAccent) - PaletteLuma(p.ground)) < 0.25) styleAccent = WindowsAccent();
+        p.accent = std::abs(PaletteLuma(hot) - PaletteLuma(p.ground)) >= 0.25 ? hot : styleAccent;
+        if (std::abs(PaletteLuma(p.accent) - PaletteLuma(p.ground)) < 0.25) p.accent = MixRgb(p.accent, p.text, 0.5);
+        p.tourne = false;
+        CloseThemeData(menu);
+    }
+    if (host) DestroyWindow(host);
+    CloseThemeFile(&file);
+
+    AcquireSRWLockExclusive(&lock);
+    cachedKey = key;
+    cachedOk = ok;
+    cached = p;
+    ReleaseSRWLockExclusive(&lock);
+    if (ok) *out = p;
+    return ok;
+}
+
+// A theme name, as StartAllBack stores it, to its file in StartAllBack's
+// Styles folder or Tourne's; a full path stays as it is.
+std::wstring ThemeStyleFile(std::wstring const& name) {
+    if (name.empty() || name == L"none") return {};
+    auto exists = [](std::wstring const& path) {
+        DWORD a = GetFileAttributesW(path.c_str());
+        return a != INVALID_FILE_ATTRIBUTES && !(a & FILE_ATTRIBUTE_DIRECTORY);
+    };
+    if (name.find(L'\\') != std::wstring::npos) return exists(name) ? name : L"";
+    for (PCWSTR folder : {L"%ProgramFiles%\\StartAllBack\\Styles\\", L"%LOCALAPPDATA%\\Tourne\\Styles\\"}) {
+        WCHAR expanded[MAX_PATH * 2];
+        if (!ExpandEnvironmentStringsW(folder, expanded, ARRAYSIZE(expanded))) continue;
+        std::wstring path = expanded + name;
+        if (exists(path)) return path;
+    }
+    return {};
+}
+
+// The taskbar's theme file: its Visual style setting (read by its full name,
+// through a variable, so the build doesn't file it under the part reading
+// it), else the one StartAllBack is set to. Empty for none.
+std::wstring TaskbarThemeFile() {
+    constexpr PCWSTR kTaskbarStyleSetting = L"taskbar.style";
+    PCWSTR value = Wh_GetStringSetting(kTaskbarStyleSetting);
+    std::wstring name = value ? value : L"";
+    Wh_FreeStringSetting(value);
+    if (name.empty() || name == L"startallback") {
+        WCHAR sab[MAX_PATH * 2] = L"";
+        DWORD size = sizeof(sab);
+        RegGetValueW(HKEY_CURRENT_USER, L"Software\\StartIsBack", L"TaskbarStyle", RRF_RT_REG_SZ, nullptr, sab, &size);
+        name = sab;
+    }
+    return ThemeStyleFile(name);
+}
+
+bool IsThemeScheme(std::wstring_view key) {
+    return key == L"visualStyle" || key == L"taskbarStyle";
+}
+
+// A colour scheme by its key, including the two taken from a theme.
+Palette SuiteSchemePalette(std::wstring_view key) {
+    if (!IsThemeScheme(key)) return SchemePalette(key);
+    bool light = SystemUsesLightTheme();
+    Palette p = NativePalette(light);
+    if (key == L"taskbarStyle" && PaletteFromThemeFile(TaskbarThemeFile(), light, &p)) return p;
+    PaletteFromThemeFile(CurrentThemeFile(), light, &p);
+    return p;
+}
+
+Palette g_palette = SchemePalette(L"tourne");
+void ApplyPaletteToUi();
+
+// Which colours an icon was drawn in: a change of scheme redraws every icon.
+uint64_t PaletteKey() {
+    auto const& p = g_palette;
+    uint64_t hash = 14695981039346656037ull;
+    for (uint32_t v : {p.ground, p.raised, p.line, p.edge, p.text, p.accent, p.muted, p.dim, p.warn,
+                       p.bad, p.hover}) {
+        hash = (hash ^ v) * 1099511628211ull;
+    }
+    return hash;
+}
+
+struct Settings {
+    std::wstring scheme = L"tourne";
+    std::string tone = "sage";
+    bool shade = true;
+    std::array<bool, kIconCount> enabled{};
+    bool trayTheme = true;
+    bool tourneTooltips = true;
+    std::wstring calendarIcs;
+    bool calendarAdd = false;  // a right click on a day: a new event, through Google Calendar's page
+    std::vector<std::wstring> calendarAccounts;  // Google accounts to open that page as (first: the default)
+    std::wstring doubleClickApps;
+    bool flyoutAutoWidth = true;
+    int flyoutMaxWidth = 480;  // At 100% scale.
+    bool overflowFolders = true;
+    bool allAppIcons = false;  // nothing starts in the hidden icons flyout
+    int flyoutAway = 0, flyoutAlong = 0;  // At 100% scale; away is added to the usual 8 px.
+    bool menuByTaskbar = false;           // the icons' menus clear of the taskbar, not at the pointer
+    int menuAlign = 0;                    // -1 ending at the icon, 0 centred, 1 starting at it
+    int menuAway = 0, menuAlong = 0;      // At 100% scale.
+    bool nearbyWifi = true;    // list nearby networks (Windows counts that as location data)
+    bool locationNote = true;  // say so when Windows withholds the list
+};
+
+Settings LoadSettings() {
+    Settings settings;
+    WindhawkUtils::StringSetting tone =
+        WindhawkUtils::StringSetting::make(L"tone");
+    if (wcscmp(tone.get(), L"ink") == 0) {
+        settings.tone = "ink";
+    } else if (wcscmp(tone.get(), L"alt") == 0) {
+        settings.tone = "alt";
+    }
+    settings.shade = Wh_GetIntSetting(L"shade");
+    {
+        WindhawkUtils::StringSetting scheme = WindhawkUtils::StringSetting::make(L"scheme");
+        settings.scheme = scheme.get();
+        g_palette = SuiteSchemePalette(settings.scheme);
+        ApplyPaletteToUi();
+    }
+    settings.trayTheme = Wh_GetIntSetting(L"trayTheme");
+    settings.tourneTooltips = Wh_GetIntSetting(L"tourneTooltips");
+    settings.calendarIcs = WindhawkUtils::StringSetting::make(L"calendarIcs").get();
+    settings.calendarAdd = Wh_GetIntSetting(L"calendarAdd") != 0;
+    std::wstring accounts = WindhawkUtils::StringSetting::make(L"calendarAccounts").get();
+    for (size_t start = 0; start < accounts.size();) {
+        size_t end = accounts.find_first_of(L",; ", start);
+        if (end == std::wstring::npos) end = accounts.size();
+        if (end > start && accounts.find(L'@', start) < end) settings.calendarAccounts.push_back(accounts.substr(start, end - start));
+        start = end + 1;
+    }
+    settings.doubleClickApps = WindhawkUtils::StringSetting::make(L"doubleClickApps").get();
+    // Unset (an installed mod that predates these) means the defaults.
+    settings.flyoutAutoWidth = wcscmp(WindhawkUtils::StringSetting::make(L"flyoutWidth").get(), L"fixed") != 0;
+    int maxWidth = Wh_GetIntSetting(L"flyoutMaxWidth");
+    settings.flyoutMaxWidth = maxWidth <= 0 ? 480 : std::clamp(maxWidth, 300, 1200);
+    settings.overflowFolders = Wh_GetIntSetting(L"overflowFolders") != 0;
+    // Unset (an installed mod that predates these): as before, menus at the pointer.
+    settings.flyoutAway = std::clamp(Wh_GetIntSetting(L"flyoutAway"), -8, 400);
+    settings.flyoutAlong = std::clamp(Wh_GetIntSetting(L"flyoutAlong"), -2000, 2000);
+    settings.menuByTaskbar = !wcscmp(WindhawkUtils::StringSetting::make(L"menuPlace").get(), L"taskbar");
+    auto menuAlign = WindhawkUtils::StringSetting::make(L"menuAlign");
+    settings.menuAlign = !wcscmp(menuAlign.get(), L"after") ? 1 : !wcscmp(menuAlign.get(), L"before") ? -1 : 0;
+    settings.menuAway = std::clamp(Wh_GetIntSetting(L"menuAway"), -200, 400);
+    settings.menuAlong = std::clamp(Wh_GetIntSetting(L"menuAlong"), -2000, 2000);
+    auto nearbyWifi = WindhawkUtils::StringSetting::make(L"nearbyWifi");
+    settings.nearbyWifi = wcscmp(nearbyWifi.get(), L"off") != 0;  // (unset: list)
+    settings.locationNote = settings.nearbyWifi && wcscmp(nearbyWifi.get(), L"quiet") != 0;
+    constexpr PCWSTR kAllAppIcons = L"taskbar.allAppIcons";  // the Taskbar part's setting, by full name
+    settings.allAppIcons = Wh_GetIntSetting(kAllAppIcons) != 0;
+    for (int k = 0; k < kIconCount; k++) {
+        settings.enabled[k] = Wh_GetIntSetting(L"icons.%s", kIconKeys[k]);
+    }
+    return settings;
+}
+
+Settings g_settings;  // Mod thread only.
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel art, ported from the design's generator: 12x12 grids drawn on a 13x13
+// canvas with a one-pixel drop shade, at whole-number scales only.
+
+using Grid = std::array<std::array<char, 12>, 12>;
+
+Grid P(std::initializer_list<std::string_view> rows) {
+    Grid g;
+    for (auto& row : g) {
+        row.fill('.');
+    }
+    int y = 0;
+    for (auto row : rows) {
+        for (int x = 0; x < 12 && x < (int)row.size(); x++) {
+            g[y][x] = row[x];
+        }
+        if (++y == 12) {
+            break;
+        }
+    }
+    return g;
+}
+
+void Put(Grid& g, std::initializer_list<std::pair<int, int>> pts, char ch) {
+    for (auto [x, y] : pts) {
+        if (x >= 0 && x < 12 && y >= 0 && y < 12) {
+            g[y][x] = ch;
+        }
+    }
+}
+
+const std::map<std::string_view, std::array<std::string_view, 5>> kBadges = {
+    {"ok", {".....", "....b", "...b.", "b.b..", ".b..."}},
+    {"warn", {"..b..", "..b..", "..b..", ".....", "..b.."}},
+    {"err", {"b...b", ".b.b.", "..b..", ".b.b.", "b...b"}},
+    {"off", {"b...b", ".b.b.", "..b..", ".b.b.", "b...b"}},
+    {"dot", {".....", ".bbb.", ".bbb.", ".bbb.", "....."}},
+    {"down", {"..b..", "..b..", "b.b.b", ".bbb.", "..b.."}},
+};
+
+Grid Badge(Grid g, std::string_view name) {
+    auto const& rows = kBadges.at(name);
+    std::vector<std::pair<int, int>> pts;
+    for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < 5; x++) {
+            if (rows[y][x] != '.') {
+                pts.push_back({x + 7, y + 7});
+            }
+        }
+    }
+    for (auto [x, y] : pts) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int X = x + dx, Y = y + dy;
+                if (X >= 0 && X < 12 && Y >= 0 && Y < 12 && g[Y][X] != 'b') {
+                    g[Y][X] = '.';
+                }
+            }
+        }
+    }
+    for (auto [x, y] : pts) {
+        g[y][x] = 'b';
+    }
+    return g;
+}
+
+Grid Wifi(int n) {
+    Grid g = P({});
+    Put(g, {{3, 1}, {4, 1}, {5, 1}, {6, 1}, {7, 1}, {8, 1}, {1, 2}, {2, 2}, {9, 2}, {10, 2}, {0, 3}, {11, 3}},
+        n >= 4 ? '#' : 'd');
+    Put(g, {{4, 4}, {5, 4}, {6, 4}, {7, 4}, {2, 5}, {3, 5}, {8, 5}, {9, 5}}, n >= 3 ? '#' : 'd');
+    Put(g, {{5, 7}, {6, 7}, {4, 8}, {7, 8}}, n >= 2 ? '#' : 'd');
+    Put(g, {{5, 10}, {6, 10}, {5, 11}, {6, 11}}, n >= 1 ? '#' : 'd');
+    return g;
+}
+
+Grid Battery(int level, bool charging = false) {
+    Grid g = P({"", "", "", "##########..", "#........#..", "#........##.",
+                "#........##.", "#........#..", "##########.."});
+    if (charging) {
+        Put(g, {{5, 4}, {6, 4}, {3, 5}, {4, 5}, {5, 5}, {4, 6}, {5, 6}, {6, 6}, {3, 7}, {4, 7}}, 'o');
+    } else {
+        for (int i = 0; i < level; i++) {
+            Put(g, {{2 + i, 5}, {2 + i, 6}}, 'o');
+        }
+    }
+    return g;
+}
+
+// level: 0 to 3, or -1 for muted.
+Grid Speaker(int level) {
+    Grid g = P({"", ".....#......", "....##......", ".###.#......", ".#...#......",
+                ".#...#......", ".#...#......", ".###.#......", "....##......", ".....#......"});
+    if (level < 0) {
+        auto const& rows = kBadges.at("err");
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                if (rows[y][x] != '.') {
+                    g[y + 3][x + 7] = 'b';
+                }
+            }
+        }
+        return g;
+    }
+    if (level >= 1) Put(g, {{7, 4}, {7, 5}, {7, 6}}, '#');
+    if (level >= 2) Put(g, {{9, 3}, {9, 4}, {9, 5}, {9, 6}, {9, 7}}, '#');
+    if (level >= 3) Put(g, {{11, 2}, {11, 3}, {11, 4}, {11, 5}, {11, 6}, {11, 7}, {11, 8}}, '#');
+    return g;
+}
+
+const Grid kArtMonitor = P({"", ".##########.", ".#........#.", ".#........#.", ".#........#.",
+                            ".#........#.", ".##########.", ".....##.....", "...######..."});
+const Grid kArtPlane = P({".....##.....", ".....##.....", "....####....", "..########..",
+                          "############", ".....##.....", ".....##.....", "....####....",
+                          "...######...", "...##..##..."});
+const Grid kArtLock = P({"", "....####....", "...#....#...", "...#....#...", "..########..",
+                         "..#......#..", "..#..##..#..", "..#..##..#..", "..#......#..", "..########.."});
+const Grid kArtBell = P({".....##.....", "....####....", "...#....#...", "...#....#...", "...#....#...",
+                         "..#......#..", "..#......#..", ".#........#.", ".##########.", "", ".....##....."});
+const Grid kArtMoon = P({"", "....####....", "...###......", "..###.......", "..##........",
+                         "..##........", "..##........", "..###....##.", "...#######..", "....#####..."});
+const Grid kArtSun = P({".....##.....", ".#...##...#.", "..#......#..", "...######...", "...#....#...",
+                        "##.#....#.##", "##.#....#.##", "...#....#...", "...######...", "..#......#..",
+                        ".#...##...#.", ".....##....."});
+const Grid kArtAccess = P({".....##.....", ".....##.....", "", ".##########.", ".....##.....",
+                           ".....##.....", ".....##.....", "....#..#....", "...#....#...", "..#......#.."});
+const Grid kArtKeyboard = P({"", "", "", "############", "#..........#", "#.#.#.#.#..#",
+                             "#..........#", "#.#......#.#", "#..........#", "############"});
+const Grid kArtPower = P({".....##.....", ".....##.....", "..#..##..#..", ".#...##...#.", "#....##....#",
+                          "#..........#", "#..........#", "#..........#", ".#........#.", "..########.."});
+const Grid kArtMic = P({"....####....", "....#..#....", "....#..#....", "....#..#....", "..#.#..#.#..",
+                        "..#.####.#..", "..#......#..", "...######...", ".....##.....", "...######..."});
+const Grid kArtCamera = P({"", "", "", "########....", "#......#..#.", "#......####.",
+                           "#......####.", "#......#..#.", "########...."});
+const Grid kArtLocationPin = P({"....####....", "...#....#...", "..#..##..#..", "..#.#..#.#..", "..#..##..#..",
+                                "...#....#...", "...#....#...", "....#..#....", "....#..#....", ".....##....."});
+const Grid kArtTrash = P({"....####....", ".##########.", "..#......#..", "..#.#..#.#..", "..#.#..#.#..",
+                          "..#.#..#.#..", "..#.#..#.#..", "..#.#..#.#..", "..#......#..", "...######..."});
+const Grid kArtClipboard = P({"....####....", ".###.##.###.", ".#........#.", ".#.######.#.", ".#........#.",
+                              ".#.######.#.", ".#........#.", ".#.####...#.", ".#........#.", ".##########."});
+// The design's overflow chevron; "down" is the same rows upside down, which
+// also moves it to the top of the canvas, as in the design.
+const Grid kArtChevronUp = P({"", "", "", "", ".....##.....", "....####....", "...##..##...", "..##....##.."});
+const Grid kArtChevronDown = P({"..##....##..", "...##..##...", "....####....", ".....##....."});
+
+// Shapes for the icons that stand in for other programs' tray icons, and for
+// the Windows Security flyout, from the design.
+const Grid kArtShield = P({".....##.....", "...##..##...", ".##......##.", ".#........#.", ".#........#.", ".#........#.",
+                           ".#........#.", "..#......#..", "..#......#..", "...#....#...", "....#..#....", ".....##....."});
+const Grid kArtHeart = P({"", "", ".###....###.", "#...#..#...#", "#....##....#", "#..........#", ".#........#.",
+                          "..#......#..", "...#....#...", "....#..#....", ".....##....."});
+const Grid kArtHeadphones = P({"", "...######...", "..#......#..", ".#........#.", ".#........#.", ".#........#.",
+                               "###......###", "###......###", "###......###", "###......###"});
+const Grid kArtBluetooth = P({"......#.....", "......##....", "......#.#...", "...#..#..#..", "....#.#.#...", ".....##.....",
+                              ".....##.....", "....#.#.#...", "...#..#..#..", "......#.#...", "......##....", "......#....."});
+const Grid kArtUsb = P({"....####....", "....#..#....", "....####....", "...######...", "...#....#...", "...#....#...",
+                        "...#....#...", "...#....#...", "...#....#...", "...######..."});
+const Grid kArtPrinter = P({"", "...######...", "...#....#...", "############", "#..........#", "#.......o..#",
+                            "#..........#", "#..######..#", "...#....#...", "...######..."});
+const Grid kArtPhone = P({"...######...", "...#....#...", "...#....#...", "...#....#...", "...#....#...", "...#....#...",
+                          "...#....#...", "...#....#...", "...#.##.#...", "...######..."});
+const Grid kArtCloud = P({"", "", "....####....", "...#....#...", ".###.....##.", "#..........#", "#..........#",
+                          "#..........#", ".##########."});
+const Grid kArtChat = P({"", ".##########.", ".#........#.", ".#.######.#.", ".#........#.", ".#.####...#.",
+                         ".#........#.", ".#..#######.", ".#.#........", ".##........."});
+const Grid kArtPad = P({"", "", "", "..########..", ".#........#.", "#..#....o..#", "#.###..o.o.#", "#..#....o..#",
+                        "#...####...#", "#..#....#..#", ".##......##."});
+const Grid kArtUpdate = P({"", "...######...", "..#......#.#", ".#........##", ".#.......###", ".#..........",
+                           "..........#.", "###.......#.", "##........#.", "#.#......#..", "...######..."});
+
+const Grid kArtGpu = P({"", "", "##########..", "#........###", "#.###.###..#", "#.#.#.#.#..#",
+                        "#.###.###..#", "#........###", "##########..", "..#.#.#.#..."});
+const Grid kArtThermometer = P({"....##......", "...#..#.##..", "...#..#.....", "...#..#.##..",
+                                "...#oo#.....", "...#oo#.##..", "...#oo#.....", "..#oooo#....",
+                                ".#oooooo#...", ".#oooooo#...", "..#oooo#....", "...####....."});
+
+const Grid kArtGear = P({"....####....", ".##.####.##.", ".##########.", "..###..###..",
+                         "####....####", "###......###", "###......###", "####....####",
+                         "..###..###..", ".##########.", ".##.####.##.", "....####...."});
+const Grid kArtSpark = P({".....##.....", ".#...##...#.", "..#..##..#..", "...#.##.#...",
+                          "....####....", "############", "############", "....####....",
+                          "...#.##.#...", "..#..##..#..", ".#...##...#.", ".....##....."});
+const Grid kArtSpotify = P({"...######...", ".##......##.", ".#.######.#.", "#.#......#.#",
+                            "#...####...#", "#..#....#..#", "#....##....#", "#...#..#...#",
+                            "#..........#", ".#........#.", ".##......##.", "...######..."});
+const Grid kArtTiles = P({"", "############", "#....#.....#", "#....#.....#", "#....#.....#",
+                          "#....#######", "#....#.....#", "#....#.....#", "#....#.....#",
+                          "############"});
+
+const Grid kArtNamedShot = P({"", "###......###", "#..........#", "#..........#", "",
+                              "...oooooo...", "", "...oooo.....", "#..........#",
+                              "#..........#", "###......###"});
+const Grid kArtWallpaper = P({"", "############", "#..........#", "#.......oo.#", "#.......oo.#",
+                              "#...#......#", "#..###..#..#", "#.#####.##.#", "#.########.#",
+                              "############"});
+// A fan: one blade, turned a quarter at a time around the hub.
+Grid Pinwheel() {
+    Grid g = P({});
+    std::vector<std::pair<int, int>> blade = {{5, 4}, {5, 3}, {4, 2}, {5, 2}, {6, 2}, {3, 1},
+                                              {4, 1}, {5, 1}, {6, 1}, {3, 0}, {4, 0}, {5, 0}};
+    for (int turn = 0; turn < 4; turn++) {
+        for (auto& [x, y] : blade) {
+            g[y][x] = '#';
+            int turnedX = 11 - y;
+            y = x;
+            x = turnedX;
+        }
+    }
+    Put(g, {{5, 5}, {6, 5}, {5, 6}, {6, 6}}, 'o');
+    return g;
+}
+const Grid kArtFan = Pinwheel();
+// Pixel digits for sensor readings: 4x7 for up to two digits, 3x5 for three.
+constexpr std::array<std::array<std::string_view, 7>, 10> kDigitsLarge = {{
+    {".##.", "#..#", "#..#", "#..#", "#..#", "#..#", ".##."},
+    {"..#.", ".##.", "..#.", "..#.", "..#.", "..#.", ".###"},
+    {".##.", "#..#", "...#", "..#.", ".#..", "#...", "####"},
+    {"###.", "...#", "...#", ".##.", "...#", "...#", "###."},
+    {"#..#", "#..#", "#..#", "####", "...#", "...#", "...#"},
+    {"####", "#...", "###.", "...#", "...#", "#..#", ".##."},
+    {".##.", "#...", "###.", "#..#", "#..#", "#..#", ".##."},
+    {"####", "...#", "..#.", "..#.", ".#..", ".#..", ".#.."},
+    {".##.", "#..#", "#..#", ".##.", "#..#", "#..#", ".##."},
+    {".##.", "#..#", "#..#", ".###", "...#", "...#", ".##."},
+}};
+constexpr std::array<std::array<std::string_view, 5>, 10> kDigitsSmall = {{
+    {"###", "#.#", "#.#", "#.#", "###"},
+    {".#.", "##.", ".#.", ".#.", "###"},
+    {"###", "..#", "###", "#..", "###"},
+    {"###", "..#", "###", "..#", "###"},
+    {"#.#", "#.#", "###", "..#", "..#"},
+    {"###", "#..", "###", "..#", "###"},
+    {"###", "#..", "###", "#.#", "###"},
+    {"###", "..#", "..#", ".#.", ".#."},
+    {"###", "#.#", "###", "#.#", "###"},
+    {"###", "#.#", "###", "..#", "###"},
+}};
+struct Art {
+    Grid grid;
+    const char* tone;    // Overrides the base tone.
+    const char* accent;  // 'o' pixels.
+    const char* badge;   // 'b' pixels.
+
+    Art(Grid grid,
+        const char* tone = nullptr,
+        const char* accent = nullptr,
+        const char* badge = nullptr)
+        : grid(grid), tone(tone), accent(accent), badge(badge) {}
+};
+
+// A sensor reading, from a "readout:<value>[:hot]" design. Hot readings carry
+// the notification bell's dot, with the digits moved up to make room.
+Art Readout(std::string_view id) {
+    std::string_view rest = id.substr(8);
+    int value = std::clamp(atoi(std::string(rest.substr(0, rest.find(':'))).c_str()), 0, 999);
+    std::string text = std::to_string(value);
+    Grid g = P({});
+    bool large = text.size() <= 2;
+    int width = large ? 4 : 3;
+    int height = large ? 7 : 5;
+    int x0 = (12 - ((int)text.size() * (width + 1) - 1)) / 2;
+    bool hot = rest.find(":hot") != std::string_view::npos;
+    int y0 = hot ? 0 : (12 - height) / 2;
+    for (size_t n = 0; n < text.size(); n++) {
+        int digit = text[n] - '0';
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                char ch = large ? kDigitsLarge[digit][y][x] : kDigitsSmall[digit][y][x];
+                if (ch == '#') {
+                    g[y0 + y][x0 + (int)n * (width + 1) + x] = '#';
+                }
+            }
+        }
+    }
+    if (hot) {
+        return {Badge(g, "dot"), nullptr, nullptr, "dot"};
+    }
+    return {g};
+}
+// Device batteries: a halo around the device's pictogram. The canvas edge
+// fills clockwise from the top with the level, and the pictogram sits inside.
+// Ids are "devbat:<kind>:<level>:<state>[:nopict]"; the state is normal,
+// warn, low, charge, charge2 (the other breathing frame), asleep or unknown.
+const std::map<std::string_view, std::array<std::string_view, 8>> kDevicePictograms = {
+    {"headset", {"..####..", ".#....#.", "#......#", "#......#", "##....##", "##....##", "##....##", "........"}},
+    {"mouse", {"..####..", ".#.##.#.", ".#.##.#.", ".######.", ".#....#.", ".#....#.", ".#....#.", "..####.."}},
+    {"keyboard", {"........", "........", "########", "#.#.#.##", "##.#.#.#", "#.####.#", "########", "........"}},
+    {"gamepad", {"........", ".######.", "#......#", "#.#..#.#", "###.#.##", "#.#..#.#", "#.####.#", "##....##"}},
+    {"bluetooth", {"...#....", "...##...", ".#.#.#..", "..###...", "..###...", ".#.#.#..", "...##...", "...#...."}},
+};
+
+// The 44 edge cells, clockwise from the middle of the top.
+std::array<std::pair<int, int>, 44> HaloCells() {
+    std::array<std::pair<int, int>, 44> cells;
+    int n = 0;
+    for (int x = 6; x <= 11; x++) cells[n++] = {x, 0};
+    for (int y = 1; y <= 11; y++) cells[n++] = {11, y};
+    for (int x = 10; x >= 0; x--) cells[n++] = {x, 11};
+    for (int y = 10; y >= 0; y--) cells[n++] = {0, y};
+    for (int x = 1; x <= 5; x++) cells[n++] = {x, 0};
+    return cells;
+}
+
+const char* BaseToneName();
+
+Art DeviceBatteryArt(std::string_view id) {
+    std::vector<std::string_view> parts;
+    for (size_t start = 0;;) {
+        size_t colon = id.find(':', start);
+        parts.push_back(id.substr(start, colon == std::string_view::npos ? std::string_view::npos : colon - start));
+        if (colon == std::string_view::npos) {
+            break;
+        }
+        start = colon + 1;
+    }
+    if (parts.size() < 4) {
+        return {P({})};
+    }
+    std::string_view kind = parts[1];
+    int level = atoi(std::string(parts[2]).c_str());
+    std::string_view state = parts[3];
+    bool pictogram = !(parts.size() > 4 && parts[4] == "nopict");
+
+    Grid g = P({});
+    static const auto cells = HaloCells();
+    int filled = level < 0 ? 0 : (level * 44 + 50) / 100;
+    if (level > 0 && filled == 0) {
+        filled = 1;
+    }
+    for (int i = 0; i < 44; i++) {
+        g[cells[i].second][cells[i].first] = i < filled ? 'o' : 'd';
+    }
+    if (pictogram) {
+        auto it = kDevicePictograms.find(kind);
+        auto const& rows = it != kDevicePictograms.end() ? it->second : kDevicePictograms.at("bluetooth");
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (rows[y][x] == '#') {
+                    g[y + 2][x + 2] = '#';
+                }
+            }
+        }
+    }
+    const char* accent = state == "warn"      ? "coral"
+                         : state == "low"     ? "red"
+                         : state == "charge"  ? "green"
+                         : state == "charge2" ? "alt"
+                         : state == "asleep"  ? "alt"
+                                              : BaseToneName();
+    return {g, state == "asleep" ? "alt" : nullptr, accent};
+}
+
+Art ArtFor(std::string_view id) {
+    if (id.starts_with("devbat:")) return DeviceBatteryArt(id);
+    if (id == "wifi-4") return {Wifi(4)};
+    if (id == "wifi-3") return {Wifi(3)};
+    if (id == "wifi-2") return {Wifi(2)};
+    if (id == "wifi-1") return {Wifi(1)};
+    if (id == "wifi-no-internet") return {Badge(Wifi(4), "warn"), nullptr, nullptr, "warn"};
+    if (id == "wifi-off") return {Badge(Wifi(0), "off"), nullptr, nullptr, "off"};
+    if (id == "wifi-disconnected") return {Badge(Wifi(0), "dot"), nullptr, nullptr, "dot"};
+    if (id == "ethernet") return {kArtMonitor};
+    if (id == "ethernet-no-internet") return {Badge(kArtMonitor, "warn"), nullptr, nullptr, "warn"};
+    if (id == "ethernet-unplugged") return {Badge(kArtMonitor, "err"), nullptr, nullptr, "err"};
+    if (id == "airplane") return {kArtPlane};
+    if (id == "vpn") return {kArtLock};
+    if (id == "vpn-on") return {Badge(kArtLock, "ok"), nullptr, nullptr, "ok"};
+    if (id == "battery-full") return {Battery(6), nullptr, "green"};
+    if (id == "battery-high") return {Battery(4), nullptr, "green"};
+    if (id == "battery-mid") return {Battery(3), nullptr, "sage"};
+    if (id == "battery-low") return {Badge(Battery(1), "warn"), nullptr, "red", "warn"};
+    if (id == "battery-charging") return {Battery(0, true), nullptr, "green"};
+    if (id == "battery-saver") return {Badge(Battery(2), "dot"), nullptr, "coral", "dot"};
+    if (id == "battery-none") return {Badge(Battery(0), "off"), nullptr, nullptr, "off"};
+    if (id == "audio-mute") return {Speaker(-1), nullptr, nullptr, "err"};
+    if (id == "audio-0") return {Speaker(0)};
+    if (id == "audio-low") return {Speaker(1)};
+    if (id == "audio-mid") return {Speaker(2)};
+    if (id == "audio-high") return {Speaker(3)};
+    if (id == "audio-no-device") return {Badge(Speaker(0), "warn"), nullptr, nullptr, "warn"};
+    if (id == "bell") return {kArtBell};
+    if (id == "bell-dnd") return {Badge(kArtBell, "off"), nullptr, nullptr, "off"};
+    if (id == "bell-unread") return {Badge(kArtBell, "dot"), nullptr, nullptr, "dot"};
+    if (id == "focus") return {kArtMoon};
+    if (id == "night-light") return {kArtSun, "coral"};
+    if (id == "night-light-off") return {kArtSun, "alt"};
+    if (id == "brightness") return {kArtSun};
+    if (id == "mic-in-use") return {Badge(kArtMic, "dot"), nullptr, nullptr, "dot"};
+    if (id == "camera-in-use") return {Badge(kArtCamera, "dot"), nullptr, nullptr, "dot"};
+    if (id == "location-in-use") return {Badge(kArtLocationPin, "dot"), nullptr, nullptr, "dot"};
+    if (id == "accessibility") return {kArtAccess};
+    if (id == "power") return {kArtPower};
+    if (id == "keyboard") return {kArtKeyboard};
+    if (id == "app-bin") return {kArtTrash};
+    if (id == "app-clipboard") return {kArtClipboard};
+    if (id == "app-capture") return {kArtCamera};
+    if (id == "overflow-up") return {kArtChevronUp, "ink"};
+    if (id == "overflow-down") return {kArtChevronDown, "ink"};
+    if (id == "security-ok") return {Badge(kArtShield, "ok"), nullptr, nullptr, "ok"};
+    if (id == "security-warn") return {Badge(kArtShield, "warn"), nullptr, nullptr, "warn"};
+    if (id == "security-alert") return {Badge(kArtShield, "err"), nullptr, nullptr, "err"};
+    if (id == "security-off") return {Badge(kArtShield, "off"), "alt", nullptr, "off"};
+    if (id == "firewall-on") return {Badge(kArtLock, "ok"), nullptr, nullptr, "ok"};
+    if (id == "firewall-off") return {Badge(kArtLock, "err"), nullptr, nullptr, "err"};
+    if (id == "health-ok") return {Badge(kArtHeart, "ok"), nullptr, nullptr, "ok"};
+    if (id == "health-warn") return {Badge(kArtHeart, "warn"), nullptr, nullptr, "warn"};
+    if (id == "health-alert") return {Badge(kArtHeart, "err"), nullptr, nullptr, "err"};
+    if (id == "update") return {kArtUpdate};
+    if (id == "update-available") return {Badge(kArtUpdate, "dot"), nullptr, nullptr, "dot"};
+    if (id == "restart-required") return {Badge(kArtPower, "warn"), nullptr, nullptr, "warn"};
+    if (id == "bluetooth") return {kArtBluetooth};
+    if (id == "bluetooth-connected") return {Badge(kArtBluetooth, "ok"), nullptr, nullptr, "ok"};
+    if (id == "bluetooth-off") return {Badge(kArtBluetooth, "off"), "alt", nullptr, "off"};
+    if (id == "usb") return {kArtUsb};
+    if (id == "printer") return {kArtPrinter, nullptr, "green"};
+    if (id == "phone") return {Badge(kArtPhone, "ok"), nullptr, nullptr, "ok"};
+    if (id == "mic") return {kArtMic};
+    if (id == "app-audio") return {kArtHeadphones, "coral"};
+    if (id == "app-chat") return {kArtChat};
+    if (id == "app-chat-unread") return {Badge(kArtChat, "dot"), nullptr, nullptr, "dot"};
+    if (id == "app-cloud") return {Badge(kArtCloud, "ok"), nullptr, nullptr, "ok"};
+    if (id == "app-cloud-sync") return {Badge(kArtCloud, "down"), nullptr, nullptr, "down"};
+    if (id == "app-cloud-error") return {Badge(kArtCloud, "err"), nullptr, nullptr, "err"};
+    if (id == "app-system") return {kArtGear};
+    if (id == "app-claude") return {kArtSpark, "coral"};
+    if (id == "app-spotify") return {kArtSpotify, "green"};
+    if (id == "app-fan") return {kArtFan};
+    if (id == "app-tiling") return {kArtTiles};
+    if (id == "app-screenshot") return {kArtNamedShot};
+    if (id == "app-screenshot-paused") return {Badge(kArtNamedShot, "off"), "alt", nullptr, "off"};
+    if (id == "app-wallpaper") return {kArtWallpaper};
+    if (id == "app-wallpaper-paused") return {Badge(kArtWallpaper, "off"), "alt", nullptr, "off"};
+    if (id == "gpu") return {kArtGpu};
+    if (id == "sensor") return {kArtThermometer};
+    if (id.starts_with("readout:")) return Readout(id);
+    if (id == "app-game") return {kArtPad, nullptr, "coral"};
+    return {P({})};
+}
+
+const char* BaseToneName() {
+    return g_settings.tone == "ink" ? "ink" : g_settings.tone == "alt" ? "alt" : "sage";
+}
+
+// Tones by role, from the colour scheme (Tourne's are the original tones).
+uint32_t ToneColor(std::string_view tone) {
+    auto const& p = g_palette;
+    if (tone == "ink") return p.text;
+    if (tone == "green") return p.accent;
+    if (tone == "red") return p.bad;
+    if (tone == "coral") return p.warn;
+    if (tone == "alt") return p.dim;
+    if (tone == "dim") return p.line;
+    return p.muted;  // sage
+}
+
+uint32_t ShadeOf(uint32_t color) {
+    return PaletteShade(g_palette, color);
+}
+
+std::string_view BadgeTone(const char* badge) {
+    std::string_view b = badge ? badge : "";
+    if (b == "warn" || b == "dot") return "coral";
+    if (b == "err") return "red";
+    if (b == "off") return "alt";
+    return "green";
+}
+
+// 0xAARRGGBB pixels, straight alpha, size x size.
+std::vector<uint32_t> RenderArt(Art const& art,
+                                std::string_view baseTone,
+                                bool shade,
+                                int size) {
+    auto colorOf = [&](char ch) -> uint32_t {
+        switch (ch) {
+            case '#': return ToneColor(art.tone ? art.tone : baseTone);
+            case 'o': return ToneColor(art.accent ? art.accent : "coral");
+            case 'b': return ToneColor(BadgeTone(art.badge));
+            case 'd': return ToneColor("dim");
+        }
+        return 0;
+    };
+
+    uint32_t source[13][13] = {};
+    auto const& g = art.grid;
+    if (shade) {
+        for (int y = 0; y < 12; y++) {
+            for (int x = 0; x < 12; x++) {
+                char ch = g[y][x];
+                if (ch == '.' || ch == 'd') {
+                    continue;
+                }
+                bool below = y + 1 < 12 && x + 1 < 12 && g[y + 1][x + 1] != '.';
+                if (!below) {
+                    source[y + 1][x + 1] = 0xFF000000 | ShadeOf(colorOf(ch));
+                }
+            }
+        }
+    }
+    for (int y = 0; y < 12; y++) {
+        for (int x = 0; x < 12; x++) {
+            if (g[y][x] != '.') {
+                source[y][x] = 0xFF000000 | colorOf(g[y][x]);
+            }
+        }
+    }
+
+    std::vector<uint32_t> pixels((size_t)size * size, 0);
+    int scale = std::max(1, size / 13);
+    int offset = (size - 13 * scale) / 2;
+    for (int y = 0; y < 13 * scale; y++) {
+        for (int x = 0; x < 13 * scale; x++) {
+            int X = x + offset, Y = y + offset;
+            if (X >= 0 && X < size && Y >= 0 && Y < size) {
+                pixels[(size_t)Y * size + X] = source[y / scale][x / scale];
+            }
+        }
+    }
+    return pixels;
+}
+
+HBITMAP CreateDib(int width, int height, void** bits) {
+    BITMAPINFO info{};
+    info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    info.bmiHeader.biWidth = width;
+    info.bmiHeader.biHeight = -height;
+    info.bmiHeader.biPlanes = 1;
+    info.bmiHeader.biBitCount = 32;
+    info.bmiHeader.biCompression = BI_RGB;
+    return CreateDIBSection(nullptr, &info, DIB_RGB_COLORS, bits, nullptr, 0);
+}
+
+HICON CreateIconFromPixels(std::vector<uint32_t> const& pixels, int size) {
+    void* bits = nullptr;
+    HBITMAP color = CreateDib(size, size, &bits);
+    if (!color || !bits) {
+        return nullptr;
+    }
+    memcpy(bits, pixels.data(), pixels.size() * 4);
+
+    std::vector<BYTE> maskBits((size_t)((size + 15) / 16) * 2 * size, 0);
+    HBITMAP mask = CreateBitmap(size, size, 1, 1, maskBits.data());
+
+    ICONINFO iconInfo{};
+    iconInfo.fIcon = TRUE;
+    iconInfo.hbmMask = mask;
+    iconInfo.hbmColor = color;
+    HICON icon = CreateIconIndirect(&iconInfo);
+
+    DeleteObject(color);
+    DeleteObject(mask);
+    return icon;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Registry helpers
+
+bool ReadDword(HKEY root, PCWSTR path, PCWSTR name, DWORD* value) {
+    DWORD size = sizeof(*value);
+    return RegGetValueW(root, path, name, RRF_RT_REG_DWORD, nullptr, value,
+                        &size) == ERROR_SUCCESS;
+}
+
+bool ReadQword(HKEY key, PCWSTR name, ULONGLONG* value) {
+    DWORD size = sizeof(*value);
+    return RegGetValueW(key, nullptr, name, RRF_RT_REG_QWORD, nullptr, value,
+                        &size) == ERROR_SUCCESS;
+}
+
+constexpr WCHAR kRadioStatePath[] =
+    L"SYSTEM\\CurrentControlSet\\Control\\RadioManagement\\SystemRadioState";
+constexpr WCHAR kNotificationsPath[] =
+    L"Software\\Microsoft\\Windows\\CurrentVersion\\Notifications\\Settings";
+constexpr WCHAR kNightLightPath[] =
+    L"Software\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\"
+    L"DefaultAccount\\Current\\default$windows.data.bluelightreduction."
+    L"bluelightreductionstate\\windows.data.bluelightreduction."
+    L"bluelightreductionstate";
+constexpr WCHAR kConsentStorePath[] =
+    L"Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\"
+    L"ConsentStore\\";
+
+////////////////////////////////////////////////////////////////////////////////
+// State of each icon
+
+struct IconState {
+    std::string art;
+    std::wstring tip;
+    bool hidden = false;
+};
+
+std::wstring Utf8ToWide(std::string_view s) {
+    if (s.empty()) {
+        return {};
+    }
+    int n = MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), nullptr, 0);
+    std::wstring w(n, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), w.data(), n);
+    return w;
+}
+
+bool ContainsAny(std::wstring const& lower,
+                 std::initializer_list<std::wstring_view> words) {
+    return std::any_of(words.begin(), words.end(), [&](std::wstring_view w) {
+        return lower.find(w) != std::wstring::npos;
+    });
+}
+
+// Network (mod thread only).
+INetworkListManager* g_networkListManager;
+HANDLE g_wlan;
+
+struct NetworkInfo {
+    bool airplane = false;
+    bool wifiAdapter = false;
+    bool wifiRadioOff = false;
+    bool wifiConnected = false;
+    bool wifiInternet = false;
+    int wifiQuality = 0;
+    std::wstring ssid;
+    bool ethernetAdapter = false;
+    bool ethernetConnected = false;
+    bool ethernetInternet = false;
+    bool vpnConnected = false;
+    std::wstring vpnName;
+};
+
+NetworkInfo QueryNetwork() {
+    NetworkInfo info;
+
+    DWORD radio = 0;
+    info.airplane =
+        ReadDword(HKEY_LOCAL_MACHINE, kRadioStatePath, nullptr, &radio) && radio;
+
+    // Internet reachability and network name per adapter, as the Network List
+    // Manager sees it.
+    struct AdapterNetwork {
+        GUID adapter;
+        NLM_CONNECTIVITY flags;
+        std::wstring name;
+    };
+    std::vector<AdapterNetwork> connectivity;
+    if (g_networkListManager) {
+        IEnumNetworkConnections* connections = nullptr;
+        if (SUCCEEDED(g_networkListManager->GetNetworkConnections(&connections)) &&
+            connections) {
+            INetworkConnection* connection = nullptr;
+            ULONG fetched = 0;
+            while (connections->Next(1, &connection, &fetched) == S_OK &&
+                   fetched) {
+                GUID adapter{};
+                NLM_CONNECTIVITY flags = NLM_CONNECTIVITY_DISCONNECTED;
+                if (SUCCEEDED(connection->GetAdapterId(&adapter)) &&
+                    SUCCEEDED(connection->GetConnectivity(&flags))) {
+                    std::wstring name;
+                    INetwork* network = nullptr;
+                    if (SUCCEEDED(connection->GetNetwork(&network)) && network) {
+                        BSTR text = nullptr;
+                        if (SUCCEEDED(network->GetName(&text)) && text) {
+                            name = text;
+                            SysFreeString(text);
+                        }
+                        network->Release();
+                    }
+                    connectivity.push_back({adapter, flags, std::move(name)});
+                }
+                connection->Release();
+            }
+            connections->Release();
+        }
+    }
+    auto hasInternet = [&](GUID const& adapter) {
+        for (auto const& [id, flags, name] : connectivity) {
+            if (IsEqualGUID(id, adapter) &&
+                (flags & (NLM_CONNECTIVITY_IPV4_INTERNET |
+                          NLM_CONNECTIVITY_IPV6_INTERNET))) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    MIB_IF_TABLE2* table = nullptr;
+    if (GetIfTable2(&table) == NO_ERROR) {
+        for (ULONG i = 0; i < table->NumEntries; i++) {
+            MIB_IF_ROW2 const& row = table->Table[i];
+            bool hardware = row.InterfaceAndOperStatusFlags.HardwareInterface;
+            bool up = row.OperStatus == IfOperStatusUp;
+            bool media = row.MediaConnectState == MediaConnectStateConnected;
+
+            if (row.Type == IF_TYPE_IEEE80211 && hardware) {
+                info.wifiAdapter = true;
+                if (up && media && hasInternet(row.InterfaceGuid)) {
+                    info.wifiInternet = true;
+                }
+            } else if (row.Type == IF_TYPE_ETHERNET_CSMACD && hardware &&
+                       row.InterfaceAndOperStatusFlags.ConnectorPresent) {
+                info.ethernetAdapter = true;
+                if (up && media) {
+                    info.ethernetConnected = true;
+                    if (hasInternet(row.InterfaceGuid)) {
+                        info.ethernetInternet = true;
+                    }
+                }
+            } else if (up && !hardware) {
+                std::wstring text = std::wstring(row.Description) + L" " + row.Alias;
+                CharLowerBuffW(text.data(), (DWORD)text.size());
+                if (ContainsAny(text, {L"teredo", L"6to4", L"isatap", L"ip-https",
+                                       L"loopback", L"hyper-v", L"vethernet",
+                                       L"virtualbox", L"vmware"})) {
+                    continue;
+                }
+                bool vpn = row.Type == IF_TYPE_PPP ||
+                           ContainsAny(text, {L"vpn", L"wireguard", L"wintun",
+                                              L"openvpn", L"tap-windows",
+                                              L"tailscale", L"zerotier",
+                                              L"nordlynx", L"windscribe",
+                                              L"proton", L"mullvad",
+                                              L"anyconnect", L"forti",
+                                              L"globalprotect", L"pangp"});
+                if (vpn && !info.vpnConnected) {
+                    info.vpnConnected = true;
+                    info.vpnName = row.Alias;
+                }
+            }
+        }
+        FreeMibTable(table);
+    }
+
+    if (g_wlan) {
+        WLAN_INTERFACE_INFO_LIST* list = nullptr;
+        if (WlanEnumInterfaces(g_wlan, nullptr, &list) == ERROR_SUCCESS) {
+            bool anyRadioOn = false;
+            bool anyRadioKnown = false;
+            for (DWORD i = 0; i < list->dwNumberOfItems; i++) {
+                auto const& iface = list->InterfaceInfo[i];
+
+                WLAN_RADIO_STATE* radioState = nullptr;
+                DWORD size = 0;
+                if (WlanQueryInterface(g_wlan, &iface.InterfaceGuid,
+                                       wlan_intf_opcode_radio_state, nullptr,
+                                       &size, (PVOID*)&radioState,
+                                       nullptr) == ERROR_SUCCESS) {
+                    for (DWORD p = 0; p < radioState->dwNumberOfPhys; p++) {
+                        anyRadioKnown = true;
+                        auto const& phy = radioState->PhyRadioState[p];
+                        if (phy.dot11SoftwareRadioState == dot11_radio_state_on &&
+                            phy.dot11HardwareRadioState == dot11_radio_state_on) {
+                            anyRadioOn = true;
+                        }
+                    }
+                    WlanFreeMemory(radioState);
+                }
+
+                if (iface.isState != wlan_interface_state_connected) {
+                    continue;
+                }
+                // Not wlan_intf_opcode_current_connection: since Windows 11
+                // 24H2 that counts as location use, and this runs on every
+                // network refresh. The signal comes from rssi (dBm, mapped
+                // the way Windows does: -100 is 0%, -50 and up is 100%) and the
+                // name from the Network List Manager.
+                info.wifiConnected = true;
+                LONG* rssi = nullptr;
+                size = 0;
+                if (WlanQueryInterface(g_wlan, &iface.InterfaceGuid,
+                                       wlan_intf_opcode_rssi, nullptr, &size,
+                                       (PVOID*)&rssi, nullptr) == ERROR_SUCCESS) {
+                    info.wifiQuality = std::clamp((int)(2 * (*rssi + 100)), 0, 100);
+                    WlanFreeMemory(rssi);
+                }
+                for (auto const& entry : connectivity) {
+                    if (IsEqualGUID(entry.adapter, iface.InterfaceGuid)) {
+                        info.ssid = entry.name;
+                        break;
+                    }
+                }
+            }
+            info.wifiRadioOff = anyRadioKnown && !anyRadioOn;
+            WlanFreeMemory(list);
+        }
+    }
+
+    return info;
+}
+
+int WifiBars(int quality) {
+    return quality >= 75 ? 4 : quality >= 50 ? 3 : quality >= 25 ? 2 : 1;
+}
+
+void ComputeNetwork(IconState* network, IconState* vpn) {
+    NetworkInfo n = QueryNetwork();
+
+    if (n.airplane) {
+        *network = {"airplane", L"Airplane mode ... ON"};
+    } else if (n.ethernetConnected && (n.ethernetInternet || !n.wifiConnected)) {
+        *network = n.ethernetInternet
+                       ? IconState{"ethernet", L"Ethernet ... Internet access"}
+                       : IconState{"ethernet-no-internet", L"Ethernet ... No internet"};
+    } else if (n.wifiConnected) {
+        std::wstring name = n.ssid.empty() ? L"Wi-Fi" : n.ssid;
+        if (!n.wifiInternet) {
+            *network = {"wifi-no-internet", name + L" ... No internet"};
+        } else {
+            *network = {"wifi-" + std::to_string(WifiBars(n.wifiQuality)),
+                        name + L" ... Internet access"};
+        }
+    } else if (n.wifiAdapter) {
+        *network = n.wifiRadioOff
+                       ? IconState{"wifi-off", L"Wi-Fi ... OFF"}
+                       : IconState{"wifi-disconnected", L"Not connected ... Networks available"};
+    } else if (n.ethernetAdapter) {
+        *network = {"ethernet-unplugged", L"Network cable unplugged"};
+    } else {
+        *network = {"wifi-disconnected", L"Not connected"};
+    }
+
+    *vpn = n.vpnConnected ? IconState{"vpn-on", L"VPN ... " + n.vpnName}
+                          : IconState{"vpn", L"VPN ... Not connected"};
+}
+
+IconState ComputeDeviceBatteries();
+
+IconState ComputeBattery() {
+    SYSTEM_POWER_STATUS status{};
+    if (!GetSystemPowerStatus(&status) || (status.BatteryFlag & 128) ||
+        status.BatteryLifePercent > 100) {
+        return ComputeDeviceBatteries();
+    }
+
+    int percent = status.BatteryLifePercent;
+    bool charging = status.BatteryFlag & 8;
+    bool pluggedIn = status.ACLineStatus == 1;
+    bool saver = status.SystemStatusFlag == 1;
+
+    std::wstring detail;
+    if (charging) {
+        detail = L"Charging";
+    } else if (pluggedIn) {
+        detail = percent >= 100 ? L"Fully charged" : L"Plugged in";
+    } else if (status.BatteryLifeTime != (DWORD)-1) {
+        DWORD minutes = status.BatteryLifeTime / 60;
+        WCHAR text[64];
+        swprintf_s(text, L"%u h %02u m left", minutes / 60, minutes % 60);
+        detail = text;
+    } else {
+        detail = L"On battery";
+    }
+    if (saver) {
+        detail += L" ... Battery saver ON";
+    }
+
+    std::string art = charging        ? "battery-charging"
+                      : saver         ? "battery-saver"
+                      : percent >= 95 ? "battery-full"
+                      : percent >= 60 ? "battery-high"
+                      : percent >= 20 ? "battery-mid"
+                                      : "battery-low";
+    return {art, std::to_wstring(percent) + L"% ... " + detail};
+}
+
+int CountNotifications();
+
+IconState ComputeNotifications() {
+    DWORD toasts = 1;
+    bool dnd = ReadDword(HKEY_CURRENT_USER, kNotificationsPath,
+                         L"NOC_GLOBAL_SETTING_TOASTS_ENABLED", &toasts) &&
+               !toasts;
+    if (dnd) {
+        return {"bell-dnd", L"Do not disturb ... ON"};
+    }
+    int count = CountNotifications();
+    return count ? IconState{"bell-unread",
+                             std::to_wstring(count) + (count == 1 ? L" notification" : L" notifications")}
+                 : IconState{"bell", L"No new notifications"};
+}
+
+IconState ComputeNightLight() {
+    BYTE data[256];
+    DWORD size = sizeof(data);
+    bool on = RegGetValueW(HKEY_CURRENT_USER, kNightLightPath, L"Data",
+                           RRF_RT_REG_BINARY, nullptr, data,
+                           &size) == ERROR_SUCCESS &&
+              size > 18 && data[18] == 0x15;
+    return on ? IconState{"night-light", L"Night light ... ON"}
+              : IconState{"night-light-off", L"Night light ... OFF"};
+}
+
+// A capability is in use by an app while its LastUsedTimeStop is 0.
+std::vector<std::wstring> AppsUsing(PCWSTR capability) {
+    std::vector<std::wstring> apps;
+    std::wstring base = std::wstring(kConsentStorePath) + capability;
+
+    auto scan = [&](std::wstring const& path, bool nonPackaged) {
+        HKEY key;
+        if (RegOpenKeyExW(HKEY_CURRENT_USER, path.c_str(), 0, KEY_READ, &key) !=
+            ERROR_SUCCESS) {
+            return;
+        }
+        WCHAR name[512];
+        for (DWORD i = 0;; i++) {
+            DWORD length = ARRAYSIZE(name);
+            if (RegEnumKeyExW(key, i, name, &length, nullptr, nullptr, nullptr,
+                              nullptr) != ERROR_SUCCESS) {
+                break;
+            }
+            HKEY app;
+            if (RegOpenKeyExW(key, name, 0, KEY_READ, &app) != ERROR_SUCCESS) {
+                continue;
+            }
+            ULONGLONG start = 0, stop = 1;
+            if (ReadQword(app, L"LastUsedTimeStart", &start) &&
+                ReadQword(app, L"LastUsedTimeStop", &stop) && start && !stop) {
+                std::wstring label = name;
+                if (nonPackaged) {
+                    // C:#Program Files#App#App.exe
+                    label = label.substr(label.find_last_of(L'#') + 1);
+                    if (label.size() > 4 &&
+                        _wcsicmp(label.c_str() + label.size() - 4, L".exe") == 0) {
+                        label.resize(label.size() - 4);
+                    }
+                } else {
+                    // Publisher.App_hash
+                    label = label.substr(0, label.find(L'_'));
+                    label = label.substr(label.find_last_of(L'.') + 1);
+                }
+                apps.push_back(label);
+            }
+            RegCloseKey(app);
+        }
+        RegCloseKey(key);
+    };
+
+    scan(base, false);
+    scan(base + L"\\NonPackaged", true);
+    return apps;
+}
+
+IconState ComputePrivacy(PCWSTR capability, const char* art, PCWSTR label) {
+    auto apps = AppsUsing(capability);
+    if (apps.empty()) {
+        return {art, std::wstring(label) + L" in use", true};
+    }
+    std::wstring tip = std::wstring(label) + L" in use ... ";
+    for (size_t i = 0; i < apps.size(); i++) {
+        tip += (i ? L", " : L"") + apps[i];
+    }
+    return {art, tip};
+}
+
+IconState ComputeInput() {
+    HWND foreground = GetForegroundWindow();
+    HKL layout = GetKeyboardLayout(
+        foreground ? GetWindowThreadProcessId(foreground, nullptr) : 0);
+    WCHAR locale[LOCALE_NAME_MAX_LENGTH] = L"";
+    LCIDToLocaleName(MAKELCID(LOWORD((ULONG_PTR)layout), SORT_DEFAULT), locale,
+                     ARRAYSIZE(locale), 0);
+    WCHAR language[16] = L"";
+    WCHAR country[16] = L"";
+    GetLocaleInfoEx(locale, LOCALE_SISO639LANGNAME2, language, ARRAYSIZE(language));
+    GetLocaleInfoEx(locale, LOCALE_SISO3166CTRYNAME, country, ARRAYSIZE(country));
+    std::wstring text = std::wstring(language) + L" " + country;
+    CharUpperBuffW(text.data(), (DWORD)text.size());
+    return {"keyboard", L"Input ... " + text};
+}
+
+IconState ComputeRecycleBin() {
+    SHQUERYRBINFO info{};
+    info.cbSize = sizeof(info);
+    if (FAILED(SHQueryRecycleBinW(nullptr, &info)) || !info.i64NumItems) {
+        return {"app-bin", L"Recycle Bin ... Empty"};
+    }
+    return {"app-bin", L"Recycle Bin ... " + std::to_wstring(info.i64NumItems) +
+                           (info.i64NumItems == 1 ? L" item" : L" items")};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Audio (mod thread; the callbacks only request refreshes)
+
+IMMDeviceEnumerator* g_audioEnumerator;
+IAudioEndpointVolume* g_endpointVolume;
+std::wstring g_audioDeviceName;
+
+struct VolumeCallback final : IAudioEndpointVolumeCallback {
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** out) override {
+        if (IsEqualIID(riid, IID_IUnknown) ||
+            IsEqualIID(riid, kIidAudioEndpointVolumeCallback)) {
+            *out = static_cast<IAudioEndpointVolumeCallback*>(this);
+            return S_OK;
+        }
+        *out = nullptr;
+        return E_NOINTERFACE;
+    }
+    // Lives for the whole mod lifetime, so reference counting is a no-op.
+    ULONG STDMETHODCALLTYPE AddRef() override { return 2; }
+    ULONG STDMETHODCALLTYPE Release() override { return 1; }
+    HRESULT STDMETHODCALLTYPE OnNotify(PAUDIO_VOLUME_NOTIFICATION_DATA) override {
+        RequestRefresh(1u << kVolume);
+        return S_OK;
+    }
+};
+
+struct DeviceCallback final : IMMNotificationClient {
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** out) override {
+        if (IsEqualIID(riid, IID_IUnknown) ||
+            IsEqualIID(riid, kIidMMNotificationClient)) {
+            *out = static_cast<IMMNotificationClient*>(this);
+            return S_OK;
+        }
+        *out = nullptr;
+        return E_NOINTERFACE;
+    }
+    ULONG STDMETHODCALLTYPE AddRef() override { return 2; }
+    ULONG STDMETHODCALLTYPE Release() override { return 1; }
+    void Changed() {
+        if (HWND wnd = g_wnd) {
+            PostMessageW(wnd, WM_APP_AUDIO_DEVICE, 0, 0);
+        }
+    }
+    HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR, DWORD) override {
+        Changed();
+        return S_OK;
+    }
+    HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR) override { Changed(); return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR) override { Changed(); return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR) override {
+        if (flow == eRender && role == eConsole) {
+            Changed();
+        }
+        return S_OK;
+    }
+    HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR, const PROPERTYKEY) override {
+        return S_OK;
+    }
+};
+
+VolumeCallback g_volumeCallback;
+DeviceCallback g_deviceCallback;
+bool g_deviceCallbackRegistered;
+
+std::wstring DeviceName(IMMDevice* device) {
+    std::wstring name;
+    IPropertyStore* store = nullptr;
+    if (SUCCEEDED(device->OpenPropertyStore(STGM_READ, &store))) {
+        PROPVARIANT value;
+        PropVariantInit(&value);
+        if (SUCCEEDED(store->GetValue(kPkeyDeviceFriendlyName, &value)) &&
+            value.vt == VT_LPWSTR && value.pwszVal) {
+            name = value.pwszVal;
+        }
+        PropVariantClear(&value);
+        store->Release();
+    }
+    return name;
+}
+
+// Follows the default output device, re-registering for its volume changes.
+void BindAudioEndpoint() {
+    if (g_endpointVolume) {
+        g_endpointVolume->UnregisterControlChangeNotify(&g_volumeCallback);
+        g_endpointVolume->Release();
+        g_endpointVolume = nullptr;
+    }
+    g_audioDeviceName.clear();
+    if (!g_audioEnumerator) {
+        return;
+    }
+    IMMDevice* device = nullptr;
+    if (FAILED(g_audioEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device))) {
+        return;
+    }
+    g_audioDeviceName = DeviceName(device);
+    if (SUCCEEDED(device->Activate(kIidAudioEndpointVolume, CLSCTX_ALL, nullptr,
+                                   (void**)&g_endpointVolume))) {
+        g_endpointVolume->RegisterControlChangeNotify(&g_volumeCallback);
+    }
+    device->Release();
+}
+
+void StartAudio() {
+    if (FAILED(CoCreateInstance(kClsidMMDeviceEnumerator, nullptr, CLSCTX_ALL,
+                                kIidMMDeviceEnumerator, (void**)&g_audioEnumerator))) {
+        g_audioEnumerator = nullptr;
+        return;
+    }
+    g_deviceCallbackRegistered = SUCCEEDED(
+        g_audioEnumerator->RegisterEndpointNotificationCallback(&g_deviceCallback));
+    BindAudioEndpoint();
+}
+
+void StopAudio() {
+    if (g_endpointVolume) {
+        g_endpointVolume->UnregisterControlChangeNotify(&g_volumeCallback);
+        g_endpointVolume->Release();
+        g_endpointVolume = nullptr;
+    }
+    if (g_audioEnumerator) {
+        if (g_deviceCallbackRegistered) {
+            g_audioEnumerator->UnregisterEndpointNotificationCallback(&g_deviceCallback);
+            g_deviceCallbackRegistered = false;
+        }
+        g_audioEnumerator->Release();
+        g_audioEnumerator = nullptr;
+    }
+}
+
+IconState ComputeVolume() {
+    float level = 0;
+    BOOL muted = FALSE;
+    if (!g_endpointVolume || FAILED(g_endpointVolume->GetMasterVolumeLevelScalar(&level))) {
+        return {"audio-no-device", L"No audio output device"};
+    }
+    g_endpointVolume->GetMute(&muted);
+    int percent = (int)(level * 100 + 0.5f);
+    std::wstring name = g_audioDeviceName.empty() ? L"Speakers" : g_audioDeviceName;
+    if (muted) {
+        return {"audio-mute", name + L" ... Muted"};
+    }
+    std::string art = percent == 0  ? "audio-0"
+                      : percent < 34 ? "audio-low"
+                      : percent < 67 ? "audio-mid"
+                                     : "audio-high";
+    return {art, name + L" ... " + std::to_wstring(percent) + L"%"};
+}
+
+void ChangeVolume(int notches) {
+    if (!g_endpointVolume || !notches) {
+        return;
+    }
+    float level = 0;
+    if (FAILED(g_endpointVolume->GetMasterVolumeLevelScalar(&level))) {
+        return;
+    }
+    int percent = std::clamp((int)(level * 100 + 0.5f) + notches * kVolumeStep, 0, 100);
+    g_endpointVolume->SetMasterVolumeLevelScalar(percent / 100.0f, nullptr);
+    if (notches > 0) {
+        // Like the volume slider: turning it up unmutes.
+        g_endpointVolume->SetMute(FALSE, nullptr);
+    }
+}
+
+// Makes the next active output device the default for every role.
+void CycleOutputDevice() {
+    if (!g_audioEnumerator) {
+        return;
+    }
+    IMMDeviceCollection* devices = nullptr;
+    if (FAILED(g_audioEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &devices))) {
+        return;
+    }
+    std::vector<std::wstring> ids;
+    UINT count = 0;
+    devices->GetCount(&count);
+    for (UINT i = 0; i < count; i++) {
+        IMMDevice* device = nullptr;
+        LPWSTR id = nullptr;
+        if (SUCCEEDED(devices->Item(i, &device)) && SUCCEEDED(device->GetId(&id))) {
+            ids.push_back(id);
+            CoTaskMemFree(id);
+        }
+        if (device) {
+            device->Release();
+        }
+    }
+    devices->Release();
+    if (ids.size() < 2) {
+        return;
+    }
+
+    std::wstring current;
+    IMMDevice* device = nullptr;
+    if (SUCCEEDED(g_audioEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device))) {
+        LPWSTR id = nullptr;
+        if (SUCCEEDED(device->GetId(&id))) {
+            current = id;
+            CoTaskMemFree(id);
+        }
+        device->Release();
+    }
+    auto it = std::find(ids.begin(), ids.end(), current);
+    size_t next = it == ids.end() ? 0 : (size_t)(it - ids.begin() + 1) % ids.size();
+
+    IPolicyConfig* policy = nullptr;
+    if (SUCCEEDED(CoCreateInstance(kClsidPolicyConfigClient, nullptr, CLSCTX_ALL,
+                                   kIidPolicyConfig, (void**)&policy))) {
+        for (ERole role : {eConsole, eMultimedia, eCommunications}) {
+            policy->SetDefaultEndpoint(ids[next].c_str(), role);
+        }
+        policy->Release();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Show hidden icons: a stand-in for the "^" button, with a flyout of its own.
+// StartAllBack removes the tray's own popup along with its "^" button, so the
+// flyout lists the hidden icons itself.
+
+bool g_overflowOpen;  // The hidden icons flyout is showing.
+
+IconState ComputeOverflow() {
+    return g_overflowOpen ? IconState{"overflow-down", L"Hide icons"}
+                          : IconState{"overflow-up", L"Show hidden icons"};
+}
+
+// Bluetooth devices' batteries, for desktops without one of their own: the
+// battery icon shows the lowest connected device and lists them all.
+struct DeviceBattery {
+    std::wstring name;
+    int percent = 0;
+};
+
+std::vector<DeviceBattery> BluetoothBatteries() {
+    static const DEVPROPKEY kConnected = {
+        {0x83DA6326, 0x97A6, 0x4088, {0x94, 0x53, 0xA1, 0x92, 0x3F, 0x57, 0x3B, 0x29}}, 15};
+    static const DEVPROPKEY kBattery = {
+        {0x104EA319, 0x6EE2, 0x4701, {0xBD, 0x47, 0x8D, 0xDB, 0xF4, 0x25, 0xBB, 0xE5}}, 2};
+    static const DEVPROPKEY kFriendlyName = {
+        {0xA45C254E, 0xDF1C, 0x4EFD, {0x80, 0x20, 0x67, 0xD1, 0x46, 0xA8, 0x50, 0xE0}}, 14};
+
+    std::vector<DeviceBattery> devices;
+    for (PCWSTR enumerator : {L"BTHLE", L"BTHENUM"}) {
+        ULONG flags = CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT;
+        ULONG size = 0;
+        if (CM_Get_Device_ID_List_SizeW(&size, enumerator, flags) != CR_SUCCESS || size <= 1) {
+            continue;
+        }
+        std::vector<WCHAR> ids(size);
+        if (CM_Get_Device_ID_ListW(enumerator, ids.data(), size, flags) != CR_SUCCESS) {
+            continue;
+        }
+        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
+            // The devices themselves ("BTHLE\Dev_...", in any case), not their
+            // services.
+            PCWSTR slash = wcschr(id, L'\\');
+            if (!slash || _wcsnicmp(slash + 1, L"DEV_", 4) != 0) {
+                continue;
+            }
+            DEVINST node;
+            if (CM_Locate_DevNodeW(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) {
+                continue;
+            }
+            DEVPROPTYPE type = 0;
+            DEVPROP_BOOLEAN connected = DEVPROP_FALSE;
+            ULONG length = sizeof(connected);
+            if (CM_Get_DevNode_PropertyW(node, &kConnected, &type, (PBYTE)&connected, &length, 0) !=
+                    CR_SUCCESS ||
+                type != DEVPROP_TYPE_BOOLEAN || connected != DEVPROP_TRUE) {
+                continue;
+            }
+            BYTE battery = 0;
+            length = sizeof(battery);
+            if (CM_Get_DevNode_PropertyW(node, &kBattery, &type, &battery, &length, 0) != CR_SUCCESS ||
+                type != DEVPROP_TYPE_BYTE || battery > 100) {
+                continue;
+            }
+            WCHAR name[128] = L"";
+            length = sizeof(name);
+            CM_Get_DevNode_PropertyW(node, &kFriendlyName, &type, (PBYTE)name, &length, 0);
+            devices.push_back({*name ? name : L"Bluetooth device", battery});
+        }
+    }
+    return devices;
+}
+
+std::vector<std::pair<std::wstring, int>> ExtraDeviceBatteries();
+
+IconState ComputeDeviceBatteries() {
+    auto devices = BluetoothBatteries();
+    // Headsets, mice and controllers read directly, when Device batteries
+    // shows them in the flyouts.
+    for (auto const& [name, percent] : ExtraDeviceBatteries()) {
+        devices.push_back({name, percent});
+    }
+    if (devices.empty()) {
+        return {"battery-none", L"No battery detected"};
+    }
+    int lowest = 100;
+    std::wstring tip;
+    for (auto const& device : devices) {
+        lowest = std::min(lowest, device.percent);
+        if (!tip.empty()) {
+            tip += L"\n";
+        }
+        tip += device.name + L" ... " + std::to_wstring(device.percent) + L"%";
+    }
+    std::string art = lowest >= 95   ? "battery-full"
+                      : lowest >= 60 ? "battery-high"
+                      : lowest >= 20 ? "battery-mid"
+                                     : "battery-low";
+    return {art, tip};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Bluetooth: paired devices from their device nodes, the radio from
+// Windows.Devices.Radios, and audio devices connected or disconnected with
+// the Bluetooth audio driver's own requests (KSPROPSETID_BtAudio), which
+// reconnect a paired speaker or headset the way Settings does.
+
+struct BluetoothDevice {
+    std::wstring name;
+    GUID container{};
+    bool connected = false;
+    int battery = -1;
+    // The Bluetooth audio drivers behind its speakers and microphones, by
+    // their device topology ids. Empty for a device that isn't audio.
+    std::vector<std::wstring> audioFilters;
+};
+
+constexpr DEVPROPKEY kDevpkeyBluetoothConnected = {
+    {0x83DA6326, 0x97A6, 0x4088, {0x94, 0x53, 0xA1, 0x92, 0x3F, 0x57, 0x3B, 0x29}}, 15};
+constexpr DEVPROPKEY kDevpkeyBluetoothBattery = {
+    {0x104EA319, 0x6EE2, 0x4701, {0xBD, 0x47, 0x8D, 0xDB, 0xF4, 0x25, 0xBB, 0xE5}}, 2};
+constexpr DEVPROPKEY kDevpkeyName = {
+    {0xB725F130, 0x47EF, 0x101A, {0xA5, 0xF1, 0x02, 0x60, 0x8C, 0x9E, 0xEB, 0xAC}}, 10};
+constexpr DEVPROPKEY kDevpkeyContainerId = {
+    {0x8C7ED206, 0x3F8A, 0x4827, {0xB3, 0xAB, 0xAE, 0x9E, 0x1F, 0xAE, 0xFC, 0x6C}}, 2};
+constexpr PROPERTYKEY kPkeyDeviceContainerId = {
+    {0x8C7ED206, 0x3F8A, 0x4827, {0xB3, 0xAB, 0xAE, 0x9E, 0x1F, 0xAE, 0xFC, 0x6C}}, 2};
+
+// Paired devices, connected ones first. A device paired over both Bluetooth
+// and Bluetooth LE has a node for each, grouped under one container.
+std::vector<BluetoothDevice> PairedBluetoothDevices() {
+    std::vector<BluetoothDevice> devices;
+    for (PCWSTR enumerator : {L"BTHENUM", L"BTHLE"}) {
+        ULONG flags = CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT;
+        ULONG size = 0;
+        if (CM_Get_Device_ID_List_SizeW(&size, enumerator, flags) != CR_SUCCESS || size <= 1) {
+            continue;
+        }
+        std::vector<WCHAR> ids(size);
+        if (CM_Get_Device_ID_ListW(enumerator, ids.data(), size, flags) != CR_SUCCESS) {
+            continue;
+        }
+        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
+            // The devices themselves ("BTHENUM\Dev_..."), not their services.
+            PCWSTR slash = wcschr(id, L'\\');
+            DEVINST node;
+            if (!slash || _wcsnicmp(slash + 1, L"DEV_", 4) != 0 ||
+                CM_Locate_DevNodeW(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) {
+                continue;
+            }
+            BluetoothDevice device;
+            DEVPROPTYPE type = 0;
+            WCHAR name[128] = L"";
+            ULONG length = sizeof(name);
+            if (CM_Get_DevNode_PropertyW(node, &kDevpkeyName, &type, (PBYTE)name, &length, 0) != CR_SUCCESS) {
+                name[0] = L'\0';
+            }
+            length = sizeof(device.container);
+            CM_Get_DevNode_PropertyW(node, &kDevpkeyContainerId, &type, (PBYTE)&device.container, &length, 0);
+            DEVPROP_BOOLEAN connected = DEVPROP_FALSE;
+            length = sizeof(connected);
+            device.connected =
+                CM_Get_DevNode_PropertyW(node, &kDevpkeyBluetoothConnected, &type, (PBYTE)&connected, &length, 0) ==
+                    CR_SUCCESS &&
+                type == DEVPROP_TYPE_BOOLEAN && connected == DEVPROP_TRUE;
+            BYTE battery = 0;
+            length = sizeof(battery);
+            if (CM_Get_DevNode_PropertyW(node, &kDevpkeyBluetoothBattery, &type, &battery, &length, 0) ==
+                    CR_SUCCESS &&
+                type == DEVPROP_TYPE_BYTE && battery <= 100) {
+                device.battery = battery;
+            }
+
+            auto same = std::find_if(devices.begin(), devices.end(), [&](BluetoothDevice const& d) {
+                return d.container != GUID_NULL && IsEqualGUID(d.container, device.container);
+            });
+            if (same != devices.end()) {
+                same->connected = same->connected || device.connected;
+                if (device.battery >= 0) {
+                    same->battery = device.battery;
+                }
+                continue;
+            }
+            device.name = *name ? name : L"Bluetooth device";
+            devices.push_back(std::move(device));
+        }
+    }
+    std::stable_sort(devices.begin(), devices.end(), [](BluetoothDevice const& a, BluetoothDevice const& b) {
+        if (a.connected != b.connected) {
+            return a.connected;
+        }
+        return _wcsicmp(a.name.c_str(), b.name.c_str()) < 0;
+    });
+    return devices;
+}
+
+// The device topology id of the audio driver an endpoint plays through.
+std::wstring AudioFilterOf(IMMDevice* endpoint) {
+    std::wstring filter;
+    IDeviceTopology* topology = nullptr;
+    if (FAILED(endpoint->Activate(__uuidof(IDeviceTopology), CLSCTX_ALL, nullptr, (void**)&topology))) {
+        return filter;
+    }
+    IConnector* connector = nullptr;
+    IConnector* other = nullptr;
+    IPart* part = nullptr;
+    IDeviceTopology* adapter = nullptr;
+    LPWSTR id = nullptr;
+    if (SUCCEEDED(topology->GetConnector(0, &connector)) && SUCCEEDED(connector->GetConnectedTo(&other)) &&
+        SUCCEEDED(other->QueryInterface(__uuidof(IPart), (void**)&part)) &&
+        SUCCEEDED(part->GetTopologyObjects(&adapter)) && SUCCEEDED(adapter->GetDeviceId(&id))) {
+        filter = id;
+    }
+    CoTaskMemFree(id);
+    for (IUnknown* object : {(IUnknown*)adapter, (IUnknown*)part, (IUnknown*)other, (IUnknown*)connector,
+                             (IUnknown*)topology}) {
+        if (object) {
+            object->Release();
+        }
+    }
+    return filter;
+}
+
+// Which paired devices are audio devices, and their drivers: Windows files a
+// device's speakers and microphones under the device's own container. A
+// disconnected speaker's endpoints are still there, unplugged.
+void FindBluetoothAudio(IMMDeviceEnumerator* enumerator, std::vector<BluetoothDevice>& devices) {
+    IMMDeviceCollection* endpoints = nullptr;
+    if (!enumerator || devices.empty() ||
+        FAILED(enumerator->EnumAudioEndpoints(eAll, DEVICE_STATE_ACTIVE | DEVICE_STATE_UNPLUGGED, &endpoints))) {
+        return;
+    }
+    UINT count = 0;
+    endpoints->GetCount(&count);
+    for (UINT i = 0; i < count; i++) {
+        IMMDevice* endpoint = nullptr;
+        IPropertyStore* store = nullptr;
+        if (FAILED(endpoints->Item(i, &endpoint)) || FAILED(endpoint->OpenPropertyStore(STGM_READ, &store))) {
+            if (endpoint) {
+                endpoint->Release();
+            }
+            continue;
+        }
+        PROPVARIANT value;
+        PropVariantInit(&value);
+        BluetoothDevice* owner = nullptr;
+        if (SUCCEEDED(store->GetValue(kPkeyDeviceContainerId, &value)) && value.vt == VT_CLSID && value.puuid) {
+            for (auto& device : devices) {
+                if (IsEqualGUID(device.container, *value.puuid)) {
+                    owner = &device;
+                }
+            }
+        }
+        PropVariantClear(&value);
+        store->Release();
+        if (owner) {
+            std::wstring filter = AudioFilterOf(endpoint);
+            if (!filter.empty() &&
+                std::find(owner->audioFilters.begin(), owner->audioFilters.end(), filter) == owner->audioFilters.end()) {
+                owner->audioFilters.push_back(filter);
+            }
+        }
+        endpoint->Release();
+    }
+    endpoints->Release();
+}
+
+struct IKsControlLite : IUnknown {
+    virtual HRESULT STDMETHODCALLTYPE KsProperty(void* property, ULONG propertyLength, void* data,
+                                                 ULONG dataLength, ULONG* returned) = 0;
+    virtual HRESULT STDMETHODCALLTYPE KsMethod(void*, ULONG, void*, ULONG, ULONG*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE KsEvent(void*, ULONG, void*, ULONG, ULONG*) = 0;
+};
+constexpr GUID kIidKsControl = {0x28F54685, 0x06FD, 0x11D2, {0xB2, 0x7A, 0x00, 0xA0, 0xC9, 0x22, 0x31, 0x96}};
+constexpr GUID kKsPropSetBtAudio = {0x7FA06C40, 0xB8F6, 0x4C7E, {0x85, 0x56, 0xE8, 0xC3, 0x3A, 0x12, 0xE5, 0x4D}};
+constexpr ULONG kKsBtAudioReconnect = 0;
+constexpr ULONG kKsBtAudioDisconnect = 1;
+constexpr ULONG kKsPropertyTypeGet = 1;
+
+// Asks each of a device's Bluetooth audio drivers to connect or disconnect.
+// Answers at once; the connection itself follows within a few seconds. Runs
+// on a job thread, with its own enumerator.
+bool RequestBluetoothAudio(std::vector<std::wstring> const& filters, bool connect) {
+    IMMDeviceEnumerator* enumerator = nullptr;
+    if (FAILED(CoCreateInstance(kClsidMMDeviceEnumerator, nullptr, CLSCTX_ALL, kIidMMDeviceEnumerator,
+                                (void**)&enumerator))) {
+        return false;
+    }
+    bool sent = false;
+    for (auto const& filter : filters) {
+        IMMDevice* device = nullptr;
+        IKsControlLite* control = nullptr;
+        if (SUCCEEDED(enumerator->GetDevice(filter.c_str(), &device)) &&
+            SUCCEEDED(device->Activate(kIidKsControl, CLSCTX_ALL, nullptr, (void**)&control))) {
+            struct {
+                GUID set;
+                ULONG id;
+                ULONG flags;
+            } property{kKsPropSetBtAudio, connect ? kKsBtAudioReconnect : kKsBtAudioDisconnect, kKsPropertyTypeGet};
+            ULONG returned = 0;
+            sent = SUCCEEDED(control->KsProperty(&property, sizeof(property), nullptr, 0, &returned)) || sent;
+        }
+        if (control) {
+            control->Release();
+        }
+        if (device) {
+            device->Release();
+        }
+    }
+    enumerator->Release();
+    return sent;
+}
+
+// The Bluetooth radio: 1 on, 0 off, -1 not known yet or no radio. Watched on
+// a thread of its own, since the radio API is asynchronous.
+std::atomic<int> g_bluetoothRadio{-1};
+HANDLE g_radioThread;
+HANDLE g_radioStop;
+
+DWORD WINAPI RadioWatchProc(LPVOID) {
+    winrt::init_apartment(winrt::apartment_type::multi_threaded);
+    try {
+        using namespace winrt::Windows::Devices::Radios;
+        Radio bluetooth{nullptr};
+        for (auto const& radio : Radio::GetRadiosAsync().get()) {
+            if (radio.Kind() == RadioKind::Bluetooth) {
+                bluetooth = radio;
+                break;
+            }
+        }
+        if (bluetooth) {
+            auto update = [](Radio const& radio) {
+                g_bluetoothRadio = radio.State() == RadioState::On ? 1 : 0;
+                RequestRefresh(1u << kBluetooth);
+            };
+            update(bluetooth);
+            auto token = bluetooth.StateChanged(
+                [update](Radio const& sender, winrt::Windows::Foundation::IInspectable const&) { update(sender); });
+            WaitForSingleObject(g_radioStop, INFINITE);
+            bluetooth.StateChanged(token);
+        } else {
+            WaitForSingleObject(g_radioStop, INFINITE);
+        }
+    } catch (...) {
+        Wh_Log(L"Bluetooth radio unavailable");
+    }
+    winrt::uninit_apartment();
+    return 0;
+}
+
+void StartRadioWatch() {
+    g_radioStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_radioThread = CreateThread(nullptr, 0, RadioWatchProc, nullptr, 0, nullptr);
+}
+
+void StopRadioWatch() {
+    if (g_radioThread) {
+        SetEvent(g_radioStop);
+        WaitForSingleObject(g_radioThread, 5000);
+        CloseHandle(g_radioThread);
+        g_radioThread = nullptr;
+    }
+    if (g_radioStop) {
+        CloseHandle(g_radioStop);
+        g_radioStop = nullptr;
+    }
+}
+
+// Turns the radio on or off. Runs on a job thread.
+std::wstring SetBluetoothRadio(bool on) {
+    try {
+        using namespace winrt::Windows::Devices::Radios;
+        if (Radio::RequestAccessAsync().get() != RadioAccessStatus::Allowed) {
+            return L"denied";
+        }
+        for (auto const& radio : Radio::GetRadiosAsync().get()) {
+            if (radio.Kind() == RadioKind::Bluetooth) {
+                auto status = radio.SetStateAsync(on ? RadioState::On : RadioState::Off).get();
+                return status == RadioAccessStatus::Allowed ? L"ok" : L"denied";
+            }
+        }
+    } catch (...) {
+    }
+    return L"failed";
+}
+
+// Devices connecting or disconnecting add and remove device interfaces;
+// any of them refreshes the icon (refreshes run once per burst).
+HCMNOTIFICATION g_deviceNotify;
+
+void WakeBatteries();
+
+DWORD CALLBACK OnDeviceInterfaceChange(HCMNOTIFICATION, PVOID, CM_NOTIFY_ACTION action, PCM_NOTIFY_EVENT_DATA,
+                                       DWORD) {
+    if (action == CM_NOTIFY_ACTION_DEVICEINTERFACEARRIVAL || action == CM_NOTIFY_ACTION_DEVICEINTERFACEREMOVAL) {
+        RequestRefresh(1u << kBluetooth);
+        // A receiver or cable plugged in or out: device batteries poll now.
+        WakeBatteries();
+    }
+    return ERROR_SUCCESS;
+}
+
+void StartDeviceWatch() {
+    CM_NOTIFY_FILTER filter{};
+    filter.cbSize = sizeof(filter);
+    filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
+    filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
+    if (CM_Register_Notification(&filter, nullptr, OnDeviceInterfaceChange, &g_deviceNotify) != CR_SUCCESS) {
+        g_deviceNotify = nullptr;
+    }
+}
+
+void StopDeviceWatch() {
+    if (g_deviceNotify) {
+        CM_Unregister_Notification(g_deviceNotify);
+        g_deviceNotify = nullptr;
+    }
+}
+
+IconState ComputeBluetooth() {
+    if (g_bluetoothRadio == 0) {
+        return {"bluetooth-off", L"Bluetooth ... OFF"};
+    }
+    std::wstring names;
+    for (auto const& device : PairedBluetoothDevices()) {
+        if (device.connected) {
+            names += (names.empty() ? L"" : L", ") + device.name;
+        }
+    }
+    return names.empty() ? IconState{"bluetooth", L"Bluetooth ... ON"}
+                         : IconState{"bluetooth-connected", L"Bluetooth ... " + names};
+}
+
+// Windows Security, from the Security Center's own health summary.
+WSC_SECURITY_PROVIDER_HEALTH ProviderHealth(DWORD provider) {
+    WSC_SECURITY_PROVIDER_HEALTH health = WSC_SECURITY_PROVIDER_HEALTH_NOTMONITORED;
+    if (FAILED(WscGetSecurityProviderHealth(provider, &health))) {
+        return WSC_SECURITY_PROVIDER_HEALTH_NOTMONITORED;
+    }
+    return health;
+}
+
+IconState ComputeSecurity() {
+    auto antivirus = ProviderHealth(WSC_SECURITY_PROVIDER_ANTIVIRUS);
+    auto firewall = ProviderHealth(WSC_SECURITY_PROVIDER_FIREWALL);
+    auto updates = ProviderHealth(WSC_SECURITY_PROVIDER_AUTOUPDATE_SETTINGS);
+    if (antivirus == WSC_SECURITY_PROVIDER_HEALTH_POOR) {
+        return {"security-alert", L"Windows Security ... Action needed"};
+    }
+    if (antivirus == WSC_SECURITY_PROVIDER_HEALTH_NOTMONITORED) {
+        return {"security-off", L"Real-time protection ... OFF"};
+    }
+    if (firewall == WSC_SECURITY_PROVIDER_HEALTH_POOR || updates == WSC_SECURITY_PROVIDER_HEALTH_POOR ||
+        antivirus == WSC_SECURITY_PROVIDER_HEALTH_SNOOZE ||
+        firewall == WSC_SECURITY_PROVIDER_HEALTH_SNOOZE) {
+        return {"security-warn", L"Windows Security ... Action recommended"};
+    }
+    return {"security-ok", L"Windows Security ... No actions needed"};
+}
+
+HANDLE g_securityWatch;
+
+DWORD WINAPI OnSecurityChange(LPVOID) {
+    RequestRefresh(1u << kSecurity);
+    return 0;
+}
+
+IconState ComputeIcon(int kind) {
+    switch (kind) {
+        case kBattery: return ComputeBattery();
+        case kNotifications: return ComputeNotifications();
+        case kFocus: return {"focus", L"Focus"};
+        case kNightLight: return ComputeNightLight();
+        case kBrightness: return {"brightness", L"Brightness"};
+        case kMicrophone: return ComputePrivacy(L"microphone", "mic-in-use", L"Microphone");
+        case kCamera: return ComputePrivacy(L"webcam", "camera-in-use", L"Camera");
+        case kLocation: return ComputePrivacy(L"location", "location-in-use", L"Location");
+        case kAccessibility: return {"accessibility", L"Accessibility"};
+        case kPower: return {"power", L"Power ... Sleep, shut down, restart"};
+        case kInput: return ComputeInput();
+        case kRecycleBin: return ComputeRecycleBin();
+        case kClipboard: return {"app-clipboard", L"Clipboard history"};
+        case kCapture: return {"app-capture", L"Screen capture"};
+        case kVolume: return ComputeVolume();
+        case kOverflow: return ComputeOverflow();
+        case kSecurity: return ComputeSecurity();
+        case kBluetooth: return ComputeBluetooth();
+    }
+    return {};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Tray icons (mod thread)
+
+struct AppliedIcon {
+    bool added = false;
+    IconState state;
+    int size = 0;
+    std::string tone;
+    bool shade = true;
+    uint64_t palette = 0;
+};
+
+std::array<AppliedIcon, kIconCount> g_applied;
+std::array<IconState, kIconCount> g_states;
+
+int TrayIconSize() {
+    HWND tray = FindWindowW(L"Shell_TrayWnd", nullptr);
+    UINT dpi = tray ? GetDpiForWindow(tray) : 0;
+    return GetSystemMetricsForDpi(SM_CXSMICON, dpi ? dpi : USER_DEFAULT_SCREEN_DPI);
+}
+
+void FillIconData(NOTIFYICONDATAW* data, int kind) {
+    *data = {};
+    data->cbSize = sizeof(*data);
+    data->hWnd = g_wnd;
+    data->uID = kIconIdBase + kind;
+}
+
+void RemoveIcon(int kind) {
+    if (!g_applied[kind].added) {
+        return;
+    }
+    NOTIFYICONDATAW data;
+    FillIconData(&data, kind);
+    Shell_NotifyIconW(NIM_DELETE, &data);
+    g_applied[kind] = {};
+}
+
+// Set when an icon was added or changed, so the suite's taskbar can be told.
+bool g_iconsChanged = false;
+
+// The suite's own taskbar reads the tray on a timer; this makes it read it
+// now, so the volume and brightness it shows keep up with the wheel.
+void TellTaskbars() {
+    static UINT msg = RegisterWindowMessageW(L"TourneSuite_TrayChanged");
+    EnumWindows(
+        [](HWND hwnd, LPARAM lParam) __stdcall -> BOOL {
+            WCHAR cls[64];
+            if (GetClassNameW(hwnd, cls, ARRAYSIZE(cls)) && !wcsncmp(cls, L"TourneTaskbar", 13)) {
+                PostMessageW(hwnd, (UINT)lParam, 0, 0);
+            }
+            return TRUE;
+        },
+        msg);
+}
+
+void ApplyIcon(int kind, int size) {
+    IconState const& state = g_states[kind];
+    AppliedIcon& applied = g_applied[kind];
+    if (applied.added && applied.state.art == state.art &&
+        applied.state.tip == state.tip &&
+        applied.state.hidden == state.hidden && applied.size == size &&
+        applied.tone == g_settings.tone && applied.shade == g_settings.shade && applied.palette == PaletteKey()) {
+        return;
+    }
+
+    HICON icon = CreateIconFromPixels(
+        RenderArt(ArtFor(state.art), g_settings.tone, g_settings.shade, size),
+        size);
+
+    NOTIFYICONDATAW data;
+    FillIconData(&data, kind);
+    data.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_STATE;
+    data.uCallbackMessage = WM_APP_TRAY;
+    data.hIcon = icon;
+    wcsncpy_s(data.szTip, state.tip.c_str(), _TRUNCATE);
+    data.dwStateMask = NIS_HIDDEN;
+    data.dwState = state.hidden ? NIS_HIDDEN : 0;
+
+    bool ok;
+    if (!applied.added) {
+        ok = Shell_NotifyIconW(NIM_ADD, &data);
+        if (ok) {
+            data.uVersion = NOTIFYICON_VERSION_4;
+            Shell_NotifyIconW(NIM_SETVERSION, &data);
+        }
+    } else {
+        ok = Shell_NotifyIconW(NIM_MODIFY, &data);
+    }
+    if (icon) {
+        DestroyIcon(icon);
+    }
+
+    if (ok) {
+        applied = {true, state, size, g_settings.tone, g_settings.shade, PaletteKey()};
+        g_iconsChanged = true;
+    } else {
+        // Most likely the tray isn't up yet; TaskbarCreated and the periodic
+        // timer retry.
+        applied.added = false;
+    }
+}
+
+void ReloadFlyout();
+bool IsFlyoutOpen(int flyoutKind);
+void ApplyBatteryIcons();
+
+void Refresh(UINT bits) {
+    int size = TrayIconSize();
+    if (bits & kNetworkBits) {
+        if (g_settings.enabled[kNetwork] || g_settings.enabled[kVpn]) {
+            ComputeNetwork(&g_states[kNetwork], &g_states[kVpn]);
+        }
+    }
+    for (int k = 0; k < kIconCount; k++) {
+        if (!g_settings.enabled[k]) {
+            RemoveIcon(k);
+            continue;
+        }
+        if ((bits & (1u << k)) && !(kNetworkBits & (1u << k))) {
+            g_states[k] = ComputeIcon(k);
+        }
+        if (!g_states[k].art.empty()) {
+            ApplyIcon(k, size);
+        }
+    }
+    // Device batteries follow the tray size and theme, and retry like the rest.
+    ApplyBatteryIcons();
+    if (g_iconsChanged) {
+        g_iconsChanged = false;
+        TellTaskbars();
+    }
+    if (bits & (kNetworkBits | (1u << kBattery) | (1u << kSecurity) | (1u << kVolume) |
+                (1u << kNotifications) | (1u << kBluetooth))) {
+        ReloadFlyout();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Device batteries: read on a thread of their own, from device-batteries.cpp
+// (placed here by the build), and shown as a tray icon per device and in the
+// flyouts, each switchable.
+
+////////////////////////////////////////////////////////////////////////////////
+// Device batteries: the battery of wireless headsets, mice, keyboards and
+// controllers, read straight from the devices.
+//
+// A C++ port of HaloBattery's providers (github.com/HeyOkay/HaloBattery, MIT,
+// Copyright (c) 2026 Halo Battery contributors), whose protocol notes come
+// from OpenRazer, Solaar, HeadsetControl and the projects credited there, plus
+// the Alienware Pro Wireless headset and AW720M mouse, learned from what
+// Alienware Command Center sends them. Every request here is a read.
+//
+// Built into System Icons by Build-TourneSuiteRedirect.ps1, and included on
+// its own by the test harness, so it only needs Windows headers and Wh_Log.
+
+namespace bat {
+
+struct Device {
+    std::wstring key;       // one tray icon per key
+    std::wstring name;
+    std::string kind;       // headset, mouse, keyboard, gamepad, bluetooth
+    std::string source;     // which reader found it
+    int level = -1;         // 0 to 100; -1 when not reported
+    bool charging = false;
+    bool online = true;     // false: asleep, showing the last level it gave
+    std::wstring approx;    // shown instead of "NN%" for coarse readings
+    std::string via;        // "bluetooth": a controller connected over Bluetooth
+    unsigned vid = 0;
+    unsigned pid = 0;
+};
+
+enum Vendor : int {
+    kAlienware,
+    kRazer,
+    kLogitech,
+    kSteelSeries,
+    kHyperX,
+    kAudeze,
+    kMchose,
+    kWlmouse,
+    kPlayStation,
+    kXbox,
+    kBluetooth,
+    kVendorCount
+};
+
+constexpr PCWSTR kVendorKeys[kVendorCount] = {
+    L"alienware", L"razer", L"logitech", L"steelseries", L"hyperx", L"audeze",
+    L"mchose", L"wlmouse", L"playstation", L"xbox", L"bluetooth",
+};
+
+// How long a device that stopped answering keeps its last level, greyed out.
+constexpr ULONGLONG kAsleepKeepMs = 300 * 1000;
+
+std::wstring Lower(std::wstring s) {
+    for (auto& c : s) {
+        c = (wchar_t)towlower(c);
+    }
+    return s;
+}
+
+std::string LowerA(std::wstring const& s) {
+    std::string out;
+    for (wchar_t c : s) {
+        out += c < 128 ? (char)tolower((int)c) : '?';
+    }
+    return out;
+}
+
+bool Contains(std::wstring const& lower, std::wstring_view word) {
+    return lower.find(word) != std::wstring::npos;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The HID device list, without opening any device.
+
+constexpr GUID kGuidHid = {0x4D1E55B2, 0xF16F, 0x11CF, {0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30}};
+
+std::vector<std::wstring> InterfacePaths() {
+    std::vector<std::wstring> paths;
+    for (int attempt = 0; attempt < 4; attempt++) {
+        ULONG size = 0;
+        if (CM_Get_Device_Interface_List_SizeW(&size, (LPGUID)&kGuidHid, nullptr,
+                                               CM_GET_DEVICE_INTERFACE_LIST_PRESENT) != CR_SUCCESS) {
+            return paths;
+        }
+        std::vector<WCHAR> buffer(size + 1);
+        CONFIGRET cr = CM_Get_Device_Interface_ListW((LPGUID)&kGuidHid, nullptr, buffer.data(), size + 1,
+                                                     CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
+        if (cr == CR_BUFFER_SMALL) {
+            continue;
+        }
+        if (cr != CR_SUCCESS) {
+            return paths;
+        }
+        for (PCWSTR p = buffer.data(); *p; p += wcslen(p) + 1) {
+            paths.push_back(p);
+        }
+        return paths;
+    }
+    return paths;
+}
+
+// "vid_054c" on USB, "vid&0002054c" over Bluetooth: the last four digits.
+unsigned HexAfter(std::wstring const& lower, std::wstring_view tag) {
+    for (wchar_t sep : {L'_', L'&'}) {
+        std::wstring key = std::wstring(tag) + sep;
+        size_t at = lower.find(key);
+        if (at == std::wstring::npos) {
+            continue;
+        }
+        at += key.size();
+        size_t end = at;
+        while (end < lower.size() && iswxdigit(lower[end]) && end - at < 8) {
+            end++;
+        }
+        if (end - at >= 4) {
+            return wcstoul(lower.substr(end - 4, 4).c_str(), nullptr, 16);
+        }
+    }
+    return 0;
+}
+
+struct HidInfo {
+    std::wstring path;
+    std::wstring lower;
+    unsigned vid = 0;
+    unsigned pid = 0;
+    int iface = -1;
+    unsigned usagePage = 0;
+    unsigned usage = 0;
+    std::wstring product;
+    std::wstring serial;
+    unsigned inLen = 0;
+    unsigned outLen = 0;
+    unsigned featLen = 0;
+    bool bluetooth = false;
+};
+
+void ParsePath(HidInfo& info) {
+    info.lower = Lower(info.path);
+    info.vid = HexAfter(info.lower, L"vid");
+    info.pid = HexAfter(info.lower, L"pid");
+    size_t mi = info.lower.find(L"&mi_");
+    if (mi != std::wstring::npos) {
+        info.iface = (int)wcstoul(info.lower.substr(mi + 4, 2).c_str(), nullptr, 16);
+    }
+    info.bluetooth = Contains(info.lower, L"{00001124-0000-1000-8000-00805f9b34fb}") ||
+                     Contains(info.lower, L"{00001812-0000-1000-8000-00805f9b34fb}") ||
+                     Contains(info.lower, L"vid&");
+}
+
+// Attributes of the collections of one vendor. Each is opened once, with no
+// access rights, which is enough for its usage, report sizes and strings and
+// doesn't disturb the device; the result is kept until the path goes away.
+std::map<std::wstring, HidInfo> g_infoCache;
+
+std::vector<HidInfo> Enumerate(std::vector<std::wstring> const& paths, unsigned vid) {
+    std::vector<HidInfo> out;
+    for (auto const& path : paths) {
+        HidInfo quick{path};
+        ParsePath(quick);
+        if (quick.vid != vid) {
+            continue;
+        }
+        auto cached = g_infoCache.find(path);
+        if (cached != g_infoCache.end()) {
+            out.push_back(cached->second);
+            continue;
+        }
+        HANDLE h = CreateFileW(path.c_str(), 0, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0,
+                               nullptr);
+        if (h == INVALID_HANDLE_VALUE) {
+            continue;
+        }
+        PHIDP_PREPARSED_DATA preparsed = nullptr;
+        if (HidD_GetPreparsedData(h, &preparsed)) {
+            HIDP_CAPS caps{};
+            if (HidP_GetCaps(preparsed, &caps) == HIDP_STATUS_SUCCESS) {
+                quick.usagePage = caps.UsagePage;
+                quick.usage = caps.Usage;
+                quick.inLen = caps.InputReportByteLength;
+                quick.outLen = caps.OutputReportByteLength;
+                quick.featLen = caps.FeatureReportByteLength;
+            }
+            HidD_FreePreparsedData(preparsed);
+        }
+        WCHAR text[128] = L"";
+        if (HidD_GetProductString(h, text, sizeof(text))) {
+            quick.product = text;
+        }
+        text[0] = 0;
+        if (HidD_GetSerialNumberString(h, text, sizeof(text))) {
+            quick.serial = text;
+        }
+        CloseHandle(h);
+        g_infoCache[path] = quick;
+        out.push_back(quick);
+    }
+    return out;
+}
+
+void ForgetMissing(std::vector<std::wstring> const& paths) {
+    for (auto it = g_infoCache.begin(); it != g_infoCache.end();) {
+        if (std::find(paths.begin(), paths.end(), it->first) == paths.end()) {
+            it = g_infoCache.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+bool VendorPresent(std::vector<std::wstring> const& paths, unsigned vid) {
+    for (auto const& path : paths) {
+        HidInfo quick{path};
+        ParsePath(quick);
+        if (quick.vid == vid) {
+            return true;
+        }
+    }
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// One open collection, with hidapi's conventions, since the protocol notes are
+// written against them: writes are padded to the report size, a read whose
+// report id is 0 has that byte removed, feature and input reports keep their
+// report id in front. Every request uses overlapped I/O with a timeout.
+
+constexpr DWORD kIoctlSetFeature = 0xB0191;
+constexpr DWORD kIoctlGetFeature = 0xB0192;
+constexpr DWORD kIoctlSetOutput = 0xB0195;
+constexpr DWORD kIoctlGetInput = 0xB01A2;
+
+class HidDevice {
+   public:
+    HidInfo info;
+
+    ~HidDevice() { Close(); }
+
+    bool Open(HidInfo const& from) {
+        info = from;
+        h_ = CreateFileW(info.path.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                         nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
+        if (h_ == INVALID_HANDLE_VALUE) {
+            h_ = nullptr;
+            return false;
+        }
+        readEvent_ = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+        ioEvent_ = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+        readBuffer_.assign(std::max(info.inLen, 1u), 0);
+        return readEvent_ && ioEvent_;
+    }
+
+    void Close() {
+        if (h_) {
+            if (readPending_) {
+                CancelIoEx(h_, &readOv_);
+                DWORD n;
+                GetOverlappedResult(h_, &readOv_, &n, TRUE);
+                readPending_ = false;
+            }
+            CloseHandle(h_);
+            h_ = nullptr;
+        }
+        if (readEvent_) {
+            CloseHandle(readEvent_);
+            readEvent_ = nullptr;
+        }
+        if (ioEvent_) {
+            CloseHandle(ioEvent_);
+            ioEvent_ = nullptr;
+        }
+    }
+
+    // Bytes written, or -1.
+    int Write(std::vector<BYTE> data) {
+        if (!h_) {
+            return -1;
+        }
+        if (data.size() < info.outLen) {
+            data.resize(info.outLen, 0);
+        }
+        OVERLAPPED ov{};
+        ov.hEvent = ioEvent_;
+        ResetEvent(ioEvent_);
+        DWORD n = 0;
+        if (!WriteFile(h_, data.data(), (DWORD)data.size(), nullptr, &ov) && GetLastError() != ERROR_IO_PENDING) {
+            return -1;
+        }
+        if (WaitForSingleObject(ioEvent_, 1000) != WAIT_OBJECT_0) {
+            CancelIoEx(h_, &ov);
+            GetOverlappedResult(h_, &ov, &n, TRUE);
+            return -1;
+        }
+        if (!GetOverlappedResult(h_, &ov, &n, FALSE)) {
+            return -1;
+        }
+        return (int)n;
+    }
+
+    // Up to timeoutMs for the next input report. The read stays pending across
+    // calls, like hidapi's, so nothing is lost between them. Bytes copied, 0 on
+    // timeout, -1 on error.
+    int Read(BYTE* out, int length, int timeoutMs) {
+        if (!h_) {
+            return -1;
+        }
+        if (!readPending_) {
+            readOv_ = {};
+            readOv_.hEvent = readEvent_;
+            ResetEvent(readEvent_);
+            std::fill(readBuffer_.begin(), readBuffer_.end(), 0);
+            if (!ReadFile(h_, readBuffer_.data(), (DWORD)readBuffer_.size(), nullptr, &readOv_) &&
+                GetLastError() != ERROR_IO_PENDING) {
+                return -1;
+            }
+            readPending_ = true;
+        }
+        if (WaitForSingleObject(readEvent_, (DWORD)std::max(timeoutMs, 0)) != WAIT_OBJECT_0) {
+            return 0;
+        }
+        readPending_ = false;
+        DWORD n = 0;
+        if (!GetOverlappedResult(h_, &readOv_, &n, FALSE)) {
+            return -1;
+        }
+        int start = 0;
+        if (n > 0 && readBuffer_[0] == 0) {
+            start = 1;
+        }
+        int count = std::min(length, (int)n - start);
+        if (count > 0) {
+            memcpy(out, readBuffer_.data() + start, count);
+        }
+        return std::max(count, 0);
+    }
+
+    std::vector<BYTE> Read(int timeoutMs) {
+        std::vector<BYTE> out(std::max(info.inLen, 1u));
+        int n = Read(out.data(), (int)out.size(), timeoutMs);
+        out.resize(n > 0 ? n : 0);
+        return out;
+    }
+
+    bool SendFeature(std::vector<BYTE> data) {
+        if (data.size() < info.featLen) {
+            data.resize(info.featLen, 0);
+        }
+        return Ioctl(kIoctlSetFeature, data, false) >= 0;
+    }
+
+    // The report, id first; empty on failure.
+    std::vector<BYTE> GetFeature(BYTE id) {
+        std::vector<BYTE> data(std::max(info.featLen, 2u), 0);
+        data[0] = id;
+        int n = Ioctl(kIoctlGetFeature, data, true);
+        if (n < 0) {
+            return {};
+        }
+        return data;
+    }
+
+    bool SetOutput(std::vector<BYTE> data) {
+        if (data.size() < info.outLen) {
+            data.resize(info.outLen, 0);
+        }
+        return Ioctl(kIoctlSetOutput, data, false) >= 0;
+    }
+
+    std::vector<BYTE> GetInput(BYTE id) {
+        std::vector<BYTE> data(std::max(info.inLen, 2u), 0);
+        data[0] = id;
+        int n = Ioctl(kIoctlGetInput, data, true);
+        if (n < 0) {
+            return {};
+        }
+        return data;
+    }
+
+   private:
+    int Ioctl(DWORD code, std::vector<BYTE>& data, bool reply) {
+        if (!h_) {
+            return -1;
+        }
+        OVERLAPPED ov{};
+        ov.hEvent = ioEvent_;
+        ResetEvent(ioEvent_);
+        DWORD n = 0;
+        BOOL ok = reply ? DeviceIoControl(h_, code, data.data(), (DWORD)data.size(), data.data(),
+                                          (DWORD)data.size(), nullptr, &ov)
+                        : DeviceIoControl(h_, code, data.data(), (DWORD)data.size(), nullptr, 0, nullptr, &ov);
+        if (!ok && GetLastError() != ERROR_IO_PENDING) {
+            return -1;
+        }
+        if (WaitForSingleObject(ioEvent_, 1000) != WAIT_OBJECT_0) {
+            CancelIoEx(h_, &ov);
+            GetOverlappedResult(h_, &ov, &n, TRUE);
+            return -1;
+        }
+        if (!GetOverlappedResult(h_, &ov, &n, FALSE)) {
+            return -1;
+        }
+        return (int)n;
+    }
+
+    HANDLE h_ = nullptr;
+    HANDLE readEvent_ = nullptr;
+    HANDLE ioEvent_ = nullptr;
+    OVERLAPPED readOv_{};
+    bool readPending_ = false;
+    std::vector<BYTE> readBuffer_;
+};
+
+// One provider's last good readings, for devices that fall asleep: the level
+// stays, greyed out, for a while.
+struct LastSeen {
+    std::map<std::wstring, std::pair<Device, ULONGLONG>> last;
+
+    void Remember(Device const& d) { last[d.key] = {d, GetTickCount64()}; }
+
+    // Devices remembered but missing from found, still within the window.
+    void KeepAsleep(std::vector<Device>& out, std::vector<std::wstring> const& found) {
+        ULONGLONG now = GetTickCount64();
+        for (auto it = last.begin(); it != last.end();) {
+            bool present = std::find(found.begin(), found.end(), it->first) != found.end();
+            if (present) {
+                ++it;
+                continue;
+            }
+            if (now - it->second.second < kAsleepKeepMs) {
+                Device d = it->second.first;
+                d.online = false;
+                out.push_back(d);
+                ++it;
+            } else {
+                it = last.erase(it);
+            }
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Alienware: the Pro Wireless headset's dongle (413C:A529) and the AW720M
+// mouse (413C:3029). Worked out by watching Alienware Command Center's
+// traffic, and verified on both devices.
+//
+// Headset, vendor collection 0xFF13: output report 06 "c0 0a", then input
+// report 07 polled until it echoes "c0 0a" ("07 00 80" is busy). The answer
+// is 07 c0 0a <len> 00 <data>: data[0] (byte 5) reads 0 on battery, data[1]
+// (byte 6) is the percentage, bytes 9-10 the cell voltage in mV.
+// Mouse, vendor collection 0xFF00 on interface 2: "00 c0 0a" written, a report
+// echoing "c0 0a" read back, with the percentage after a flag byte. A reply
+// three bytes long means the mouse isn't answering (asleep). "c0" is a read;
+// commands starting "40" change settings and are never sent.
+
+constexpr unsigned kDellVid = 0x413C;
+
+std::vector<Device> PollAlienware(std::vector<std::wstring> const& paths, LastSeen& asleep) {
+    std::vector<Device> out;
+    std::vector<std::wstring> found;
+    if (!VendorPresent(paths, kDellVid)) {
+        asleep.KeepAsleep(out, found);
+        return out;
+    }
+    for (auto const& info : Enumerate(paths, kDellVid)) {
+        if (info.pid == 0xA529 && info.usagePage == 0xFF13) {
+            HidDevice dev;
+            if (!dev.Open(info) || !dev.SetOutput({0x06, 0xC0, 0x0A})) {
+                continue;
+            }
+            for (int i = 0; i < 40; i++) {
+                Sleep(16);
+                auto in = dev.GetInput(0x07);
+                if (in.size() >= 11 && in[1] == 0xC0 && in[2] == 0x0A && in[3] >= 2 && in[6] <= 100) {
+                    Device d;
+                    d.key = L"alienware:a529";
+                    d.name = L"Alienware Pro Wireless Headset";
+                    d.kind = "headset";
+                    d.source = "alienware";
+                    d.level = in[6];
+                    d.charging = in[5] != 0;
+                    d.vid = info.vid;
+                    d.pid = info.pid;
+                    out.push_back(d);
+                    found.push_back(d.key);
+                    break;
+                }
+            }
+        } else if (info.pid == 0x3029 && info.usagePage == 0xFF00 && info.iface == 2) {
+            HidDevice dev;
+            if (!dev.Open(info) || dev.Write({0x00, 0xC0, 0x0A}) < 0) {
+                continue;
+            }
+            for (int i = 0; i < 10; i++) {
+                auto r = dev.Read(100);
+                if (r.size() < 3 || r[0] != 0xC0 || r[1] != 0x0A) {
+                    continue;
+                }
+                if (r[2] >= 4 && r.size() >= 6 && r[5] <= 100) {
+                    Device d;
+                    d.key = L"alienware:3029";
+                    d.name = info.product.empty() ? L"Alienware AW720M" : info.product;
+                    d.kind = "mouse";
+                    d.source = "alienware";
+                    d.level = r[5];
+                    d.charging = r[4] == 2;
+                    d.vid = info.vid;
+                    d.pid = info.pid;
+                    asleep.Remember(d);
+                    out.push_back(d);
+                    found.push_back(d.key);
+                }
+                break;  // a short reply: not answering right now
+            }
+        }
+    }
+    asleep.KeepAsleep(out, found);
+    return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Razer: the 90-byte feature report Synapse and OpenRazer use (power class 07:
+// 80 level, 84 charging), and the BlackShark V2 Pro 2023's own "PA" protocol.
+
+constexpr unsigned kRazerVid = 0x1532;
+
+struct RazerModel {
+    unsigned pid;
+    PCWSTR name;
+    BYTE tid;
+};
+
+constexpr RazerModel kRazerKnown[] = {
+    {0x0528, L"Razer BlackShark V2 Pro (2020)", 0x3F}, {0x0555, L"Razer BlackShark V2 Pro (2023)", 0x3F},
+    {0x0556, L"Razer BlackShark V2 Pro (2023)", 0x3F}, {0x0557, L"Razer BlackShark V2 Pro (2023)", 0x3F},
+    {0x00A4, L"Razer Mouse Dock Pro", 0x1F},           {0x00AA, L"Razer Basilisk V3 Pro", 0x1F},
+    {0x00AB, L"Razer Basilisk V3 Pro", 0x1F},          {0x00B9, L"Razer Basilisk V3 X HyperSpeed", 0x1F},
+    {0x007C, L"Razer DeathAdder V2 Pro", 0x3F},        {0x007D, L"Razer DeathAdder V2 Pro", 0x3F},
+    {0x009C, L"Razer DeathAdder V2 X HyperSpeed", 0x1F}, {0x00B3, L"Razer HyperPolling Dongle", 0x1F},
+    {0x00B6, L"Razer DeathAdder V3 Pro", 0x1F},        {0x00B7, L"Razer DeathAdder V3 Pro", 0x1F},
+    {0x00BE, L"Razer DeathAdder V4 Pro", 0x1F},        {0x00BF, L"Razer DeathAdder V4 Pro", 0x1F},
+    {0x0083, L"Razer Basilisk X HyperSpeed", 0x1F},    {0x0086, L"Razer Basilisk Ultimate", 0x1F},
+    {0x0088, L"Razer Basilisk Ultimate", 0x1F},        {0x008F, L"Razer Naga V2 Pro", 0x1F},
+    {0x0090, L"Razer Naga V2 Pro", 0x1F},              {0x00A5, L"Razer Viper V2 Pro", 0x1F},
+    {0x00A6, L"Razer Viper V2 Pro", 0x1F},             {0x00C0, L"Razer Viper V3 Pro", 0x1F},
+    {0x00C1, L"Razer Viper V3 Pro", 0x1F},             {0x007A, L"Razer Viper Ultimate", 0xFF},
+    {0x007B, L"Razer Viper Ultimate", 0xFF},           {0x0078, L"Razer Viper Ultimate", 0xFF},
+    {0x00AF, L"Razer Cobra Pro", 0x1F},                {0x00B0, L"Razer Cobra Pro", 0x1F},
+    {0x00CC, L"Razer Basilisk V3 Pro 35K", 0x1F},      {0x00CD, L"Razer Basilisk V3 Pro 35K", 0x1F},
+};
+
+constexpr BYTE kRazerTids[] = {0x1F, 0x3F, 0xFF, 0x9F, 0x08};
+constexpr unsigned kRazerPaPids[] = {0x0555, 0x0556};
+
+constexpr BYTE kRazerOk = 0x02;
+constexpr BYTE kRazerBusy = 0x01;
+constexpr BYTE kRazerTimeout = 0x04;
+
+RazerModel const* RazerKnown(unsigned pid) {
+    for (auto const& m : kRazerKnown) {
+        if (m.pid == pid) {
+            return &m;
+        }
+    }
+    return nullptr;
+}
+
+bool RazerIsPa(unsigned pid) {
+    return std::find(std::begin(kRazerPaPids), std::end(kRazerPaPids), pid) != std::end(kRazerPaPids);
+}
+
+// Wired Razer devices answer the battery command with nonsense, so unknown
+// ones are only asked when their name suggests a battery.
+bool RazerMaybeWireless(unsigned pid, std::wstring const& name) {
+    std::wstring n = Lower(name);
+    if (RazerKnown(pid) || RazerIsPa(pid)) {
+        return true;
+    }
+    for (PCWSTR w : {L"hyperspeed", L"wireless", L"receiver", L"dongle", L"dock", L"blackshark", L"barracuda",
+                     L"nari"}) {
+        if (Contains(n, w)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<BYTE> RazerRequest(BYTE tid, BYTE cmdClass, BYTE cmdId) {
+    std::vector<BYTE> msg(91, 0);  // report id 0, then the 90-byte message
+    BYTE* m = msg.data() + 1;
+    m[1] = tid;
+    m[5] = 0x02;
+    m[6] = cmdClass;
+    m[7] = cmdId;
+    BYTE crc = 0;
+    for (int i = 2; i < 88; i++) {
+        crc ^= m[i];
+    }
+    m[88] = crc;
+    return msg;
+}
+
+// (status, value); status -1 when the collection didn't take the request.
+std::pair<int, int> RazerQuery(HidDevice& dev, BYTE tid, BYTE cmdClass, BYTE cmdId) {
+    if (!dev.SendFeature(RazerRequest(tid, cmdClass, cmdId))) {
+        return {-1, -1};
+    }
+    ULONGLONG deadline = GetTickCount64() + 1000;
+    Sleep(60);
+    while (true) {
+        auto resp = dev.GetFeature(0x00);
+        if (resp.size() < 91) {
+            return {-1, -1};
+        }
+        BYTE const* data = resp.data() + 1;
+        int status = data[0];
+        int value = (data[6] == cmdClass && data[7] == cmdId) ? data[9] : -1;
+        // Busy, or another program's reply (Synapse polls the same collection):
+        // read on.
+        if (GetTickCount64() < deadline && (status == kRazerBusy || (status == kRazerOk && value < 0))) {
+            Sleep(80);
+            continue;
+        }
+        return {status, value};
+    }
+}
+
+struct RazerReading {
+    int status = -1;
+    int level = -1;
+    bool charging = false;
+};
+
+RazerReading RazerRead(HidInfo const& info, BYTE tid) {
+    HidDevice dev;
+    if (!dev.Open(info)) {
+        return {};
+    }
+    auto [status, raw] = RazerQuery(dev, tid, 0x07, 0x80);
+    if (status != kRazerOk || raw < 0) {
+        return {status, -1, false};
+    }
+    RazerReading r{status, (int)std::lround(raw / 255.0 * 100), false};
+    auto [cst, craw] = RazerQuery(dev, tid, 0x07, 0x84);
+    r.charging = cst == kRazerOk && craw > 0;
+    return r;
+}
+
+// BlackShark V2 Pro 2023 ("PA"): 64-byte output reports with report id 2.
+std::vector<BYTE> PaFrameQuery(BYTE cmd) {
+    std::vector<BYTE> b(64, 0);
+    b[0] = 0x02;
+    b[1] = 0x80;
+    b[2] = 8;
+    b[5] = 'P';
+    b[6] = 'A';
+    b[7] = 0x08;
+    b[9] = 0x03;
+    b[10] = cmd;
+    return b;
+}
+
+std::vector<BYTE> PaFrameRemote(bool on) {
+    std::vector<BYTE> b(64, 0);
+    b[0] = 0x02;
+    b[1] = 0x80;
+    b[2] = 0x07;
+    b[5] = 'P';
+    b[6] = 'A';
+    b[7] = 0x0E;
+    b[9] = 0x02;
+    b[10] = 0xE1;
+    b[11] = on ? 1 : 0;
+    return b;
+}
+
+std::vector<BYTE> PaParse(std::vector<BYTE> const& d, BYTE cmd) {
+    for (int off : {0, -1}) {
+        int c = 12 + off;
+        if ((int)d.size() > c + 3 && (off == -1 || d[0] == 0x02) && d[c] == cmd && d[c + 1] == 0x01) {
+            int n = std::max((int)d[c + 2], 1);
+            if ((int)d.size() >= c + 3 + n) {
+                return std::vector<BYTE>(d.begin() + c + 3, d.begin() + c + 3 + n);
+            }
+        }
+    }
+    return {};
+}
+
+std::vector<BYTE> PaQuery(HidDevice& dev, BYTE cmd) {
+    for (int i = 0; i < 32 && !dev.Read(5).empty(); i++) {
+    }
+    dev.Write(PaFrameRemote(true));  // wakes the radio link
+    Sleep(35);
+    std::vector<BYTE> result;
+    for (int attempt = 0; attempt < 3 && result.empty(); attempt++) {
+        dev.Write(PaFrameRemote(true));
+        Sleep(35);
+        if (dev.Write(PaFrameQuery(cmd)) < 0) {
+            break;
+        }
+        ULONGLONG deadline = GetTickCount64() + 150;
+        while (GetTickCount64() < deadline) {
+            auto data = dev.Read(50);
+            if (data.empty()) {
+                continue;
+            }
+            result = PaParse(data, cmd);
+            if (!result.empty()) {
+                break;
+            }
+        }
+    }
+    dev.Write(PaFrameRemote(false));
+    Sleep(35);
+    return result;
+}
+
+// "ok", "offline" or "fail".
+std::string PaRead(HidInfo const& info, int* level, bool* charging) {
+    HidDevice dev;
+    if (!dev.Open(info)) {
+        return "fail";
+    }
+    bool woke = false;
+    for (int attempt = 0; attempt < 4; attempt++) {
+        if (dev.Write(PaFrameRemote(true)) >= 0) {
+            woke = true;
+            break;
+        }
+        Sleep(150 * (attempt + 1));
+    }
+    if (!woke) {
+        return "offline";
+    }
+    Sleep(35);
+    auto battery = PaQuery(dev, 0x21);
+    if (battery.empty()) {
+        return "offline";
+    }
+    *level = std::min((int)battery[0], 100);
+    auto charge = PaQuery(dev, 0x2A);
+    *charging = !charge.empty() && charge[0];
+    return "ok";
+}
+
+struct RazerProvider {
+    std::map<std::wstring, std::pair<std::wstring, BYTE>> cache;  // group -> working path, tid
+    std::map<std::wstring, ULONGLONG> dead;                       // paths that never answer
+    LastSeen asleep;
+
+    RazerReading PollGroup(std::wstring const& group, std::vector<HidInfo> ifaces, BYTE preferred) {
+        auto cached = cache.find(group);
+        if (cached != cache.end()) {
+            for (auto const& info : ifaces) {
+                if (info.path == cached->second.first) {
+                    auto r = RazerRead(info, cached->second.second);
+                    if (r.status == kRazerOk || r.status == kRazerTimeout) {
+                        return r;
+                    }
+                }
+            }
+            cache.erase(group);
+        }
+        std::stable_sort(ifaces.begin(), ifaces.end(), [](HidInfo const& a, HidInfo const& b) {
+            auto rank = [](HidInfo const& d) {
+                int iface = d.iface < 0 ? 99 : d.iface;
+                return std::make_pair(d.usagePage == 0x0001 || d.usagePage == 0xFF00 ? 0 : 1, iface);
+            };
+            return rank(a) < rank(b);
+        });
+        std::vector<BYTE> tids;
+        if (preferred) {
+            tids.push_back(preferred);
+        }
+        for (BYTE t : kRazerTids) {
+            if (std::find(tids.begin(), tids.end(), t) == tids.end()) {
+                tids.push_back(t);
+            }
+        }
+        ULONGLONG now = GetTickCount64();
+        RazerReading timeoutHit;
+        for (auto const& info : ifaces) {
+            auto d = dead.find(info.path);
+            if (d != dead.end() && d->second > now) {
+                continue;
+            }
+            bool answered = false;
+            for (BYTE tid : tids) {
+                auto r = RazerRead(info, tid);
+                if (r.status < 0) {
+                    break;
+                }
+                answered = true;
+                if (r.status == kRazerOk) {
+                    cache[group] = {info.path, tid};
+                    return r;
+                }
+                if (r.status == kRazerTimeout) {
+                    timeoutHit = r;
+                    cache[group] = {info.path, tid};
+                    break;
+                }
+            }
+            if (!answered) {
+                dead[info.path] = now + 300 * 1000;
+            }
+        }
+        return timeoutHit;
+    }
+
+    RazerReading PollPa(std::vector<HidInfo> const& ifaces) {
+        for (auto const& info : ifaces) {
+            if (info.usagePage != 0xFF00 && info.usagePage != 0xFF14) {
+                continue;
+            }
+            int level = -1;
+            bool charging = false;
+            std::string res = PaRead(info, &level, &charging);
+            if (res == "ok") {
+                return {kRazerOk, level, charging};
+            }
+            if (res == "offline") {
+                return {kRazerTimeout, -1, false};
+            }
+        }
+        return {};
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        std::vector<std::wstring> found;
+        if (!VendorPresent(paths, kRazerVid)) {
+            asleep.KeepAsleep(out, found);
+            return out;
+        }
+        std::map<std::pair<unsigned, std::wstring>, std::vector<HidInfo>> groups;
+        for (auto const& info : Enumerate(paths, kRazerVid)) {
+            groups[{info.pid, info.serial}].push_back(info);
+        }
+        // Collections Windows re-parents (Synapse's virtual children) have no
+        // serial: they belong to the one real device of that product.
+        for (auto it = groups.begin(); it != groups.end();) {
+            if (it->first.second.empty()) {
+                std::vector<std::wstring> serials;
+                for (auto const& [k, v] : groups) {
+                    if (k.first == it->first.first && !k.second.empty()) {
+                        serials.push_back(k.second);
+                    }
+                }
+                if (serials.size() == 1) {
+                    auto& target = groups[{it->first.first, serials[0]}];
+                    target.insert(target.end(), it->second.begin(), it->second.end());
+                    it = groups.erase(it);
+                    continue;
+                }
+            }
+            ++it;
+        }
+        for (auto const& [id, ifaces] : groups) {
+            unsigned pid = id.first;
+            auto known = RazerKnown(pid);
+            std::wstring name = known ? known->name : ifaces[0].product;
+            if (name.empty()) {
+                WCHAR buffer[32];
+                swprintf_s(buffer, L"Razer %04x", pid);
+                name = buffer;
+            }
+            if (!RazerMaybeWireless(pid, name)) {
+                continue;
+            }
+            WCHAR keyBuffer[64];
+            swprintf_s(keyBuffer, L"razer:%04x:", pid);
+            std::wstring key = keyBuffer + id.second;
+            bool headset = RazerIsPa(pid) || Contains(Lower(name), L"blackshark");
+            RazerReading r;
+            if (RazerIsPa(pid)) {
+                r = PollPa(ifaces);
+                if (r.status < 0) {
+                    r = PollGroup(key, ifaces, known ? known->tid : 0);
+                }
+            } else {
+                r = PollGroup(key, ifaces, known ? known->tid : 0);
+                if (headset && r.status != kRazerOk) {
+                    auto pa = PollPa(ifaces);
+                    if (pa.status >= 0 && (r.status < 0 || pa.status == kRazerOk)) {
+                        r = pa;
+                    }
+                }
+            }
+            if (r.status != kRazerOk) {
+                continue;  // asleep mice keep their level through `asleep`; headsets go
+            }
+            Device d;
+            d.key = key;
+            d.name = name;
+            d.kind = headset ? "headset" : "mouse";
+            d.source = "razer";
+            d.level = r.level;
+            d.charging = r.charging;
+            d.vid = kRazerVid;
+            d.pid = pid;
+            if (!headset) {
+                asleep.Remember(d);
+            }
+            out.push_back(d);
+            found.push_back(key);
+        }
+        asleep.KeepAsleep(out, found);
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Logitech: HID++ 2.0 on a Lightspeed or Unifying receiver's vendor
+// collections (0xFF00, usages 1 short and 2 long), or on the device's cable.
+// Battery from feature 0x1004 unified, 0x1000 status or 0x1001 voltage.
+
+constexpr unsigned kLogitechVid = 0x046D;
+constexpr BYTE kSwid = 0x0A;
+
+int VoltageToPercent(int mv) {
+    static constexpr int curve[][2] = {{4186, 100}, {4067, 90}, {3989, 80}, {3922, 70}, {3859, 60},
+                                       {3811, 50},  {3778, 40}, {3751, 30}, {3717, 20}, {3671, 10},
+                                       {3646, 5},   {3579, 2},  {3500, 0}};
+    if (mv >= curve[0][0]) {
+        return 100;
+    }
+    for (size_t i = 0; i + 1 < std::size(curve); i++) {
+        auto hi = curve[i];
+        auto lo = curve[i + 1];
+        if (mv >= lo[0]) {
+            return (int)std::lround(lo[1] + (mv - lo[0]) * (double)(hi[1] - lo[1]) / (hi[0] - lo[0]));
+        }
+    }
+    return 0;
+}
+
+struct HidppChannel {
+    HidDevice longDev;
+    HidDevice shortDev;
+    bool haveShort = false;
+    bool error = false;
+
+    bool Open(HidInfo const& longInfo, HidInfo const* shortInfo) {
+        if (!longDev.Open(longInfo)) {
+            return false;
+        }
+        if (shortInfo) {
+            haveShort = shortDev.Open(*shortInfo);
+        }
+        return true;
+    }
+
+    // The reply's parameters (16 bytes and zero padding), or empty.
+    std::vector<BYTE> Request(BYTE idx, BYTE feature, BYTE func, std::vector<BYTE> params = {},
+                              DWORD timeoutMs = 600) {
+        error = false;
+        std::vector<BYTE> req = {0x11, idx, feature, (BYTE)((func << 4) | kSwid)};
+        req.insert(req.end(), params.begin(), params.end());
+        req.resize(20, 0);
+        if (longDev.Write(req) < 0) {
+            return {};
+        }
+        ULONGLONG end = GetTickCount64() + timeoutMs;
+        while (GetTickCount64() < end) {
+            for (HidDevice* d : {&longDev, &shortDev}) {
+                if (d == &shortDev && !haveShort) {
+                    continue;
+                }
+                auto r = d->Read(0);
+                if (r.size() < 4 || r[1] != idx) {
+                    continue;
+                }
+                if ((r[2] == 0x8F || r[2] == 0xFF) && r[3] == feature) {
+                    error = true;
+                    return {};
+                }
+                if (r[2] == feature && r[3] == (BYTE)((func << 4) | kSwid)) {
+                    std::vector<BYTE> p(r.begin() + 4, r.end());
+                    p.resize(p.size() + 16, 0);
+                    return p;
+                }
+            }
+            Sleep(5);
+        }
+        return {};
+    }
+
+    BYTE FeatureIndex(BYTE idx, unsigned featureId) {
+        auto r = Request(idx, 0, 0, {(BYTE)(featureId >> 8), (BYTE)(featureId & 0xFF)});
+        return r.empty() ? 0 : r[0];
+    }
+};
+
+struct LogitechIdentity {
+    std::wstring name;
+    std::string kind;
+    std::wstring unit;
+};
+
+struct LogitechProvider {
+    std::map<std::pair<unsigned, int>, LogitechIdentity> ids;
+    std::set<std::pair<unsigned, int>> sleeping;
+    LastSeen asleep;
+
+    LogitechIdentity Identity(HidppChannel& ch, BYTE idx) {
+        LogitechIdentity id;
+        BYTE fi = ch.FeatureIndex(idx, 0x0005);
+        if (fi) {
+            auto r = ch.Request(idx, fi, 0);
+            int length = r.empty() ? 0 : r[0];
+            std::string raw;
+            while ((int)raw.size() < length) {
+                auto part = ch.Request(idx, fi, 1, {(BYTE)raw.size()});
+                if (part.empty()) {
+                    break;
+                }
+                raw.append((char const*)part.data(), 16);
+            }
+            raw.resize(std::min((int)raw.size(), length));
+            int n = MultiByteToWideChar(CP_UTF8, 0, raw.c_str(), (int)raw.size(), nullptr, 0);
+            id.name.resize(n);
+            MultiByteToWideChar(CP_UTF8, 0, raw.c_str(), (int)raw.size(), id.name.data(), n);
+            auto type = ch.Request(idx, fi, 2);
+            if (!type.empty()) {
+                switch (type[0]) {
+                    case 0:
+                    case 2: id.kind = "keyboard"; break;
+                    case 3:
+                    case 4:
+                    case 5: id.kind = "mouse"; break;
+                }
+            }
+        }
+        fi = ch.FeatureIndex(idx, 0x0003);
+        if (fi) {
+            auto r = ch.Request(idx, fi, 0);
+            if (r.size() >= 5 && (r[1] | r[2] | r[3] | r[4])) {
+                WCHAR hex[16];
+                swprintf_s(hex, L"%02X%02X%02X%02X", r[1], r[2], r[3], r[4]);
+                id.unit = hex;
+            }
+        }
+        return id;
+    }
+
+    std::optional<Device> ReadSlot(HidppChannel& ch, unsigned pid, BYTE idx) {
+        auto slot = std::make_pair(pid, (int)idx);
+        // A paired device that's asleep doesn't answer at all; once a slot has
+        // gone quiet, ask it with the short timeout until it answers again.
+        DWORD timeout = sleeping.count(slot) ? 600 : 2000;
+        if (ch.Request(idx, 0x00, 1, {}, timeout).empty()) {
+            if (ch.error) {
+                sleeping.erase(slot);
+            } else {
+                sleeping.insert(slot);
+            }
+            return std::nullopt;
+        }
+        sleeping.erase(slot);
+        if (!ids.count(slot)) {
+            ids[slot] = Identity(ch, idx);
+        }
+        auto const& id = ids[slot];
+        for (unsigned feature : {0x1004u, 0x1000u, 0x1001u}) {
+            BYTE fi = ch.FeatureIndex(idx, feature);
+            if (!fi) {
+                continue;
+            }
+            auto p = ch.Request(idx, fi, feature == 0x1004 ? 1 : 0);
+            if (p.size() < 3) {
+                continue;
+            }
+            int level = -1;
+            bool charging = false;
+            if (feature == 0x1004) {
+                level = p[0] <= 100 ? p[0] : -1;
+                charging = p[2] >= 1 && p[2] <= 3;
+            } else if (feature == 0x1000) {
+                level = p[0] > 0 && p[0] <= 100 ? p[0] : -1;
+                charging = p[2] >= 1 && p[2] <= 3;
+            } else {
+                int mv = (p[0] << 8) | p[1];
+                if (mv >= 2500) {
+                    level = VoltageToPercent(mv);
+                    charging = (p[2] & 0x80) != 0;
+                }
+            }
+            if (level < 0) {
+                continue;
+            }
+            Device d;
+            WCHAR key[48];
+            if (!id.unit.empty()) {
+                swprintf_s(key, L"logitech:%ls", id.unit.c_str());
+            } else {
+                swprintf_s(key, L"logitech:%04x:%d", pid, idx);
+            }
+            d.key = key;
+            d.name = id.name.empty() ? L"Logitech device" : id.name;
+            d.kind = id.kind;
+            d.source = "logitech";
+            d.level = level;
+            d.charging = charging;
+            d.vid = kLogitechVid;
+            d.pid = pid;
+            return d;
+        }
+        return std::nullopt;
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        std::vector<std::wstring> foundKeys;
+        if (!VendorPresent(paths, kLogitechVid)) {
+            asleep.KeepAsleep(out, foundKeys);
+            return out;
+        }
+        auto infos = Enumerate(paths, kLogitechVid);
+        std::map<unsigned, std::map<unsigned, HidInfo>> groups;  // pid -> usage -> info
+        for (auto const& info : infos) {
+            if (info.usagePage == 0xFF00 && (info.usage == 1 || info.usage == 2)) {
+                groups[info.pid][info.usage] = info;
+            }
+        }
+        std::map<std::wstring, Device> found;
+        for (auto& [pid, byUsage] : groups) {
+            if (!byUsage.count(2)) {
+                continue;
+            }
+            std::wstring product;
+            for (auto const& info : infos) {
+                if (info.pid == pid && !info.product.empty()) {
+                    product = info.product;
+                    break;
+                }
+            }
+            bool receiver = Contains(Lower(product), L"receiver");
+            HidppChannel ch;
+            if (!ch.Open(byUsage[2], byUsage.count(1) ? &byUsage[1] : nullptr)) {
+                continue;
+            }
+            std::vector<BYTE> indexes;
+            if (receiver) {
+                indexes = {1, 2, 3, 4, 5, 6};
+            } else {
+                indexes = {0xFF};
+            }
+            for (BYTE idx : indexes) {
+                auto d = ReadSlot(ch, pid, idx);
+                // The same device on the cable and through the receiver: charging wins.
+                if (d && (!found.count(d->key) || d->charging)) {
+                    found[d->key] = *d;
+                }
+            }
+        }
+        for (auto& [key, d] : found) {
+            asleep.Remember(d);
+            out.push_back(d);
+            foundKeys.push_back(key);
+        }
+        if (!groups.empty()) {
+            asleep.KeepAsleep(out, foundKeys);
+        }
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// SteelSeries: Arctis Nova headsets (output report "00 b0" on interface 3,
+// usage page 0xFFC0) and Rival 3 Wireless mice ("00 aa 01", aa echo), as
+// documented by HeadsetControl and steel-mouse.
+
+constexpr unsigned kSteelSeriesVid = 0x1038;
+
+enum class NovaLayout { k7, k7Discrete, k5 };
+
+struct SteelSeriesModel {
+    unsigned pid;
+    PCWSTR name;
+    NovaLayout layout;
+};
+
+constexpr SteelSeriesModel kNovaModels[] = {
+    {0x22A1, L"Arctis Nova 7", NovaLayout::k7},        {0x2202, L"Arctis Nova 7", NovaLayout::k7Discrete},
+    {0x227E, L"Arctis Nova 7 Gen 2", NovaLayout::k7},  {0x2206, L"Arctis Nova 7x", NovaLayout::k7Discrete},
+    {0x2258, L"Arctis Nova 7x", NovaLayout::k7},       {0x229E, L"Arctis Nova 7x", NovaLayout::k7},
+    {0x22AD, L"Arctis Nova 7x", NovaLayout::k7},       {0x22A4, L"Arctis Nova 7X", NovaLayout::k7Discrete},
+    {0x22A5, L"Arctis Nova 7X", NovaLayout::k7},       {0x223A, L"Arctis Nova 7 Diablo IV", NovaLayout::k7Discrete},
+    {0x22A9, L"Arctis Nova 7 Diablo IV", NovaLayout::k7}, {0x227A, L"Arctis Nova 7 WoW Edition", NovaLayout::k7Discrete},
+    {0x2232, L"Arctis Nova 5", NovaLayout::k5},        {0x2253, L"Arctis Nova 5X", NovaLayout::k5},
+};
+
+constexpr std::pair<unsigned, PCWSTR> kRivalModels[] = {
+    {0x1830, L"SteelSeries Rival 3 Wireless"},
+    {0x1872, L"SteelSeries Rival 3 Wireless Gen 2"},
+};
+
+struct SteelSeriesProvider {
+    std::vector<BYTE> ReadNova(HidInfo const& info) {
+        HidDevice dev;
+        if (!dev.Open(info) || dev.Write({0x00, 0xB0}) < 0) {
+            return {};
+        }
+        std::vector<BYTE> first;
+        ULONGLONG end = GetTickCount64() + 1000;
+        while (GetTickCount64() < end) {
+            auto r = dev.Read(100);
+            if (r.empty()) {
+                continue;
+            }
+            if (r[0] == 0xB0) {
+                return r;
+            }
+            if (first.empty()) {
+                first = r;
+            }
+        }
+        return first;
+    }
+
+    std::vector<BYTE> ReadRival(HidInfo const& info) {
+        HidDevice dev;
+        if (!dev.Open(info)) {
+            return {};
+        }
+        std::vector<BYTE> request = {0x00, 0xAA, 0x01};
+        request.resize(64, 0);
+        for (int attempt = 0; attempt < 3; attempt++) {
+            if (dev.Write(request) < 0) {
+                continue;
+            }
+            for (int i = 0; i < 6; i++) {
+                auto r = dev.Read(100);
+                if (r.empty()) {
+                    continue;
+                }
+                if (r[0] == 0xAA || (r[0] == 0x00 && r.size() > 1 && r[1] == 0xAA)) {
+                    return r;
+                }
+                break;
+            }
+        }
+        return {};
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        if (!VendorPresent(paths, kSteelSeriesVid)) {
+            return out;
+        }
+        std::set<unsigned> seen;
+        for (auto const& info : Enumerate(paths, kSteelSeriesVid)) {
+            if (seen.count(info.pid) || info.iface != 3) {
+                continue;
+            }
+            for (auto const& [pid, name] : kRivalModels) {
+                if (pid != info.pid) {
+                    continue;
+                }
+                seen.insert(pid);
+                auto r = ReadRival(info);
+                size_t m = !r.empty() && r[0] == 0x00 && r.size() > 1 ? 1 : 0;
+                if (r.size() >= m + 4 && r[m] == 0xAA && r[m + 1] <= 100) {
+                    Device d;
+                    WCHAR key[32];
+                    swprintf_s(key, L"steelseries:%04x", pid);
+                    d.key = key;
+                    d.name = name;
+                    d.kind = "mouse";
+                    d.source = "steelseries";
+                    d.level = r[m + 1];
+                    d.charging = r[m + 3] != 0;
+                    out.push_back(d);
+                }
+            }
+            for (auto const& model : kNovaModels) {
+                if (model.pid != info.pid) {
+                    continue;
+                }
+                seen.insert(model.pid);
+                auto r = ReadNova(info);
+                int level = -1;
+                bool charging = false;
+                if (model.layout == NovaLayout::k5) {
+                    if (r.size() >= 5 && r[0] == 0xB0 && r[1] != 0x02) {
+                        level = std::min((int)r[3], 100);
+                        charging = r[4] == 0x01;
+                    }
+                } else if (r.size() >= 4 && r[0] == 0xB0 && r[3] != 0x00) {
+                    level = std::min((int)r[2], 100);
+                    if (model.layout == NovaLayout::k7Discrete) {
+                        level = std::min(level, 4) * 25;
+                    }
+                    charging = r[3] == 0x01 || r[3] == 0x02;
+                }
+                if (level >= 0) {
+                    Device d;
+                    WCHAR key[32];
+                    swprintf_s(key, L"steelseries:%04x", model.pid);
+                    d.key = key;
+                    d.name = model.name;
+                    d.kind = "headset";
+                    d.source = "steelseries";
+                    d.level = level;
+                    d.charging = charging;
+                    out.push_back(d);
+                }
+            }
+        }
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// HyperX Cloud II Wireless: vendor collection 0xFF90:0x0303, request
+// "06 ff bb <cmd>", reply echoing it (cmd 02: level at byte 7; 03: charging).
+
+constexpr unsigned kHyperXVid = 0x03F0;
+
+std::vector<Device> PollHyperX(std::vector<std::wstring> const& paths) {
+    std::vector<Device> out;
+    if (!VendorPresent(paths, kHyperXVid)) {
+        return out;
+    }
+    std::set<std::wstring> seen;
+    for (unsigned pid : {0x0696u, 0x018Bu}) {
+        for (auto const& info : Enumerate(paths, kHyperXVid)) {
+            if (info.pid != pid || seen.count(info.path) || info.usagePage != 0xFF90 || info.usage != 0x0303) {
+                continue;
+            }
+            seen.insert(info.path);
+            auto query = [&](BYTE cmd) -> std::vector<BYTE> {
+                HidDevice dev;
+                if (!dev.Open(info)) {
+                    return {};
+                }
+                std::vector<BYTE> req = {0x06, 0xFF, 0xBB, cmd, 0x00};
+                req.resize(52, 0);
+                if (dev.Write(req) < 0) {
+                    return {};
+                }
+                Sleep(100);
+                return dev.Read(1000);
+            };
+            auto r = query(0x02);
+            if (r.size() <= 7 || r[0] != 0x06 || r[1] != 0xFF || r[2] != 0xBB || r[3] != 0x02 || r[7] > 100) {
+                continue;
+            }
+            Device d;
+            WCHAR key[32];
+            swprintf_s(key, L"hyperx:%04x", pid);
+            d.key = key;
+            d.name = L"HyperX Cloud II Wireless";
+            d.kind = "headset";
+            d.source = "hyperx";
+            d.level = r[7];
+            auto c = query(0x03);
+            d.charging = c.size() > 4 && c[0] == 0x06 && c[1] == 0xFF && c[2] == 0xBB && c[3] == 0x03 && c[4] == 1;
+            out.push_back(d);
+        }
+    }
+    return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Audeze Maxwell: vendor collection 0xFF13, output report 06, input report 07
+// holding a rolling buffer; the battery is the byte after "d6 0c 00 00". The
+// cable endpoint answering means the headset is charging.
+
+constexpr unsigned kAudezeVid = 0x3329;
+
+constexpr BYTE kAudezeInit[][10] = {
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x20}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x25},
+    {0x06, 0x07, 0x80, 0x05, 0x5A, 0x03, 0x00, 0x07, 0x1C, 0x00}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x28},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x83, 0x2C, 0x01}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x83, 0x2C, 0x07},
+    {0x06, 0x07, 0x00, 0x05, 0x5A, 0x03, 0x00, 0x07, 0x1C, 0x00}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x2D},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x2C}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x00},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x83, 0x2C, 0x0B}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x24},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x2F}, {0x06, 0x07, 0x80, 0x05, 0x5A, 0x03, 0x00, 0xD6, 0x0C, 0x00},
+};
+constexpr BYTE kAudezeStatus[][10] = {
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x22}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x00},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x83, 0x2C, 0x0B}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x24},
+    {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x01, 0x09, 0x2C}, {0x06, 0x08, 0x80, 0x05, 0x5A, 0x04, 0x00, 0x83, 0x2C, 0x07},
+};
+
+int AudezeFindLevel(std::vector<BYTE> const& b) {
+    for (size_t i = 0; i + 4 < b.size(); i++) {
+        if (b[i] == 0xD6 && b[i + 1] == 0x0C && b[i + 2] == 0x00 && b[i + 3] == 0x00 && b[i + 4] <= 100) {
+            return b[i + 4];
+        }
+    }
+    return -1;
+}
+
+struct AudezeProvider {
+    std::map<std::pair<unsigned, std::wstring>, bool> shortUseless;
+
+    // Frames read after sending the packets; answered false when nothing came.
+    std::vector<std::vector<BYTE>> Sequence(HidDevice& dev, std::vector<std::vector<BYTE>> const& requests,
+                                            bool* answered) {
+        std::vector<std::vector<BYTE>> frames;
+        int unanswered = 0;
+        *answered = true;
+        for (auto const& req : requests) {
+            std::vector<BYTE> packet = req;
+            packet.resize(62, 0);
+            if (dev.Write(packet) < 0) {
+                break;
+            }
+            Sleep(60);
+            auto frame = dev.GetInput(0x07);
+            if (!frame.empty()) {
+                frames.push_back(frame);
+            } else if (frames.empty() && ++unanswered >= 3) {
+                *answered = false;
+                return frames;
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            Sleep(60);
+            auto frame = dev.GetInput(0x07);
+            if (!frame.empty()) {
+                frames.push_back(frame);
+            }
+        }
+        return frames;
+    }
+
+    int ReadBattery(HidInfo const& info, std::pair<unsigned, std::wstring> const& state) {
+        HidDevice dev;
+        if (!dev.Open(info)) {
+            return -1;
+        }
+        auto newest = [](std::vector<std::vector<BYTE>> const& frames) {
+            for (auto it = frames.rbegin(); it != frames.rend(); ++it) {
+                int level = AudezeFindLevel(*it);
+                if (level >= 0) {
+                    return level;
+                }
+            }
+            return -1;
+        };
+        bool shortFirst = !shortUseless[state];
+        bool answered = true;
+        int level = -1;
+        if (shortFirst) {
+            std::vector<std::vector<BYTE>> one = {{0x06, 0x07, 0x80, 0x05, 0x5A, 0x03, 0x00, 0xD6, 0x0C}};
+            level = newest(Sequence(dev, one, &answered));
+        }
+        if (level < 0 && answered) {
+            std::vector<std::vector<BYTE>> all;
+            for (auto const& p : kAudezeInit) {
+                all.push_back(std::vector<BYTE>(p, p + (p[1] == 0x07 ? 9 : 10)));
+            }
+            for (auto const& p : kAudezeStatus) {
+                all.push_back(std::vector<BYTE>(p, p + 10));
+            }
+            // The two nine-byte packets in the table end at 0x09: trim them back.
+            for (auto& p : all) {
+                if (p.size() == 10 && p[7] == 0x01 && p[8] == 0x09 && p[9] == 0x00) {
+                    p.resize(9);
+                }
+            }
+            level = newest(Sequence(dev, all, &answered));
+        }
+        if (level >= 0) {
+            shortUseless[state] = false;
+        } else if (shortFirst) {
+            shortUseless[state] = true;
+        }
+        return level;
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        if (!VendorPresent(paths, kAudezeVid)) {
+            return out;
+        }
+        std::map<std::pair<unsigned, std::wstring>, std::vector<HidInfo>> groups;
+        for (auto const& info : Enumerate(paths, kAudezeVid)) {
+            groups[{info.pid, info.serial}].push_back(info);
+        }
+        auto isCable = [](unsigned pid) { return pid == 0x4B1A || pid == 0x4B1E; };
+        std::vector<std::pair<std::pair<unsigned, std::wstring>, std::vector<HidInfo>>> order(groups.begin(),
+                                                                                             groups.end());
+        std::stable_sort(order.begin(), order.end(),
+                         [&](auto const& a, auto const& b) { return isCable(a.first.first) > isCable(b.first.first); });
+        for (auto const& [id, ifaces] : order) {
+            bool off = false;
+            if (!isCable(id.first)) {
+                for (auto const& info : ifaces) {
+                    if (Lower(info.product) == L"audeze maxwell dongle") {
+                        off = true;
+                    }
+                }
+            }
+            if (off) {
+                continue;
+            }
+            std::vector<HidInfo> cands;
+            for (auto const& info : ifaces) {
+                if (info.usagePage == 0xFF13 && info.usage == 0x0001) {
+                    cands.push_back(info);
+                }
+            }
+            if (cands.empty()) {
+                for (auto const& info : ifaces) {
+                    if (info.usagePage == 0xFF13) {
+                        cands.push_back(info);
+                    }
+                }
+            }
+            if (cands.empty()) {
+                cands = ifaces;
+            }
+            int level = -1;
+            for (auto const& info : cands) {
+                level = ReadBattery(info, id);
+                if (level >= 0) {
+                    break;
+                }
+            }
+            if (level < 0) {
+                continue;
+            }
+            Device d;
+            d.key = L"audeze:" + id.second;
+            d.name = L"Audeze Maxwell";
+            d.kind = "headset";
+            d.source = "audeze";
+            d.level = level;
+            d.charging = isCable(id.first);
+            out.push_back(d);
+            break;  // one icon per headset: the cable was read first
+        }
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// MCHOSE mice: feature reports 0x11 or 0x12 on the 0xFF01 collection, every
+// payload byte inverted, command 0x06 (vid, model, firmware, flags, level,
+// charging). The G7 (0xA8A5:0x2255): "00 55 30 a5 0b 2e 01 01 01" out, a
+// report starting "aa 30" with the level at byte 8 and charging at byte 9.
+
+constexpr unsigned kMchoseVids[] = {0x5253, 0x3837};
+constexpr unsigned kG7Vid = 0xA8A5;
+
+struct MchoseProvider {
+    LastSeen asleep;
+    std::map<std::wstring, std::wstring> names;
+
+    // (level, charging) or level -1.
+    std::pair<int, bool> ReadCollection(HidInfo const& info) {
+        HidDevice dev;
+        if (!dev.Open(info)) {
+            return {-1, false};
+        }
+        for (auto [report, length] : {std::pair<BYTE, int>{0x11, 20}, {0x12, 64}}) {
+            std::vector<BYTE> req(1 + length, 0xFF);
+            req[0] = report;
+            req[1] = (BYTE)(0x06 ^ 0xFF);
+            for (int attempt = 0; attempt < 4; attempt++) {
+                if (!dev.SendFeature(req)) {
+                    break;
+                }
+                Sleep(120);
+                auto r = dev.GetFeature(report);
+                if (r.size() < 13 || (r[0] != 0x11 && r[0] != 0x12) || r[1] != (0x06 ^ 0xFF)) {
+                    continue;
+                }
+                std::vector<BYTE> pay;
+                for (size_t i = 2; i < r.size(); i++) {
+                    pay.push_back(r[i] ^ 0xFF);
+                }
+                if (pay.size() < 11) {
+                    continue;
+                }
+                unsigned vid = pay[0] | (pay[1] << 8);
+                if (vid != 0x5253 && vid != 0x3837) {
+                    continue;
+                }
+                if (pay[9] > 100) {
+                    continue;
+                }
+                return {pay[9], pay[10] != 0};
+            }
+        }
+        return {-1, false};
+    }
+
+    std::pair<int, bool> ReadG7(HidInfo const& info) {
+        HidDevice dev;
+        if (!dev.Open(info)) {
+            return {-1, false};
+        }
+        std::vector<BYTE> req = {0x00, 0x55, 0x30, 0xA5, 0x0B, 0x2E, 0x01, 0x01, 0x01};
+        req.resize(65, 0);
+        if (dev.Write(req) < 0) {
+            return {-1, false};
+        }
+        for (int i = 0; i < 25; i++) {
+            Sleep(20);
+            auto r = dev.Read(0);
+            if (r.size() > 9 && r[0] == 0xAA && r[1] == 0x30 && r[8] <= 100) {
+                return {r[8], r[9] != 0};
+            }
+        }
+        return {-1, false};
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        std::vector<std::wstring> foundKeys;
+        std::vector<HidInfo> infos;
+        for (unsigned vid : {kMchoseVids[0], kMchoseVids[1], kG7Vid}) {
+            if (VendorPresent(paths, vid)) {
+                auto more = Enumerate(paths, vid);
+                infos.insert(infos.end(), more.begin(), more.end());
+            }
+        }
+        std::map<std::pair<unsigned, unsigned>, std::vector<HidInfo>> groups;
+        for (auto const& info : infos) {
+            groups[{info.vid, info.pid}].push_back(info);
+        }
+        std::map<std::wstring, std::pair<int, bool>> found;
+        for (auto& [id, ifaces] : groups) {
+            std::wstring key = id.first == 0x5253 ? L"mchose" : L"mchose:" + std::to_wstring(id.first);
+            if (!ifaces[0].product.empty()) {
+                names[key] = ifaces[0].product;
+            }
+            std::vector<HidInfo> cols;
+            for (auto const& info : ifaces) {
+                if (info.usagePage >= 0xFF00 && (id.first != kG7Vid || info.usagePage == 0xFF01)) {
+                    cols.push_back(info);
+                }
+            }
+            std::stable_sort(cols.begin(), cols.end(), [](HidInfo const& a, HidInfo const& b) {
+                return std::make_pair(a.usagePage != 0xFF01, a.usage != 1) <
+                       std::make_pair(b.usagePage != 0xFF01, b.usage != 1);
+            });
+            for (auto const& info : cols) {
+                auto r = id.first == kG7Vid ? ReadG7(info) : ReadCollection(info);
+                if (r.first >= 0) {
+                    // On the cable and on the dongle: charging wins.
+                    if (!found.count(key) || r.second) {
+                        found[key] = r;
+                    }
+                    break;
+                }
+            }
+        }
+        for (auto& [key, r] : found) {
+            Device d;
+            d.key = key;
+            d.name = names.count(key) ? names[key] : L"MCHOSE mouse";
+            d.kind = "mouse";
+            d.source = "mchose";
+            d.level = r.first;
+            d.charging = r.second;
+            asleep.Remember(d);
+            out.push_back(d);
+            foundKeys.push_back(key);
+        }
+        asleep.KeepAsleep(out, foundKeys);
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// WLmouse: feature report 0 "00 00 02 02 00 83", reply "a1|a2 00 02 02 00 83
+// <charging> <level>"; failing that, the mouse's heartbeat "03 00 <level>
+// <charging>". Receiver and cable share one icon, the cable winning.
+
+constexpr unsigned kWlmouseVid = 0x36A7;
+
+struct WlmouseProvider {
+    LastSeen asleep;
+    std::wstring name;
+
+    static std::pair<int, bool> ParseFeature(std::vector<BYTE> const& r) {
+        for (size_t i = 5; i + 2 < r.size(); i++) {
+            if (r[i] == 0x83 && r[i - 1] == 0x00 && r[i - 2] == 0x02 && (r[i - 5] == 0xA1 || r[i - 5] == 0xA2) &&
+                r[i + 2] <= 100) {
+                return {r[i + 2], r[i + 1] != 0};
+            }
+        }
+        return {-1, false};
+    }
+
+    static std::pair<int, bool> ParseHeartbeat(std::vector<BYTE> const& d) {
+        for (size_t off : {0u, 1u}) {
+            if (d.size() >= off + 4 && d[off] == 0x03 && d[off + 1] == 0x00 && d[off + 2] <= 100) {
+                return {d[off + 2], d[off + 3] != 0};
+            }
+        }
+        return {-1, false};
+    }
+
+    std::pair<int, bool> ReadGroup(std::vector<HidInfo> const& ifaces) {
+        std::vector<HidInfo> vendor;
+        for (auto const& info : ifaces) {
+            if (info.usagePage == 0xFFFF) {
+                vendor.push_back(info);
+            }
+        }
+        std::stable_sort(vendor.begin(), vendor.end(),
+                         [](HidInfo const& a, HidInfo const& b) { return (a.usage != 0) < (b.usage != 0); });
+        for (auto const& info : vendor) {
+            HidDevice dev;
+            if (!dev.Open(info)) {
+                continue;
+            }
+            std::vector<BYTE> report = {0x00, 0x00, 0x00, 0x02, 0x02, 0x00, 0x83};
+            report.resize(65, 0);
+            dev.SendFeature(report);
+            for (int i = 0; i < 15; i++) {
+                Sleep(50);
+                auto r = ParseFeature(dev.GetFeature(0x00));
+                if (r.first >= 0) {
+                    return r;
+                }
+            }
+        }
+        int listened = 0;
+        for (auto const& info : ifaces) {
+            if (info.usagePage < 0xFF00 || listened >= 2) {
+                continue;
+            }
+            listened++;
+            HidDevice dev;
+            if (!dev.Open(info)) {
+                continue;
+            }
+            ULONGLONG end = GetTickCount64() + 1000;
+            while (GetTickCount64() < end) {
+                auto r = ParseHeartbeat(dev.Read(20));
+                if (r.first >= 0) {
+                    return r;
+                }
+            }
+        }
+        return {-1, false};
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        std::vector<std::wstring> foundKeys;
+        if (!VendorPresent(paths, kWlmouseVid)) {
+            asleep.KeepAsleep(out, foundKeys);
+            return out;
+        }
+        std::map<unsigned, std::vector<HidInfo>> groups;
+        for (auto const& info : Enumerate(paths, kWlmouseVid)) {
+            groups[info.pid].push_back(info);
+        }
+        auto isReceiver = [](unsigned pid, std::vector<HidInfo> const& ifaces) {
+            std::wstring product = Lower(ifaces[0].product);
+            return Contains(product, L"receiver") || pid == 0xA887 || pid == 0xA868 || pid == 0xA880;
+        };
+        std::vector<std::pair<unsigned, std::vector<HidInfo>>> order(groups.begin(), groups.end());
+        std::stable_sort(order.begin(), order.end(), [&](auto const& a, auto const& b) {
+            return isReceiver(a.first, a.second) < isReceiver(b.first, b.second);
+        });
+        std::vector<std::pair<int, bool>> readings;
+        for (auto const& [pid, ifaces] : order) {
+            if (!readings.empty() && readings[0].second && isReceiver(pid, ifaces)) {
+                continue;
+            }
+            if (pid == 0xA887) {
+                name = L"WLmouse Beast X";
+            } else if (pid == 0xA868) {
+                name = L"WLmouse Beast X Mini Pro";
+            } else if (pid == 0xA880) {
+                name = L"WLmouse Beast X Max";
+            } else if (name.empty() && !ifaces[0].product.empty()) {
+                name = ifaces[0].product;
+            }
+            auto r = ReadGroup(ifaces);
+            if (r.first >= 0) {
+                readings.push_back(r);
+            }
+        }
+        if (!readings.empty()) {
+            std::stable_sort(readings.begin(), readings.end(),
+                             [](auto const& a, auto const& b) { return a.second > b.second; });
+            Device d;
+            d.key = L"wlmouse";
+            d.name = name.empty() ? L"WLmouse" : name;
+            d.kind = "mouse";
+            d.source = "wlmouse";
+            d.level = readings[0].first;
+            d.charging = readings[0].second;
+            asleep.Remember(d);
+            out.push_back(d);
+            foundKeys.push_back(d.key);
+        }
+        asleep.KeepAsleep(out, foundKeys);
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Sony DualShock 4 and DualSense, from their full input report. Over
+// Bluetooth, reading feature report 02 (DS4) or 05 (DualSense) switches the
+// controller to the full report first.
+
+constexpr unsigned kSonyVid = 0x054C;
+
+std::vector<Device> PollPlayStation(std::vector<std::wstring> const& paths) {
+    std::vector<Device> out;
+    if (!VendorPresent(paths, kSonyVid)) {
+        return out;
+    }
+    struct Model {
+        unsigned pid;
+        PCWSTR name;
+        bool dualsense;
+    };
+    static constexpr Model kModels[] = {
+        {0x05C4, L"Sony DualShock 4", false}, {0x09CC, L"Sony DualShock 4", false},
+        {0x05C5, L"Sony DualShock 4", false}, {0x0BA0, L"Sony DualShock 4", false},
+        {0x0CE6, L"Sony DualSense", true},    {0x0DF2, L"Sony DualSense Edge", true},
+    };
+    struct Conn {
+        unsigned pid;
+        std::wstring name;
+        bool bluetooth;
+        std::wstring mac;
+        int level = -1;
+        bool charging = false;
+        bool read = false;
+    };
+    std::map<std::pair<unsigned, std::wstring>, std::vector<HidInfo>> groups;
+    for (auto const& info : Enumerate(paths, kSonyVid)) {
+        groups[{info.pid, info.serial}].push_back(info);
+    }
+    std::vector<Conn> conns;
+    for (auto const& [id, ifaces] : groups) {
+        Model const* model = nullptr;
+        for (auto const& m : kModels) {
+            if (m.pid == id.first) {
+                model = &m;
+            }
+        }
+        if (!model) {
+            continue;
+        }
+        Conn conn{id.first, model->name, ifaces[0].bluetooth, ifaces[0].bluetooth ? id.second : L""};
+        for (auto const& info : ifaces) {
+            HidDevice dev;
+            if (!dev.Open(info)) {
+                continue;
+            }
+            BYTE rid = model->dualsense ? (info.bluetooth ? 0x31 : 0x01) : (info.bluetooth ? 0x11 : 0x01);
+            size_t off = model->dualsense ? (info.bluetooth ? 54 : 53) : (info.bluetooth ? 32 : 30);
+            dev.GetFeature(model->dualsense ? 0x05 : 0x02);
+            ULONGLONG end = GetTickCount64() + 1500;
+            while (GetTickCount64() < end && !conn.read) {
+                auto data = dev.Read(50);
+                // Reports with id 0 lose that byte; these controllers number them.
+                if (data.size() <= off || data[0] != rid) {
+                    continue;
+                }
+                BYTE b = data[off];
+                conn.level = std::min(b & 0x0F, 10) * 10;
+                if (model->dualsense) {
+                    int charge = (b >> 4) & 0x0F;
+                    conn.charging = charge == 1 || charge == 2;
+                } else {
+                    conn.charging = (b & 0x10) != 0;
+                }
+                conn.read = true;
+            }
+            if (conn.read) {
+                break;
+            }
+        }
+        conns.push_back(conn);
+    }
+    // One controller on Bluetooth and the cable at once: one icon, the cable's reading.
+    std::map<unsigned, std::vector<Conn>> byPid;
+    for (auto const& c : conns) {
+        byPid[c.pid].push_back(c);
+    }
+    for (auto& [pid, group] : byPid) {
+        std::vector<Conn> wireless, wired;
+        for (auto const& c : group) {
+            (c.bluetooth ? wireless : wired).push_back(c);
+        }
+        std::vector<Conn> devices;
+        if (wireless.size() == 1 && !wired.empty()) {
+            Conn merged = wireless[0];
+            if (wired[0].read && (wired[0].charging || !merged.read)) {
+                merged.level = wired[0].level;
+                merged.charging = wired[0].charging;
+                merged.read = true;
+            }
+            devices.push_back(merged);
+        } else {
+            devices = group;
+        }
+        for (auto const& c : devices) {
+            Device d;
+            WCHAR key[64];
+            swprintf_s(key, L"ps:%04x:%ls", c.pid, c.mac.c_str());
+            d.key = key;
+            d.name = c.name;
+            d.kind = "gamepad";
+            d.source = "playstation";
+            d.vid = kSonyVid;
+            d.pid = c.pid;
+            if (c.read) {
+                d.level = c.level;
+                d.charging = c.charging;
+            } else {
+                d.approx = L"connected, battery not reported yet";
+            }
+            out.push_back(d);
+        }
+    }
+    return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Xbox-protocol controllers: Windows.Gaming.Input's battery report (a real
+// percentage and charging), with XInput's four coarse levels as the
+// fallback. Over Bluetooth, Windows' own Bluetooth value is used instead.
+
+using XInputGetState_t = DWORD(WINAPI*)(DWORD, void*);
+using XInputGetBatteryInformation_t = DWORD(WINAPI*)(DWORD, BYTE, void*);
+
+struct XboxProvider {
+    HMODULE dll = nullptr;
+    bool loaded = false;
+    XInputGetState_t getState = nullptr;
+    XInputGetBatteryInformation_t getBattery = nullptr;
+    std::map<int, int> lastLevel;
+    bool pending = false;
+
+    bool Load() {
+        if (!loaded) {
+            loaded = true;
+            for (PCWSTR name : {L"xinput1_4.dll", L"xinput1_3.dll"}) {
+                dll = LoadLibraryW(name);
+                if (dll) {
+                    getState = (XInputGetState_t)GetProcAddress(dll, "XInputGetState");
+                    getBattery = (XInputGetBatteryInformation_t)GetProcAddress(dll, "XInputGetBatteryInformation");
+                    if (getState && getBattery) {
+                        break;
+                    }
+                    FreeLibrary(dll);
+                    dll = nullptr;
+                }
+            }
+        }
+        return getState && getBattery;
+    }
+
+    std::vector<int> ConnectedSlots() {
+        std::vector<int> slots;
+        if (!Load()) {
+            return slots;
+        }
+        BYTE state[16];
+        for (int i = 0; i < 4; i++) {
+            if (getState(i, state) == ERROR_SUCCESS) {
+                slots.push_back(i);
+            }
+        }
+        return slots;
+    }
+
+    struct Wgi {
+        std::wstring name;
+        unsigned vid = 0;
+        unsigned pid = 0;
+        int level = -1;
+        bool charging = false;
+    };
+
+    std::vector<Wgi> QueryWgi() {
+        std::vector<Wgi> list;
+        try {
+            using namespace winrt::Windows::Gaming::Input;
+            for (auto const& c : RawGameController::RawGameControllers()) {
+                Wgi w;
+                w.name = std::wstring(c.DisplayName());
+                w.vid = c.HardwareVendorId();
+                w.pid = c.HardwareProductId();
+                if (auto report = c.TryGetBatteryReport()) {
+                    auto remain = report.RemainingCapacityInMilliwattHours();
+                    auto full = report.FullChargeCapacityInMilliwattHours();
+                    if (remain && full && full.Value() > 0) {
+                        w.level = std::clamp((int)std::lround(remain.Value() * 100.0 / full.Value()), 0, 100);
+                    }
+                    w.charging = report.Status() == winrt::Windows::System::Power::BatteryStatus::Charging;
+                }
+                std::wstring lower = Lower(w.name);
+                if (Contains(lower, L"hid") || lower.empty() || lower == L"xbox controller" ||
+                    lower == L"xbox one controller" || lower == L"controller (xbox one for windows)" ||
+                    lower == L"xbox wireless controller") {
+                    w.name = w.vid == 0x3537 ? L"GameSir controller" : w.vid == 0x045E ? L"Xbox controller" : L"";
+                }
+                list.push_back(w);
+            }
+        } catch (...) {
+        }
+        return list;
+    }
+
+    std::vector<Device> Poll(std::vector<std::wstring> const& paths) {
+        std::vector<Device> out;
+        pending = false;
+        if (!Load()) {
+            return out;
+        }
+        // Which (vid, pid) are connected over Bluetooth, from the HID paths.
+        std::set<std::pair<unsigned, unsigned>> bluetoothIds;
+        for (auto const& path : paths) {
+            HidInfo quick{path};
+            ParsePath(quick);
+            if (quick.bluetooth) {
+                bluetoothIds.insert({quick.vid, quick.pid});
+            }
+        }
+        struct Slot {
+            int slot;
+            int level;
+            bool charging;
+            std::wstring approx;
+            bool known;
+        };
+        std::vector<Slot> slots;
+        for (int slot = 0; slot < 4; slot++) {
+            BYTE state[16];
+            if (getState(slot, state) != ERROR_SUCCESS) {
+                continue;
+            }
+            BYTE info[2] = {};
+            Slot s{slot, -1, false, L"", false};
+            if (getBattery(slot, 0, info) == ERROR_SUCCESS) {
+                BYTE type = info[0];
+                BYTE level = info[1];
+                static constexpr int kLevels[] = {5, 20, 55, 100};
+                static constexpr PCWSTR kTexts[] = {L"empty", L"low", L"medium", L"full"};
+                if (type == 0x01) {  // wired: charging
+                    s.level = lastLevel.count(slot) ? lastLevel[slot] : (level < 4 ? kLevels[level] : 100);
+                    s.charging = true;
+                    s.approx = L"on cable, charging";
+                    s.known = true;
+                } else if (type != 0x00 && type != 0xFF && level < 4) {
+                    s.level = kLevels[level];
+                    s.approx = std::wstring(L"about ") + std::to_wstring(s.level) + L"% (" + kTexts[level] + L")";
+                    s.known = true;
+                }
+            }
+            slots.push_back(s);
+        }
+        if (slots.empty()) {
+            return out;
+        }
+        std::vector<Wgi> reports;
+        for (auto const& w : QueryWgi()) {
+            if (w.level >= 0) {
+                reports.push_back(w);
+            }
+        }
+        for (size_t n = 0; n < slots.size(); n++) {
+            auto& s = slots[n];
+            Device d;
+            d.key = L"xinput:" + std::to_wstring(s.slot);
+            d.kind = "gamepad";
+            d.source = "xinput";
+            Wgi const* rep = n < reports.size() ? &reports[n] : nullptr;
+            d.name = rep && !rep->name.empty() ? rep->name : L"Controller";
+            if (rep && bluetoothIds.count({rep->vid, rep->pid})) {
+                d.via = "bluetooth";
+                d.approx = L"connected over Bluetooth";
+            } else if (rep) {
+                d.level = rep->level;
+                d.charging = rep->charging;
+                if (!rep->charging) {
+                    lastLevel[s.slot] = rep->level;
+                }
+            } else if (s.known) {
+                d.level = s.level;
+                d.charging = s.charging;
+                d.approx = s.approx;
+                if (!s.charging) {
+                    lastLevel[s.slot] = s.level;
+                }
+            } else {
+                d.approx = L"connected, battery not reported yet";
+                pending = true;
+            }
+            if (slots.size() > 1) {
+                d.name += L" " + std::to_wstring(n + 1);
+            }
+            out.push_back(d);
+        }
+        return out;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Bluetooth devices whose battery Windows itself knows (Settings > Bluetooth
+// & devices), connected ones only.
+
+std::string KindFromName(std::wstring const& name) {
+    std::wstring n = Lower(name);
+    for (PCWSTR w : {L"controller", L"gamepad", L"joystick", L"joy-con", L"dualsense", L"dualshock"}) {
+        if (Contains(n, w)) {
+            return "gamepad";
+        }
+    }
+    for (PCWSTR w : {L"headset", L"headphone", L"buds", L"earbud", L"airpods", L"ear", L"sonoflow", L"maxwell",
+                     L"arctis", L"cloud", L"blackshark"}) {
+        if (Contains(n, w)) {
+            return "headset";
+        }
+    }
+    if (Contains(n, L"mouse") || Contains(n, L"mx ")) {
+        return "mouse";
+    }
+    if (Contains(n, L"keyboard") || Contains(n, L"keys")) {
+        return "keyboard";
+    }
+    return "";
+}
+
+std::vector<Device> PollBluetooth() {
+    static const DEVPROPKEY kConnected = {
+        {0x83DA6326, 0x97A6, 0x4088, {0x94, 0x53, 0xA1, 0x92, 0x3F, 0x57, 0x3B, 0x29}}, 15};
+    static const DEVPROPKEY kBattery = {
+        {0x104EA319, 0x6EE2, 0x4701, {0xBD, 0x47, 0x8D, 0xDB, 0xF4, 0x25, 0xBB, 0xE5}}, 2};
+    static const DEVPROPKEY kName = {
+        {0xB725F130, 0x47EF, 0x101A, {0xA5, 0xF1, 0x02, 0x60, 0x8C, 0x9E, 0xEB, 0xAC}}, 10};
+
+    std::map<std::wstring, Device> byMac;
+    for (PCWSTR enumerator : {L"BTHENUM", L"BTHLE"}) {
+        ULONG flags = CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT;
+        ULONG size = 0;
+        if (CM_Get_Device_ID_List_SizeW(&size, enumerator, flags) != CR_SUCCESS || size <= 1) {
+            continue;
+        }
+        std::vector<WCHAR> ids(size);
+        if (CM_Get_Device_ID_ListW(enumerator, ids.data(), size, flags) != CR_SUCCESS) {
+            continue;
+        }
+        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
+            PCWSTR slash = wcschr(id, L'\\');
+            if (!slash || _wcsnicmp(slash + 1, L"DEV_", 4) != 0) {
+                continue;
+            }
+            std::wstring mac(slash + 5, std::min<size_t>(12, wcslen(slash + 5)));
+            DEVINST node;
+            if (CM_Locate_DevNodeW(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) {
+                continue;
+            }
+            DEVPROPTYPE type = 0;
+            DEVPROP_BOOLEAN connected = DEVPROP_FALSE;
+            ULONG length = sizeof(connected);
+            if (CM_Get_DevNode_PropertyW(node, &kConnected, &type, (PBYTE)&connected, &length, 0) != CR_SUCCESS ||
+                connected != DEVPROP_TRUE) {
+                continue;
+            }
+            BYTE battery = 0;
+            length = sizeof(battery);
+            if (CM_Get_DevNode_PropertyW(node, &kBattery, &type, &battery, &length, 0) != CR_SUCCESS ||
+                type != DEVPROP_TYPE_BYTE || battery > 100) {
+                continue;
+            }
+            WCHAR name[128] = L"";
+            length = sizeof(name);
+            CM_Get_DevNode_PropertyW(node, &kName, &type, (PBYTE)name, &length, 0);
+            Device d;
+            d.key = L"bt:" + mac;
+            d.name = *name ? name : L"Bluetooth device";
+            d.kind = KindFromName(d.name);
+            if (d.kind.empty()) {
+                d.kind = "bluetooth";
+            }
+            d.source = "bluetooth";
+            d.level = battery;
+            byMac[mac] = d;
+        }
+    }
+    std::vector<Device> out;
+    for (auto& [mac, d] : byMac) {
+        out.push_back(d);
+    }
+    return out;
+}
+
+// A name reduced to what identifies the device, not how it's connected, so
+// "Audeze Maxwell" and "Audeze Maxwell BT" come out equal.
+std::wstring Family(std::wstring const& name) {
+    std::wstring clean;
+    for (wchar_t c : Lower(name)) {
+        clean += iswalnum(c) ? c : L' ';
+    }
+    std::wstring out, word;
+    auto flush = [&] {
+        static const std::set<std::wstring> kTransport = {L"bt", L"ble", L"bluetooth", L"wireless", L"dongle",
+                                                          L"receiver", L"headset", L"usb"};
+        if (!word.empty() && !kTransport.count(word)) {
+            out += (out.empty() ? L"" : L" ") + word;
+        }
+        word.clear();
+    };
+    for (wchar_t c : clean) {
+        if (c == L' ') {
+            flush();
+        } else {
+            word += c;
+        }
+    }
+    flush();
+    return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Polling all of them
+
+struct Poller {
+    std::array<bool, kVendorCount> vendors{};
+    LastSeen alienwareAsleep;
+    RazerProvider razer;
+    LogitechProvider logitech;
+    SteelSeriesProvider steelseries;
+    AudezeProvider audeze;
+    MchoseProvider mchose;
+    WlmouseProvider wlmouse;
+    XboxProvider xbox;
+
+    // Missing polls in a row, per device; icons go after two (one for
+    // controllers and Bluetooth, which report their state reliably).
+    std::map<std::wstring, Device> shown;
+    std::map<std::wstring, int> missing;
+
+    bool Pending() const { return xbox.pending || !missing.empty(); }
+
+    std::vector<Device> PollOnce() {
+        auto paths = InterfacePaths();
+        ForgetMissing(paths);
+        std::vector<Device> results;
+        auto add = [&](std::vector<Device> more) { results.insert(results.end(), more.begin(), more.end()); };
+        if (vendors[kAlienware]) add(PollAlienware(paths, alienwareAsleep));
+        if (vendors[kRazer]) add(razer.Poll(paths));
+        if (vendors[kLogitech]) add(logitech.Poll(paths));
+        if (vendors[kSteelSeries]) add(steelseries.Poll(paths));
+        if (vendors[kHyperX]) add(PollHyperX(paths));
+        if (vendors[kAudeze]) add(audeze.Poll(paths));
+        if (vendors[kMchose]) add(mchose.Poll(paths));
+        if (vendors[kWlmouse]) add(wlmouse.Poll(paths));
+        if (vendors[kPlayStation]) add(PollPlayStation(paths));
+        if (vendors[kXbox]) add(xbox.Poll(paths));
+        if (vendors[kBluetooth]) {
+            auto bt = PollBluetooth();
+            // A controller over Bluetooth: Windows' value wins.
+            bool btPads = std::any_of(bt.begin(), bt.end(), [](Device const& d) { return d.kind == "gamepad"; });
+            if (btPads) {
+                results.erase(std::remove_if(results.begin(), results.end(),
+                                             [](Device const& d) { return d.source == "xinput" && d.via == "bluetooth"; }),
+                              results.end());
+            }
+            // A device also read over HID: the HID reading wins, it has charging.
+            std::vector<std::wstring> hidFamilies;
+            for (auto const& d : results) {
+                if (d.source != "xinput") {
+                    hidFamilies.push_back(Family(d.name));
+                }
+            }
+            for (auto const& d : bt) {
+                std::wstring fam = Family(d.name);
+                bool duplicate = !fam.empty() && std::any_of(hidFamilies.begin(), hidFamilies.end(),
+                                                             [&](std::wstring const& h) {
+                                                                 return fam == h || (fam.size() >= 6 &&
+                                                                                     (Contains(h, fam) || Contains(fam, h)));
+                                                             });
+                if (!duplicate) {
+                    results.push_back(d);
+                }
+            }
+        }
+        return Smooth(results);
+    }
+
+    std::vector<Device> Smooth(std::vector<Device> const& fresh) {
+        std::vector<Device> out = fresh;
+        std::set<std::wstring> seen;
+        for (auto const& d : fresh) {
+            seen.insert(d.key);
+            shown[d.key] = d;
+            missing.erase(d.key);
+        }
+        for (auto it = shown.begin(); it != shown.end();) {
+            if (seen.count(it->first)) {
+                ++it;
+                continue;
+            }
+            int limit = it->first.starts_with(L"xinput:") || it->first.starts_with(L"bt:") ||
+                                it->first.starts_with(L"ps:")
+                            ? 1
+                            : 2;
+            if (++missing[it->first] < limit) {
+                out.push_back(it->second);
+                ++it;
+            } else {
+                missing.erase(it->first);
+                it = shown.erase(it);
+            }
+        }
+        return out;
+    }
+
+    // What's connected, cheaply: the HID interfaces (receivers, cables) and
+    // the XInput slots (a controller switched on behind a receiver).
+    std::wstring Signature() {
+        std::wstring sig;
+        auto paths = InterfacePaths();
+        std::sort(paths.begin(), paths.end());
+        for (auto const& p : paths) {
+            sig += p;
+            sig += L'|';
+        }
+        if (vendors[kXbox]) {
+            for (int slot : xbox.ConnectedSlots()) {
+                sig += L"x" + std::to_wstring(slot);
+            }
+        }
+        return sig;
+    }
+};
+
+}  // namespace bat
+
+constexpr UINT WM_APP_BATTERIES = WM_APP + 13;
+constexpr UINT_PTR kTimerBreath = 5;
+// Tray ids kIconIdBase + kBatteryIdBase + slot; a device keeps its slot, so
+// Windows remembers where it was placed.
+constexpr UINT kBatteryIdBase = 0x40;
+constexpr int kBatterySlots = 32;
+
+struct BatterySettings {
+    bool trayIcons = false;
+    bool inFlyouts = false;
+    bool pictogram = true;
+    bool animation = true;
+    int pollSeconds = 60;
+    int lowAlert = 20;
+    std::array<bool, bat::kVendorCount> vendors{};
+
+    bool operator==(BatterySettings const&) const = default;
+};
+
+constexpr int kPollMinSeconds = 5;
+constexpr int kPollMaxSeconds = 24 * 60 * 60;
+
+// "9hr", "9min", "30sec", "1.5hr" or a bare number (minutes) to seconds,
+// clamped to 5 s .. 24 hr; 0 when it doesn't parse.
+int ParsePollInterval(std::wstring text) {
+    std::transform(text.begin(), text.end(), text.begin(), towlower);
+    std::erase_if(text, iswspace);
+    wchar_t* end = nullptr;
+    double value = wcstod(text.c_str(), &end);
+    if (end == text.c_str() || !(value > 0)) {
+        return 0;
+    }
+    std::wstring unit = end;
+    double seconds;
+    if (unit.empty() || unit == L"m" || unit == L"min" || unit == L"mins" || unit == L"minute" ||
+        unit == L"minutes") {
+        seconds = value * 60;
+    } else if (unit == L"h" || unit == L"hr" || unit == L"hrs" || unit == L"hour" || unit == L"hours") {
+        seconds = value * 3600;
+    } else if (unit == L"s" || unit == L"sec" || unit == L"secs" || unit == L"second" || unit == L"seconds") {
+        seconds = value;
+    } else {
+        return 0;
+    }
+    return (int)std::clamp(std::lround(seconds), (long)kPollMinSeconds, (long)kPollMaxSeconds);
+}
+
+BatterySettings LoadBatterySettings() {
+    BatterySettings s;
+    s.trayIcons = Wh_GetIntSetting(L"batteries.trayIcons");
+    s.inFlyouts = Wh_GetIntSetting(L"batteries.inFlyouts");
+    s.pictogram = Wh_GetIntSetting(L"batteries.pictogram");
+    s.animation = Wh_GetIntSetting(L"batteries.chargingAnimation");
+    s.pollSeconds = ParsePollInterval(WindhawkUtils::StringSetting::make(L"batteries.pollInterval").get());
+    if (!s.pollSeconds) {
+        // Unset or unreadable: the old seconds setting, if there is one, or a minute.
+        int old = Wh_GetIntSetting(L"batteries.pollSeconds");
+        s.pollSeconds = old > 0 ? std::clamp(old, kPollMinSeconds, kPollMaxSeconds) : 60;
+    }
+    s.lowAlert = std::clamp(Wh_GetIntSetting(L"batteries.lowAlert"), 0, 50);
+    for (int v = 0; v < bat::kVendorCount; v++) {
+        s.vendors[v] = Wh_GetIntSetting(L"batteries.vendors.%s", bat::kVendorKeys[v]);
+    }
+    return s;
+}
+
+BatterySettings g_batterySettings;          // Mod thread.
+std::vector<bat::Device> g_batteries;        // Mod thread: what's shown.
+
+std::mutex g_batteryLock;                    // Guards the two below.
+BatterySettings g_batteryOptions;            // What the poll thread reads.
+std::vector<bat::Device> g_batteryResults;   // What it last found.
+
+HANDLE g_batteryThread;
+HANDLE g_batteryWake;
+std::atomic<bool> g_batteryStop;
+
+void WakeBatteries() {
+    if (g_batteryWake) {
+        SetEvent(g_batteryWake);
+    }
+}
+
+DWORD WINAPI BatteryThread(LPVOID) {
+    try {
+        winrt::init_apartment(winrt::apartment_type::multi_threaded);
+    } catch (...) {
+    }
+    bat::Poller poller;
+    while (!g_batteryStop) {
+        BatterySettings options;
+        {
+            std::lock_guard<std::mutex> guard(g_batteryLock);
+            options = g_batteryOptions;
+        }
+        poller.vendors = options.vendors;
+        std::wstring signature = poller.Signature();
+        bool any = std::any_of(options.vendors.begin(), options.vendors.end(), [](bool on) { return on; });
+        std::vector<bat::Device> devices;
+        if (any) {
+            devices = poller.PollOnce();
+        }
+        {
+            std::lock_guard<std::mutex> guard(g_batteryLock);
+            g_batteryResults = devices;
+        }
+        if (HWND wnd = g_wnd) {
+            PostMessageW(wnd, WM_APP_BATTERIES, 0, 0);
+        }
+
+        // The next poll: the interval from the settings, or 3 s while a device
+        // has only just appeared or gone missing. A device plugged in or
+        // removed, or a wake from the settings, polls at once.
+        ULONGLONG interval = (ULONGLONG)options.pollSeconds * 1000;
+        if (poller.Pending()) {
+            interval = std::min<ULONGLONG>(interval, 3000);
+        }
+        ULONGLONG deadline = GetTickCount64() + interval;
+        while (!g_batteryStop) {
+            ULONGLONG now = GetTickCount64();
+            if (now >= deadline) {
+                break;
+            }
+            DWORD wait = (DWORD)std::min<ULONGLONG>(2500, deadline - now);
+            if (WaitForSingleObject(g_batteryWake, wait) == WAIT_OBJECT_0) {
+                Sleep(1000);  // let Windows finish setting the device up
+                break;
+            }
+            if (any && poller.Signature() != signature) {
+                Sleep(1000);
+                break;
+            }
+        }
+    }
+    try {
+        winrt::uninit_apartment();
+    } catch (...) {
+    }
+    return 0;
+}
+
+void StartBatteries() {
+    g_batterySettings = LoadBatterySettings();
+    {
+        std::lock_guard<std::mutex> guard(g_batteryLock);
+        g_batteryOptions = g_batterySettings;
+    }
+    g_batteryStop = false;
+    g_batteryWake = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+    g_batteryThread = CreateThread(nullptr, 0, BatteryThread, nullptr, 0, nullptr);
+}
+
+void StopBatteries() {
+    g_batteryStop = true;
+    WakeBatteries();
+    if (g_batteryThread) {
+        // A poll in progress finishes its current device first.
+        WaitForSingleObject(g_batteryThread, 15000);
+        CloseHandle(g_batteryThread);
+        g_batteryThread = nullptr;
+    }
+    if (g_batteryWake) {
+        CloseHandle(g_batteryWake);
+        g_batteryWake = nullptr;
+    }
+}
+
+// Tray icons
+
+struct BatteryIcon {
+    std::wstring key;
+    bool added = false;
+    std::string art;
+    std::wstring tip;
+    int size = 0;
+    std::string tone;
+    bool shade = true;
+    uint64_t palette = 0;
+};
+
+std::array<BatteryIcon, kBatterySlots> g_batteryIcons;
+std::map<std::wstring, int> g_batterySlotOf;
+std::map<std::wstring, bool> g_batteryAlerted;
+int g_breathFrame;
+
+void LoadBatterySlots() {
+    WCHAR text[4096] = L"";
+    Wh_GetStringValue(L"systemIcons.batterySlots", text, ARRAYSIZE(text));
+    g_batterySlotOf.clear();
+    std::wstring_view rest = text;
+    while (!rest.empty()) {
+        size_t end = rest.find(L';');
+        std::wstring_view item = rest.substr(0, end);
+        size_t eq = item.rfind(L'=');
+        if (eq != std::wstring_view::npos) {
+            int slot = _wtoi(std::wstring(item.substr(eq + 1)).c_str());
+            if (slot >= 0 && slot < kBatterySlots) {
+                g_batterySlotOf[std::wstring(item.substr(0, eq))] = slot;
+            }
+        }
+        rest = end == std::wstring_view::npos ? std::wstring_view() : rest.substr(end + 1);
+    }
+}
+
+void SaveBatterySlots() {
+    std::wstring text;
+    for (auto const& [key, slot] : g_batterySlotOf) {
+        text += key + L"=" + std::to_wstring(slot) + L";";
+    }
+    Wh_SetStringValue(L"systemIcons.batterySlots", text.c_str());
+}
+
+int BatterySlotFor(std::wstring const& key) {
+    auto it = g_batterySlotOf.find(key);
+    if (it != g_batterySlotOf.end()) {
+        return it->second;
+    }
+    std::array<bool, kBatterySlots> taken{};
+    for (auto const& [k, slot] : g_batterySlotOf) {
+        taken[slot] = true;
+    }
+    int slot = -1;
+    for (int i = 0; i < kBatterySlots && slot < 0; i++) {
+        if (!taken[i]) {
+            slot = i;
+        }
+    }
+    if (slot < 0) {
+        // All remembered: take the slot of a device that isn't here now.
+        for (auto it2 = g_batterySlotOf.begin(); it2 != g_batterySlotOf.end(); ++it2) {
+            bool present = std::any_of(g_batteries.begin(), g_batteries.end(),
+                                       [&](bat::Device const& d) { return d.key == it2->first; });
+            if (!present) {
+                slot = it2->second;
+                g_batterySlotOf.erase(it2);
+                break;
+            }
+        }
+    }
+    if (slot >= 0) {
+        g_batterySlotOf[key] = slot;
+        SaveBatterySlots();
+    }
+    return slot;
+}
+
+std::string BatteryKind(bat::Device const& d) {
+    if (!d.kind.empty()) {
+        return d.kind;
+    }
+    return d.source == "bluetooth" ? "bluetooth" : "mouse";
+}
+
+std::string BatteryArtId(bat::Device const& d) {
+    int low = g_batterySettings.lowAlert;
+    std::string state = !d.online                        ? "asleep"
+                        : d.level < 0                    ? "unknown"
+                        : d.charging                     ? (g_batterySettings.animation && g_breathFrame ? "charge2"
+                                                                                                           : "charge")
+                        : low > 0 && d.level <= low      ? "low"
+                        : low > 0 && d.level <= low + 10 ? "warn"
+                                                         : "normal";
+    return "devbat:" + BatteryKind(d) + ":" + std::to_string(d.level) + ":" + state +
+           (g_batterySettings.pictogram ? "" : ":nopict");
+}
+
+std::wstring BatteryDetail(bat::Device const& d) {
+    std::wstring text = !d.approx.empty() ? d.approx
+                        : d.level >= 0     ? std::to_wstring(d.level) + L"%"
+                                           : L"no reading";
+    if (d.charging && d.approx.empty()) {
+        text += L", charging";
+    }
+    if (!d.online) {
+        text += L", asleep";
+    }
+    return text;
+}
+
+void FillBatteryIconData(NOTIFYICONDATAW* data, int slot) {
+    *data = {};
+    data->cbSize = sizeof(*data);
+    data->hWnd = g_wnd;
+    data->uID = kIconIdBase + kBatteryIdBase + slot;
+}
+
+void RemoveBatteryIcon(int slot) {
+    if (!g_batteryIcons[slot].added) {
+        g_batteryIcons[slot] = {};
+        return;
+    }
+    NOTIFYICONDATAW data;
+    FillBatteryIconData(&data, slot);
+    Shell_NotifyIconW(NIM_DELETE, &data);
+    g_batteryIcons[slot] = {};
+}
+
+void RemoveBatteryIcons() {
+    for (int slot = 0; slot < kBatterySlots; slot++) {
+        RemoveBatteryIcon(slot);
+    }
+}
+
+void ApplyBatteryIcons() {
+    if (!g_batterySettings.trayIcons) {
+        RemoveBatteryIcons();
+        return;
+    }
+    int size = TrayIconSize();
+    std::array<bool, kBatterySlots> used{};
+    for (auto const& d : g_batteries) {
+        int slot = BatterySlotFor(d.key);
+        if (slot < 0) {
+            continue;
+        }
+        used[slot] = true;
+        BatteryIcon& icon = g_batteryIcons[slot];
+        std::string art = BatteryArtId(d);
+        std::wstring tip = d.name + L" ... " + BatteryDetail(d);
+        if (icon.added && icon.key == d.key && icon.art == art && icon.tip == tip && icon.size == size &&
+            icon.tone == g_settings.tone && icon.shade == g_settings.shade && icon.palette == PaletteKey()) {
+            continue;
+        }
+        HICON hicon = CreateIconFromPixels(RenderArt(ArtFor(art), g_settings.tone, g_settings.shade, size), size);
+        NOTIFYICONDATAW data;
+        FillBatteryIconData(&data, slot);
+        data.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP | NIF_SHOWTIP;
+        data.uCallbackMessage = WM_APP_TRAY;
+        data.hIcon = hicon;
+        wcsncpy_s(data.szTip, tip.c_str(), _TRUNCATE);
+        bool ok;
+        if (!icon.added || icon.key != d.key) {
+            if (icon.added) {
+                Shell_NotifyIconW(NIM_DELETE, &data);
+            }
+            ok = Shell_NotifyIconW(NIM_ADD, &data);
+            if (ok) {
+                data.uVersion = NOTIFYICON_VERSION_4;
+                Shell_NotifyIconW(NIM_SETVERSION, &data);
+            }
+        } else {
+            ok = Shell_NotifyIconW(NIM_MODIFY, &data);
+        }
+        if (hicon) {
+            DestroyIcon(hicon);
+        }
+        if (ok) {
+            icon = {d.key, true, art, tip, size, g_settings.tone, g_settings.shade, PaletteKey()};
+        } else {
+            icon.added = false;
+        }
+    }
+    for (int slot = 0; slot < kBatterySlots; slot++) {
+        if (!used[slot]) {
+            RemoveBatteryIcon(slot);
+        }
+    }
+}
+
+// Once per discharge: again only after the device was charged.
+void CheckBatteryAlerts() {
+    int low = g_batterySettings.lowAlert;
+    for (auto const& d : g_batteries) {
+        if (!low || d.level < 0 || !d.online) {
+            continue;
+        }
+        if (d.charging || d.level > low + 5) {
+            g_batteryAlerted[d.key] = false;
+            continue;
+        }
+        if (d.level > low || g_batteryAlerted[d.key]) {
+            continue;
+        }
+        g_batteryAlerted[d.key] = true;
+        auto slot = g_batterySlotOf.find(d.key);
+        if (!g_batterySettings.trayIcons || slot == g_batterySlotOf.end() || !g_batteryIcons[slot->second].added) {
+            continue;
+        }
+        NOTIFYICONDATAW data;
+        FillBatteryIconData(&data, slot->second);
+        data.uFlags = NIF_INFO;
+        data.dwInfoFlags = NIIF_WARNING;
+        wcsncpy_s(data.szInfoTitle, L"Low battery", _TRUNCATE);
+        std::wstring text = d.name + L": " + (d.approx.empty() ? std::to_wstring(d.level) + L"% left" : L"battery is low") +
+                            L". Time to charge.";
+        wcsncpy_s(data.szInfo, text.c_str(), _TRUNCATE);
+        Shell_NotifyIconW(NIM_MODIFY, &data);
+    }
+}
+
+void UpdateBreathing() {
+    bool charging = std::any_of(g_batteries.begin(), g_batteries.end(),
+                                [](bat::Device const& d) { return d.charging && d.online && d.level >= 0; });
+    if (charging && g_batterySettings.animation && g_batterySettings.trayIcons) {
+        SetTimer(g_wnd, kTimerBreath, 700, nullptr);
+    } else {
+        KillTimer(g_wnd, kTimerBreath);
+        g_breathFrame = 0;
+    }
+}
+
+bool IsFlyoutOpen(int flyoutKind);
+
+void OnBatteriesFound() {
+    {
+        std::lock_guard<std::mutex> guard(g_batteryLock);
+        g_batteries = g_batteryResults;
+    }
+    ApplyBatteryIcons();
+    CheckBatteryAlerts();
+    UpdateBreathing();
+    // The battery icon's list of devices on a desktop, and open flyouts.
+    RequestRefresh(1u << kBattery);
+}
+
+void OnBatterySettings() {
+    BatterySettings next = LoadBatterySettings();
+    if (next == g_batterySettings) {
+        return;
+    }
+    bool vendorsChanged = next.vendors != g_batterySettings.vendors || next.pollSeconds != g_batterySettings.pollSeconds;
+    g_batterySettings = next;
+    {
+        std::lock_guard<std::mutex> guard(g_batteryLock);
+        g_batteryOptions = next;
+    }
+    if (vendorsChanged) {
+        WakeBatteries();
+    }
+    ApplyBatteryIcons();
+    UpdateBreathing();
+}
+
+// Devices with a reading, for the battery icon's tooltip on a desktop.
+std::vector<std::pair<std::wstring, int>> ExtraDeviceBatteries() {
+    std::vector<std::pair<std::wstring, int>> list;
+    if (!g_batterySettings.inFlyouts) {
+        return list;
+    }
+    for (auto const& d : g_batteries) {
+        if (d.level >= 0 && d.source != "bluetooth") {
+            list.push_back({d.name, d.level});
+        }
+    }
+    return list;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Talking to the Explorer relay
+//
+// This copy runs in its own process, so it can't reach into the tray's
+// toolbars. The suite's Explorer relay does that part: it replays right
+// clicks on the system icons (which live in Explorer), and sends scroll and
+// middle clicks over the volume icon here. The message names are shared.
+
+UINT g_msgRelayForward;  // To the relay: wParam = MAKEWPARAM(kind, event), lParam = anchor.
+UINT g_msgRelayWheel;    // From the relay: wParam = wheel delta.
+UINT g_msgRelayMiddle;   // From the relay.
+UINT g_msgRelayOverflow; // To the relay: wParam = this window; answered with WM_COPYDATA.
+
+void RegisterRelayMessages() {
+    g_msgRelayForward = RegisterWindowMessageW(L"TourneSuite_RelayForward");
+    g_msgRelayWheel = RegisterWindowMessageW(L"TourneSuite_RelayWheel");
+    g_msgRelayMiddle = RegisterWindowMessageW(L"TourneSuite_RelayMiddle");
+    g_msgRelayOverflow = RegisterWindowMessageW(L"TourneSuite_RelayOverflow");
+}
+
+// Tray icons, shared by System Icons (its hidden icons flyout) and the
+// taskbar (its tray zone): the icon records the Explorer relay sends, clicks
+// replayed for their programs, and where the user put each icon. Placed into
+// both parts by the build ("// @inline tray-shared.cpp").
+
+[[maybe_unused]] constexpr ULONG_PTR kHiddenIconsCopyId = 0x54484931;  // "THI1"
+
+// What to ask the relay for (its lParam): the icons in the overflow, or all.
+[[maybe_unused]] constexpr LPARAM kRelayOverflowIcons = 0;
+[[maybe_unused]] constexpr LPARAM kRelayAllIcons = 1;
+
+// The taskbar asks the relay to pin or unpin an app, which Windows lets only
+// Explorer do: WM_COPYDATA with this id, '1' (pin) or '0' (unpin), then the
+// shortcut's or program's path.
+[[maybe_unused]] constexpr ULONG_PTR kRelayPinCopyId = 0x5450494E;  // "TPIN"
+
+struct HiddenIcon {
+    HWND owner = nullptr;
+    UINT id = 0;
+    UINT callback = 0;
+    UINT version = 0;
+    bool overflow = false;  // In the overflow, as Explorer's tray has it.
+    std::wstring tip;
+    int size = 0;
+    std::vector<uint32_t> pixels;  // Premultiplied BGRA, size x size.
+};
+
+std::wstring LowerFileName(std::wstring_view path) {
+    size_t slash = path.find_last_of(L"\\/");
+    std::wstring name(slash == std::wstring_view::npos ? path : path.substr(slash + 1));
+    CharLowerBuffW(name.data(), (DWORD)name.size());
+    return name;
+}
+
+// A process's image path without opening it, for processes this one can't
+// open (elevated ones).
+std::wstring ImageNameOfProcessId(DWORD pid) {
+    using NtQuerySystemInformation_t = LONG(NTAPI*)(ULONG, PVOID, ULONG, PULONG);
+    static auto query = (NtQuerySystemInformation_t)GetProcAddress(
+        GetModuleHandleW(L"ntdll.dll"), "NtQuerySystemInformation");
+    if (!query || !pid) {
+        return {};
+    }
+    WCHAR buffer[MAX_PATH * 2];
+    struct {
+        HANDLE processId;
+        USHORT length;
+        USHORT maximumLength;
+        PWSTR buffer;
+    } info{(HANDLE)(ULONG_PTR)pid, 0, (USHORT)sizeof(buffer), buffer};
+    constexpr ULONG kSystemProcessIdInformation = 88;
+    if (query(kSystemProcessIdInformation, &info, sizeof(info), nullptr) < 0) {
+        return {};
+    }
+    return std::wstring(buffer, info.length / sizeof(WCHAR));
+}
+
+std::wstring OwnerFileName(HWND owner) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(owner, &pid);
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!process) {
+        return LowerFileName(ImageNameOfProcessId(pid));
+    }
+    WCHAR path[MAX_PATH * 2];
+    DWORD size = ARRAYSIZE(path);
+    std::wstring name;
+    if (QueryFullProcessImageNameW(process, 0, path, &size)) {
+        name = LowerFileName(path);
+    }
+    CloseHandle(process);
+    return name;
+}
+
+// The relay's packet: a count, then per icon the owner window (8 bytes), id,
+// callback message, NOTIFYICON version, flags (1: in the overflow), icon
+// size and tooltip length, the tooltip, and the icon's pixels.
+std::vector<HiddenIcon> UnpackHiddenIcons(const BYTE* data, size_t size) {
+    std::vector<HiddenIcon> icons;
+    size_t at = 0;
+    auto take = [&](void* out, size_t length) {
+        if (at + length > size) {
+            return false;
+        }
+        memcpy(out, data + at, length);
+        at += length;
+        return true;
+    };
+    UINT count = 0;
+    if (!take(&count, 4)) {
+        return icons;
+    }
+    for (UINT i = 0; i < count; i++) {
+        HiddenIcon icon;
+        uint64_t owner64 = 0;
+        UINT flags = 0, iconSize = 0, chars = 0;
+        if (!take(&owner64, 8) || !take(&icon.id, 4) || !take(&icon.callback, 4) ||
+            !take(&icon.version, 4) || !take(&flags, 4) || !take(&iconSize, 4) || !take(&chars, 4) ||
+            iconSize > 256 || chars > 4096) {
+            break;
+        }
+        icon.owner = (HWND)(ULONG_PTR)owner64;
+        icon.overflow = flags & 1;
+        icon.tip.resize(chars);
+        icon.size = (int)iconSize;
+        icon.pixels.resize((size_t)iconSize * iconSize);
+        if (!take(icon.tip.data(), chars * sizeof(WCHAR)) ||
+            !take(icon.pixels.data(), icon.pixels.size() * 4)) {
+            break;
+        }
+        icons.push_back(std::move(icon));
+    }
+    return icons;
+}
+
+// The suite's Explorer relay subclasses every tray toolbar, so any one of
+// them reaches it, and the taskbar itself for when there's no classic tray.
+HWND RelayToolbar() {
+    HWND tray = FindWindowW(L"Shell_TrayWnd", nullptr);
+    HWND notify = tray ? FindWindowExW(tray, nullptr, L"TrayNotifyWnd", nullptr) : nullptr;
+    HWND found = nullptr;
+    if (notify) {
+        EnumChildWindows(
+            notify,
+            [](HWND hWnd, LPARAM lParam) __stdcall -> BOOL {
+                WCHAR className[32];
+                if (GetClassNameW(hWnd, className, ARRAYSIZE(className)) &&
+                    _wcsicmp(className, TOOLBARCLASSNAMEW) == 0) {
+                    *(HWND*)lParam = hWnd;
+                    return FALSE;
+                }
+                return TRUE;
+            },
+            (LPARAM)&found);
+    }
+    return found ? found : tray;
+}
+
+enum HiddenClick { kClickLeft, kClickRight, kClickMiddle, kClickDouble, kClickSecondOfDouble };
+
+// Replays a click on a tray icon for its program, the way the tray reports
+// clicks in that icon's NOTIFYICON version.
+void ForwardHiddenClick(HiddenIcon const& icon, int click) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(icon.owner, &pid);
+    // Lets the program bring its window or menu to the front, also from a
+    // helper process (Steam's come from steamwebhelper).
+    AllowSetForegroundWindow(pid);
+    AllowSetForegroundWindow(ASFW_ANY);
+
+    std::vector<UINT> events;
+    switch (click) {
+        case kClickRight: events = {WM_RBUTTONDOWN, WM_RBUTTONUP, WM_CONTEXTMENU}; break;
+        case kClickMiddle: events = {WM_MBUTTONDOWN, WM_MBUTTONUP}; break;
+        case kClickDouble:
+            events = {WM_LBUTTONDOWN, WM_LBUTTONUP, NIN_SELECT, WM_LBUTTONDBLCLK, WM_LBUTTONUP};
+            break;
+        case kClickSecondOfDouble: events = {WM_LBUTTONDBLCLK, WM_LBUTTONUP}; break;
+        default: events = {WM_LBUTTONDOWN, WM_LBUTTONUP, NIN_SELECT}; break;
+    }
+
+    POINT pt;
+    GetCursorPos(&pt);
+    for (UINT event : events) {
+        if (icon.version >= NOTIFYICON_VERSION_4) {
+            PostMessageW(icon.owner, icon.callback, MAKEWPARAM(pt.x, pt.y), MAKELPARAM(event, icon.id));
+        } else if ((event != NIN_SELECT && event != WM_CONTEXTMENU) || icon.version == NOTIFYICON_VERSION) {
+            PostMessageW(icon.owner, icon.callback, icon.id, event);
+        }
+    }
+}
+
+// Programs that open their window on a double click of their tray icon, from
+// a comma or semicolon separated list of program names.
+bool OpensOnDoubleClickIn(HWND owner, std::wstring list) {
+    std::wstring name = OwnerFileName(owner);
+    if (name.empty()) {
+        return false;
+    }
+    std::wstring bare = name.ends_with(L".exe") ? name.substr(0, name.size() - 4) : name;
+    for (auto& ch : list) {
+        ch = towlower(ch);
+    }
+    size_t start = 0;
+    while (start < list.size()) {
+        size_t end = list.find_first_of(L",;", start);
+        if (end == std::wstring::npos) {
+            end = list.size();
+        }
+        std::wstring item = list.substr(start, end - start);
+        item.erase(0, item.find_first_not_of(L" \t"));
+        item.erase(item.find_last_not_of(L" \t") + 1);
+        if (!item.empty() && (item == name || item == bare)) {
+            return true;
+        }
+        start = end + 1;
+    }
+    return false;
+}
+
+// An icon by program and icon id, which stays the same across restarts.
+std::wstring HiddenIconKey(HiddenIcon const& icon) {
+    return OwnerFileName(icon.owner) + L"|" + std::to_wstring(icon.id);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Where each icon goes, kept in the registry so System Icons and the taskbar
+// (and Explorer's side) all read the same: shown in the tray, in the overflow
+// flyout, or hidden from both. Icons without a place follow Explorer's tray.
+
+enum TrayPlace : int { kPlaceDefault, kPlaceTray, kPlaceOverflow, kPlaceHidden };
+
+constexpr WCHAR kTrayStoreKey[] = L"Software\\TourneTray";
+[[maybe_unused]] constexpr WCHAR kTrayPlacesValue[] = L"TrayPlaces";  // "tray:key", "overflow:key", "hidden:key"
+[[maybe_unused]] constexpr WCHAR kTrayOrderValue[] = L"TrayOrder";    // keys, in the tray's order
+
+std::vector<std::wstring> LoadTrayList(PCWSTR value) {
+    std::vector<std::wstring> items;
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kTrayStoreKey, value, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) !=
+            ERROR_SUCCESS ||
+        size < sizeof(WCHAR)) {
+        return items;
+    }
+    std::wstring buffer(size / sizeof(WCHAR) + 2, L'\0');
+    size = (DWORD)(buffer.size() * sizeof(WCHAR));
+    if (RegGetValueW(HKEY_CURRENT_USER, kTrayStoreKey, value, RRF_RT_REG_MULTI_SZ, nullptr, buffer.data(), &size) !=
+        ERROR_SUCCESS) {
+        return items;
+    }
+    const WCHAR* end = buffer.data() + buffer.size();
+    for (const WCHAR* p = buffer.data(); p < end && *p; p += wcslen(p) + 1) {
+        items.push_back(p);
+    }
+    return items;
+}
+
+void SaveTrayList(PCWSTR value, std::vector<std::wstring> const& items) {
+    std::wstring data;
+    for (auto const& item : items) {
+        data += item;
+        data.push_back(L'\0');
+    }
+    data.push_back(L'\0');
+    HKEY key;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kTrayStoreKey, 0, nullptr, 0, KEY_SET_VALUE, nullptr, &key, nullptr) ==
+        ERROR_SUCCESS) {
+        RegSetValueExW(key, value, 0, REG_MULTI_SZ, (const BYTE*)data.data(), (DWORD)(data.size() * sizeof(WCHAR)));
+        RegCloseKey(key);
+    }
+}
+
+constexpr PCWSTR kPlaceNames[] = {L"", L"tray", L"overflow", L"hidden"};
+
+struct TrayPlaces {
+    std::vector<std::pair<std::wstring, int>> places;  // key, TrayPlace
+
+    static TrayPlaces Load() {
+        TrayPlaces result;
+        for (auto const& item : LoadTrayList(kTrayPlacesValue)) {
+            size_t colon = item.find(L':');
+            if (colon == std::wstring::npos) {
+                continue;
+            }
+            std::wstring name = item.substr(0, colon);
+            for (int place = kPlaceTray; place <= kPlaceHidden; place++) {
+                if (name == kPlaceNames[place]) {
+                    result.places.push_back({item.substr(colon + 1), place});
+                }
+            }
+        }
+        return result;
+    }
+
+    int Of(std::wstring const& key) const {
+        for (auto const& [k, place] : places) {
+            if (k == key) {
+                return place;
+            }
+        }
+        return kPlaceDefault;
+    }
+
+    // Where an icon goes: its own place, else where Explorer's tray has it.
+    int For(HiddenIcon const& icon, std::wstring const& key) const {
+        int place = Of(key);
+        return place != kPlaceDefault ? place : icon.overflow ? kPlaceOverflow : kPlaceTray;
+    }
+
+    void Set(std::wstring const& key, int place) {
+        std::erase_if(places, [&](auto const& entry) { return entry.first == key; });
+        if (place != kPlaceDefault) {
+            places.push_back({key, place});
+        }
+        std::vector<std::wstring> items;
+        for (auto const& [k, p] : places) {
+            items.push_back(std::wstring(kPlaceNames[p]) + L":" + k);
+        }
+        SaveTrayList(kTrayPlacesValue, items);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Dragging an icon between the taskbar's tray and System Icons' hidden icons
+// flyout (both run in the suite's tool process). The side it's dragged from
+// tells the window under the pointer where it is (kTrayDragOverMessage:
+// wParam 1 with the screen point in lParam, 0 when the pointer leaves), then
+// hands the icon over with WM_COPYDATA (kTrayDropCopyId: the drop point, then
+// the icon's key). The side dropped on places it and answers TRUE.
+
+[[maybe_unused]] constexpr ULONG_PTR kTrayDropCopyId = 0x54445250;  // "TDRP"
+[[maybe_unused]] constexpr WCHAR kTrayDragOverMessage[] = L"TourneSuite_TrayDragOver";
+[[maybe_unused]] constexpr WCHAR kTaskbarClassPrefix[] = L"TourneTaskbar";
+[[maybe_unused]] constexpr WCHAR kFlyoutClassPrefix[] = L"TourneTrayFlyout_";
+
+// The top-level window under a screen point, if its class starts with the
+// prefix.
+HWND DropTargetAt(POINT pt, PCWSTR prefix) {
+    HWND hit = WindowFromPoint(pt);
+    HWND root = hit ? GetAncestor(hit, GA_ROOT) : nullptr;
+    WCHAR cls[64];
+    if (!root || !GetClassNameW(root, cls, ARRAYSIZE(cls)) || wcsncmp(cls, prefix, wcslen(prefix)) != 0) {
+        return nullptr;
+    }
+    return root;
+}
+
+bool SendTrayDrop(HWND target, HWND from, POINT pt, std::wstring const& key) {
+    std::vector<BYTE> data(sizeof(POINT) + (key.size() + 1) * sizeof(WCHAR));
+    memcpy(data.data(), &pt, sizeof(pt));
+    memcpy(data.data() + sizeof(pt), key.c_str(), (key.size() + 1) * sizeof(WCHAR));
+    COPYDATASTRUCT copyData{kTrayDropCopyId, (DWORD)data.size(), data.data()};
+    DWORD_PTR result = 0;
+    return SendMessageTimeoutW(target, WM_COPYDATA, (WPARAM)from, (LPARAM)&copyData, SMTO_ABORTIFHUNG, 2000,
+                               &result) &&
+           result == TRUE;
+}
+
+bool ReadTrayDrop(COPYDATASTRUCT const* copyData, POINT* pt, std::wstring* key) {
+    if (!copyData || copyData->dwData != kTrayDropCopyId || copyData->cbData < sizeof(POINT) + sizeof(WCHAR)) {
+        return false;
+    }
+    auto* bytes = (const BYTE*)copyData->lpData;
+    memcpy(pt, bytes, sizeof(POINT));
+    key->assign((PCWSTR)(bytes + sizeof(POINT)), (copyData->cbData - sizeof(POINT)) / sizeof(WCHAR));
+    key->erase(std::find(key->begin(), key->end(), L'\0'), key->end());
+    return !key->empty();
+}
+
+// The dragged icon following the pointer once it's outside its own window.
+// See-through to the pointer, so the window under it is still found.
+struct DragGhost {
+    HWND wnd = nullptr;
+    int size = 0;
+
+    void Move(HiddenIcon const& icon, POINT pt) {
+        if (!icon.size || icon.pixels.size() < (size_t)icon.size * icon.size) {
+            return;
+        }
+        if (wnd) {
+            SetWindowPos(wnd, HWND_TOPMOST, pt.x - size / 2, pt.y - size / 2, 0, 0,
+                         SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            return;
+        }
+        constexpr WCHAR kClass[] = L"TourneTrayDragGhost";
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = DefWindowProcW;
+        wc.hInstance = GetModuleHandleW(nullptr);
+        wc.lpszClassName = kClass;
+        RegisterClassW(&wc);  // Already there when the other part made one: fine.
+        wnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
+                              kClass, L"", WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, wc.hInstance, nullptr);
+        if (!wnd) {
+            return;
+        }
+        size = icon.size;
+        HDC screen = GetDC(nullptr);
+        HDC mem = CreateCompatibleDC(screen);
+        BITMAPINFO bi{};
+        bi.bmiHeader = {sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB};
+        void* bits = nullptr;
+        HBITMAP bitmap = CreateDIBSection(mem, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+        if (bitmap) {
+            memcpy(bits, icon.pixels.data(), (size_t)size * size * 4);
+            HGDIOBJ old = SelectObject(mem, bitmap);
+            POINT dst{pt.x - size / 2, pt.y - size / 2}, src{0, 0};
+            SIZE extent{size, size};
+            BLENDFUNCTION blend{AC_SRC_OVER, 0, 210, AC_SRC_ALPHA};
+            UpdateLayeredWindow(wnd, screen, &dst, &extent, mem, &src, 0, &blend, ULW_ALPHA);
+            SelectObject(mem, old);
+            DeleteObject(bitmap);
+        }
+        DeleteDC(mem);
+        ReleaseDC(nullptr, screen);
+        ShowWindow(wnd, SW_SHOWNOACTIVATE);
+    }
+
+    void Hide() {
+        if (wnd) {
+            DestroyWindow(wnd);
+        }
+        wnd = nullptr;
+        size = 0;
+    }
+};
+
+// Sorts icons into a saved order: ordered ones first, in their order; the
+// rest after them, as they came.
+template <typename T, typename KeyOf>
+void ApplyTrayOrder(std::vector<T>& items, std::vector<std::wstring> const& order, KeyOf keyOf) {
+    if (order.empty()) {
+        return;
+    }
+    std::vector<std::pair<size_t, size_t>> ranks;  // Place in the order, index.
+    for (size_t i = 0; i < items.size(); i++) {
+        auto it = std::find(order.begin(), order.end(), keyOf(items[i]));
+        ranks.push_back({(size_t)(it - order.begin()), i});
+    }
+    std::stable_sort(ranks.begin(), ranks.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
+    std::vector<T> sorted;
+    for (auto const& [rank, i] : ranks) {
+        sorted.push_back(std::move(items[i]));
+    }
+    items = std::move(sorted);
+}
+// Popup menus in the Tourne style, shared by the taskbar and System Icons
+// ("// @inline menu-style.cpp"): every item owner-drawn from the colour
+// scheme, or from a visual style's own menu look when it has one, in the
+// Tourne pixel font, with a square frame in the scheme's edge colour. The
+// look is handed in each time a menu opens, so a changed theme or scheme
+// shows on the next menu.
+//
+// Use: set g_menuLook, call TrackStyledMenu instead of TrackPopupMenuEx, and
+// pass WM_MEASUREITEM and WM_DRAWITEM from the owner window to
+// MenuMeasureItem and MenuDrawItem. AppendMenuHeader adds a section's title
+// (a jump list's "Tasks"), AppendMenuIcon an item with an icon; the caller
+// keeps the icon until the menu closes.
+
+struct MenuLook {
+    uint32_t ground = 0x121C21, line = 0x1E2F36, edge = 0x4F8F6A, text = 0x66EA97, accent = 0x15FFA2,
+             dim = 0x5D8D6F, hover = 0x1F3D34;
+    HFONT font = nullptr;    // null: the system's menu font
+    HTHEME theme = nullptr;  // a visual style's "Menu" class, or null for the scheme
+    int scale = 1;
+    bool noIcons = false;    // as Menu No Icons does for other programs' menus
+    // Windows' own classic menus, drawn by the visual style (StartAllBack's
+    // are): nothing owner-drawn, an item's icon given as its bitmap.
+    bool native = false;
+    bool classic = false;  // with a theme: Windows' classic menu metrics
+    bool ownText = false;  // the text colour stays, over the theme's
+    // StartAllBack's own menus with a colour style: a line round the menu, a band, a second line,
+    // and the items inside it (measured from its Bouquet menu: 1 px line, 6 px band, 1 px line).
+    bool frame = false;
+    bool caps = false;  // item text in capitals, as its icon title font is used
+    uint32_t frameLine = 0xADA69E, band = 0x151F24;
+};
+
+MenuLook g_menuLook;
+
+constexpr COLORREF MenuRgb(uint32_t rgb) {
+    return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+}
+
+// An owner-drawn item keeps its text here, and what it was, to be put back.
+struct StyledMenuItem {
+    std::wstring text;
+    bool separator = false;
+    bool submenu = false;
+    bool header = false;
+    HICON icon = nullptr;
+    bool padTop = false, padBottom = false;  // the first and last items carry the room above and below the items inside a frame
+    UINT type = 0;
+    ULONG_PTR data = 0;
+    // A shell item's own bitmap: taken off while the item is ours, since
+    // Windows sizes an owner-drawn item with a bitmap from the bitmap alone
+    // (a 22 px sliver of a submenu), and drawn as its icon instead.
+    HBITMAP bitmap = nullptr;
+};
+
+// A real bitmap, not one of HBMMENU_CALLBACK and the other stand-ins.
+bool MenuBitmapDrawable(HBITMAP bitmap) {
+    return bitmap && (ULONG_PTR)bitmap > 11 && bitmap != HBMMENU_CALLBACK;
+}
+
+// The items styled now, so another owner's owner-drawn items (a shell
+// context menu's) are never taken for ours.
+std::vector<StyledMenuItem*> g_styledItems;
+
+StyledMenuItem* StyledItemOf(ULONG_PTR data) {
+    auto* item = (StyledMenuItem*)data;
+    return data && std::find(g_styledItems.begin(), g_styledItems.end(), item) != g_styledItems.end() ? item : nullptr;
+}
+
+// An item's data, before the style takes it over: a header, or an icon.
+constexpr ULONG_PTR kMenuHeaderTag = 1;
+
+void AppendMenuHeader(HMENU menu, LPCWSTR text) {
+    MENUITEMINFOW info{sizeof(info)};
+    info.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_STRING | MIIM_DATA;
+    info.fType = MFT_STRING;
+    info.fState = MFS_DISABLED;
+    info.dwTypeData = (LPWSTR)text;
+    info.dwItemData = kMenuHeaderTag;
+    InsertMenuItemW(menu, GetMenuItemCount(menu), TRUE, &info);
+}
+
+void AppendMenuIcon(HMENU menu, UINT flags, UINT_PTR id, LPCWSTR text, HICON icon) {
+    AppendMenuW(menu, flags, id, text);
+    if (!icon) return;
+    MENUITEMINFOW info{sizeof(info)};
+    info.fMask = MIIM_DATA;
+    info.dwItemData = (ULONG_PTR)icon;
+    SetMenuItemInfoW(menu, GetMenuItemCount(menu) - 1, TRUE, &info);
+}
+
+// An icon as a menu item's bitmap (32 bpp, alpha premultiplied, as menus
+// draw them), for native menus.
+std::vector<HBITMAP> g_nativeMenuBitmaps;  // made for menus open now
+
+HBITMAP MenuIconBitmap(HICON icon) {
+    int size = 16 * g_menuLook.scale;
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HDC dc = CreateCompatibleDC(nullptr);
+    HBITMAP bitmap = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (bitmap) {
+        HGDIOBJ old = SelectObject(dc, bitmap);
+        memset(bits, 0, size * size * 4);
+        DrawIconEx(dc, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
+        GdiFlush();
+        // An icon without alpha leaves it at 0: whatever it drew is opaque.
+        auto* px = (uint32_t*)bits;
+        bool alpha = false;
+        for (int i = 0; i < size * size && !alpha; i++) alpha = px[i] >> 24;
+        if (!alpha)
+            for (int i = 0; i < size * size; i++)
+                if (px[i]) px[i] |= 0xFF000000;
+        SelectObject(dc, old);
+    }
+    DeleteDC(dc);
+    return bitmap;
+}
+
+// A native menu's own items with icons get them as bitmaps.
+void NativeMenuItems(HMENU menu, bool foreign) {
+    int count = GetMenuItemCount(menu);
+    for (int i = 0; i < count; i++) {
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_SUBMENU | MIIM_DATA | MIIM_BITMAP;
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        if (info.hSubMenu) NativeMenuItems(info.hSubMenu, foreign);
+        if (foreign || g_menuLook.noIcons || info.hbmpItem || !info.dwItemData || info.dwItemData == kMenuHeaderTag)
+            continue;
+        HBITMAP bitmap = MenuIconBitmap((HICON)info.dwItemData);
+        if (!bitmap) continue;
+        g_nativeMenuBitmaps.push_back(bitmap);
+        MENUITEMINFOW set{sizeof(set)};
+        set.fMask = MIIM_BITMAP;
+        set.hbmpItem = bitmap;
+        SetMenuItemInfoW(menu, i, TRUE, &set);
+    }
+}
+
+// Styles a menu's items. A foreign menu (a shell context menu) keeps its own
+// item data, which is put back afterwards, and draws its own owner-drawn items.
+void StyleMenuItems(HMENU menu, bool foreign = false) {
+    if (g_menuLook.native) {
+        NativeMenuItems(menu, foreign);
+        return;
+    }
+    int count = GetMenuItemCount(menu);
+    for (int i = 0; i < count; i++) {
+        WCHAR text[256] = L"";
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_FTYPE | MIIM_STRING | MIIM_SUBMENU | MIIM_DATA | MIIM_BITMAP;
+        info.dwTypeData = text;
+        info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        if (info.hSubMenu) StyleMenuItems(info.hSubMenu, foreign);
+        if (info.fType & MFT_OWNERDRAW) continue;  // styled already, or drawn by its owner
+        if (g_menuLook.caps && !foreign) CharUpperBuffW(text, (DWORD)wcslen(text));
+        auto* item = new StyledMenuItem{text, (info.fType & MFT_SEPARATOR) != 0, info.hSubMenu != nullptr};
+        item->type = info.fType;
+        item->data = info.dwItemData;
+        item->bitmap = info.hbmpItem;
+        if (!foreign && info.dwItemData == kMenuHeaderTag) {
+            item->header = true;
+        } else if (!foreign && info.dwItemData) {
+            item->icon = (HICON)info.dwItemData;
+        }
+        g_styledItems.push_back(item);
+        MENUITEMINFOW set{sizeof(set)};
+        set.fMask = MIIM_FTYPE | MIIM_DATA | (item->bitmap ? MIIM_BITMAP : 0);
+        set.fType = (info.fType & ~MFT_STRING) | MFT_OWNERDRAW;
+        set.dwItemData = (ULONG_PTR)item;
+        set.hbmpItem = nullptr;
+        SetMenuItemInfoW(menu, i, TRUE, &set);
+    }
+    // A frame's room above and below the items (in every menu and submenu, ours or a shell's):
+    // carried by the first and last item, which are taller by it, not items of their own.
+    if (g_menuLook.frame && count > 0) {
+        for (int at : {0, count - 1}) {
+            MENUITEMINFOW edge{sizeof(edge)};
+            edge.fMask = MIIM_DATA;
+            if (!GetMenuItemInfoW(menu, at, TRUE, &edge)) continue;
+            if (StyledMenuItem* item = StyledItemOf(edge.dwItemData)) {
+                if (at == 0) item->padTop = true;
+                if (at == count - 1) item->padBottom = true;
+            }
+        }
+    }    // The background between items, and around them.
+    MENUINFO mi{sizeof(mi)};
+    mi.fMask = MIM_BACKGROUND;
+    static HBRUSH brush;
+    static uint32_t brushColor = 0xFFFFFFFF;
+    if (brushColor != g_menuLook.ground) {
+        if (brush) DeleteObject(brush);
+        brush = CreateSolidBrush(MenuRgb(g_menuLook.ground));
+        brushColor = g_menuLook.ground;
+    }
+    mi.hbrBack = brush;
+    SetMenuInfo(menu, &mi);
+}
+
+void FreeStyledMenuItems(HMENU menu) {
+    int count = GetMenuItemCount(menu);
+    for (int i = count - 1; i >= 0; i--) {  // (backwards, as it once removed items)
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_DATA | MIIM_SUBMENU;
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        if (info.hSubMenu) FreeStyledMenuItems(info.hSubMenu);
+        StyledMenuItem* item = StyledItemOf(info.dwItemData);
+        if (!item) continue;
+
+        MENUITEMINFOW set{sizeof(set)};
+        set.fMask = MIIM_FTYPE | MIIM_DATA | (item->bitmap ? MIIM_BITMAP : 0);
+        set.fType = item->type;
+        set.dwItemData = item->data;
+        set.hbmpItem = item->bitmap;
+        SetMenuItemInfoW(menu, i, TRUE, &set);
+        std::erase(g_styledItems, item);
+        delete item;
+    }
+}
+
+bool MenuMeasureItem(MEASUREITEMSTRUCT* measure) {
+    if (!measure || measure->CtlType != ODT_MENU) return false;
+    StyledMenuItem* item = StyledItemOf(measure->itemData);
+    if (!item) return false;
+    int s = g_menuLook.scale;
+    bool classic = g_menuLook.classic && g_menuLook.theme;
+
+    if (item->separator) {
+        measure->itemWidth = 1;
+        measure->itemHeight = (classic ? 9 : 7) * s;
+        return true;
+    }
+    HDC dc = GetDC(nullptr);
+    HGDIOBJ old = g_menuLook.font ? SelectObject(dc, g_menuLook.font) : nullptr;
+    std::wstring text = item->text;
+    size_t tab = text.find(L'\t');
+    SIZE left{}, right{};
+    std::wstring main = text.substr(0, tab);
+    GetTextExtentPoint32W(dc, main.empty() ? L" " : main.c_str(), main.empty() ? 1 : (int)main.size(), &left);
+    if (tab != std::wstring::npos) {
+        std::wstring accel = text.substr(tab + 1);
+        GetTextExtentPoint32W(dc, accel.c_str(), (int)accel.size(), &right);
+    }
+    if (old) SelectObject(dc, old);
+    ReleaseDC(nullptr, dc);
+    // Room for a check or icon on the left and an arrow or the extra text on
+    // the right. A header starts further left and sits closer to its items.
+    measure->itemWidth = (item->header ? 8 * s : (classic ? 22 : 26) * s) + left.cx + (right.cx ? 16 * s + right.cx : 0) +
+                         22 * s + (g_menuLook.frame ? (8 + 11 - 5) * s * 2 : 0);
+    // Classic: Windows' own 18 px rows at the menu font's size.
+    measure->itemHeight = item->header ? left.cy + 6 * s
+                          : classic    ? std::max<UINT>(18 * s, left.cy + 5 * s)
+                                       : std::max<UINT>(22 * s, left.cy + 8 * s);
+    if (g_menuLook.frame) measure->itemHeight += ((item->padTop ? 12 : 0) + (item->padBottom ? 12 : 0)) * s;
+    return true;
+}
+
+bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
+    if (!draw || draw->CtlType != ODT_MENU) return false;
+    StyledMenuItem* item = StyledItemOf(draw->itemData);
+    if (!item) return false;
+    auto const& look = g_menuLook;
+    HDC dc = draw->hDC;
+    RECT r = draw->rcItem;
+    int s = look.scale;
+    bool selected = draw->itemState & ODS_SELECTED;
+    bool disabled = draw->itemState & (ODS_DISABLED | ODS_GRAYED);
+    bool checked = draw->itemState & ODS_CHECKED;
+    HTHEME theme = look.theme;
+    bool classic = look.classic && theme;
+
+    auto fill = [&](RECT const& area, uint32_t rgb) {
+        SetDCBrushColor(dc, MenuRgb(rgb));
+        FillRect(dc, &area, (HBRUSH)GetStockObject(DC_BRUSH));
+    };
+
+    if (look.frame) {
+        // The band and the inner line round the items; what follows draws inside them.
+        int nc = 3 * s;  // the menu window's own border, measured from the window when it can be
+        if (HWND menuWindow = WindowFromDC(dc)) {
+            RECT window, client;
+            POINT origin{0, 0};
+            if (GetWindowRect(menuWindow, &window) && GetClientRect(menuWindow, &client) && ClientToScreen(menuWindow, &origin))
+                nc = origin.x - window.left;
+        }
+        int inset = std::max(1, 8 * s - nc);
+        RECT whole = r;
+        fill(whole, look.band);
+        int xl = r.left + inset, xr = r.right - inset;
+        RECT inside{xl, r.top, xr, r.bottom};
+        int lineTop = r.top, lineBottom = r.bottom;  // how far down the side lines run
+        if (item->padTop) {
+            inside.top = r.top + inset;
+            lineTop = r.top + inset - 1;
+            fill(RECT{xl - 1, lineTop, xr + 1, lineTop + 1}, look.frameLine);
+        }
+        if (item->padBottom) {
+            inside.bottom = r.bottom - inset;
+            lineBottom = r.bottom - inset + 1;
+            fill(RECT{xl - 1, inside.bottom, xr + 1, inside.bottom + 1}, look.frameLine);
+        }
+        fill(inside, look.ground);
+        fill(RECT{xl - 1, lineTop, xl, lineBottom}, look.frameLine);
+        fill(RECT{xr, lineTop, xr + 1, lineBottom}, look.frameLine);
+        r = RECT{xl, r.top + (item->padTop ? 12 * s : 0), xr, r.bottom - (item->padBottom ? 12 * s : 0)};
+    }
+    if (look.frame) {
+        // (the ground is down already)
+    } else if (theme) {
+        DrawThemeBackground(theme, dc, MENU_POPUPBACKGROUND, 0, &r, nullptr);
+    } else {
+        fill(r, look.ground);
+    }
+    if (item->separator) {
+        RECT line{r.left + 6 * s, (r.top + r.bottom) / 2, r.right - 6 * s, (r.top + r.bottom) / 2 + s};
+        if (classic && look.ownText) {
+            // A 1 px rule in the text colour, as System Text Color leaves them.
+            line.right = r.right - 2 * s;
+            fill(line, look.text);
+        } else if (theme) {
+            RECT sep{r.left, r.top, r.right, r.bottom};
+            DrawThemeBackground(theme, dc, MENU_POPUPSEPARATOR, 0, &sep, nullptr);
+        } else {
+            fill(line, look.line);
+        }
+        ExcludeClipRect(dc, r.left, r.top, r.right, r.bottom);
+        return true;
+    }
+    if (selected && !disabled) {
+        RECT hot{r.left + 2 * s, r.top, r.right - 2 * s, r.bottom};
+        if (theme) {
+            DrawThemeBackground(theme, dc, MENU_POPUPITEM, MPI_HOT, &hot, nullptr);
+        } else {
+            fill(hot, look.hover);
+        }
+    }
+
+    COLORREF color = MenuRgb(disabled ? look.dim : look.text);
+    if (theme && (!look.ownText || disabled))
+        GetThemeColor(theme, MENU_POPUPITEM, disabled ? MPI_DISABLED : selected ? MPI_HOT : MPI_NORMAL, TMT_TEXTCOLOR,
+                      &color);
+    if (item->header) {
+        HGDIOBJ old = look.font ? SelectObject(dc, look.font) : nullptr;
+        SetBkMode(dc, TRANSPARENT);
+        SetTextColor(dc, color);
+        RECT area{r.left + 8 * s, r.top + 2 * s, r.right - 8 * s, r.bottom};
+        DrawTextW(dc, item->text.c_str(), -1, &area, DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_NOPREFIX);
+        if (old) SelectObject(dc, old);
+        ExcludeClipRect(dc, r.left, r.top, r.right, r.bottom);
+        return true;
+    }
+    if (item->icon && !look.noIcons) {
+        int size = 16 * s;
+        DrawIconEx(dc, r.left + (look.frame ? 11 : 5) * s, (r.top + r.bottom - size) / 2, item->icon, size, size, 0, nullptr, DI_NORMAL);
+    } else if (MenuBitmapDrawable(item->bitmap) && !look.noIcons && !checked) {
+        // A shell item's bitmap (32 bpp with alpha, as the shell makes them).
+        BITMAP info{};
+        GetObjectW(item->bitmap, sizeof(info), &info);
+        int size = 16 * s;
+        HDC mem = CreateCompatibleDC(dc);
+        HGDIOBJ oldBitmap = SelectObject(mem, item->bitmap);
+        BLENDFUNCTION blend{AC_SRC_OVER, 0, 255, (BYTE)(info.bmBitsPixel == 32 ? AC_SRC_ALPHA : 0)};
+        GdiAlphaBlend(dc, r.left + (look.frame ? 11 : 5) * s, (r.top + r.bottom - size) / 2, size, size, mem, 0, 0, info.bmWidth,
+                      std::abs(info.bmHeight), blend);
+        SelectObject(mem, oldBitmap);
+        DeleteDC(mem);
+    } else if (checked && classic) {
+        // The style's own tick (MENU_POPUPCHECK), as Windows draws it.
+        int size = 16 * s;
+        RECT tick{r.left + 3 * s, (r.top + r.bottom - size) / 2, r.left + 3 * s + size, (r.top + r.bottom + size) / 2};
+        DrawThemeBackground(theme, dc, MENU_POPUPCHECK, disabled ? MC_CHECKMARKDISABLED : MC_CHECKMARKNORMAL, &tick,
+                            nullptr);
+    } else if (checked) {
+        // A checked item: a small square in the accent colour.
+        int size = 6 * s;
+        int x = r.left + (look.frame ? 15 : 9) * s, y = (r.top + r.bottom - size) / 2;
+        RECT mark{x, y, x + size, y + size};
+        fill(mark, disabled ? look.dim : look.accent);
+    }
+    HGDIOBJ old = look.font ? SelectObject(dc, look.font) : nullptr;
+    SetBkMode(dc, TRANSPARENT);
+    SetTextColor(dc, color);
+    std::wstring text = item->text;
+    size_t tab = text.find(L'\t');
+    RECT area{r.left + (look.frame ? 31 : classic ? 22 : 26) * s, r.top, r.right - 22 * s, r.bottom};
+    DrawTextW(dc, text.substr(0, tab).c_str(), -1, &area, DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_HIDEPREFIX);
+    if (tab != std::wstring::npos)
+        DrawTextW(dc, text.substr(tab + 1).c_str(), -1, &area, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOPREFIX);
+    // A submenu's arrow, drawn here; the system's own is clipped away below.
+    if (item->submenu) {
+        int h = 4 * s, x = r.right - 12 * s, y = (r.top + r.bottom) / 2;
+        for (int i = 0; i < h; i++) {
+            RECT bar{x + i * s, y - (h - i) * s + s, x + (i + 1) * s, y + (h - i) * s};
+            SetDCBrushColor(dc, color);
+            FillRect(dc, &bar, (HBRUSH)GetStockObject(DC_BRUSH));
+        }
+    }
+    if (old) SelectObject(dc, old);
+    ExcludeClipRect(dc, r.left, r.top, r.right, r.bottom);
+    return true;
+}
+
+// The menu windows' frame: the scheme's ground with a 1 px edge, square. The
+// windows are caught as they're created on this thread.
+LRESULT CALLBACK StyledMenuWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    switch (msg) {
+        case WM_NCPAINT:
+        case WM_PRINT: {
+            LRESULT result = msg == WM_PRINT ? DefSubclassProc(hwnd, msg, wParam, lParam) : 0;
+            HDC dc = msg == WM_PRINT ? (HDC)wParam : GetWindowDC(hwnd);
+            RECT window, client;
+            GetWindowRect(hwnd, &window);
+            GetClientRect(hwnd, &client);
+            MapWindowPoints(hwnd, nullptr, (POINT*)&client, 2);
+            OffsetRect(&client, -window.left, -window.top);
+            OffsetRect(&window, -window.left, -window.top);
+            HRGN frame = CreateRectRgnIndirect(&window);
+            HRGN inside = CreateRectRgnIndirect(&client);
+            CombineRgn(frame, frame, inside, RGN_DIFF);
+            SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.band : g_menuLook.ground));
+            FillRgn(dc, frame, (HBRUSH)GetStockObject(DC_BRUSH));
+            SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge));
+            FrameRect(dc, &window, (HBRUSH)GetStockObject(DC_BRUSH));
+            DeleteObject(frame);
+            DeleteObject(inside);
+            if (msg == WM_NCPAINT) ReleaseDC(hwnd, dc);
+            return result;
+        }
+        case WM_NCDESTROY:
+            RemoveWindowSubclass(hwnd, StyledMenuWindowProc, 0);
+            break;
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+LRESULT CALLBACK StyledMenuHookProc(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == HC_ACTION) {
+        auto* call = (CWPSTRUCT*)lParam;
+        if (call->message == WM_CREATE) {
+            WCHAR cls[16];
+            if (GetClassNameW(call->hwnd, cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768")) {
+                SetWindowSubclass(call->hwnd, StyledMenuWindowProc, 0, 0);
+                DWORD square = 1;  // DWMWCP_DONOTROUND
+                DwmSetWindowAttribute(call->hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &square, sizeof(square));
+                COLORREF border = MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge);
+                DwmSetWindowAttribute(call->hwnd, 34 /* DWMWA_BORDER_COLOR */, &border, sizeof(border));
+            }
+        }
+    }
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+// A plain-colour theme part's colour at a point (0xRRGGBB), drawn small.
+uint32_t ThemePartPixel(HTHEME theme, int part, int x, int y, uint32_t fallback) {
+    constexpr int kSize = 9;
+    HDC dc = CreateCompatibleDC(nullptr);
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), kSize, -kSize, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HBITMAP bitmap = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    uint32_t result = fallback;
+    if (bitmap) {
+        HGDIOBJ old = SelectObject(dc, bitmap);
+        memset(bits, 0, kSize * kSize * 4);
+        RECT r{0, 0, kSize, kSize};
+        if (IsThemePartDefined(theme, part, 0) && SUCCEEDED(DrawThemeBackground(theme, dc, part, 0, &r, nullptr))) {
+            GdiFlush();
+            uint32_t pixel = ((uint32_t*)bits)[y * kSize + x];
+            if (pixel) result = pixel & 0xFFFFFF;
+        }
+        SelectObject(dc, old);
+        DeleteObject(bitmap);
+    }
+    DeleteDC(dc);
+    return result;
+}
+
+// TrackPopupMenuEx with the style. The menu keeps its commands and returns
+// the same; its items are restored before this returns. A foreign menu's
+// submenus fill in as they open: pass WM_INITMENUPOPUP to its owner, then
+// StyleMenuItems(submenu, true).
+// Takes a native menu's icon bitmaps back off its items.
+void UnNativeMenuItems(HMENU menu) {
+    int count = GetMenuItemCount(menu);
+    for (int i = 0; i < count; i++) {
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_SUBMENU | MIIM_BITMAP;
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        if (info.hSubMenu) UnNativeMenuItems(info.hSubMenu);
+        if (!info.hbmpItem || std::find(g_nativeMenuBitmaps.begin(), g_nativeMenuBitmaps.end(), info.hbmpItem) ==
+                                  g_nativeMenuBitmaps.end())
+            continue;
+        MENUITEMINFOW set{sizeof(set)};
+        set.fMask = MIIM_BITMAP;
+        set.hbmpItem = nullptr;
+        SetMenuItemInfoW(menu, i, TRUE, &set);
+    }
+}
+
+// The theme's menu ground and edge, sampled once per theme (reset when the theme reloads).
+HTHEME g_menuSampled = nullptr;
+uint32_t g_menuSampledGround = 0, g_menuSampledEdge = 0;
+
+// A menu stays on one screen: the one "from" is on (what opened it: a flyout, the taskbar, an icon), or
+// else the one under its point. A point on or past that screen's edge is brought back inside, and with
+// "from" the menu doesn't cover it: Windows shows it on the other side when there's no room on this one
+// (TPM_VERTICAL in flags: above or below first; else left or right first).
+UINT TrackMenuOnScreen(HMENU menu, UINT flags, int x, int y, HWND owner, RECT const* from) {
+    POINT pt{x, y};
+    MONITORINFO monitor{sizeof(monitor)};
+    GetMonitorInfoW(from ? MonitorFromRect(from, MONITOR_DEFAULTTONEAREST) : MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST),
+                    &monitor);
+    RECT const& m = monitor.rcMonitor;
+    x = std::clamp(x, (int)m.left, (int)m.right - 1);
+    y = std::clamp(y, (int)m.top, (int)m.bottom - 1);
+    TPMPARAMS params{sizeof(params)};
+    if (from) IntersectRect(&params.rcExclude, from, &m);
+    return TrackPopupMenuEx(menu, flags, x, y, owner, from && !IsRectEmpty(&params.rcExclude) ? &params : nullptr);
+}
+
+UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool foreign = false, RECT const* from = nullptr) {
+    if (g_menuLook.native) {
+        static int depth;
+        NativeMenuItems(menu, foreign);
+        depth++;
+        UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);  // no fade: it opens at once
+        depth--;
+        UnNativeMenuItems(menu);
+        if (!depth) {
+            for (HBITMAP bitmap : g_nativeMenuBitmaps) DeleteObject(bitmap);
+            g_nativeMenuBitmaps.clear();
+        }
+        return result;
+    }
+    // A visual style's menu: its own ground and border around the items too.
+    if (g_menuLook.theme) {
+        // Sampled once per theme, not on every menu.
+        if (g_menuSampled != g_menuLook.theme) {
+            g_menuSampledGround = ThemePartPixel(g_menuLook.theme, MENU_POPUPBACKGROUND, 4, 4, g_menuLook.ground);
+            g_menuSampledEdge = ThemePartPixel(g_menuLook.theme, MENU_POPUPBORDERS, 0, 0, g_menuLook.edge);
+            g_menuSampled = g_menuLook.theme;
+        }
+        g_menuLook.ground = g_menuSampledGround;
+        g_menuLook.edge = g_menuSampledEdge;
+    }
+    StyleMenuItems(menu, foreign);
+    HHOOK hook = SetWindowsHookExW(WH_CALLWNDPROC, StyledMenuHookProc, nullptr, GetCurrentThreadId());
+    UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);
+    if (hook) UnhookWindowsHookEx(hook);
+    FreeStyledMenuItems(menu);
+    return result;
+}
+
+// Asks the relay to replay a tray event on the system icon this stand-in
+// replaces. False when there's no relay or no such icon, so the caller can
+// fall back to its own menu.
+bool RelayForward(int kind, UINT event, WPARAM anchor) {
+    HWND toolbar = RelayToolbar();
+    DWORD_PTR result = 0;
+    return toolbar && g_msgRelayForward &&
+           SendMessageTimeoutW(toolbar, g_msgRelayForward, MAKEWPARAM(kind, event),
+                               (LPARAM)anchor, SMTO_ABORTIFHUNG | SMTO_BLOCK, 500,
+                               &result) &&
+           result == 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Actions
+
+void OpenUri(PCWSTR uri) {
+    ShellExecuteW(nullptr, L"open", uri, nullptr, nullptr, SW_SHOWNORMAL);
+}
+
+void Run(PCWSTR file, PCWSTR parameters = nullptr) {
+    ShellExecuteW(nullptr, L"open", file, parameters, nullptr, SW_SHOWNORMAL);
+}
+
+void SendHotkey(std::initializer_list<WORD> keys) {
+    std::vector<INPUT> inputs;
+    for (WORD key : keys) {
+        INPUT input{};
+        input.type = INPUT_KEYBOARD;
+        input.ki.wVk = key;
+        inputs.push_back(input);
+    }
+    for (auto it = std::rbegin(keys); it != std::rend(keys); ++it) {
+        INPUT input{};
+        input.type = INPUT_KEYBOARD;
+        input.ki.wVk = *it;
+        input.ki.dwFlags = KEYEVENTF_KEYUP;
+        inputs.push_back(input);
+    }
+    SendInput((UINT)inputs.size(), inputs.data(), sizeof(INPUT));
+}
+
+bool EnableShutdownPrivilege() {
+    HANDLE token;
+    if (!OpenProcessToken(GetCurrentProcess(),
+                          TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) {
+        return false;
+    }
+    TOKEN_PRIVILEGES privileges{};
+    privileges.PrivilegeCount = 1;
+    privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+    bool ok = LookupPrivilegeValueW(nullptr, SE_SHUTDOWN_NAME,
+                                    &privileges.Privileges[0].Luid) &&
+              AdjustTokenPrivileges(token, FALSE, &privileges, 0, nullptr,
+                                    nullptr);
+    CloseHandle(token);
+    return ok;
+}
+
+void RequestExitWindows(UINT flags) {
+    EnableShutdownPrivilege();
+    ExitWindowsEx(flags, SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_FLAG_PLANNED);
+}
+
+HFONT MakeFont(std::initializer_list<PCWSTR> faces, int pixels);
+
+struct MenuItem {
+    std::wstring label;  // empty: a separator
+    std::function<void()> action;
+    std::vector<MenuItem> submenu;
+    bool checked = false;
+};
+
+// Items numbered in order, submenus included, so a chosen id finds its item.
+HMENU BuildMenu(std::vector<MenuItem> const& items, std::vector<MenuItem const*>* ids) {
+    HMENU menu = CreatePopupMenu();
+    for (auto const& item : items) {
+        if (item.label.empty()) {
+            AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+        } else if (!item.submenu.empty()) {
+            AppendMenuW(menu, MF_POPUP, (UINT_PTR)BuildMenu(item.submenu, ids), item.label.c_str());
+        } else {
+            ids->push_back(&item);
+            AppendMenuW(menu, MF_STRING | (item.checked ? MF_CHECKED : 0), ids->size(), item.label.c_str());
+        }
+    }
+    return menu;
+}
+
+bool TakeMenuAnchor(RECT* icon);
+bool FlyoutUnder(POINT pt, RECT* rc);
+
+// A click anywhere but the menu closes it (and goes no further, as Windows' own menus take it). Windows
+// does this itself only when the menu's window is in front, which a click on the Tourne taskbar (which
+// never takes the focus) doesn't always leave it; so a mouse hook watches, for as long as the menu is up.
+bool g_menuEatUp = false;
+
+LRESULT CALLBACK MenuMouseProc(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == HC_ACTION) {
+        bool down = wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN;
+        bool up = wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP;
+        if (up && g_menuEatUp) {
+            g_menuEatUp = false;
+            return 1;
+        }
+        if (down) {
+            HWND at = WindowFromPoint(((MSLLHOOKSTRUCT*)lParam)->pt);
+            WCHAR name[16];
+            if (!at || !GetClassNameW(at, name, ARRAYSIZE(name)) || wcscmp(name, L"#32768") != 0) {
+                EndMenu();
+                g_menuEatUp = true;
+                return 1;
+            }
+        }
+    }
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+void ShowMenu(std::vector<MenuItem> const& items, WPARAM anchor) {
+    std::vector<MenuItem const*> ids;
+    HMENU menu = BuildMenu(items, &ids);
+
+    POINT pt;
+    GetCursorPos(&pt);
+    if (anchor) {
+        pt = {GET_X_LPARAM(anchor), GET_Y_LPARAM(anchor)};
+    }
+    RECT icon{pt.x, pt.y, pt.x, pt.y};
+    bool haveIcon = TakeMenuAnchor(&icon);
+
+    // Required for the menu to close when clicking elsewhere.
+    HWND wnd = g_wnd;
+    SetForegroundWindow(wnd);
+    // In the colour scheme and the Tourne font, like the flyouts.
+    int scale = std::max(1, (int)(GetDpiForWindow(wnd) + USER_DEFAULT_SCREEN_DPI / 2) / USER_DEFAULT_SCREEN_DPI);
+    static std::map<int, HFONT> fonts;
+    HFONT& font = fonts[scale];
+    if (!font) {
+        font = MakeFont({L"CozetteVector", L"scientifica"}, 13 * scale);
+    }
+    auto const& p = g_palette;
+    g_menuLook = {p.ground, p.line, p.edge, p.text, p.accent, p.dim, p.hover, font, nullptr, scale};
+    // Above the icon on a bottom taskbar, below it on a top one.
+    MONITORINFO monitor{sizeof(monitor)};
+    GetMonitorInfoW(MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST), &monitor);
+    UINT place = pt.y < (monitor.rcMonitor.top + monitor.rcMonitor.bottom) / 2 ? TPM_TOPALIGN : TPM_BOTTOMALIGN;
+    // What it mustn't cover, and whose screen it stays on: the flyout it was opened from (an icon in the
+    // hidden icons flyout), or the taskbar when set to open clear of it.
+    RECT from{};
+    bool haveFrom = false;
+    RECT flyout;
+    if (FlyoutUnder(pt, &flyout)) {
+        // Beside the flyout, on its side toward the screen's middle first; the other side if there's no room.
+        bool right = (flyout.left + flyout.right) / 2 < (monitor.rcMonitor.left + monitor.rcMonitor.right) / 2;
+        pt.x = right ? flyout.right : flyout.left;
+        place = (right ? TPM_LEFTALIGN : TPM_RIGHTALIGN) | (place & TPM_BOTTOMALIGN);
+        from = flyout;
+        haveFrom = true;
+    } else if (g_settings.menuByTaskbar) {
+        // Clear of the taskbar the icon is on, lined up with the icon as set.
+        POINT middle{(icon.left + icon.right) / 2, (icon.top + icon.bottom) / 2};
+        RECT bar = icon;
+        HWND under = haveIcon ? WindowFromPoint(middle) : WindowFromPoint(pt);
+        if (HWND root = under ? GetAncestor(under, GA_ROOT) : nullptr) GetWindowRect(root, &bar);
+        int away = g_settings.menuAway * scale, along = g_settings.menuAlong * scale;
+        int align = g_settings.menuAlign;
+        bool across = bar.right - bar.left >= bar.bottom - bar.top;  // a taskbar along the top or bottom
+        RECT const& m = monitor.rcMonitor;
+        if (across) {
+            bool top = bar.top + bar.bottom < m.top + m.bottom;
+            pt.x = (align > 0 ? icon.left : align < 0 ? icon.right : middle.x) + along;
+            pt.y = top ? bar.bottom + away : bar.top - away;
+            place = (top ? TPM_TOPALIGN : TPM_BOTTOMALIGN) |
+                    (align > 0 ? TPM_LEFTALIGN : align < 0 ? TPM_RIGHTALIGN : TPM_CENTERALIGN);
+        } else {
+            bool left = bar.left + bar.right < m.left + m.right;
+            pt.x = left ? bar.right + away : bar.left - away;
+            pt.y = (align > 0 ? icon.top : align < 0 ? icon.bottom : middle.y) + along;
+            place = (left ? TPM_LEFTALIGN : TPM_RIGHTALIGN) |
+                    (align > 0 ? TPM_TOPALIGN : align < 0 ? TPM_BOTTOMALIGN : TPM_VCENTERALIGN);
+        }
+        if (across) place |= TPM_VERTICAL;  // (kept off the taskbar first, then fitted along it)
+        from = bar;
+        haveFrom = true;
+    }
+    // (At the pointer, it stays on the pointer's screen.)
+    HHOOK mouse = SetWindowsHookExW(WH_MOUSE_LL, MenuMouseProc, GetModuleHandleW(nullptr), 0);
+    g_menuEatUp = false;
+    UINT chosen = TrackStyledMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | place, pt.x, pt.y, wnd, false,
+                                  haveFrom ? &from : nullptr);
+    if (mouse) UnhookWindowsHookEx(mouse);
+    PostMessageW(wnd, WM_NULL, 0, 0);
+    DestroyMenu(menu);
+
+    if (chosen && chosen <= ids.size() && ids[chosen - 1]->action) {
+        ids[chosen - 1]->action();
+    }
+}
+
+std::vector<MenuItem> PowerMenu() {
+    return {
+        {L"Lock", [] { LockWorkStation(); }},
+        {L"Sign out", [] { RequestExitWindows(EWX_LOGOFF); }},
+        {},
+        {L"Sleep", [] { SetSuspendState(FALSE, FALSE, FALSE); }},
+        {L"Restart", [] { RequestExitWindows(EWX_REBOOT); }},
+        {L"Shut down", [] { RequestExitWindows(EWX_SHUTDOWN | EWX_POWEROFF); }},
+    };
+}
+
+auto Uri(PCWSTR uri) {
+    return [uri] { OpenUri(uri); };
+}
+
+// Spatial sound for the default output, set the way Windows' own volume menu
+// (SndVolSSO) sets it: through the policy config's spatial interface, which
+// Windows' public API doesn't offer ("Off" isn't a format it can set). Read
+// from SndVolSSO's public symbols; the layouts below are what it uses.
+//   method 4   GetDeviceFormat(device, 0, &format)
+//   method 34  GetSpatialSettings(device, 0, &format, &settings, &count,
+//                                 &formats)
+//   method 35  SetSpatialSettings(device, settings, format or null)
+// Settings are 72 bytes: +0 on, +4 and +8 flags, +0x0C and +0x1C the format's
+// GUID twice, +0x3C a flag, +0x44 the format's second flag. Each format
+// Windows offers is 0x342 bytes: its name at +0, GUID at +0x300, licensed at
+// +0x310, and the two flags copied into the settings at +0x314 and +0x318.
+constexpr GUID kIidPolicyConfigSpatial = {
+    0xe8478600, 0xa74b, 0x4b3a, {0xa9, 0x6b, 0x1f, 0xc3, 0xe7, 0x96, 0xfc, 0x46}};
+constexpr size_t kSpatialSettingsSize = 0x48;
+constexpr size_t kSpatialFormatSize = 0x342;
+
+using SpatialGetDeviceFormat_t = HRESULT(STDMETHODCALLTYPE*)(void*, PCWSTR, int, WAVEFORMATEX**);
+using SpatialGet_t = HRESULT(STDMETHODCALLTYPE*)(void*, PCWSTR, int, WAVEFORMATEX**, BYTE**, DWORD*, BYTE**);
+using SpatialSet_t = HRESULT(STDMETHODCALLTYPE*)(void*, PCWSTR, BYTE*, WAVEFORMATEX*);
+
+template <typename T>
+T SpatialMethod(IUnknown* policy, int slot) {
+    return (T)(*(void***)policy)[slot];
+}
+
+struct SpatialFormat {
+    std::wstring name;
+    GUID guid;
+    bool licensed;
+    DWORD flag1, flag2;
+};
+
+struct SpatialState {
+    std::wstring device;
+    std::array<BYTE, kSpatialSettingsSize> settings{};
+    std::vector<SpatialFormat> formats;
+    bool on = false;
+    GUID current{};
+};
+
+// The default output's spatial sound, as Windows' menu reads it. False when
+// this Windows has no such interface or the output can't do spatial sound.
+bool ReadSpatialState(SpatialState* state) {
+    IMMDeviceEnumerator* enumerator = nullptr;
+    if (FAILED(CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
+                                (void**)&enumerator))) {
+        return false;
+    }
+    IMMDevice* device = nullptr;
+    PWSTR id = nullptr;
+    if (SUCCEEDED(enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device))) {
+        device->GetId(&id);
+        device->Release();
+    }
+    enumerator->Release();
+    if (!id) {
+        return false;
+    }
+    state->device = id;
+    CoTaskMemFree(id);
+
+    IUnknown* policy = nullptr;
+    if (FAILED(CoCreateInstance(kClsidPolicyConfigClient, nullptr, CLSCTX_ALL, kIidPolicyConfigSpatial,
+                                (void**)&policy))) {
+        return false;
+    }
+    WAVEFORMATEX* format = nullptr;
+    BYTE* settings = nullptr;
+    DWORD count = 0;
+    BYTE* formats = nullptr;
+    HRESULT hr = SpatialMethod<SpatialGet_t>(policy, 34)(policy, state->device.c_str(), 0, &format, &settings,
+                                                         &count, &formats);
+    policy->Release();
+    bool ok = SUCCEEDED(hr) && settings;
+    if (ok) {
+        memcpy(state->settings.data(), settings, kSpatialSettingsSize);
+        state->on = *(DWORD*)settings != 0;
+        state->current = *(GUID*)(settings + 0x0C);
+        for (DWORD i = 0; formats && i < count && i < 16; i++) {
+            BYTE* f = formats + i * kSpatialFormatSize;
+            state->formats.push_back({std::wstring((PCWSTR)f, wcsnlen((PCWSTR)f, 0x300 / sizeof(WCHAR))),
+                                      *(GUID*)(f + 0x300), *(DWORD*)(f + 0x310) != 0, *(DWORD*)(f + 0x314),
+                                      *(DWORD*)(f + 0x318)});
+        }
+    }
+    CoTaskMemFree(format);
+    CoTaskMemFree(settings);
+    CoTaskMemFree(formats);
+    return ok && !state->formats.empty();
+}
+
+struct SpatialRequest {
+    std::wstring device;
+    std::array<BYTE, kSpatialSettingsSize> settings;
+    bool off;
+};
+
+DWORD WINAPI SetSpatialProc(LPVOID param) {
+    std::unique_ptr<SpatialRequest> request((SpatialRequest*)param);
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    HRESULT hr = E_FAIL;
+    IUnknown* policy = nullptr;
+    if (SUCCEEDED(CoCreateInstance(kClsidPolicyConfigClient, nullptr, CLSCTX_ALL, kIidPolicyConfigSpatial,
+                                   (void**)&policy))) {
+        PCWSTR device = request->device.c_str();
+        WAVEFORMATEX* format = nullptr;
+        if (request->off) {
+            // Off is plain stereo, as Windows' menu sets it.
+            if (SUCCEEDED(SpatialMethod<SpatialGetDeviceFormat_t>(policy, 4)(policy, device, 0, &format)) && format) {
+                format->nChannels = 2;
+                if (format->wFormatTag == WAVE_FORMAT_EXTENSIBLE && format->cbSize >= 22) {
+                    ((WAVEFORMATEXTENSIBLE*)format)->dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+                }
+            }
+        }
+        hr = SpatialMethod<SpatialSet_t>(policy, 35)(policy, device, request->settings.data(), format);
+        CoTaskMemFree(format);
+        policy->Release();
+    }
+    Wh_Log(L"Spatial sound %s: 0x%08X", request->off ? L"off" : L"format", hr);
+    CoUninitialize();
+    if (FAILED(hr)) {
+        OpenUri(L"ms-settings:sound");
+    }
+    return 0;
+}
+
+// Setting it waits on the audio service, so it runs off the menu's thread.
+// Windows restarts what's playing when it changes, as its own switch does.
+void SetSpatial(SpatialState const& state, SpatialFormat const* format) {
+    auto* request = new SpatialRequest{state.device, state.settings, !format};
+    BYTE* s = request->settings.data();
+    if (format) {
+        *(DWORD*)(s + 0x00) = 1;
+        *(DWORD*)(s + 0x04) = format->flag1;
+        *(DWORD*)(s + 0x08) = 1;
+        *(GUID*)(s + 0x0C) = format->guid;
+        *(GUID*)(s + 0x1C) = format->guid;
+        *(DWORD*)(s + 0x3C) = 1;
+        *(DWORD*)(s + 0x44) = format->flag2 != 0;
+    } else {
+        *(DWORD*)(s + 0x00) = 0;
+        *(GUID*)(s + 0x0C) = GUID{};
+        *(DWORD*)(s + 0x44) = 0;
+    }
+    if (HANDLE thread = CreateThread(nullptr, 0, SetSpatialProc, request, 0, nullptr)) {
+        CloseHandle(thread);
+    } else {
+        delete request;
+    }
+}
+
+// "Spatial sound (Dolby Atmos for Headphones)" with the formats Windows
+// offers for the output that are licensed (their app installed), and the one
+// on now; nothing when there's no spatial sound. Reading changes nothing,
+// and the entry already on does nothing when picked.
+std::vector<MenuItem> SpatialSoundMenu() {
+    auto state = std::make_shared<SpatialState>();
+    if (!ReadSpatialState(state.get())) {
+        return {};
+    }
+    std::wstring currentName = L"Off";
+    std::vector<MenuItem> choices;
+    choices.push_back({L"Off", state->on ? std::function<void()>([state] { SetSpatial(*state, nullptr); }) : nullptr,
+                       {}, !state->on});
+    for (size_t i = 0; i < state->formats.size(); i++) {
+        auto const& f = state->formats[i];
+        bool on = state->on && IsEqualGUID(f.guid, state->current);
+        if (on) {
+            currentName = f.name;
+        }
+        if (on || f.licensed) {
+            choices.push_back({f.name, on ? nullptr : std::function<void()>([state, i] {
+                                                          SetSpatial(*state, &state->formats[i]);
+                                                      }),
+                               {}, on});
+        }
+    }
+    choices.push_back({});
+    choices.push_back({L"Spatial sound settings", Uri(L"ms-settings:sound"), {}, false});
+    return {{L"Spatial sound (" + currentName + L")", nullptr, std::move(choices), false}};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Hidden icons. The tray keeps every icon as a button of its toolbar, the ones
+// the user hid included (marked hidden), and only Explorer can read them. The
+// functions marked "In Explorer" run there, and pack the hidden icons with
+// their pictures and tooltips for the flyout.
+
+std::wstring CollapseSpaces(std::wstring_view text) {
+    std::wstring out;
+    for (WCHAR ch : text) {
+        bool space = ch == L' ' || ch == L'\t' || ch == L'\r' || ch == L'\n';
+        if (space) {
+            if (!out.empty() && out.back() != L' ') {
+                out += L' ';
+            }
+        } else {
+            out += ch;
+        }
+    }
+    while (!out.empty() && out.back() == L' ') {
+        out.pop_back();
+    }
+    return out;
+}
+
+// A tooltip's lines kept as its program wrote them (a sensor's: name, then a value a line), the
+// spaces in each collapsed and the empty lines dropped. The taskbar's tooltip stacks the lines, as
+// StartAllBack's does; lists that want one line take the first.
+std::wstring TipLines(std::wstring_view text) {
+    std::wstring out, line;
+    auto flush = [&] {
+        while (!line.empty() && line.back() == L' ') line.pop_back();
+        if (!line.empty()) {
+            if (!out.empty()) out += L'\n';
+            out += line;
+        }
+        line.clear();
+    };
+    for (WCHAR ch : text) {
+        if (ch == L'\n' || ch == L'\r') {
+            flush();
+        } else if (ch == L' ' || ch == L'\t') {
+            if (!line.empty() && line.back() != L' ') line += L' ';
+        } else {
+            line += ch;
+        }
+    }
+    flush();
+    return out;
+}
+
+// In Explorer: tooltips as programs send them. Shell_NotifyIcon reaches the
+// tray as WM_COPYDATA to Shell_TrayWnd: a signature, the NIM_* message, then a
+// NOTIFYICONDATA with 32-bit handles, whose tooltip is at offset 24.
+constexpr ULONG_PTR kTrayCopyDataId = 1;
+constexpr DWORD kTraySignature = 0x34753423;
+constexpr size_t kTrayHeaderSize = 8;
+constexpr size_t kTrayTipOffset = kTrayHeaderSize + 24;
+constexpr size_t kTrayTipChars = 128;
+
+SRWLOCK g_tipsLock = SRWLOCK_INIT;
+[[clang::no_destroy]] std::unordered_map<uint64_t, std::wstring> g_tips;
+std::atomic<HWND> g_tipsTrayWnd;
+
+uint64_t TipKey(HWND hwnd, UINT id) {
+    // The tray only ever sees 32-bit window handles.
+    return ((uint64_t)(uint32_t)(ULONG_PTR)hwnd << 32) | id;
+}
+
+void RecordTrayCopyData(const COPYDATASTRUCT* copyData) {
+    if (!copyData || copyData->dwData != kTrayCopyDataId || !copyData->lpData ||
+        copyData->cbData < kTrayTipOffset) {
+        return;
+    }
+    const BYTE* data = (const BYTE*)copyData->lpData;
+    DWORD signature, message, hwnd32;
+    UINT id, flags;
+    memcpy(&signature, data, 4);
+    memcpy(&message, data + 4, 4);
+    memcpy(&hwnd32, data + kTrayHeaderSize + 4, 4);
+    memcpy(&id, data + kTrayHeaderSize + 8, 4);
+    memcpy(&flags, data + kTrayHeaderSize + 12, 4);
+    if (signature != kTraySignature) {
+        return;
+    }
+    uint64_t key = TipKey((HWND)(ULONG_PTR)hwnd32, id);
+    if (message == NIM_DELETE) {
+        AcquireSRWLockExclusive(&g_tipsLock);
+        g_tips.erase(key);
+        ReleaseSRWLockExclusive(&g_tipsLock);
+        return;
+    }
+    if ((message != NIM_ADD && message != NIM_MODIFY) || !(flags & NIF_TIP) ||
+        copyData->cbData < kTrayTipOffset + kTrayTipChars * sizeof(WCHAR)) {
+        return;
+    }
+    WCHAR tip[kTrayTipChars + 1];
+    memcpy(tip, data + kTrayTipOffset, kTrayTipChars * sizeof(WCHAR));
+    tip[kTrayTipChars] = L'\0';
+    AcquireSRWLockExclusive(&g_tipsLock);
+    g_tips[key] = TipLines(tip);
+    ReleaseSRWLockExclusive(&g_tipsLock);
+}
+
+// In Explorer: other programs' tray icons in the Tourne design. Their icons
+// are swapped as they reach the tray, so the taskbar and the hidden icons
+// flyout both show the design, and states follow what their tooltips say.
+
+std::wstring OwnerFileName(HWND owner);
+std::unordered_map<std::wstring, std::wstring> RegistryTips();
+
+bool TipHas(std::wstring const& tip, std::initializer_list<PCWSTR> words) {
+    std::wstring lower = tip;
+    CharLowerBuffW(lower.data(), (DWORD)lower.size());
+    for (PCWSTR word : words) {
+        if (lower.find(word) != std::wstring::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string CloudDesign(std::wstring const& tip) {
+    if (TipHas(tip, {L"pause", L"error", L"problem", L"sign in", L"signed out", L"not signed"})) {
+        return "app-cloud-error";
+    }
+    if (!TipHas(tip, {L"up to date"}) &&
+        TipHas(tip, {L"sync", L"upload", L"download", L"processing", L"updating"})) {
+        return "app-cloud-sync";
+    }
+    return "app-cloud";
+}
+
+// HWiNFO's sensor icons show a reading, which the tooltip carries as
+// "<sensor> <value> <unit> Min: ... Max: ..."; its own icon has none.
+std::string SensorDesign(std::wstring const& tip) {
+    size_t min = tip.find(L"Min:");
+    if (min == std::wstring::npos) {
+        return "sensor";
+    }
+    std::wstring head = tip.substr(0, min);
+    double value = 0;
+    bool found = false;
+    for (size_t i = 0; i < head.size();) {
+        if (!iswdigit(head[i])) {
+            i++;
+            continue;
+        }
+        size_t end = i;
+        while (end < head.size() && (iswdigit(head[end]) || head[end] == L'.' || head[end] == L',')) {
+            end++;
+        }
+        std::wstring number = head.substr(i, end - i);
+        std::replace(number.begin(), number.end(), L',', L'.');
+        value = _wtof(number.c_str());
+        found = true;
+        i = end;
+    }
+    if (!found) {
+        return "sensor";
+    }
+    long reading = std::lround(value);
+    bool hot = TipHas(head, {L"°c"}) && reading > 65;
+    return "readout:" + std::to_string(reading) + (hot ? ":hot" : "");
+}
+// Tamer keeps its pause in its settings file only; its icon and tooltip stay
+// the same. Read again only when the file changes.
+std::wstring TamerSettingsFolder() {
+    WCHAR path[MAX_PATH];
+    if (FAILED(SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, path))) {
+        return {};
+    }
+    return std::wstring(path) + L"\\app.tamer.windows";
+}
+
+SRWLOCK g_tamerLock = SRWLOCK_INIT;
+
+bool TamerPaused() {
+    static FILETIME lastWrite{};
+    static bool paused = false;
+    std::wstring file = TamerSettingsFolder() + L"\\settings.json";
+    WIN32_FILE_ATTRIBUTE_DATA info;
+    if (!GetFileAttributesExW(file.c_str(), GetFileExInfoStandard, &info) ||
+        info.nFileSizeLow > 256 * 1024) {
+        return false;
+    }
+    AcquireSRWLockExclusive(&g_tamerLock);
+    if (CompareFileTime(&info.ftLastWriteTime, &lastWrite) != 0) {
+        lastWrite = info.ftLastWriteTime;
+        std::string text;
+        HANDLE handle = CreateFileW(file.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    nullptr, OPEN_EXISTING, 0, nullptr);
+        if (handle != INVALID_HANDLE_VALUE) {
+            text.resize(info.nFileSizeLow);
+            DWORD read = 0;
+            if (!ReadFile(handle, text.data(), (DWORD)text.size(), &read, nullptr)) {
+                read = 0;
+            }
+            text.resize(read);
+            CloseHandle(handle);
+        }
+        // "paused": true, spaced however the file happens to be.
+        size_t key = text.find("\"paused\"");
+        size_t value = key == std::string::npos ? key : text.find_first_not_of(" \t\r\n:", key + 8);
+        paused = value != std::string::npos && text.compare(value, 4, "true") == 0;
+    }
+    bool result = paused;
+    ReleaseSRWLockExclusive(&g_tamerLock);
+    return result;
+}
+// The design that stands for an icon, by program and tooltip; empty for none.
+std::string DesignFor(std::wstring const& exe, std::wstring const& windowClass,
+                      std::wstring const& tip) {
+    auto is = [&](std::initializer_list<PCWSTR> names) {
+        for (PCWSTR name : names) {
+            if (exe == name) {
+                return true;
+            }
+        }
+        return false;
+    };
+    if (is({L"discord.exe", L"discordptb.exe", L"discordcanary.exe", L"vesktop.exe"})) {
+        return "app-chat";
+    }
+    if (is({L"onedrive.exe", L"icloudhome.exe", L"iclouddrive.exe", L"googledrivefs.exe",
+            L"dropbox.exe"})) {
+        return CloudDesign(tip);
+    }
+    if (is({L"steam.exe", L"eadesktop.exe", L"epicgameslauncher.exe", L"riotclientservices.exe",
+            L"playnite.desktopapp.exe", L"blitz.exe", L"battle.net.exe", L"galaxyclient.exe",
+            L"ubisoftconnect.exe"})) {
+        return "app-game";
+    }
+    if (exe == L"windscribe.exe") {
+        return TipHas(tip, {L"connected"}) && !TipHas(tip, {L"disconnected", L"not connected"})
+                   ? "vpn-on"
+                   : "vpn";
+    }
+    if (exe == L"securityhealthsystray.exe") {
+        if (TipHas(tip, {L"threat", L"action needed", L"attention"})) {
+            return "security-alert";
+        }
+        return TipHas(tip, {L"recommended"}) ? "security-warn" : "security-ok";
+    }
+    if (exe == L"explorer.exe" && TipHas(tip, {L"safely remove", L"eject"})) {
+        return "usb";
+    }
+    if (exe == L"windhawk-mod.exe" && windowClass == L"BTBatTrayWindow") {
+        return "bluetooth";
+    }
+    if (exe == L"windhawk-mod.exe" && windowClass == L"AudioSwitcherWindowClass") {
+        return "app-audio";
+    }
+    if (exe == L"tamer.exe") {
+        return TamerPaused() || TipHas(tip, {L"paused"}) ? "app-screenshot-paused" : "app-screenshot";
+    }
+    if (is({L"wallpaper64.exe", L"wallpaper32.exe"})) {
+        return TipHas(tip, {L"paus"}) ? "app-wallpaper-paused" : "app-wallpaper";
+    }
+    if (exe == L"claude.exe") {
+        return "app-claude";
+    }
+    if (exe == L"spotify.exe") {
+        return "app-spotify";
+    }
+    if (is({L"alienfan-gui.exe", L"fancontrol.exe"})) {
+        return "app-fan";
+    }
+    if (is({L"sizer.exe", L"glazewm.exe", L"komorebi.exe"})) {
+        return "app-tiling";
+    }
+    if (exe == L"windhawk-mod.exe" && windowClass == L"WCT_TrayWindow_v21") {
+        return "app-system";
+    }    if (is({L"hwinfo64.exe", L"hwinfo32.exe"})) {
+        return SensorDesign(tip);
+    }
+    if (is({L"nvdisplay.container.exe", L"nvcontainer.exe"}) ||
+        (exe.empty() && TipHas(tip, {L"nvidia"}))) {
+        return "gpu";
+    }    if (exe == L"handy.exe") {
+        return "mic";
+    }
+    if (exe == L"phoneexperiencehost.exe") {
+        return "phone";
+    }
+    if (is({L"musnotifyicon.exe", L"monotificationux.exe"})) {
+        return TipHas(tip, {L"restart"}) ? "restart-required" : "update-available";
+    }
+    return {};
+}
+
+std::wstring WindowClassOf(HWND hwnd) {
+    WCHAR name[128];
+    return GetClassNameW(hwnd, name, ARRAYSIZE(name)) ? name : L"";
+}
+
+bool IsStandInWindow(HWND hwnd) {
+    return WindowClassOf(hwnd).starts_with(L"TourneTraySystemIcons_");
+}
+
+std::string DesignForOwner(HWND owner, std::wstring const& tip) {
+    if (!IsWindow(owner) || IsStandInWindow(owner)) {
+        return {};
+    }
+    return DesignFor(OwnerFileName(owner), WindowClassOf(owner), tip);
+}
+
+std::atomic<bool> g_themeEnabled;
+SRWLOCK g_themeLock = SRWLOCK_INIT;
+// Kept for Explorer's lifetime: the tray may hold on to the handle it's given.
+[[clang::no_destroy]] std::map<std::string, HICON> g_themeIcons;
+
+HICON ThemeIcon(std::string const& design) {
+    int size = TrayIconSize();
+    std::string key = design + "|" + std::to_string(size) + "|" + g_settings.tone +
+                      (g_settings.shade ? "|shade" : "") + "|" + std::to_string(PaletteKey());
+    AcquireSRWLockExclusive(&g_themeLock);
+    HICON& icon = g_themeIcons[key];
+    if (!icon) {
+        icon = CreateIconFromPixels(RenderArt(ArtFor(design), g_settings.tone, g_settings.shade, size),
+                                    size);
+    }
+    HICON result = icon;
+    ReleaseSRWLockExclusive(&g_themeLock);
+    return result;
+}
+
+bool IsThemeIcon(DWORD handle32) {
+    AcquireSRWLockShared(&g_themeLock);
+    bool found = false;
+    for (auto const& [key, icon] : g_themeIcons) {
+        if ((DWORD)(ULONG_PTR)icon == handle32) {
+            found = true;
+            break;
+        }
+    }
+    ReleaseSRWLockShared(&g_themeLock);
+    return found;
+}
+
+// A Shell_NotifyIcon call rewritten to carry the design's icon; false when
+// the icon isn't one the design covers.
+bool ThemeTrayCopyData(const COPYDATASTRUCT* copyData, COPYDATASTRUCT* themed,
+                       std::vector<BYTE>* buffer) {
+    constexpr size_t kFlagsOffset = kTrayHeaderSize + 12;
+    constexpr size_t kIconOffset = kTrayHeaderSize + 20;
+    if (!g_themeEnabled || !copyData || copyData->dwData != kTrayCopyDataId ||
+        !copyData->lpData || copyData->cbData < kTrayTipOffset) {
+        return false;
+    }
+    const BYTE* data = (const BYTE*)copyData->lpData;
+    DWORD signature, message, hwnd32, flags, icon32;
+    UINT id;
+    memcpy(&signature, data, 4);
+    memcpy(&message, data + 4, 4);
+    memcpy(&hwnd32, data + kTrayHeaderSize + 4, 4);
+    memcpy(&id, data + kTrayHeaderSize + 8, 4);
+    memcpy(&flags, data + kFlagsOffset, 4);
+    memcpy(&icon32, data + kIconOffset, 4);
+    if (signature != kTraySignature || (message != NIM_ADD && message != NIM_MODIFY) ||
+        ((flags & NIF_ICON) && IsThemeIcon(icon32))) {
+        return false;
+    }
+
+    HWND owner = (HWND)(ULONG_PTR)hwnd32;
+    std::wstring tip;
+    if ((flags & NIF_TIP) && copyData->cbData >= kTrayTipOffset + kTrayTipChars * sizeof(WCHAR)) {
+        WCHAR text[kTrayTipChars + 1];
+        memcpy(text, data + kTrayTipOffset, kTrayTipChars * sizeof(WCHAR));
+        text[kTrayTipChars] = L'\0';
+        tip = TipLines(text);
+    } else {
+        AcquireSRWLockShared(&g_tipsLock);
+        auto it = g_tips.find(TipKey(owner, id));
+        if (it != g_tips.end()) {
+            tip = it->second;
+        }
+        ReleaseSRWLockShared(&g_tipsLock);
+    }
+    std::string design = DesignForOwner(owner, tip);
+    HICON icon = design.empty() ? nullptr : ThemeIcon(design);
+    if (!icon) {
+        return false;
+    }
+    buffer->assign(data, data + copyData->cbData);
+    DWORD newFlags = flags | NIF_ICON;
+    DWORD newIcon = (DWORD)(ULONG_PTR)icon;
+    memcpy(buffer->data() + kFlagsOffset, &newFlags, 4);
+    memcpy(buffer->data() + kIconOffset, &newIcon, 4);
+    *themed = *copyData;
+    themed->lpData = buffer->data();
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Tray hosting, in Explorer: every icon programs add, kept from the
+// Shell_NotifyIcon messages Explorer's taskbar receives, so the tray doesn't
+// depend on the classic one StartAllBack brings back (Windows 11's own
+// taskbar gets the same messages). Each icon is copied as it arrives, since
+// its program may destroy its own.
+
+struct HostedIcon {
+    HWND owner = nullptr;
+    UINT id = 0;
+    GUID guid{};
+    bool hasGuid = false;
+    UINT callback = 0;
+    UINT version = 0;
+    DWORD state = 0;       // NIS_*
+    HICON icon = nullptr;  // this process's copy
+};
+
+SRWLOCK g_hostedLock = SRWLOCK_INIT;
+[[clang::no_destroy]] std::vector<HostedIcon> g_hosted;  // in the order they were added
+
+// NOTIFYICONDATA as the tray receives it (32-bit handles), from its start.
+constexpr size_t kNidCallback = 16;
+constexpr size_t kNidIcon = 20;
+constexpr size_t kNidState = 280;
+constexpr size_t kNidStateMask = 284;
+constexpr size_t kNidVersion = 800;
+constexpr size_t kNidGuid = 936;
+
+// A 32-bit handle from the tray's data, widened the way Windows does.
+template <typename T>
+T WideHandle(DWORD value) {
+    return (T)(LONG_PTR)(LONG)value;
+}
+
+void RecordHostedIcon(const COPYDATASTRUCT* copyData) {
+    if (!copyData || copyData->dwData != kTrayCopyDataId || !copyData->lpData ||
+        copyData->cbData < kTrayHeaderSize + 24) {
+        return;
+    }
+    const BYTE* data = (const BYTE*)copyData->lpData;
+    size_t size = copyData->cbData;
+    auto field = [&](size_t offset) -> DWORD {
+        DWORD value = 0;
+        if (kTrayHeaderSize + offset + 4 <= size) {
+            memcpy(&value, data + kTrayHeaderSize + offset, 4);
+        }
+        return value;
+    };
+    DWORD signature, message;
+    memcpy(&signature, data, 4);
+    memcpy(&message, data + 4, 4);
+    if (signature != kTraySignature) {
+        return;
+    }
+    HWND owner = WideHandle<HWND>(field(4));
+    UINT id = field(8);
+    UINT flags = field(12);
+    GUID guid{};
+    bool hasGuid = (flags & NIF_GUID) && kTrayHeaderSize + kNidGuid + sizeof(GUID) <= size;
+    if (hasGuid) {
+        memcpy(&guid, data + kTrayHeaderSize + kNidGuid, sizeof(GUID));
+    }
+
+    AcquireSRWLockExclusive(&g_hostedLock);
+    auto it = std::find_if(g_hosted.begin(), g_hosted.end(), [&](HostedIcon const& h) {
+        return hasGuid ? h.hasGuid && IsEqualGUID(h.guid, guid)
+                       : !h.hasGuid && h.owner == owner && h.id == id;
+    });
+    if (message == NIM_DELETE) {
+        if (it != g_hosted.end()) {
+            if (it->icon) {
+                DestroyIcon(it->icon);
+            }
+            g_hosted.erase(it);
+        }
+    } else if (message == NIM_ADD || message == NIM_MODIFY || message == NIM_SETVERSION) {
+        // An icon from before this started is taken in once a change brings
+        // what's needed to show and click it.
+        if (it == g_hosted.end() &&
+            (message == NIM_ADD || ((flags & NIF_MESSAGE) && (flags & NIF_ICON)))) {
+            g_hosted.push_back({owner, id, guid, hasGuid});
+            it = g_hosted.end() - 1;
+        }
+        if (it != g_hosted.end()) {
+            it->owner = owner;
+            it->id = id;
+            if (flags & NIF_MESSAGE) {
+                it->callback = field(kNidCallback);
+            }
+            if (flags & NIF_ICON) {
+                HICON source = WideHandle<HICON>(field(kNidIcon));
+                HICON copy = source ? CopyIcon(source) : nullptr;
+                if (it->icon) {
+                    DestroyIcon(it->icon);
+                }
+                it->icon = copy;
+            }
+            if (flags & NIF_STATE) {
+                DWORD mask = field(kNidStateMask);
+                it->state = (it->state & ~mask) | (field(kNidState) & mask);
+            }
+            if (message == NIM_SETVERSION) {
+                it->version = field(kNidVersion);
+            }
+        }
+    }
+    ReleaseSRWLockExclusive(&g_hostedLock);
+}
+
+// A copy of the hosted icons, with their own copies of the icons (the caller
+// destroys them), dropping ones whose program has gone.
+std::vector<HostedIcon> HostedIcons() {
+    std::vector<HostedIcon> icons;
+    AcquireSRWLockExclusive(&g_hostedLock);
+    for (auto it = g_hosted.begin(); it != g_hosted.end();) {
+        if (!IsWindow(it->owner)) {
+            if (it->icon) {
+                DestroyIcon(it->icon);
+            }
+            it = g_hosted.erase(it);
+            continue;
+        }
+        HostedIcon copy = *it;
+        copy.icon = it->icon ? CopyIcon(it->icon) : nullptr;
+        icons.push_back(copy);
+        ++it;
+    }
+    ReleaseSRWLockExclusive(&g_hostedLock);
+    return icons;
+}
+
+void ClearHostedIcons() {
+    AcquireSRWLockExclusive(&g_hostedLock);
+    for (auto& h : g_hosted) {
+        if (h.icon) {
+            DestroyIcon(h.icon);
+        }
+    }
+    g_hosted.clear();
+    ReleaseSRWLockExclusive(&g_hostedLock);
+}
+
+// Programs asked to add their icons again, as when Explorer starts, so the
+// ones from before hosting began are taken in too. Only where there's no
+// classic tray to read them from.
+void SeedHostedIcons() {
+    UINT taskbarCreated = RegisterWindowMessageW(L"TaskbarCreated");
+    EnumWindows(
+        [](HWND hWnd, LPARAM param) __stdcall -> BOOL {
+            DWORD pid = 0;
+            GetWindowThreadProcessId(hWnd, &pid);
+            if (pid != GetCurrentProcessId()) {
+                PostMessageW(hWnd, (UINT)param, 0, 0);
+            }
+            return TRUE;
+        },
+        (LPARAM)taskbarCreated);
+}
+
+struct TrayButtonOwner {
+    HWND owner;
+    UINT id;
+};
+
+std::vector<TrayButtonOwner> TrayButtonOwners() {
+    std::vector<TrayButtonOwner> owners;
+    HWND tray = FindWindowW(L"Shell_TrayWnd", nullptr);
+    HWND notify = tray ? FindWindowExW(tray, nullptr, L"TrayNotifyWnd", nullptr) : nullptr;
+    HWND toolbar = notify ? FindWindowExW(notify, nullptr, TOOLBARCLASSNAMEW, nullptr) : nullptr;
+    int count = toolbar ? (int)SendMessageW(toolbar, TB_BUTTONCOUNT, 0, 0) : 0;
+    for (int i = 0; i < count; i++) {
+        TBBUTTON button{};
+        if (SendMessageW(toolbar, TB_GETBUTTON, i, (LPARAM)&button) && button.dwData) {
+            auto* data = (const BYTE*)button.dwData;
+            owners.push_back({*(const HWND*)data, *(const UINT*)(data + 8)});
+        }
+    }
+    AcquireSRWLockShared(&g_hostedLock);
+    for (auto const& h : g_hosted) {
+        if (std::none_of(owners.begin(), owners.end(),
+                         [&](TrayButtonOwner const& o) { return o.owner == h.owner && o.id == h.id; })) {
+            owners.push_back({h.owner, h.id});
+        }
+    }
+    ReleaseSRWLockShared(&g_hostedLock);
+    return owners;
+}
+
+// In Explorer: icons already in the tray get the design too.
+void ThemeExistingIcons() {
+    auto registryTips = RegistryTips();
+    for (auto const& [owner, id] : TrayButtonOwners()) {
+        AcquireSRWLockShared(&g_tipsLock);
+        auto live = g_tips.find(TipKey(owner, id));
+        std::wstring tip = live != g_tips.end() ? live->second : std::wstring();
+        ReleaseSRWLockShared(&g_tipsLock);
+        if (tip.empty()) {
+            if (auto saved = registryTips.find(OwnerFileName(owner) + L"|" + std::to_wstring(id));
+                saved != registryTips.end()) {
+                tip = saved->second;
+            }
+        }
+        std::string design = DesignForOwner(owner, tip);
+        if (design.empty()) {
+            continue;
+        }
+        NOTIFYICONDATAW data{sizeof(data)};
+        data.hWnd = owner;
+        data.uID = id;
+        data.uFlags = NIF_ICON;
+        data.hIcon = ThemeIcon(design);
+        Shell_NotifyIconW(NIM_MODIFY, &data);
+    }
+}
+
+// Programs whose tooltip hasn't come by since capture started, and that
+// Windows has none saved for, are asked to add their icons again, as they do
+// when Explorer restarts. Their icon is already there, so the tray keeps it,
+// but the capture gets the tooltip.
+void PokeForTooltips() {
+    UINT taskbarCreated = RegisterWindowMessageW(L"TaskbarCreated");
+    auto registryTips = RegistryTips();
+    std::vector<HWND> poked;
+    for (auto const& [owner, id] : TrayButtonOwners()) {
+        DWORD pid = 0;
+        GetWindowThreadProcessId(owner, &pid);
+        if (!IsWindow(owner) || pid == GetCurrentProcessId() || IsStandInWindow(owner) ||
+            std::find(poked.begin(), poked.end(), owner) != poked.end()) {
+            continue;
+        }
+        AcquireSRWLockShared(&g_tipsLock);
+        bool known = g_tips.contains(TipKey(owner, id));
+        ReleaseSRWLockShared(&g_tipsLock);
+        if (known || registryTips.contains(OwnerFileName(owner) + L"|" + std::to_wstring(id))) {
+            continue;
+        }
+        PostMessageW(owner, taskbarCreated, 0, 0);
+        poked.push_back(owner);
+    }
+}
+
+// The system icons the stand-ins replace. They stay in the tray, hidden, for
+// the stand-ins' right clicks, but they don't belong in the hidden icons
+// flyout.
+bool IsReplacedByStandIn(HWND owner, UINT id) {
+    std::wstring windowClass = WindowClassOf(owner);
+    DWORD pid = 0;
+    GetWindowThreadProcessId(owner, &pid);
+    if (windowClass == L"SIBNetworkIcon" || windowClass == L"NetworkIconWindow") {
+        return g_settings.enabled[kNetwork];
+    }
+    if (windowClass == L"SystemTray_Main" && id == 1226) {
+        return g_settings.enabled[kBattery];
+    }
+    if (id == 100 && windowClass.starts_with(L"ATL:")) {
+        if (pid == GetCurrentProcessId()) {
+            return g_settings.enabled[kVolume];
+        }
+        return OwnerFileName(owner) == L"securityhealthsystray.exe" && g_settings.enabled[kSecurity];
+    }
+    return false;
+}
+LRESULT CALLBACK TipsTrayWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam,
+                                 DWORD_PTR) {
+    if (msg == WM_COPYDATA) {
+        auto* copyData = (const COPYDATASTRUCT*)lParam;
+        RecordTrayCopyData(copyData);
+        COPYDATASTRUCT themed;
+        std::vector<BYTE> buffer;
+        if (ThemeTrayCopyData(copyData, &themed, &buffer)) {
+            RecordHostedIcon(&themed);
+            return DefSubclassProc(hWnd, msg, wParam, (LPARAM)&themed);
+        }
+        RecordHostedIcon(copyData);
+    } else if (msg == WM_NCDESTROY) {
+        HWND expected = hWnd;
+        g_tipsTrayWnd.compare_exchange_strong(expected, nullptr);
+    }
+    return DefSubclassProc(hWnd, msg, wParam, lParam);
+}
+
+// In Explorer. Safe to call repeatedly; follows the taskbar when Explorer
+// recreates it.
+void EnsureTipCapture() {
+    HWND tray = FindWindowW(L"Shell_TrayWnd", nullptr);
+    DWORD pid = 0;
+    if (!tray || tray == g_tipsTrayWnd || !GetWindowThreadProcessId(tray, &pid) ||
+        pid != GetCurrentProcessId()) {
+        return;
+    }
+    if (WindhawkUtils::SetWindowSubclassFromAnyThread(tray, TipsTrayWndProc, 0)) {
+        g_tipsTrayWnd = tray;
+        // Without a classic tray to read them from, the icons from before
+        // this started are asked for again.
+        HWND notify = FindWindowExW(tray, nullptr, L"TrayNotifyWnd", nullptr);
+        if (!notify || !FindWindowExW(notify, nullptr, TOOLBARCLASSNAMEW, nullptr)) {
+            SeedHostedIcons();
+        }
+    }
+}
+
+void StopTipCapture() {
+    if (HWND tray = g_tipsTrayWnd.exchange(nullptr); tray && IsWindow(tray)) {
+        WindhawkUtils::RemoveWindowSubclassFromAnyThread(tray, TipsTrayWndProc);
+    }
+}
+
+// The first tooltip Windows saw for each icon, by executable name and id: the
+// fallback for icons that haven't sent one since capture started.
+std::unordered_map<std::wstring, std::wstring> RegistryTips() {
+    std::unordered_map<std::wstring, std::wstring> tips;
+    HKEY key;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Control Panel\\NotifyIconSettings", 0,
+                      KEY_READ, &key) != ERROR_SUCCESS) {
+        return tips;
+    }
+    WCHAR subkey[256];
+    for (DWORD i = 0;; i++) {
+        DWORD length = ARRAYSIZE(subkey);
+        LONG result =
+            RegEnumKeyExW(key, i, subkey, &length, nullptr, nullptr, nullptr, nullptr);
+        if (result == ERROR_NO_MORE_ITEMS) {
+            break;
+        }
+        if (result != ERROR_SUCCESS) {
+            continue;
+        }
+        WCHAR path[MAX_PATH * 2];
+        WCHAR tip[512];
+        DWORD id = 0;
+        DWORD size = sizeof(path);
+        if (RegGetValueW(key, subkey, L"ExecutablePath", RRF_RT_REG_SZ, nullptr, path,
+                         &size) != ERROR_SUCCESS) {
+            continue;
+        }
+        size = sizeof(tip);
+        if (RegGetValueW(key, subkey, L"InitialTooltip", RRF_RT_REG_SZ, nullptr, tip,
+                         &size) != ERROR_SUCCESS ||
+            !*tip) {
+            continue;
+        }
+        size = sizeof(id);
+        RegGetValueW(key, subkey, L"UID", RRF_RT_REG_DWORD, nullptr, &id, &size);
+        tips.try_emplace(LowerFileName(path) + L"|" + std::to_wstring(id),
+                         TipLines(tip));
+    }
+    RegCloseKey(key);
+    return tips;
+}
+
+// Any process's image path by id, even one this process may not open (NVIDIA's
+// display container is one): SystemProcessIdInformation, as Task Manager uses.
+
+// The icon as premultiplied pixels. Drawn once on black and once on white, so
+// icons without an alpha channel come out right too: the difference between
+// the two is how much background shows through.
+std::vector<uint32_t> IconPixels(HICON icon, int size) {
+    void* black = nullptr;
+    void* white = nullptr;
+    HBITMAP onBlack = CreateDib(size, size, &black);
+    HBITMAP onWhite = CreateDib(size, size, &white);
+    std::vector<uint32_t> out;
+    if (onBlack && onWhite) {
+        memset(black, 0x00, size * size * 4);
+        memset(white, 0xFF, size * size * 4);
+        HDC dc = CreateCompatibleDC(nullptr);
+        HGDIOBJ old = SelectObject(dc, onBlack);
+        DrawIconEx(dc, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
+        SelectObject(dc, onWhite);
+        DrawIconEx(dc, 0, 0, icon, size, size, 0, nullptr, DI_NORMAL);
+        SelectObject(dc, old);
+        DeleteDC(dc);
+        GdiFlush();
+        auto* b = (const uint32_t*)black;
+        auto* w = (const uint32_t*)white;
+        out.resize(size * size);
+        for (int i = 0; i < size * size; i++) {
+            int seen = 0;
+            for (int shift = 0; shift < 24; shift += 8) {
+                seen = std::max(seen, (int)((w[i] >> shift) & 0xFF) - (int)((b[i] >> shift) & 0xFF));
+            }
+            uint32_t alpha = 255 - std::clamp(seen, 0, 255);
+            out[i] = alpha ? (alpha << 24) | (b[i] & 0xFFFFFF) : 0;
+        }
+    }
+    if (onBlack) {
+        DeleteObject(onBlack);
+    }
+    if (onWhite) {
+        DeleteObject(onWhite);
+    }
+    return out;
+}
+
+// Windows 11's own "show in the taskbar" for each icon, by executable name and
+// id: where an icon goes when there's no classic tray to say.
+std::unordered_map<std::wstring, bool> RegistryPromoted() {
+    std::unordered_map<std::wstring, bool> promoted;
+    HKEY key;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Control Panel\\NotifyIconSettings", 0, KEY_READ, &key) != ERROR_SUCCESS) {
+        return promoted;
+    }
+    WCHAR subkey[256];
+    for (DWORD i = 0;; i++) {
+        DWORD length = ARRAYSIZE(subkey);
+        LONG result = RegEnumKeyExW(key, i, subkey, &length, nullptr, nullptr, nullptr, nullptr);
+        if (result == ERROR_NO_MORE_ITEMS) {
+            break;
+        }
+        if (result != ERROR_SUCCESS) {
+            continue;
+        }
+        WCHAR path[MAX_PATH * 2];
+        DWORD size = sizeof(path);
+        if (RegGetValueW(key, subkey, L"ExecutablePath", RRF_RT_REG_SZ, nullptr, path, &size) != ERROR_SUCCESS) {
+            continue;
+        }
+        DWORD id = 0, isPromoted = 0;
+        size = sizeof(id);
+        RegGetValueW(key, subkey, L"UID", RRF_RT_REG_DWORD, nullptr, &id, &size);
+        size = sizeof(isPromoted);
+        RegGetValueW(key, subkey, L"IsPromoted", RRF_RT_REG_DWORD, nullptr, &isPromoted, &size);
+        promoted[LowerFileName(path) + L"|" + std::to_wstring(id)] = isPromoted != 0;
+    }
+    RegCloseKey(key);
+    return promoted;
+}
+
+// In Explorer: the icons in the overflow, or all the tray's icons. The
+// hosted ones first (see above), then any only the classic tray has, which
+// covers icons from before hosting began while StartAllBack's tray is there.
+std::vector<BYTE> BuildHiddenIconsPacket(bool all) {
+    std::vector<BYTE> packet;
+    auto put = [&](const void* data, size_t size) {
+        auto* bytes = (const BYTE*)data;
+        packet.insert(packet.end(), bytes, bytes + size);
+    };
+    UINT count = 0;
+    put(&count, 4);
+
+    auto registryTips = RegistryTips();
+    auto tipFor = [&](HWND owner, UINT id) {
+        AcquireSRWLockShared(&g_tipsLock);
+        auto live = g_tips.find(TipKey(owner, id));
+        std::wstring tip = live != g_tips.end() ? live->second : std::wstring();
+        ReleaseSRWLockShared(&g_tipsLock);
+        if (tip.empty()) {
+            if (auto saved = registryTips.find(OwnerFileName(owner) + L"|" + std::to_wstring(id));
+                saved != registryTips.end()) {
+                tip = saved->second;
+            }
+        }
+        if (tip.empty()) {
+            // Nothing to go by but the program's name.
+            tip = OwnerFileName(owner);
+            if (tip.ends_with(L".exe")) {
+                tip.resize(tip.size() - 4);
+            }
+        }
+        return tip;
+    };
+    auto putIcon = [&](HWND owner, UINT id, UINT callback, UINT version, bool overflow,
+                       std::vector<uint32_t> const& pixels, int width) {
+        std::wstring tip = tipFor(owner, id);
+        uint64_t owner64 = (uint64_t)(ULONG_PTR)owner;
+        UINT size = pixels.empty() ? 0 : width;
+        UINT chars = (UINT)tip.size();
+        UINT flags = overflow ? 1 : 0;
+        put(&owner64, 8);
+        put(&id, 4);
+        put(&callback, 4);
+        put(&version, 4);
+        put(&flags, 4);
+        put(&size, 4);
+        put(&chars, 4);
+        put(tip.data(), chars * sizeof(WCHAR));
+        put(pixels.data(), pixels.size() * 4);
+        count++;
+    };
+
+    // The classic tray (StartAllBack's), when it's there.
+    struct ClassicIcon {
+        HWND owner;
+        UINT id, callback, version;
+        bool overflow;
+        int image;
+    };
+    std::vector<ClassicIcon> classic;
+    HWND tray = FindWindowW(L"Shell_TrayWnd", nullptr);
+    HWND notify = tray ? FindWindowExW(tray, nullptr, L"TrayNotifyWnd", nullptr) : nullptr;
+    HWND toolbar = notify ? FindWindowExW(notify, nullptr, TOOLBARCLASSNAMEW, nullptr) : nullptr;
+    // The toolbar's own comctl32, so the image list functions match it.
+    using GetIcon_t = HICON(WINAPI*)(HIMAGELIST, int, UINT);
+    using GetIconSize_t = BOOL(WINAPI*)(HIMAGELIST, int*, int*);
+    GetIcon_t getIcon = nullptr;
+    HIMAGELIST images = nullptr;
+    int width = GetSystemMetrics(SM_CXSMICON), height = width;
+    if (toolbar) {
+        HMODULE comctl = (HMODULE)GetClassLongPtrW(toolbar, GCLP_HMODULE);
+        getIcon = comctl ? (GetIcon_t)GetProcAddress(comctl, "ImageList_GetIcon") : nullptr;
+        auto getIconSize = comctl ? (GetIconSize_t)GetProcAddress(comctl, "ImageList_GetIconSize") : nullptr;
+        images = (HIMAGELIST)SendMessageW(toolbar, TB_GETIMAGELIST, 0, 0);
+        if (images && getIconSize) {
+            getIconSize(images, &width, &height);
+        }
+        int buttons = (int)SendMessageW(toolbar, TB_BUTTONCOUNT, 0, 0);
+        for (int i = 0; i < buttons; i++) {
+            TBBUTTON button{};
+            if (!SendMessageW(toolbar, TB_GETBUTTON, i, (LPARAM)&button) || !button.dwData) {
+                continue;
+            }
+            // The button data: owner window at +0, id at +8, callback message
+            // at +12, the icon's own NIS_* state at +16, NOTIFYICON version at
+            // +20. NIS_HIDDEN there means its program hid it, not the user.
+            auto* data = (const BYTE*)button.dwData;
+            HWND owner = *(const HWND*)data;
+            UINT id = *(const UINT*)(data + 8);
+            if (!IsWindow(owner) || (*(const DWORD*)(data + 16) & NIS_HIDDEN) || IsReplacedByStandIn(owner, id)) {
+                continue;
+            }
+            classic.push_back({owner, id, *(const UINT*)(data + 12), *(const UINT*)(data + 20),
+                               (button.fsState & TBSTATE_HIDDEN) != 0, button.iBitmap});
+        }
+    }
+    // Classic tray order first, so nothing changes while it's there, then the
+    // icons only we have.
+    std::vector<std::pair<HWND, UINT>> sent;
+    for (auto const& c : classic) {
+        sent.push_back({c.owner, c.id});
+        if (!c.overflow && !all) {
+            continue;
+        }
+        std::vector<uint32_t> pixels;
+        if (images && getIcon) {
+            if (HICON icon = getIcon(images, c.image, ILD_NORMAL)) {
+                pixels = IconPixels(icon, width);
+                DestroyIcon(icon);
+            }
+        }
+        putIcon(c.owner, c.id, c.callback, c.version, c.overflow && !g_settings.allAppIcons, pixels, width);
+    }
+    auto promoted = RegistryPromoted();
+    for (auto& h : HostedIcons()) {
+        bool known = std::find(sent.begin(), sent.end(), std::pair<HWND, UINT>{h.owner, h.id}) != sent.end();
+        if (!known && h.icon && h.callback && !(h.state & NIS_HIDDEN) && !IsReplacedByStandIn(h.owner, h.id)) {
+            // Where Windows' own settings put it: in the bar only if promoted.
+            auto it = promoted.find(OwnerFileName(h.owner) + L"|" + std::to_wstring(h.id));
+            bool overflow = !g_settings.allAppIcons && (it == promoted.end() || !it->second);
+            if (overflow || all) {
+                int size = GetSystemMetrics(SM_CXSMICON);
+                putIcon(h.owner, h.id, h.callback, h.version, overflow, IconPixels(h.icon, size), size);
+            }
+        }
+        if (h.icon) {
+            DestroyIcon(h.icon);
+        }
+    }    memcpy(packet.data(), &count, 4);
+    return packet;
+}
+
+// The relay packs the hidden icons in Explorer and sends them back as
+// WM_COPYDATA while this waits; the window procedure stores them here.
+std::vector<HiddenIcon> g_receivedHidden;
+bool g_hiddenReceived;
+
+bool RequestHiddenIcons(std::vector<HiddenIcon>* icons, LPARAM which = kRelayOverflowIcons) {
+    HWND toolbar = RelayToolbar();
+    HWND wnd = g_wnd;
+    if (!toolbar || !wnd || !g_msgRelayOverflow) {
+        return false;
+    }
+    g_hiddenReceived = false;
+    DWORD_PTR result = 0;
+    // Not SMTO_BLOCK: the answer is a message sent to this thread while it
+    // waits.
+    SendMessageTimeoutW(toolbar, g_msgRelayOverflow, (WPARAM)wnd, which, SMTO_ABORTIFHUNG, 2000,
+                        &result);
+    if (!g_hiddenReceived) {
+        return false;
+    }
+    *icons = std::move(g_receivedHidden);
+    g_receivedHidden.clear();
+    return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+// Flyouts: Windows 7 layouts in the Tourne design system. One at a time, on
+// the mod thread.
+
+enum FlyoutKind : int { kFlyoutNone, kFlyoutNetwork, kFlyoutPower, kFlyoutBrightness, kFlyoutOverflow, kFlyoutVpn, kFlyoutSecurity, kFlyoutMixer, kFlyoutNotify, kFlyoutBluetooth, kFlyoutDevices };
+
+namespace ui {
+constexpr COLORREF Rgb(uint32_t rgb) {
+    return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+}
+// Set from the colour scheme (these are Tourne's): ground, raised row,
+// divider, border, main text, accent, secondary and faint text, warning.
+inline COLORREF kGround = Rgb(0x121C21);
+inline COLORREF kRaised = Rgb(0x1B2A31);
+inline COLORREF kLine = Rgb(0x1E2F36);
+inline COLORREF kEdge = Rgb(0x4F8F6A);
+inline COLORREF kInk = Rgb(0x66EA97);
+inline COLORREF kGreen = Rgb(0x15FFA2);
+inline COLORREF kSage = Rgb(0x64AA89);
+inline COLORREF kSageAlt = Rgb(0x5D8D6F);
+inline COLORREF kCoral = Rgb(0xFF6F77);
+// text at 16% over ground, the design's hover fill.
+inline COLORREF kHover = Rgb(0x1F3D34);
+}  // namespace ui
+
+void ApplyPaletteToUi() {
+    auto const& p = g_palette;
+    ui::kGround = ui::Rgb(p.ground);
+    ui::kRaised = ui::Rgb(p.raised);
+    ui::kLine = ui::Rgb(p.line);
+    ui::kEdge = ui::Rgb(p.edge);
+    ui::kInk = ui::Rgb(p.text);
+    ui::kGreen = ui::Rgb(p.accent);
+    ui::kSage = ui::Rgb(p.muted);
+    ui::kSageAlt = ui::Rgb(p.dim);
+    ui::kCoral = ui::Rgb(p.warn);
+    ui::kHover = ui::Rgb(p.hover);
+}
+
+enum HitType : int {
+    kHitWifiRow = 1,
+    kHitWifiAction,
+    kHitLink,
+    kHitPlan,
+    kHitSlider,
+    kHitHidden,
+    kHitVpnAction,
+    kHitVpnRow,
+    kHitSecurityRow,
+    kHitMixerSlider,
+    kHitMixerMute,
+    kHitNotifyItem,
+    kHitNotifyDismiss,
+    kHitNotifyClearApp,
+    kHitNotifyAction,
+    kHitNotifyClearAll,
+    kHitCalPrev,
+    kHitCalNext,
+    kHitCalDay,
+    kHitBtToggle,
+    kHitBtRow,
+    kHitBtAction,
+    kHitMixerBt,
+    kHitFolder,
+    kHitFolderBack,
+};
+
+constexpr int MakeHit(int type, int index) {
+    return (type << 16) | (index & 0xFFFF);
+}
+
+struct Hit {
+    RECT rc;
+    int id;
+};
+
+struct WifiNetwork {
+    std::wstring ssid;
+    int quality = 0;
+    bool secured = false;
+    bool connected = false;
+    std::wstring profile;
+    GUID iface{};
+    DOT11_SSID dot11{};
+    DOT11_BSS_TYPE bssType = dot11_BSS_type_infrastructure;
+};
+
+struct Connection {
+    std::string art;
+    std::wstring name;
+    std::wstring status;
+};
+
+struct PowerPlan {
+    GUID guid{};
+    std::wstring name;
+    bool active = false;
+};
+
+struct MonitorLevel {
+    std::wstring name;
+    int value = -1;  // Percent, or -1 when the monitor doesn't answer.
+    bool primary = false;  // On the main screen.
+};
+
+// DDC/CI calls take tens of milliseconds each, so they run on a worker that
+// outlives nothing but itself: the flyout can close while a write is in
+// flight, and the shared state is freed by whichever side lets go last.
+struct BrightnessShared {
+    CRITICAL_SECTION lock;
+    HANDLE wake = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+    HWND notify = nullptr;
+    bool stop = false;
+    bool loaded = false;
+    std::vector<MonitorLevel> levels;
+    std::vector<int> pending;
+    LONG refs = 2;
+
+    BrightnessShared() { InitializeCriticalSection(&lock); }
+    ~BrightnessShared() {
+        DeleteCriticalSection(&lock);
+        CloseHandle(wake);
+    }
+    void Release() {
+        if (InterlockedDecrement(&refs) == 0) {
+            delete this;
+        }
+    }
+};
+
+std::vector<HANDLE> g_brightnessThreads;
+
+// The levels last read, so the flyout opens with them while the monitors are
+// asked again. Also read once at start.
+std::vector<MonitorLevel> g_brightnessCache;
+// The monitor's model name from its EDID ("PHL 242G5"), where the physical
+// monitor API only knows "Generic PnP Monitor".
+std::wstring MonitorModelName(HMONITOR display) {
+    MONITORINFOEXW info{};
+    info.cbSize = sizeof(info);
+    if (!GetMonitorInfoW(display, &info)) {
+        return {};
+    }
+    UINT32 pathCount = 0, modeCount = 0;
+    if (GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount) != ERROR_SUCCESS) {
+        return {};
+    }
+    std::vector<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
+    std::vector<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
+    if (QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(), &modeCount,
+                           modes.data(), nullptr) != ERROR_SUCCESS) {
+        return {};
+    }
+    for (UINT32 i = 0; i < pathCount; i++) {
+        DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
+        source.header = {DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME, sizeof(source),
+                         paths[i].sourceInfo.adapterId, paths[i].sourceInfo.id};
+        if (DisplayConfigGetDeviceInfo(&source.header) != ERROR_SUCCESS ||
+            wcscmp(source.viewGdiDeviceName, info.szDevice) != 0) {
+            continue;
+        }
+        DISPLAYCONFIG_TARGET_DEVICE_NAME target{};
+        target.header = {DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME, sizeof(target),
+                         paths[i].targetInfo.adapterId, paths[i].targetInfo.id};
+        if (DisplayConfigGetDeviceInfo(&target.header) == ERROR_SUCCESS) {
+            return target.monitorFriendlyDeviceName;
+        }
+    }
+    return {};
+}
+
+DWORD WINAPI BrightnessThreadProc(LPVOID parameter) {
+    auto* shared = (BrightnessShared*)parameter;
+
+    std::vector<HMONITOR> displays;
+    EnumDisplayMonitors(
+        nullptr, nullptr,
+        [](HMONITOR monitor, HDC, LPRECT, LPARAM lParam) -> BOOL {
+            ((std::vector<HMONITOR>*)lParam)->push_back(monitor);
+            return TRUE;
+        },
+        (LPARAM)&displays);
+
+    struct Physical {
+        PHYSICAL_MONITOR monitor;
+        DWORD min = 0, max = 100;
+        bool ok = false;
+    };
+    std::vector<Physical> physical;
+    std::vector<MonitorLevel> levels;
+    int displayNumber = 0;
+    for (HMONITOR display : displays) {
+        displayNumber++;
+        DWORD count = 0;
+        if (!GetNumberOfPhysicalMonitorsFromHMONITOR(display, &count) || !count) {
+            continue;
+        }
+        std::vector<PHYSICAL_MONITOR> monitors(count);
+        if (!GetPhysicalMonitorsFromHMONITOR(display, count, monitors.data())) {
+            continue;
+        }
+        std::wstring model = MonitorModelName(display);
+        MONITORINFO displayInfo{sizeof(displayInfo)};
+        bool primary = GetMonitorInfoW(display, &displayInfo) && (displayInfo.dwFlags & MONITORINFOF_PRIMARY);
+        for (auto const& monitor : monitors) {
+            Physical p{monitor};
+            DWORD current = 0;
+            p.ok = GetMonitorBrightness(monitor.hPhysicalMonitor, &p.min, &current, &p.max) &&
+                   p.max > p.min;
+            MonitorLevel level;
+            level.primary = primary;
+            level.name = std::to_wstring(displayNumber) + L" ... " +
+                         (!model.empty() ? model
+                          : *monitor.szPhysicalMonitorDescription
+                              ? std::wstring(monitor.szPhysicalMonitorDescription)
+                              : L"Display");
+            if (p.ok) {
+                level.value = (int)((current - p.min) * 100 / (p.max - p.min));
+            }
+            physical.push_back(p);
+            levels.push_back(level);
+        }
+    }
+
+    EnterCriticalSection(&shared->lock);
+    shared->levels = levels;
+    shared->pending.assign(levels.size(), -1);
+    shared->loaded = true;
+    HWND notify = shared->notify;
+    LeaveCriticalSection(&shared->lock);
+    if (notify) {
+        PostMessageW(notify, WM_APP_BRIGHTNESS_READY, 0, 0);
+    }
+
+    // Latest value wins; writes are spaced so the I2C bus keeps up.
+    while (true) {
+        WaitForSingleObject(shared->wake, INFINITE);
+        std::vector<int> work;
+        EnterCriticalSection(&shared->lock);
+        bool stop = shared->stop;
+        work.swap(shared->pending);
+        shared->pending.assign(physical.size(), -1);
+        LeaveCriticalSection(&shared->lock);
+        if (stop) {
+            break;
+        }
+        for (size_t i = 0; i < work.size() && i < physical.size(); i++) {
+            if (work[i] >= 0 && physical[i].ok) {
+                DWORD value = physical[i].min +
+                              (DWORD)work[i] * (physical[i].max - physical[i].min) / 100;
+                SetMonitorBrightness(physical[i].monitor.hPhysicalMonitor, value);
+                Sleep(60);
+            }
+        }
+    }
+
+    for (auto& p : physical) {
+        DestroyPhysicalMonitor(p.monitor.hPhysicalMonitor);
+    }
+    shared->Release();
+    return 0;
+}
+
+// Flyout data for Windows Security and the VPN, and the slow-work job both use.
+
+struct FlyoutJob;
+
+struct SecurityRow {
+    std::string art;
+    std::wstring label;
+    std::wstring value;
+    PCWSTR uri;
+};
+
+struct VpnCity {
+    std::wstring city;
+    std::wstring nick;
+};
+
+struct VpnRegion {
+    std::wstring name;
+    std::wstring country;
+    std::vector<VpnCity> cities;
+};
+
+struct MixerSession {
+    DWORD pid = 0;
+    bool system = false;
+    std::wstring path;
+    std::wstring name;
+    int volume = 0;
+    bool muted = false;
+    std::vector<ISimpleAudioVolume*> controls;  // Released by ReleaseMixer.
+};
+
+// Notification centre and calendar data.
+
+struct NotifyAction {
+    std::wstring label;
+    std::wstring arguments;
+    std::wstring activationType;
+};
+
+struct NotifyItem {
+    std::wstring aumid;
+    std::wstring tag;
+    std::wstring group;
+    std::wstring title;
+    std::wstring body;
+    std::wstring launch;
+    std::wstring activationType;
+    std::vector<NotifyAction> actions;
+    ULONGLONG arrival = 0;  // UTC FILETIME.
+};
+
+struct NotifyApp {
+    std::wstring aumid;
+    std::wstring name;
+    std::string design;
+    std::vector<NotifyItem> items;
+};
+
+// A calendar event, in local time as minutes since 1601.
+struct CalEvent {
+    LONGLONG start = 0;
+    LONGLONG end = 0;
+    bool allDay = false;
+    std::wstring title;
+    // Recurrence, from RRULE.
+    int freq = 0;  // 0 none, 1 daily, 2 weekly, 3 monthly, 4 yearly.
+    int interval = 1;
+    int count = 0;         // 0 for no limit.
+    LONGLONG until = 0;    // 0 for no limit.
+    int byDayMask = 0;     // Bit per weekday, Sunday first.
+    std::vector<LONGLONG> exdates;
+};
+
+struct CalOccurrence {
+    LONGLONG start;
+    LONGLONG end;
+    bool allDay;
+    std::wstring title;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Notifications, read from Windows' own notification database with the SQLite
+// that ships with Windows, read-only while Windows keeps writing it. Removing
+// and opening them goes through the same calls Windows' centre uses.
+
+// Dates and times in the user's region formats.
+std::wstring LocaleString(LCTYPE type) {
+    WCHAR buffer[128];
+    return GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, type, buffer, ARRAYSIZE(buffer)) ? buffer : L"";
+}
+
+std::wstring FormatDate(SYSTEMTIME const& time, PCWSTR picture, DWORD flags = 0) {
+    WCHAR buffer[128];
+    return GetDateFormatEx(LOCALE_NAME_USER_DEFAULT, flags, &time, picture, buffer, ARRAYSIZE(buffer), nullptr)
+               ? buffer
+               : L"";
+}
+
+std::wstring FormatTime(SYSTEMTIME const& time, PCWSTR picture, DWORD flags = 0) {
+    WCHAR buffer[128];
+    return GetTimeFormatEx(LOCALE_NAME_USER_DEFAULT, flags, &time, picture, buffer, ARRAYSIZE(buffer)) ? buffer : L"";
+}
+
+namespace sqlite {
+struct Db;
+struct Stmt;
+using Open = int (*)(const char*, Db**, int, const char*);
+using Prepare = int (*)(Db*, const char*, int, Stmt**, const char**);
+using Step = int (*)(Stmt*);
+using ColumnText = const unsigned char* (*)(Stmt*, int);
+using ColumnInt64 = long long (*)(Stmt*, int);
+using ColumnBlob = const void* (*)(Stmt*, int);
+using ColumnBytes = int (*)(Stmt*, int);
+using BindInt64 = int (*)(Stmt*, int, long long);
+using Finalize = int (*)(Stmt*);
+using Close = int (*)(Db*);
+
+constexpr int kReadOnly = 0x01;
+constexpr int kRow = 100;
+
+struct Api {
+    Open open = nullptr;
+    Prepare prepare = nullptr;
+    Step step = nullptr;
+    ColumnText text = nullptr;
+    ColumnInt64 int64 = nullptr;
+    ColumnBlob blob = nullptr;
+    ColumnBytes bytes = nullptr;
+    BindInt64 bindInt64 = nullptr;
+    Finalize finalize = nullptr;
+    Close close = nullptr;
+};
+
+Api const* Load() {
+    static Api api = [] {
+        Api a;
+        if (HMODULE lib = LoadLibraryExW(L"winsqlite3.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)) {
+            a.open = (Open)GetProcAddress(lib, "sqlite3_open_v2");
+            a.prepare = (Prepare)GetProcAddress(lib, "sqlite3_prepare_v2");
+            a.step = (Step)GetProcAddress(lib, "sqlite3_step");
+            a.text = (ColumnText)GetProcAddress(lib, "sqlite3_column_text");
+            a.int64 = (ColumnInt64)GetProcAddress(lib, "sqlite3_column_int64");
+            a.blob = (ColumnBlob)GetProcAddress(lib, "sqlite3_column_blob");
+            a.bytes = (ColumnBytes)GetProcAddress(lib, "sqlite3_column_bytes");
+            a.bindInt64 = (BindInt64)GetProcAddress(lib, "sqlite3_bind_int64");
+            a.finalize = (Finalize)GetProcAddress(lib, "sqlite3_finalize");
+            a.close = (Close)GetProcAddress(lib, "sqlite3_close");
+        }
+        return a;
+    }();
+    return api.open && api.prepare && api.step && api.text && api.int64 && api.blob && api.bytes &&
+                   api.bindInt64 && api.finalize && api.close
+               ? &api
+               : nullptr;
+}
+}  // namespace sqlite
+
+std::wstring NotificationsFolder() {
+    WCHAR path[MAX_PATH];
+    if (FAILED(SHGetFolderPathW(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, path))) {
+        return {};
+    }
+    return std::wstring(path) + L"\\Microsoft\\Windows\\Notifications";
+}
+
+std::string DatabasePath() {
+    std::wstring path = NotificationsFolder() + L"\\wpndatabase.db";
+    int size = WideCharToMultiByte(CP_UTF8, 0, path.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string utf8(size > 0 ? size - 1 : 0, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, path.c_str(), -1, utf8.data(), size, nullptr, nullptr);
+    return utf8;
+}
+ULONGLONG NowFileTime() {
+    FILETIME now;
+    GetSystemTimeAsFileTime(&now);
+    return ((ULONGLONG)now.dwHighDateTime << 32) | now.dwLowDateTime;
+}
+
+// Runs a query over the unexpired toasts; the callback gets each row.
+template <typename Row>
+bool QueryToasts(char const* columns, char const* tail, Row row) {
+    auto* api = sqlite::Load();
+    if (!api) {
+        return false;
+    }
+    sqlite::Db* db = nullptr;
+    if (api->open(DatabasePath().c_str(), &db, sqlite::kReadOnly, nullptr)) {
+        if (db) {
+            api->close(db);
+        }
+        return false;
+    }
+    std::string sql = std::string("SELECT ") + columns +
+                      " FROM Notification n JOIN NotificationHandler h ON h.RecordId = n.HandlerId"
+                      " WHERE n.Type = 'toast' AND (n.ExpiryTime = 0 OR n.ExpiryTime > ?1) " +
+                      tail;
+    sqlite::Stmt* stmt = nullptr;
+    bool ok = api->prepare(db, sql.c_str(), -1, &stmt, nullptr) == 0;
+    if (ok) {
+        api->bindInt64(stmt, 1, (long long)NowFileTime());
+        while (api->step(stmt) == sqlite::kRow) {
+            row(api, stmt);
+        }
+        api->finalize(stmt);
+    }
+    api->close(db);
+    return ok;
+}
+
+int CountNotifications() {
+    int count = 0;
+    QueryToasts("COUNT(*)", "", [&](sqlite::Api const* api, sqlite::Stmt* stmt) {
+        count = (int)api->int64(stmt, 0);
+    });
+    return count;
+}
+
+// Just enough XML for toast payloads.
+std::wstring XmlUnescape(std::wstring_view text) {
+    std::wstring out;
+    for (size_t i = 0; i < text.size(); i++) {
+        if (text[i] != L'&') {
+            out += text[i];
+            continue;
+        }
+        size_t end = text.find(L';', i);
+        if (end == std::wstring_view::npos || end - i > 10) {
+            out += text[i];
+            continue;
+        }
+        std::wstring_view entity = text.substr(i + 1, end - i - 1);
+        if (entity == L"amp") out += L'&';
+        else if (entity == L"lt") out += L'<';
+        else if (entity == L"gt") out += L'>';
+        else if (entity == L"quot") out += L'"';
+        else if (entity == L"apos") out += L'\'';
+        else if (entity.starts_with(L"#x")) out += (WCHAR)wcstoul(std::wstring(entity.substr(2)).c_str(), nullptr, 16);
+        else if (entity.starts_with(L"#")) out += (WCHAR)wcstoul(std::wstring(entity.substr(1)).c_str(), nullptr, 10);
+        else {
+            out += text.substr(i, end - i + 1);
+        }
+        i = end;
+    }
+    return out;
+}
+
+std::wstring XmlAttribute(std::wstring_view tag, std::wstring_view name) {
+    for (size_t at = 0; (at = tag.find(name, at)) != std::wstring_view::npos; at += name.size()) {
+        bool boundary = at > 0 && iswspace(tag[at - 1]);
+        size_t eq = at + name.size();
+        while (eq < tag.size() && iswspace(tag[eq])) {
+            eq++;
+        }
+        if (!boundary || eq >= tag.size() || tag[eq] != L'=') {
+            continue;
+        }
+        size_t quote = eq + 1;
+        while (quote < tag.size() && iswspace(tag[quote])) {
+            quote++;
+        }
+        if (quote >= tag.size() || (tag[quote] != L'"' && tag[quote] != L'\'')) {
+            continue;
+        }
+        size_t close = tag.find(tag[quote], quote + 1);
+        if (close == std::wstring_view::npos) {
+            return {};
+        }
+        return XmlUnescape(tag.substr(quote + 1, close - quote - 1));
+    }
+    return {};
+}
+
+// Every start tag of an element, as its text between < and >.
+std::vector<std::wstring_view> XmlStartTags(std::wstring_view xml, std::wstring_view element) {
+    std::vector<std::wstring_view> tags;
+    std::wstring open = L"<" + std::wstring(element);
+    for (size_t at = 0; (at = xml.find(open, at)) != std::wstring_view::npos; at += open.size()) {
+        wchar_t next = at + open.size() < xml.size() ? xml[at + open.size()] : L'>';
+        if (!iswspace(next) && next != L'>' && next != L'/') {
+            continue;
+        }
+        size_t close = xml.find(L'>', at);
+        if (close == std::wstring_view::npos) {
+            break;
+        }
+        tags.push_back(xml.substr(at, close - at + 1));
+    }
+    return tags;
+}
+
+void ParseToast(std::wstring_view xml, NotifyItem* item) {
+    auto roots = XmlStartTags(xml, L"toast");
+    if (!roots.empty()) {
+        item->launch = XmlAttribute(roots[0], L"launch");
+        item->activationType = XmlAttribute(roots[0], L"activationType");
+    }
+    std::vector<std::wstring> texts;
+    for (size_t at = 0; (at = xml.find(L"<text", at)) != std::wstring_view::npos;) {
+        size_t tagEnd = xml.find(L'>', at);
+        if (tagEnd == std::wstring_view::npos) {
+            break;
+        }
+        std::wstring_view tag = xml.substr(at, tagEnd - at + 1);
+        at = tagEnd + 1;
+        if (tag.ends_with(L"/>")) {
+            continue;
+        }
+        size_t close = xml.find(L"</text>", at);
+        if (close == std::wstring_view::npos) {
+            break;
+        }
+        std::wstring text = XmlUnescape(xml.substr(at, close - at));
+        at = close + 7;
+        if (!text.empty() && XmlAttribute(tag, L"placement") != L"attribution") {
+            texts.push_back(text);
+        }
+    }
+    if (!texts.empty()) {
+        item->title = texts[0];
+        for (size_t i = 1; i < texts.size(); i++) {
+            item->body += (i > 1 ? L"\n" : L"") + texts[i];
+        }
+    }
+    for (auto tag : XmlStartTags(xml, L"action")) {
+        std::wstring label = XmlAttribute(tag, L"content");
+        if (label.empty() || XmlAttribute(tag, L"placement") == L"contextMenu") {
+            continue;
+        }
+        item->actions.push_back(
+            {label, XmlAttribute(tag, L"arguments"), XmlAttribute(tag, L"activationType")});
+    }
+}
+
+// An app's name as the Start menu shows it, from its AppUserModelID.
+std::wstring AppNameFor(std::wstring const& aumid) {
+    static std::map<std::wstring, std::wstring> cache;
+    if (auto it = cache.find(aumid); it != cache.end()) {
+        return it->second;
+    }
+    std::wstring name;
+    // Tray balloons ("NotifyIconGeneratedAumid_...") and other registered
+    // ids carry their display name in the registry.
+    HKEY key;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, (L"Software\\Classes\\AppUserModelId\\" + aumid).c_str(), 0,
+                      KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+        WCHAR buffer[256];
+        DWORD size = sizeof(buffer);
+        if (RegGetValueW(key, nullptr, L"DisplayName", RRF_RT_REG_SZ, nullptr, buffer, &size) == ERROR_SUCCESS &&
+            buffer[0] && buffer[0] != L'@') {
+            name = buffer;
+        }
+        RegCloseKey(key);
+    }
+    if (!name.empty()) {
+        cache[aumid] = name;
+        return name;
+    }
+    constexpr GUID kFolderAppsFolder = {
+        0x1E87508D, 0x89C2, 0x42F0, {0x8A, 0x7E, 0x64, 0x5A, 0x0F, 0x50, 0xCA, 0x58}};
+    IShellItem* item = nullptr;
+    if (SUCCEEDED(SHCreateItemInKnownFolder(kFolderAppsFolder, KF_FLAG_DONT_VERIFY, aumid.c_str(),
+                                            IID_IShellItem, (void**)&item))) {
+        LPWSTR display = nullptr;
+        if (SUCCEEDED(item->GetDisplayName(SIGDN_NORMALDISPLAY, &display)) && display) {
+            name = display;
+            CoTaskMemFree(display);
+        }
+        item->Release();
+    }
+    if (name.empty() || name == aumid) {
+        // "Windows.SystemToast.SecurityAndMaintenance": the last part, spaced.
+        std::wstring last = aumid.substr(aumid.find_last_of(L".!\\") + 1);
+        for (size_t i = 0; i < last.size(); i++) {
+            if (i && iswupper(last[i]) && iswlower(last[i - 1])) {
+                name += L' ';
+            }
+            name += last[i];
+        }
+    }
+    cache[aumid] = name;
+    return name;
+}
+
+// The design that stands for an app's notifications.
+std::string DesignForApp(std::wstring const& aumid, std::wstring const& name) {
+    std::wstring text = aumid + L" " + name;
+    auto has = [&](std::initializer_list<PCWSTR> words) { return TipHas(text, words); };
+    if (has({L"claude"})) return "app-claude";
+    if (has({L"tamer"})) return "app-screenshot";
+    if (has({L"wallpaper engine", L"wallpaper64"})) return "app-wallpaper";
+    if (has({L"spotify"})) return "app-spotify";
+    if (has({L"discord", L"vesktop", L"teams", L"slack", L"telegram", L"whatsapp", L"messenger", L"signal",
+             L"claude", L"chat"})) {
+        return "app-chat";
+    }
+    if (has({L"onedrive", L"icloud", L"dropbox", L"google drive"})) return "app-cloud";
+    if (has({L"steam", L"xbox", L"gamingapp", L"epic", L"riot", L"battle.net", L"playnite", L"ea desktop"})) {
+        return "app-game";
+    }
+    if (has({L"windscribe", L"vpn"})) return "vpn";
+    if (has({L"securityhealth", L"defender", L"securityandmaintenance", L"windows security"})) {
+        return "security-ok";
+    }
+    if (has({L"windowsupdate", L"musnotify", L"update"})) return "update-available";
+    if (has({L"bluetooth"})) return "bluetooth";
+    if (has({L"autoplay", L"hotplug", L"usb"})) return "usb";
+    if (has({L"phone"})) return "phone";
+    if (has({L"spotify", L"music", L"audio", L"sound"})) return "app-audio";
+    if (has({L"snipping", L"screensketch", L"capture", L"obs"})) return "app-capture";
+    if (has({L"clipboard"})) return "app-clipboard";
+    if (has({L"battery", L"power options", L"power plan"})) return "battery-mid";
+    return "bell";
+}
+
+std::vector<NotifyApp> LoadNotifications() {
+    std::vector<NotifyApp> apps;
+    QueryToasts("h.PrimaryId, n.Tag, n.[Group], n.ArrivalTime, n.Payload", "ORDER BY n.ArrivalTime DESC",
+                [&](sqlite::Api const* api, sqlite::Stmt* stmt) {
+                    auto text = [&](int column) {
+                        auto* value = api->text(stmt, column);
+                        return value ? Utf8ToWide(std::string_view((const char*)value)) : std::wstring();
+                    };
+                    NotifyItem item;
+                    item.aumid = text(0);
+                    item.tag = text(1);
+                    item.group = text(2);
+                    item.arrival = (ULONGLONG)api->int64(stmt, 3);
+                    int size = api->bytes(stmt, 4);
+                    auto* payload = (const char*)api->blob(stmt, 4);
+                    if (payload && size > 0) {
+                        ParseToast(Utf8ToWide(std::string_view(payload, size)), &item);
+                    }
+                    auto app = std::find_if(apps.begin(), apps.end(),
+                                            [&](NotifyApp const& a) { return a.aumid == item.aumid; });
+                    if (app == apps.end()) {
+                        std::wstring name = AppNameFor(item.aumid);
+                        apps.push_back({item.aumid, name, DesignForApp(item.aumid, name), {}});
+                        app = apps.end() - 1;
+                    }
+                    app->items.push_back(std::move(item));
+                });
+    return apps;
+}
+
+// Removing: the toast history, which is what Windows' centre uses too.
+void RemoveNotification(NotifyItem const& item) {
+    try {
+        auto history = winrt::Windows::UI::Notifications::ToastNotificationManager::History();
+        history.Remove(item.tag, item.group, item.aumid);
+    } catch (...) {
+    }
+}
+
+void ClearAppNotifications(std::wstring const& aumid) {
+    try {
+        winrt::Windows::UI::Notifications::ToastNotificationManager::History().Clear(aumid);
+    } catch (...) {
+    }
+}
+
+// A desktop app's notification activator, the COM class Windows calls when
+// one of its notifications is clicked.
+struct IToastActivator : IUnknown {
+    virtual HRESULT STDMETHODCALLTYPE Activate(LPCWSTR appUserModelId, LPCWSTR invokedArgs,
+                                               const void* data, ULONG count) = 0;
+};
+constexpr GUID kIidToastActivator = {
+    0x53E31837, 0x6600, 0x4A81, {0x93, 0x95, 0x75, 0xCF, 0xFE, 0x74, 0x6F, 0x94}};
+constexpr GUID kClsidApplicationActivationManager = {
+    0x45BA127D, 0x10A8, 0x46EA, {0x8A, 0xB7, 0x56, 0xEA, 0x90, 0x78, 0x94, 0x3C}};
+constexpr GUID kIidApplicationActivationManager = {
+    0x2E941141, 0x7F97, 0x4756, {0xBA, 0x1D, 0x9D, 0xEC, 0xDE, 0x89, 0x4A, 0x3D}};
+
+bool ActivateWithActivator(std::wstring const& aumid, std::wstring const& arguments) {
+    WCHAR clsidText[64];
+    DWORD size = sizeof(clsidText);
+    std::wstring key = L"Software\\Classes\\AppUserModelId\\" + aumid;
+    CLSID clsid;
+    if (RegGetValueW(HKEY_CURRENT_USER, key.c_str(), L"CustomActivator", RRF_RT_REG_SZ, nullptr, clsidText,
+                     &size) != ERROR_SUCCESS ||
+        FAILED(CLSIDFromString(clsidText, &clsid))) {
+        return false;
+    }
+    IToastActivator* activator = nullptr;
+    if (FAILED(CoCreateInstance(clsid, nullptr, CLSCTX_LOCAL_SERVER, kIidToastActivator, (void**)&activator))) {
+        return false;
+    }
+    CoAllowSetForegroundWindow(activator, nullptr);
+    HRESULT hr = activator->Activate(aumid.c_str(), arguments.c_str(), nullptr, 0);
+    activator->Release();
+    return SUCCEEDED(hr);
+}
+
+void LaunchApp(std::wstring const& aumid, std::wstring const& arguments) {
+    if (aumid.find(L'!') != std::wstring::npos) {
+        IApplicationActivationManager* manager = nullptr;
+        if (SUCCEEDED(CoCreateInstance(kClsidApplicationActivationManager, nullptr, CLSCTX_LOCAL_SERVER,
+                                       kIidApplicationActivationManager, (void**)&manager))) {
+            DWORD pid = 0;
+            HRESULT hr = manager->ActivateApplication(aumid.c_str(), arguments.empty() ? nullptr : arguments.c_str(),
+                                                      AO_NONE, &pid);
+            manager->Release();
+            if (SUCCEEDED(hr)) {
+                return;
+            }
+        }
+    }
+    std::wstring target = L"shell:AppsFolder\\" + aumid;
+    ShellExecuteW(nullptr, L"open", target.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+}
+
+// Opens a notification (or one of its buttons) the way Windows would.
+void ActivateNotification(NotifyItem const& item, std::wstring const& arguments,
+                          std::wstring const& activationType) {
+    if (activationType == L"protocol" && !arguments.empty()) {
+        ShellExecuteW(nullptr, L"open", arguments.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    } else if (activationType == L"system") {
+        // Snooze and dismiss buttons: dismissing is what's left without a
+        // snooze time.
+    } else if (!ActivateWithActivator(item.aumid, arguments)) {
+        LaunchApp(item.aumid, arguments);
+    }
+    RemoveNotification(item);
+}
+
+std::wstring FormatDateShort(SYSTEMTIME const& time);
+
+std::wstring RelativeTime(ULONGLONG arrival) {
+    ULONGLONG now = NowFileTime();
+    LONGLONG minutes = now > arrival ? (LONGLONG)((now - arrival) / 600000000ULL) : 0;
+    if (minutes < 1) return L"now";
+    if (minutes < 60) return std::to_wstring(minutes) + L"m";
+    if (minutes < 24 * 60) return std::to_wstring(minutes / 60) + L"h";
+    FILETIME utc{(DWORD)arrival, (DWORD)(arrival >> 32)}, local;
+    SYSTEMTIME time;
+    FileTimeToLocalFileTime(&utc, &local);
+    FileTimeToSystemTime(&local, &time);
+    return FormatDateShort(time);
+}
+
+// Windows writes the database as notifications come and go; its folder is
+// watched while System Icons runs.
+HANDLE g_notificationsWatch = INVALID_HANDLE_VALUE;
+
+////////////////////////////////////////////////////////////////////////////////
+// Calendar: the .ics calendar the Agenda in Calendar View mod shows (or this
+// mod's own), fetched on the same schedule and kept, so the flyout opens with
+// it at once.
+
+LONGLONG MinutesOf(SYSTEMTIME const& local) {
+    FILETIME ft;
+    SystemTimeToFileTime(&local, &ft);
+    return (LONGLONG)((((ULONGLONG)ft.dwHighDateTime << 32) | ft.dwLowDateTime) / 600000000ULL);
+}
+
+SYSTEMTIME TimeOfMinutes(LONGLONG minutes) {
+    ULONGLONG ticks = (ULONGLONG)minutes * 600000000ULL;
+    FILETIME ft{(DWORD)ticks, (DWORD)(ticks >> 32)};
+    SYSTEMTIME time;
+    FileTimeToSystemTime(&ft, &time);
+    return time;
+}
+
+LONGLONG DayStart(LONGLONG minutes) {
+    return minutes - minutes % (24 * 60);
+}
+
+// IANA time zones ("America/New_York") through the ICU that ships with
+// Windows; times in them come out as local time.
+LONGLONG ZonedToLocal(SYSTEMTIME const& wall, std::wstring const& zone) {
+    using Open = void* (*)(const wchar_t*, int32_t, const char*, int, int*);
+    using SetDateTime = void (*)(void*, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int*);
+    using Set = void (*)(void*, int, int32_t);
+    using GetMillis = double (*)(const void*, int*);
+    using CloseCal = void (*)(void*);
+    static HMODULE icu = LoadLibraryExW(L"icu.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    static auto open = icu ? (Open)GetProcAddress(icu, "ucal_open") : nullptr;
+    static auto setDateTime = icu ? (SetDateTime)GetProcAddress(icu, "ucal_setDateTime") : nullptr;
+    static auto set = icu ? (Set)GetProcAddress(icu, "ucal_set") : nullptr;
+    static auto getMillis = icu ? (GetMillis)GetProcAddress(icu, "ucal_getMillis") : nullptr;
+    static auto close = icu ? (CloseCal)GetProcAddress(icu, "ucal_close") : nullptr;
+    if (!open || !setDateTime || !set || !getMillis || !close) {
+        return MinutesOf(wall);
+    }
+    int status = 0;
+    void* calendar = open(zone.c_str(), (int32_t)zone.size(), "", 1 /* UCAL_GREGORIAN */, &status);
+    if (!calendar || status > 0) {
+        return MinutesOf(wall);
+    }
+    setDateTime(calendar, wall.wYear, wall.wMonth - 1, wall.wDay, wall.wHour, wall.wMinute, wall.wSecond, &status);
+    set(calendar, 14 /* UCAL_MILLISECOND */, 0);
+    double millis = getMillis(calendar, &status);
+    close(calendar);
+    if (status > 0) {
+        return MinutesOf(wall);
+    }
+    // Milliseconds since 1970 in UTC, then to local time.
+    ULONGLONG ticks = (ULONGLONG)(millis * 10000.0) + 116444736000000000ULL;
+    FILETIME utc{(DWORD)ticks, (DWORD)(ticks >> 32)}, local;
+    FileTimeToLocalFileTime(&utc, &local);
+    return (LONGLONG)((((ULONGLONG)local.dwHighDateTime << 32) | local.dwLowDateTime) / 600000000ULL);
+}
+
+// "20260925", "20260925T090000", "20260925T090000Z", with the TZID parameter.
+bool ParseIcsTime(std::wstring const& value, std::wstring const& zone, LONGLONG* minutes, bool* allDay) {
+    SYSTEMTIME time{};
+    if (value.size() < 8 || swscanf_s(value.c_str(), L"%4hu%2hu%2hu", &time.wYear, &time.wMonth, &time.wDay) != 3) {
+        return false;
+    }
+    *allDay = value.size() == 8;
+    if (!*allDay) {
+        if (value.size() < 15 || value[8] != L'T' ||
+            swscanf_s(value.c_str() + 9, L"%2hu%2hu%2hu", &time.wHour, &time.wMinute, &time.wSecond) != 3) {
+            return false;
+        }
+        if (value.back() == L'Z') {
+            SYSTEMTIME local;
+            if (SystemTimeToTzSpecificLocalTime(nullptr, &time, &local)) {
+                time = local;
+            }
+        } else if (!zone.empty()) {
+            *minutes = ZonedToLocal(time, zone);
+            return true;
+        }
+    }
+    *minutes = MinutesOf(time);
+    return true;
+}
+
+std::vector<CalEvent> ParseIcs(std::wstring const& text) {
+    // Unfold continuation lines first.
+    std::vector<std::wstring> lines;
+    size_t at = 0;
+    while (at < text.size()) {
+        size_t end = text.find(L'\n', at);
+        std::wstring line = text.substr(at, end == std::wstring::npos ? std::wstring::npos : end - at);
+        if (!line.empty() && line.back() == L'\r') {
+            line.pop_back();
+        }
+        if (!line.empty() && (line[0] == L' ' || line[0] == L'\t') && !lines.empty()) {
+            lines.back() += line.substr(1);
+        } else {
+            lines.push_back(line);
+        }
+        if (end == std::wstring::npos) {
+            break;
+        }
+        at = end + 1;
+    }
+
+    std::vector<CalEvent> events;
+    CalEvent event;
+    bool inEvent = false, cancelled = false, hasEnd = false;
+    for (auto const& line : lines) {
+        if (line == L"BEGIN:VEVENT") {
+            event = {};
+            inEvent = true;
+            cancelled = hasEnd = false;
+            continue;
+        }
+        if (line == L"END:VEVENT") {
+            if (inEvent && !cancelled && event.start) {
+                if (!hasEnd) {
+                    event.end = event.start + (event.allDay ? 24 * 60 : 0);
+                }
+                events.push_back(event);
+            }
+            inEvent = false;
+            continue;
+        }
+        if (!inEvent) {
+            continue;
+        }
+        size_t colon = line.find(L':');
+        if (colon == std::wstring::npos) {
+            continue;
+        }
+        std::wstring head = line.substr(0, colon);
+        std::wstring value = line.substr(colon + 1);
+        std::wstring name = head.substr(0, head.find(L';'));
+        std::wstring zone;
+        if (size_t tz = head.find(L";TZID="); tz != std::wstring::npos) {
+            zone = head.substr(tz + 6);
+            zone = zone.substr(0, zone.find(L';'));
+            if (zone.size() > 1 && zone.front() == L'"') {
+                zone = zone.substr(1, zone.size() - 2);
+            }
+        }
+        if (name == L"SUMMARY") {
+            for (size_t i = 0; i < value.size(); i++) {
+                if (value[i] == L'\\' && i + 1 < value.size()) {
+                    wchar_t next = value[i + 1];
+                    event.title += next == L'n' || next == L'N' ? L' ' : next;
+                    i++;
+                } else {
+                    event.title += value[i];
+                }
+            }
+        } else if (name == L"DTSTART") {
+            ParseIcsTime(value, zone, &event.start, &event.allDay);
+        } else if (name == L"DTEND") {
+            bool allDay = false;
+            hasEnd = ParseIcsTime(value, zone, &event.end, &allDay);
+        } else if (name == L"STATUS") {
+            cancelled = value == L"CANCELLED";
+        } else if (name == L"EXDATE") {
+            for (size_t start = 0; start < value.size();) {
+                size_t comma = value.find(L',', start);
+                LONGLONG minutes = 0;
+                bool allDay = false;
+                if (ParseIcsTime(value.substr(start, comma == std::wstring::npos ? std::wstring::npos : comma - start),
+                                 zone, &minutes, &allDay)) {
+                    event.exdates.push_back(minutes);
+                }
+                if (comma == std::wstring::npos) {
+                    break;
+                }
+                start = comma + 1;
+            }
+        } else if (name == L"RRULE") {
+            for (size_t start = 0; start < value.size();) {
+                size_t semi = value.find(L';', start);
+                std::wstring part = value.substr(start, semi == std::wstring::npos ? std::wstring::npos : semi - start);
+                size_t eq = part.find(L'=');
+                std::wstring key = part.substr(0, eq), val = eq == std::wstring::npos ? L"" : part.substr(eq + 1);
+                if (key == L"FREQ") {
+                    event.freq = val == L"DAILY" ? 1 : val == L"WEEKLY" ? 2 : val == L"MONTHLY" ? 3 : val == L"YEARLY" ? 4 : 0;
+                } else if (key == L"INTERVAL") {
+                    event.interval = std::max(1, _wtoi(val.c_str()));
+                } else if (key == L"COUNT") {
+                    event.count = _wtoi(val.c_str());
+                } else if (key == L"UNTIL") {
+                    bool allDay = false;
+                    ParseIcsTime(val, L"", &event.until, &allDay);
+                    if (allDay) {
+                        event.until += 24 * 60 - 1;
+                    }
+                } else if (key == L"BYDAY") {
+                    static const PCWSTR days[] = {L"SU", L"MO", L"TU", L"WE", L"TH", L"FR", L"SA"};
+                    for (int d = 0; d < 7; d++) {
+                        if (val.find(days[d]) != std::wstring::npos) {
+                            event.byDayMask |= 1 << d;
+                        }
+                    }
+                }
+                if (semi == std::wstring::npos) {
+                    break;
+                }
+                start = semi + 1;
+            }
+        }
+    }
+    return events;
+}
+
+// Every occurrence overlapping [from, to), in local minutes.
+std::vector<CalOccurrence> Occurrences(std::vector<CalEvent> const& events, LONGLONG from, LONGLONG to) {
+    std::vector<CalOccurrence> out;
+    for (auto const& event : events) {
+        LONGLONG length = std::max<LONGLONG>(0, event.end - event.start);
+        auto add = [&](LONGLONG start) {
+            if (start < to && start + std::max<LONGLONG>(length, 1) > from &&
+                std::find(event.exdates.begin(), event.exdates.end(), start) == event.exdates.end()) {
+                out.push_back({start, start + length, event.allDay, event.title});
+            }
+        };
+        if (!event.freq) {
+            add(event.start);
+            continue;
+        }
+        SYSTEMTIME first = TimeOfMinutes(event.start);
+        LONGLONG timeOfDay = event.start - DayStart(event.start);
+        int produced = 0;
+        auto allowed = [&](LONGLONG start) {
+            return (!event.until || start <= event.until) && (!event.count || produced < event.count);
+        };
+        if (event.freq == 1 || (event.freq == 2 && !event.byDayMask)) {
+            LONGLONG step = (event.freq == 1 ? 1 : 7) * event.interval * 24 * 60;
+            LONGLONG start = event.start;
+            // Skip straight to the range when there's no count to keep.
+            if (!event.count && start + length < from) {
+                start += (from - length - start) / step * step;
+            }
+            for (int guard = 0; guard < 5000 && start < to && allowed(start); guard++, start += step) {
+                add(start);
+                produced++;
+            }
+        } else if (event.freq == 2) {
+            // Weekly on chosen days: walk the weeks from the first one.
+            LONGLONG weekStart = DayStart(event.start) - first.wDayOfWeek * 24 * 60;
+            LONGLONG step = 7 * event.interval * 24 * 60;
+            if (!event.count && weekStart + step < from) {
+                weekStart += (from - weekStart) / step * step - step;
+            }
+            for (int guard = 0; guard < 2000 && weekStart < to; guard++, weekStart += step) {
+                for (int d = 0; d < 7; d++) {
+                    LONGLONG start = weekStart + d * 24 * 60 + timeOfDay;
+                    if (!(event.byDayMask & (1 << d)) || start < event.start) {
+                        continue;
+                    }
+                    if (!allowed(start)) {
+                        guard = 2000;
+                        break;
+                    }
+                    add(start);
+                    produced++;
+                }
+            }
+        } else {
+            // Monthly and yearly on the first occurrence's day of the month.
+            SYSTEMTIME at = first;
+            for (int guard = 0; guard < 3000; guard++) {
+                // Days a month doesn't have (the 31st, February 29th) are
+                // skipped, as the calendar standard says.
+                FILETIME check;
+                bool valid = SystemTimeToFileTime(&at, &check);
+                LONGLONG start = valid ? MinutesOf(at) : 0;
+                if (valid && start >= to) {
+                    break;
+                }
+                if (valid) {
+                    if (!allowed(start)) {
+                        break;
+                    }
+                    add(start);
+                    produced++;
+                }
+                if (event.freq == 3) {
+                    int month = at.wMonth - 1 + event.interval;
+                    at.wYear += month / 12;
+                    at.wMonth = month % 12 + 1;
+                } else {
+                    at.wYear += event.interval;
+                }
+            }
+        }
+    }
+    std::sort(out.begin(), out.end(), [](CalOccurrence const& a, CalOccurrence const& b) {
+        return a.allDay != b.allDay ? a.allDay : a.start < b.start;
+    });
+    return out;
+}
+
+SRWLOCK g_calendarLock = SRWLOCK_INIT;
+[[clang::no_destroy]] std::vector<CalEvent> g_calendar;
+DWORD g_calendarFetchTick;
+bool g_calendarFetching;
+
+std::wstring CalendarSource(DWORD* intervalMinutes) {
+    *intervalMinutes = 60;
+    std::wstring own = g_settings.calendarIcs;
+    if (!own.empty()) {
+        return own;
+    }
+    // The Agenda in Calendar View mod's calendar and schedule.
+    WCHAR path[2048];
+    DWORD size = sizeof(path);
+    PCWSTR key = L"SOFTWARE\\Windhawk\\Engine\\Mods\\agenda-in-calendar-view\\Settings";
+    if (RegGetValueW(HKEY_LOCAL_MACHINE, key, L"icsPath", RRF_RT_REG_SZ, nullptr, path, &size) != ERROR_SUCCESS) {
+        return {};
+    }
+    DWORD interval = 0;
+    size = sizeof(interval);
+    if (RegGetValueW(HKEY_LOCAL_MACHINE, key, L"minFetchInterval", RRF_RT_REG_DWORD, nullptr, &interval, &size) ==
+        ERROR_SUCCESS) {
+        *intervalMinutes = interval;
+    }
+    return path;
+}
+
+std::wstring CalendarCachePath() {
+    WCHAR path[MAX_PATH];
+    if (FAILED(SHGetFolderPathW(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, path))) {
+        return {};
+    }
+    std::wstring folder = std::wstring(path) + L"\\TourneTray";
+    CreateDirectoryW(folder.c_str(), nullptr);
+    return folder + L"\\calendar.ics";
+}
+
+std::wstring ReadTextFile(std::wstring const& path) {
+    HANDLE file = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                              OPEN_EXISTING, 0, nullptr);
+    if (file == INVALID_HANDLE_VALUE) {
+        return {};
+    }
+    std::string data;
+    char buffer[65536];
+    DWORD read = 0;
+    while (ReadFile(file, buffer, sizeof(buffer), &read, nullptr) && read) {
+        data.append(buffer, read);
+    }
+    CloseHandle(file);
+    return Utf8ToWide(data);
+}
+
+void SetCalendar(std::vector<CalEvent> events) {
+    AcquireSRWLockExclusive(&g_calendarLock);
+    g_calendar = std::move(events);
+    ReleaseSRWLockExclusive(&g_calendarLock);
+}
+
+struct CalendarFetch {
+    std::wstring source;
+    std::wstring cache;
+    HWND notify;
+};
+
+DWORD WINAPI CalendarFetchProc(LPVOID parameter) {
+    auto* fetch = (CalendarFetch*)parameter;
+    std::wstring source = fetch->source;
+    if (source.starts_with(L"webcal://")) {
+        source = L"https://" + source.substr(9);
+    }
+    bool remote = source.starts_with(L"http://") || source.starts_with(L"https://");
+    if (remote) {
+        DeleteUrlCacheEntryW(source.c_str());
+        std::wstring partial = fetch->cache + L".part";
+        if (SUCCEEDED(URLDownloadToFileW(nullptr, source.c_str(), partial.c_str(), 0, nullptr))) {
+            MoveFileExW(partial.c_str(), fetch->cache.c_str(), MOVEFILE_REPLACE_EXISTING);
+        } else {
+            DeleteFileW(partial.c_str());
+        }
+    }
+    auto events = ParseIcs(ReadTextFile(remote ? fetch->cache : source));
+    SetCalendar(std::move(events));
+    PostMessageW(fetch->notify, WM_APP_CALENDAR_READY, 0, 0);
+    delete fetch;
+    return 0;
+}
+
+// Loads the kept copy at once, then fetches a fresh one when it's due.
+void RefreshCalendar(bool force) {
+    DWORD interval = 60;
+    std::wstring source = CalendarSource(&interval);
+    if (source.empty() || g_calendarFetching || !g_wnd) {
+        return;
+    }
+    bool remote = source.starts_with(L"http") || source.starts_with(L"webcal");
+    DWORD age = GetTickCount() - g_calendarFetchTick;
+    if (!force && g_calendarFetchTick && remote && age < interval * 60000ULL) {
+        return;
+    }
+    auto* fetch = new CalendarFetch{source, CalendarCachePath(), g_wnd};
+    if (!g_calendarFetchTick && remote) {
+        SetCalendar(ParseIcs(ReadTextFile(fetch->cache)));
+    }
+    g_calendarFetchTick = GetTickCount();
+    g_calendarFetching = true;
+    HANDLE thread = CreateThread(nullptr, 0, CalendarFetchProc, fetch, 0, nullptr);
+    if (!thread) {
+        delete fetch;
+        g_calendarFetching = false;
+        return;
+    }
+    g_brightnessThreads.push_back(thread);
+}
+
+std::vector<CalOccurrence> CalendarBetween(LONGLONG from, LONGLONG to) {
+    AcquireSRWLockShared(&g_calendarLock);
+    auto result = Occurrences(g_calendar, from, to);
+    ReleaseSRWLockShared(&g_calendarLock);
+    return result;
+}
+
+struct FlyoutState {
+    HWND hwnd = nullptr;
+    int kind = kFlyoutNone;
+    int scale = 1;
+    int width = 0;      // The flyout's standard width.
+    int fitWidth = 0;   // What it's drawn at: wider when Auto width fits the text.
+    int needed = 0;     // The widest line wanted, from the last measure.
+    int hover = 0;
+    int dragSlider = -1;
+    std::vector<Hit> hits;
+
+    // Network
+    std::vector<Connection> connections;
+    std::vector<WifiNetwork> networks;
+    bool wifiAdapter = false;
+    bool wifiOff = false;
+    bool wifiNeedsLocation = false;  // Windows withholds nearby networks: no location access for desktop apps
+    int selectedNetwork = -1;
+    std::wstring selectedSsid;  // Survives the list re-sorting on updates.
+    int networkScroll = 0;
+
+    // Power
+    IconState battery;
+    std::vector<PowerPlan> plans;
+
+    // Brightness
+    BrightnessShared* brightness = nullptr;
+    std::vector<MonitorLevel> monitors;
+    bool monitorsLoaded = false;
+
+    // Hidden icons
+    std::vector<HiddenIcon> hidden;
+
+    // Windows Security
+    std::vector<SecurityRow> securityRows;
+    std::wstring securityScan;
+    std::wstring securityUpdates;  // From the job: a count, "restart" or "unknown".
+
+    // VPN
+    std::vector<VpnRegion> vpnRegions;
+    int vpnOpenRegion = -1;
+    int vpnScroll = 0;
+    std::wstring vpnStatus;
+    bool vpnConnected = false;
+    bool vpnBusy = false;
+    bool vpnChecking = false;
+
+    FlyoutJob* job = nullptr;
+
+    // Volume mixer
+    std::vector<MixerSession> mixer;
+    std::wstring mixerDevice;
+    int mixerMaster = -1;
+    bool mixerMasterMuted = false;
+    int dragMixer = -1;
+    bool swallowUp = false;  // The button up that ends a forwarded double click.
+
+    // Bluetooth, in its own flyout and in the mixer's.
+    std::vector<BluetoothDevice> btDevices;
+    std::wstring btSelected;  // By name, since the list re-sorts.
+    std::wstring btBusy;      // What a running request is doing.
+    std::wstring btNote;      // How the last request went, when it didn't.
+    bool btRadioOn = true;
+
+    // Device batteries, in their own flyout and in the mixer's and Bluetooth's.
+    std::vector<bat::Device> batteries;
+
+    // Rearranging the hidden icons by dragging.
+    int dragHidden = -1;
+    POINT dragStart{};
+    bool dragMoved = false;
+    int dragTarget = -1;
+    HWND dragOver = nullptr;  // The taskbar under the pointer, once it's out of the flyout.
+    DragGhost ghost;
+    int overflowLeft = 0;
+    int overflowTop = 0;
+    int overflowCell = 0;
+    // Tray folders in the hidden icons flyout: their tiles first in the grid,
+    // and the one open (hidden then holds its icons), or -1.
+    struct OverflowFolder {
+        std::wstring name;
+        std::wstring glyph;
+        std::vector<HiddenIcon> icons;
+    };
+    std::vector<OverflowFolder> folders;
+    int openFolder = -1;
+    int folderTiles = 0;  // tiles before the icons in the grid shown now
+    // Notifications and calendar
+    std::vector<NotifyApp> notifyApps;
+    std::vector<std::array<int, 3>> notifyTargets;  // App, notification, button (-1 for none).
+    int notifyScroll = 0;
+    int notifyEntries = 0;
+    bool notifyDnd = false;
+    int calYear = 0;
+    int calMonth = 0;
+    LONGLONG calSelected = 0;
+    std::vector<CalOccurrence> calMonthEvents;
+    // Fonts
+    HFONT label = nullptr;
+    HFONT body = nullptr;
+    HFONT caption = nullptr;
+};
+
+FlyoutState g_flyout;
+DWORD g_flyoutClosedTick;
+int g_flyoutClosedKind;
+bool g_flyoutClosing;
+
+// After a click on a hidden icon the flyout stays open while the program
+// answers: its menu can take the foreground and be used. The next click
+// anywhere else, or a switch to another program, closes it.
+DWORD g_stickyPid;
+std::unordered_map<DWORD, bool> g_stickyRelated;
+HHOOK g_stickyMouse;
+HWINEVENTHOOK g_stickyForeground;
+
+// The program itself or one of its helpers (Steam's menu and window come
+// from steamwebhelper, a child and grandchild of steam.exe).
+bool IsStickyProgram(DWORD pid) {
+    if (!g_stickyPid || !pid) {
+        return false;
+    }
+    if (pid == g_stickyPid) {
+        return true;
+    }
+    if (auto it = g_stickyRelated.find(pid); it != g_stickyRelated.end()) {
+        return it->second;
+    }
+    std::unordered_map<DWORD, DWORD> parents;
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snapshot != INVALID_HANDLE_VALUE) {
+        PROCESSENTRY32W entry{sizeof(entry)};
+        for (BOOL more = Process32FirstW(snapshot, &entry); more;
+             more = Process32NextW(snapshot, &entry)) {
+            parents[entry.th32ProcessID] = entry.th32ParentProcessID;
+        }
+        CloseHandle(snapshot);
+    }
+    bool related = false;
+    DWORD at = pid;
+    for (int depth = 0; depth < 4 && !related; depth++) {
+        auto it = parents.find(at);
+        if (it == parents.end() || !it->second || it->second == at) {
+            break;
+        }
+        at = it->second;
+        related = at == g_stickyPid;
+    }
+    g_stickyRelated[pid] = related;
+    return related;
+}
+
+// The desktop and taskbars, which belong to Explorer whatever it owns.
+bool IsShellSurface(HWND hwnd) {
+    std::wstring windowClass = WindowClassOf(hwnd);
+    return windowClass == L"Shell_TrayWnd" || windowClass == L"Shell_SecondaryTrayWnd" ||
+           windowClass == L"Progman" || windowClass == L"WorkerW";
+}
+
+// A menu or popup of the program, as opposed to its main window.
+bool IsStickyMenu(HWND hwnd) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(hwnd, &pid);
+    if (!hwnd || IsShellSurface(hwnd) || !IsStickyProgram(pid)) {
+        return false;
+    }
+    return WindowClassOf(hwnd) == L"#32768" ||
+           (GetWindowLongPtrW(hwnd, GWL_EXSTYLE) & (WS_EX_TOOLWINDOW | WS_EX_TOPMOST));
+}
+
+void CloseStickyFlyout() {
+    if (g_flyout.hwnd) {
+        // Counts as a close for the icon's toggle, like losing activation.
+        g_flyoutClosedTick = GetTickCount();
+        g_flyoutClosedKind = g_flyout.kind;
+        PostMessageW(g_flyout.hwnd, WM_CLOSE, 0, 0);
+    }
+}
+
+LRESULT CALLBACK StickyMouseProc(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == HC_ACTION && g_flyout.hwnd &&
+        (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN)) {
+        HWND target = GetAncestor(WindowFromPoint(((MSLLHOOKSTRUCT*)lParam)->pt), GA_ROOT);
+        if (target != g_flyout.hwnd && !IsStickyMenu(target)) {
+            CloseStickyFlyout();
+        }
+    }
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+void CALLBACK StickyForegroundProc(HWINEVENTHOOK, DWORD, HWND hwnd, LONG idObject, LONG, DWORD,
+                                   DWORD) {
+    if (idObject != OBJID_WINDOW || !hwnd || !g_flyout.hwnd || hwnd == g_flyout.hwnd) {
+        return;
+    }
+    DWORD pid = 0;
+    GetWindowThreadProcessId(hwnd, &pid);
+    if (IsShellSurface(hwnd) || !IsStickyProgram(pid)) {
+        CloseStickyFlyout();
+    }
+}
+
+void StartSticky(HWND owner) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(owner, &pid);
+    if (pid != g_stickyPid) {
+        g_stickyRelated.clear();
+    }
+    g_stickyPid = pid;
+    HMODULE module = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                           GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&StickyMouseProc, &module);
+    if (!g_stickyMouse) {
+        g_stickyMouse = SetWindowsHookExW(WH_MOUSE_LL, StickyMouseProc, module, 0);
+    }
+    if (!g_stickyForeground) {
+        g_stickyForeground =
+            SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr,
+                            StickyForegroundProc, 0, 0,
+                            WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+    }
+}
+
+void StopSticky() {
+    if (g_stickyMouse) {
+        UnhookWindowsHookEx(g_stickyMouse);
+        g_stickyMouse = nullptr;
+    }
+    if (g_stickyForeground) {
+        UnhookWinEvent(g_stickyForeground);
+        g_stickyForeground = nullptr;
+    }
+    g_stickyPid = 0;
+    g_stickyRelated.clear();
+}
+
+// Programs that open their window on a double click of their tray icon, from
+// the setting.
+bool OpensOnDoubleClick(HWND owner) {
+    return OpensOnDoubleClickIn(owner, g_settings.doubleClickApps);
+}
+constexpr WCHAR kFlyoutClass[] = L"TourneTrayFlyout_" WH_MOD_ID;
+constexpr int kMaxVisibleNetworks = 7;
+
+bool FontInstalled(PCWSTR face) {
+    LOGFONTW lf{};
+    lf.lfCharSet = DEFAULT_CHARSET;
+    wcsncpy_s(lf.lfFaceName, face, _TRUNCATE);
+    HDC dc = GetDC(nullptr);
+    bool found = !EnumFontFamiliesExW(
+        dc, &lf, [](const LOGFONTW*, const TEXTMETRICW*, DWORD, LPARAM) -> int { return 0; },
+        0, 0);
+    ReleaseDC(nullptr, dc);
+    return found;
+}
+
+// Pixel fonts first, drawn without smoothing at whole multiples of their size.
+HFONT MakeFont(std::initializer_list<PCWSTR> faces, int pixels) {
+    for (PCWSTR face : faces) {
+        if (FontInstalled(face)) {
+            LOGFONTW lf{};
+            lf.lfHeight = -pixels;
+            lf.lfWeight = FW_NORMAL;
+            lf.lfCharSet = DEFAULT_CHARSET;
+            lf.lfQuality = NONANTIALIASED_QUALITY;
+            wcsncpy_s(lf.lfFaceName, face, _TRUNCATE);
+            return CreateFontIndirectW(&lf);
+        }
+    }
+    LOGFONTW lf{};
+    lf.lfHeight = -pixels;
+    lf.lfCharSet = DEFAULT_CHARSET;
+    lf.lfQuality = CLEARTYPE_QUALITY;
+    wcscpy_s(lf.lfFaceName, L"Consolas");
+    return CreateFontIndirectW(&lf);
+}
+
+void DestroyFonts() {
+    for (HFONT* font : {&g_flyout.label, &g_flyout.body, &g_flyout.caption}) {
+        if (*font) {
+            DeleteObject(*font);
+            *font = nullptr;
+        }
+    }
+}
+
+void CreateFonts(int scale) {
+    DestroyFonts();
+    g_flyout.label = MakeFont({L"scientifica", L"CozetteVector"}, 11 * scale);
+    g_flyout.body = MakeFont({L"ProggyClean Nerd Font Mono", L"ProggyCleanTT", L"CozetteVector"},
+                             16 * scale);
+    g_flyout.caption = MakeFont({L"CozetteVector", L"scientifica"}, 13 * scale);
+}
+
+// Measures and draws in one pass; with paint off it only lays out.
+struct Canvas {
+    HDC dc;
+    bool paint;
+    int s;
+    int width;
+    int y = 0;
+    // The flyout width every line so far would need to show in full: the
+    // line's own margins plus its text.
+    mutable int needed = 0;
+
+    int Px(int v) const { return v * s; }
+
+    void Fill(RECT rc, COLORREF color) const {
+        if (!paint) {
+            return;
+        }
+        SetDCBrushColor(dc, color);
+        FillRect(dc, &rc, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+
+    void Frame(RECT rc, COLORREF color) const {
+        if (!paint) {
+            return;
+        }
+        SetDCBrushColor(dc, color);
+        FrameRect(dc, &rc, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+
+    SIZE Measure(HFONT font, std::wstring const& text, int spacing = 0) const {
+        HGDIOBJ old = SelectObject(dc, font);
+        SetTextCharacterExtra(dc, spacing);
+        SIZE size{};
+        GetTextExtentPoint32W(dc, text.c_str(), (int)text.size(), &size);
+        SelectObject(dc, old);
+        return size;
+    }
+
+    // Ellipsis is only for free text; tracked-out labels are sized to fit, and
+    // DrawText's ellipsis logic doesn't account for the extra spacing.
+    void Text(HFONT font, COLORREF color, RECT rc, std::wstring const& text,
+              UINT format = DT_LEFT, int spacing = 0) const {
+        if (!paint) {
+            if (!text.empty()) {
+                int wanted = rc.left + Measure(font, text, spacing).cx + (width - rc.right);
+                needed = std::max(needed, wanted);
+            }
+            return;
+        }
+        HGDIOBJ old = SelectObject(dc, font);
+        SetTextCharacterExtra(dc, spacing);
+        SetBkMode(dc, TRANSPARENT);
+        SetTextColor(dc, color);
+        DrawTextW(dc, text.c_str(), (int)text.size(), &rc,
+                  format | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX |
+                      (spacing ? DT_NOCLIP : DT_END_ELLIPSIS));
+        SelectObject(dc, old);
+    }
+
+    // Centers tracked-out text itself: DrawText centers without counting the
+    // extra spacing, which pushes the text right.
+    void CenteredText(HFONT font, COLORREF color, RECT rc, std::wstring const& text,
+                      int spacing) const {
+        if (!paint) {
+            return;
+        }
+        SIZE size = Measure(font, text, spacing);
+        HGDIOBJ old = SelectObject(dc, font);
+        SetTextCharacterExtra(dc, spacing);
+        SetBkMode(dc, TRANSPARENT);
+        SetTextColor(dc, color);
+        // The last character's spacing trails it; leave it out of the centering.
+        int width = size.cx - spacing;
+        TextOutW(dc, rc.left + (rc.right - rc.left - width) / 2,
+                 rc.top + (rc.bottom - rc.top - size.cy) / 2, text.c_str(), (int)text.size());
+        SelectObject(dc, old);
+    }
+
+    void Art(std::string_view id, int x, int top, int size) const {
+        if (!paint) {
+            return;
+        }
+        auto pixels = RenderArt(ArtFor(id), g_settings.tone, g_settings.shade, size);
+        void* bits = nullptr;
+        HBITMAP bitmap = CreateDib(size, size, &bits);
+        if (!bitmap) {
+            return;
+        }
+        // Every pixel is fully opaque or fully clear, so straight alpha is
+        // already premultiplied.
+        memcpy(bits, pixels.data(), pixels.size() * 4);
+        HDC mem = CreateCompatibleDC(dc);
+        HGDIOBJ old = SelectObject(mem, bitmap);
+        BLENDFUNCTION blend{AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+        AlphaBlend(dc, x, top, size, size, mem, 0, 0, size, size, blend);
+        SelectObject(mem, old);
+        DeleteDC(mem);
+        DeleteObject(bitmap);
+    }
+
+    // Premultiplied pixels at their own size, never scaled.
+    void Pixels(std::vector<uint32_t> const& pixels, int size, int x, int top) const {
+        if (!paint || !size || pixels.size() < (size_t)size * size) {
+            return;
+        }
+        void* bits = nullptr;
+        HBITMAP bitmap = CreateDib(size, size, &bits);
+        if (!bitmap) {
+            return;
+        }
+        memcpy(bits, pixels.data(), (size_t)size * size * 4);
+        HDC mem = CreateCompatibleDC(dc);
+        HGDIOBJ old = SelectObject(mem, bitmap);
+        BLENDFUNCTION blend{AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+        AlphaBlend(dc, x, top, size, size, mem, 0, 0, size, size, blend);
+        SelectObject(mem, old);
+        DeleteDC(mem);
+        DeleteObject(bitmap);
+    }
+
+    // Section label: uppercase, tracked out, in the given color.
+    void Label(std::wstring text, COLORREF color) {
+        CharUpperBuffW(text.data(), (DWORD)text.size());
+        RECT rc{Px(15), y, width - Px(15), y + Px(14)};
+        Text(g_flyout.label, color, rc, text, DT_LEFT, Px(2));
+        y += Px(14);
+    }
+
+    void Divider() {
+        y += Px(8);
+        Fill({Px(15), y, width - Px(15), y + s}, ui::kLine);
+        y += s + Px(8);
+    }
+
+    void Link(std::wstring const& text, int index, std::vector<Hit>& hits, int hover) {
+        RECT rc{Px(15), y, width - Px(15), y + Px(20)};
+        int id = MakeHit(kHitLink, index);
+        Text(g_flyout.caption, hover == id ? ui::kCoral : ui::kGreen, rc, text);
+        SIZE size = Measure(g_flyout.caption, text);
+        hits.push_back({{rc.left, rc.top, rc.left + size.cx, rc.bottom}, id});
+        y += Px(20);
+    }
+};
+
+void Execute(std::function<void()> action);
+void CloseFlyout();
+void ShowFlyout(int flyoutKind, int iconKind);
+void RenderBluetoothBatteries(Canvas& c);
+
+// Network flyout
+
+bool LocationDeniedForDesktopApps();
+WLAN_INTERFACE_INFO_LIST* WlanInterfaces();
+void OpenWlan();
+
+void LoadNetworkFlyout() {
+    NetworkInfo info = QueryNetwork();
+    g_flyout.connections.clear();
+    g_flyout.networks.clear();
+    g_flyout.wifiAdapter = info.wifiAdapter;
+    g_flyout.wifiOff = info.wifiRadioOff;
+
+    if (g_networkListManager) {
+        IEnumNetworks* networks = nullptr;
+        if (SUCCEEDED(g_networkListManager->GetNetworks(NLM_ENUM_NETWORK_CONNECTED, &networks)) &&
+            networks) {
+            INetwork* network = nullptr;
+            ULONG fetched = 0;
+            while (networks->Next(1, &network, &fetched) == S_OK && fetched) {
+                BSTR name = nullptr;
+                NLM_CONNECTIVITY flags = NLM_CONNECTIVITY_DISCONNECTED;
+                network->GetName(&name);
+                network->GetConnectivity(&flags);
+
+                // Wi-Fi, wired or VPN, from the adapter behind the connection.
+                bool wireless = false;
+                bool virtualAdapter = false;
+                IEnumNetworkConnections* connections = nullptr;
+                if (SUCCEEDED(network->GetNetworkConnections(&connections)) && connections) {
+                    INetworkConnection* connection = nullptr;
+                    ULONG got = 0;
+                    if (connections->Next(1, &connection, &got) == S_OK && got) {
+                        GUID adapter{};
+                        MIB_IF_ROW2 row{};
+                        if (SUCCEEDED(connection->GetAdapterId(&adapter)) &&
+                            ConvertInterfaceGuidToLuid(&adapter, &row.InterfaceLuid) == NO_ERROR &&
+                            GetIfEntry2(&row) == NO_ERROR) {
+                            wireless = row.Type == IF_TYPE_IEEE80211;
+                            virtualAdapter = !row.InterfaceAndOperStatusFlags.HardwareInterface;
+                        }
+                        connection->Release();
+                    }
+                    connections->Release();
+                }
+
+                bool internet = flags & (NLM_CONNECTIVITY_IPV4_INTERNET |
+                                         NLM_CONNECTIVITY_IPV6_INTERNET);
+                Connection c;
+                c.name = name ? name : L"Network";
+                c.status = internet ? L"Internet access" : L"No internet access";
+                c.art = virtualAdapter ? (internet ? "vpn-on" : "vpn")
+                        : wireless     ? (internet ? "wifi-" + std::to_string(WifiBars(info.wifiQuality))
+                                                   : "wifi-no-internet")
+                                       : (internet ? "ethernet" : "ethernet-no-internet");
+                g_flyout.connections.push_back(c);
+                SysFreeString(name);
+                network->Release();
+            }
+            networks->Release();
+        }
+    }
+
+    g_flyout.wifiNeedsLocation = false;
+    if (!g_settings.nearbyWifi) {
+        return;  // (Windows counts the list as location data; the user said no)
+    }
+    WLAN_INTERFACE_INFO_LIST* interfaces = WlanInterfaces();
+    if (!interfaces) {
+        return;
+    }
+    bool refused = false;
+    for (DWORD i = 0; i < interfaces->dwNumberOfItems; i++) {
+        GUID iface = interfaces->InterfaceInfo[i].InterfaceGuid;
+        WLAN_AVAILABLE_NETWORK_LIST* list = nullptr;
+        DWORD result = WlanGetAvailableNetworkList(g_wlan, &iface, 0, nullptr, &list);
+        if (result == ERROR_INVALID_HANDLE) {
+            OpenWlan();  // (gone stale between the two calls)
+            result = g_wlan ? WlanGetAvailableNetworkList(g_wlan, &iface, 0, nullptr, &list) : result;
+        }
+        if (result != ERROR_SUCCESS) {
+            refused |= result == ERROR_ACCESS_DENIED;
+            continue;
+        }
+        for (DWORD n = 0; n < list->dwNumberOfItems; n++) {
+            auto const& available = list->Network[n];
+            if (!available.dot11Ssid.uSSIDLength) {
+                continue;
+            }
+            WifiNetwork network;
+            network.ssid = Utf8ToWide(std::string_view(
+                (const char*)available.dot11Ssid.ucSSID, available.dot11Ssid.uSSIDLength));
+            network.quality = (int)available.wlanSignalQuality;
+            network.secured = available.bSecurityEnabled;
+            network.connected = available.dwFlags & WLAN_AVAILABLE_NETWORK_CONNECTED;
+            network.profile = available.strProfileName;
+            network.iface = iface;
+            network.dot11 = available.dot11Ssid;
+            network.bssType = available.dot11BssType;
+
+            // One row per name, keeping the strongest or connected entry.
+            auto existing = std::find_if(
+                g_flyout.networks.begin(), g_flyout.networks.end(),
+                [&](WifiNetwork const& w) { return w.ssid == network.ssid; });
+            if (existing == g_flyout.networks.end()) {
+                g_flyout.networks.push_back(network);
+            } else if (network.connected ||
+                       (!existing->connected && network.quality > existing->quality)) {
+                bool keepProfile = existing->profile.size() && network.profile.empty();
+                std::wstring profile = existing->profile;
+                *existing = network;
+                if (keepProfile) {
+                    existing->profile = profile;
+                }
+            }
+        }
+        WlanFreeMemory(list);
+    }
+    WlanFreeMemory(interfaces);
+    // Since Windows 11 24H2 the list of nearby networks is only for apps with location access (Windhawk
+    // counts as a desktop app): refused outright, or only the connected network given back.
+    bool onlyConnected = std::all_of(g_flyout.networks.begin(), g_flyout.networks.end(),
+                                     [](WifiNetwork const& w) { return w.connected; });
+    g_flyout.wifiNeedsLocation = g_settings.locationNote &&
+                                 (refused || (onlyConnected && LocationDeniedForDesktopApps()));
+
+    std::stable_sort(g_flyout.networks.begin(), g_flyout.networks.end(),
+                     [](WifiNetwork const& a, WifiNetwork const& b) {
+                         if (a.connected != b.connected) {
+                             return a.connected;
+                         }
+                         return a.quality > b.quality;
+                     });
+    int maxScroll = std::max(0, (int)g_flyout.networks.size() - kMaxVisibleNetworks);
+    g_flyout.networkScroll = std::min(g_flyout.networkScroll, maxScroll);
+    g_flyout.selectedNetwork = -1;
+    for (size_t i = 0; i < g_flyout.networks.size(); i++) {
+        if (!g_flyout.selectedSsid.empty() && g_flyout.networks[i].ssid == g_flyout.selectedSsid) {
+            g_flyout.selectedNetwork = (int)i;
+        }
+    }
+}
+
+// Location access for desktop apps is off: for the whole device, or for desktop apps.
+bool LocationDeniedForDesktopApps() {
+    constexpr WCHAR kStore[] = L"Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location";
+    auto denied = [](HKEY root, std::wstring const& key) {
+        WCHAR value[16] = L"";
+        DWORD size = sizeof(value);
+        return RegGetValueW(root, key.c_str(), L"Value", RRF_RT_REG_SZ, nullptr, value, &size) == ERROR_SUCCESS &&
+               !_wcsicmp(value, L"Deny");
+    };
+    return denied(HKEY_LOCAL_MACHINE, kStore) || denied(HKEY_CURRENT_USER, kStore) ||
+           denied(HKEY_CURRENT_USER, std::wstring(kStore) + L"\\NonPackaged");
+}
+
+void ScanWifi() {
+    if (!g_settings.nearbyWifi) {
+        return;
+    }
+    if (WLAN_INTERFACE_INFO_LIST* interfaces = WlanInterfaces()) {
+        for (DWORD i = 0; i < interfaces->dwNumberOfItems; i++) {
+            WlanScan(g_wlan, &interfaces->InterfaceInfo[i].InterfaceGuid, nullptr, nullptr, nullptr);
+        }
+        WlanFreeMemory(interfaces);
+    }
+}
+
+void ConnectOrDisconnect(WifiNetwork const& network) {
+    if (network.connected) {
+        WlanDisconnect(g_wlan, &network.iface, nullptr);
+        return;
+    }
+    WLAN_CONNECTION_PARAMETERS parameters{};
+    DOT11_SSID ssid = network.dot11;
+    parameters.dot11BssType = network.bssType;
+    if (!network.profile.empty()) {
+        parameters.wlanConnectionMode = wlan_connection_mode_profile;
+        parameters.strProfile = network.profile.c_str();
+    } else if (!network.secured) {
+        parameters.wlanConnectionMode = wlan_connection_mode_discovery_unsecure;
+        parameters.pDot11Ssid = &ssid;
+    } else {
+        // A new secured network needs a password, which Windows' own sign-in
+        // asks for.
+        CloseFlyout();
+        OpenUri(L"ms-availablenetworks:");
+        return;
+    }
+    WlanConnect(g_wlan, &network.iface, &parameters, nullptr);
+}
+
+void RenderNetwork(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    int s = c.s;
+
+    c.y = c.Px(15);
+    c.Label(L"Currently connected to:", ui::kSage);
+    c.y += c.Px(6);
+    if (f.connections.empty()) {
+        c.Text(f.body, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"Not connected");
+        c.y += c.Px(24);
+    }
+    for (auto const& connection : f.connections) {
+        c.Art(connection.art, c.Px(15), c.y + c.Px(3), c.Px(26));
+        int x = c.Px(15 + 26 + 10);
+        c.Text(f.body, ui::kInk, {x, c.y, c.width - c.Px(15), c.y + c.Px(18)}, connection.name);
+        c.Text(f.caption, ui::kSage, {x, c.y + c.Px(18), c.width - c.Px(15), c.y + c.Px(32)},
+               connection.status);
+        c.y += c.Px(36);
+    }
+
+    c.Divider();
+    c.Label(L"Wi-Fi", ui::kGreen);
+    c.y += c.Px(4);
+
+    auto note = [&](PCWSTR text) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)}, text);
+        c.y += c.Px(24);
+    };
+    if (!f.wifiAdapter) {
+        note(L"No Wi-Fi adapter");
+    } else if (f.wifiOff) {
+        note(L"Wi-Fi is off");
+    } else if (!g_settings.nearbyWifi) {
+        // Turned off in settings: Windows' own list does the looking.
+        c.Link(L"Show available networks", 3, hits, hover);
+        c.y += c.Px(4);
+    } else if (f.wifiNeedsLocation) {
+        // Windows gives nearby networks only to apps allowed the location.
+        note(L"Windows shows nearby networks only to");
+        c.y -= c.Px(6);
+        note(L"apps with location access.");
+        c.Link(L"Location settings", 2, hits, hover);
+        c.y += c.Px(4);
+    } else if (f.networks.empty()) {
+        note(L"Looking for networks...");
+    }
+
+    int last = std::min((int)f.networks.size(), f.networkScroll + kMaxVisibleNetworks);
+    for (int i = f.networkScroll; i < last; i++) {
+        auto const& network = f.networks[i];
+        bool selected = f.selectedNetwork == i;
+        int rowHeight = c.Px(selected ? 66 : 38);
+        RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + rowHeight};
+        int rowId = MakeHit(kHitWifiRow, i);
+        if (selected) {
+            c.Fill(row, ui::kRaised);
+            c.Frame(row, ui::kEdge);
+        } else if (hover == rowId) {
+            c.Fill(row, ui::kHover);
+        }
+        hits.push_back({row, rowId});
+
+        int artX = c.width - c.Px(15 + 26);
+        c.Art("wifi-" + std::to_string(WifiBars(network.quality)), artX, c.y + c.Px(6), c.Px(26));
+        c.Text(f.body, ui::kInk, {c.Px(15), c.y + c.Px(2), artX - c.Px(8), c.y + c.Px(20)},
+               network.ssid);
+        std::wstring detail = network.connected ? L"Connected"
+                              : network.secured ? L"Secured"
+                                                : L"Open";
+        c.Text(f.caption, network.connected ? ui::kCoral : ui::kSage,
+               {c.Px(15), c.y + c.Px(20), artX - c.Px(8), c.y + c.Px(34)}, detail);
+
+        if (selected) {
+            std::wstring action = network.connected ? L"DISCONNECT" : L"CONNECT";
+            SIZE size = c.Measure(f.label, action, c.Px(2));
+            RECT button{c.width - c.Px(15) - size.cx - c.Px(24), c.y + c.Px(38),
+                        c.width - c.Px(15), c.y + c.Px(60)};
+            int buttonId = MakeHit(kHitWifiAction, i);
+            c.Fill(button, hover == buttonId ? ui::kHover : ui::kGround);
+            c.Frame(button, hover == buttonId ? ui::kGreen : ui::kEdge);
+            c.CenteredText(f.label, hover == buttonId ? ui::kGreen : ui::kSage, button, action,
+                           c.Px(2));
+            hits.push_back({button, buttonId});
+        }
+        c.y += rowHeight + s;
+    }
+    if ((int)f.networks.size() > kMaxVisibleNetworks) {
+        std::wstring more = std::to_wstring(f.networkScroll + 1) + L"-" + std::to_wstring(last) +
+                            L" of " + std::to_wstring(f.networks.size()) + L", scroll for more";
+        note(more.c_str());
+    }
+
+    c.Divider();
+    c.Link(L"Open Network and Sharing Center", 0, hits, hover);
+    c.Link(L"Network & internet settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+// Power flyout
+
+void LoadPowerFlyout() {
+    g_flyout.battery = ComputeBattery();
+    g_flyout.plans.clear();
+
+    GUID* active = nullptr;
+    PowerGetActiveScheme(nullptr, &active);
+    for (ULONG index = 0;; index++) {
+        GUID guid;
+        DWORD size = sizeof(guid);
+        if (PowerEnumerate(nullptr, nullptr, nullptr, ACCESS_SCHEME, index,
+                           (UCHAR*)&guid, &size) != ERROR_SUCCESS) {
+            break;
+        }
+        WCHAR name[256] = L"";
+        DWORD nameSize = sizeof(name);
+        PowerReadFriendlyName(nullptr, &guid, nullptr, nullptr, (UCHAR*)name, &nameSize);
+        g_flyout.plans.push_back({guid, name, active && IsEqualGUID(guid, *active)});
+    }
+    if (active) {
+        LocalFree(active);
+    }
+}
+
+void RenderPower(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    c.Label(L"Battery", ui::kSage);
+    c.y += c.Px(6);
+    c.Art(f.battery.art, c.Px(15), c.y, c.Px(26));
+    // One line per device when the batteries are Bluetooth devices'.
+    int top = c.y;
+    std::wstring_view tip = f.battery.tip;
+    for (size_t at = 0;;) {
+        size_t end = tip.find(L'\n', at);
+        std::wstring line(tip.substr(at, end == std::wstring_view::npos ? std::wstring_view::npos : end - at));
+        c.Text(f.body, ui::kInk, {c.Px(15 + 26 + 10), c.y, c.width - c.Px(15), c.y + c.Px(26)}, line);
+        c.y += c.Px(26);
+        if (end == std::wstring_view::npos) {
+            break;
+        }
+        at = end + 1;
+    }
+    c.y = std::max(c.y, top + c.Px(26)) + c.Px(6);
+
+    c.Divider();
+    c.Label(L"Select a power plan:", ui::kGreen);
+    c.y += c.Px(6);
+    for (size_t i = 0; i < f.plans.size(); i++) {
+        auto const& plan = f.plans[i];
+        RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(26)};
+        int id = MakeHit(kHitPlan, (int)i);
+        if (hover == id) {
+            c.Fill(row, ui::kHover);
+        }
+        RECT box{c.Px(15), c.y + c.Px(7), c.Px(27), c.y + c.Px(19)};
+        c.Frame(box, plan.active ? ui::kGreen : ui::kEdge);
+        if (plan.active) {
+            c.Fill({box.left + c.Px(3), box.top + c.Px(3), box.right - c.Px(3), box.bottom - c.Px(3)},
+                   ui::kGreen);
+        }
+        c.Text(f.body, plan.active ? ui::kInk : ui::kSage,
+               {c.Px(35), c.y, c.width - c.Px(15), c.y + c.Px(26)}, plan.name);
+        hits.push_back({row, id});
+        c.y += c.Px(28);
+    }
+
+    c.Divider();
+    c.Link(L"Adjust screen brightness", 0, hits, hover);
+    c.Link(L"More power options", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+// Brightness flyout
+
+void StartBrightness() {
+    std::erase_if(g_brightnessThreads, [](HANDLE thread) {
+        if (WaitForSingleObject(thread, 0) != WAIT_OBJECT_0) {
+            return false;
+        }
+        CloseHandle(thread);
+        return true;
+    });
+
+    auto* shared = new BrightnessShared();
+    shared->notify = g_flyout.hwnd;
+    HANDLE thread = CreateThread(nullptr, 0, BrightnessThreadProc, shared, 0, nullptr);
+    if (!thread) {
+        delete shared;
+        return;
+    }
+    g_brightnessThreads.push_back(thread);
+    g_flyout.brightness = shared;
+    g_flyout.monitorsLoaded = false;
+    g_flyout.monitors.clear();
+}
+
+void StopBrightness() {
+    auto* shared = g_flyout.brightness;
+    if (!shared) {
+        return;
+    }
+    EnterCriticalSection(&shared->lock);
+    shared->stop = true;
+    shared->notify = nullptr;
+    LeaveCriticalSection(&shared->lock);
+    SetEvent(shared->wake);
+    shared->Release();
+    g_flyout.brightness = nullptr;
+}
+
+// Reads the levels once at start, so even the first flyout opens with them.
+BrightnessShared* g_brightnessWarm;
+
+void WarmBrightnessCache(HWND notify) {
+    auto* shared = new BrightnessShared();
+    shared->notify = notify;
+    HANDLE thread = CreateThread(nullptr, 0, BrightnessThreadProc, shared, 0, nullptr);
+    if (!thread) {
+        delete shared;
+        return;
+    }
+    g_brightnessThreads.push_back(thread);
+    g_brightnessWarm = shared;
+}
+
+void FinishBrightnessWarm() {
+    auto* shared = g_brightnessWarm;
+    if (!shared) {
+        return;
+    }
+    EnterCriticalSection(&shared->lock);
+    if (shared->loaded) {
+        g_brightnessCache = shared->levels;
+    }
+    shared->stop = true;
+    shared->notify = nullptr;
+    LeaveCriticalSection(&shared->lock);
+    SetEvent(shared->wake);
+    shared->Release();
+    g_brightnessWarm = nullptr;
+}
+
+void SetBrightness(int monitor, int value) {
+    auto* shared = g_flyout.brightness;
+    if (!shared || monitor < 0 || monitor >= (int)g_flyout.monitors.size() ||
+        g_flyout.monitors[monitor].value < 0) {
+        return;
+    }
+    value = std::clamp(value, 0, 100);
+    g_flyout.monitors[monitor].value = value;
+    if (monitor < (int)g_brightnessCache.size()) {
+        g_brightnessCache[monitor].value = value;
+    }
+    EnterCriticalSection(&shared->lock);
+    if (monitor < (int)shared->pending.size()) {
+        shared->pending[monitor] = value;
+    }
+    LeaveCriticalSection(&shared->lock);
+    SetEvent(shared->wake);
+}
+
+// Scrolling over the brightness icon steps the main screen's brightness, on a
+// worker of its own: started by the first scroll, kept for the next ones.
+constexpr int kBrightnessWheelStep = 5;
+BrightnessShared* g_brightnessWheel;
+int g_brightnessWheelPending;  // Notches scrolled before the levels were read.
+
+void ApplyBrightnessWheel() {
+    auto* shared = g_brightnessWheel;
+    if (!shared || !g_brightnessWheelPending) {
+        return;
+    }
+    EnterCriticalSection(&shared->lock);
+    if (shared->loaded) {
+        // The main screen's monitor, else the first that answers.
+        int target = -1;
+        for (size_t i = 0; i < shared->levels.size(); i++) {
+            auto const& level = shared->levels[i];
+            if (level.value >= 0 && (target < 0 || (level.primary && !shared->levels[target].primary))) {
+                target = (int)i;
+            }
+        }
+        if (target >= 0) {
+            auto& level = shared->levels[target];
+            // The flyout may have moved it since this worker read it.
+            if (target < (int)g_brightnessCache.size() && g_brightnessCache[target].value >= 0) {
+                level.value = g_brightnessCache[target].value;
+            }
+            level.value = std::clamp(level.value + g_brightnessWheelPending * kBrightnessWheelStep, 0, 100);
+            shared->pending[target] = level.value;
+            if (target < (int)g_brightnessCache.size()) {
+                g_brightnessCache[target].value = level.value;
+            }
+        }
+        g_brightnessWheelPending = 0;
+    }
+    LeaveCriticalSection(&shared->lock);
+    SetEvent(shared->wake);
+}
+
+void WheelBrightness(int notches) {
+    if (!notches) {
+        return;
+    }
+    g_brightnessWheelPending += notches;
+    if (!g_brightnessWheel) {
+        auto* shared = new BrightnessShared();
+        shared->notify = g_wnd;
+        HANDLE thread = CreateThread(nullptr, 0, BrightnessThreadProc, shared, 0, nullptr);
+        if (!thread) {
+            delete shared;
+            g_brightnessWheelPending = 0;
+            return;
+        }
+        g_brightnessThreads.push_back(thread);
+        g_brightnessWheel = shared;
+        return;  // Applied once it has read the levels.
+    }
+    ApplyBrightnessWheel();
+}
+
+void StopBrightnessWheel() {
+    auto* shared = g_brightnessWheel;
+    if (!shared) {
+        return;
+    }
+    EnterCriticalSection(&shared->lock);
+    shared->stop = true;
+    shared->notify = nullptr;
+    LeaveCriticalSection(&shared->lock);
+    SetEvent(shared->wake);
+    shared->Release();
+    g_brightnessWheel = nullptr;
+    g_brightnessWheelPending = 0;
+}
+
+RECT SliderTrack(Hit const& hit, int s) {
+    return {hit.rc.left + 10 * s, hit.rc.bottom - 16 * s, hit.rc.right - 10 * s,
+            hit.rc.bottom - 8 * s};
+}
+
+void RenderBrightness(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    c.Label(L"Brightness", ui::kSage);
+    c.y += c.Px(6);
+    if (!f.monitorsLoaded) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"Asking the monitors...");
+        c.y += c.Px(24);
+    } else if (f.monitors.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"No monitors found");
+        c.y += c.Px(24);
+    }
+    for (size_t i = 0; i < f.monitors.size(); i++) {
+        auto const& monitor = f.monitors[i];
+        RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(48)};
+        int id = MakeHit(kHitSlider, (int)i);
+        if (hover == id || f.dragSlider == (int)i) {
+            c.Fill(row, ui::kHover);
+        }
+        std::wstring value = monitor.value >= 0 ? std::to_wstring(monitor.value) + L"%" : L"";
+        c.Text(f.body, ui::kInk, {c.Px(15), c.y + c.Px(2), c.width - c.Px(60), c.y + c.Px(20)},
+               monitor.name);
+        c.Text(f.label, ui::kCoral, {c.width - c.Px(60), c.y + c.Px(2), c.width - c.Px(15), c.y + c.Px(20)},
+               value, DT_RIGHT);
+        Hit hit{row, id};
+        RECT track = SliderTrack(hit, c.s);
+        if (monitor.value >= 0) {
+            c.Fill(track, ui::kRaised);
+            c.Frame(track, ui::kEdge);
+            int filled = track.left + (track.right - track.left) * monitor.value / 100;
+            c.Fill({track.left + c.s, track.top + c.s, std::max<LONG>(track.left + c.s, filled),
+                    track.bottom - c.s},
+                   ui::kGreen);
+            c.Fill({filled - c.Px(2), track.top - c.Px(4), filled + c.Px(2), track.bottom + c.Px(4)},
+                   ui::kInk);
+            hits.push_back(hit);
+        } else {
+            c.Text(f.caption, ui::kSageAlt, {track.left, track.top - c.Px(6), track.right, track.bottom + c.Px(2)},
+                   L"Doesn't answer DDC/CI brightness");
+        }
+        c.y += c.Px(50);
+    }
+
+    c.Divider();
+    c.Link(L"Night light settings", 0, hits, hover);
+    c.Link(L"Display settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+// Hidden icons flyout: the icons the user hid, as a grid like the Windows 7
+// overflow, with the hovered icon's tooltip under it.
+
+constexpr int kOverflowColumns = 6;
+
+int OverflowCell() {
+    int icon = 16 * g_flyout.scale;
+    for (auto const& hidden : g_flyout.hidden) {
+        icon = std::max(icon, hidden.size);
+    }
+    return std::max(30 * g_flyout.scale, icon + 12 * g_flyout.scale);
+}
+
+int OverflowColumns() {
+    return std::clamp((int)g_flyout.hidden.size() + g_flyout.folderTiles, 1, kOverflowColumns);
+}
+
+// The order the hidden icons were dragged into, by program and icon id.
+constexpr WCHAR kOrderKey[] = L"Software\\TourneTray";
+constexpr WCHAR kOrderValue[] = L"OverflowOrder";
+
+std::vector<std::wstring> LoadOverflowOrder() {
+    std::vector<std::wstring> keys;
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kOrderKey, kOrderValue, RRF_RT_REG_MULTI_SZ, nullptr,
+                     nullptr, &size) != ERROR_SUCCESS ||
+        size < sizeof(WCHAR)) {
+        return keys;
+    }
+    std::wstring buffer(size / sizeof(WCHAR) + 2, L'\0');
+    size = (DWORD)(buffer.size() * sizeof(WCHAR));
+    if (RegGetValueW(HKEY_CURRENT_USER, kOrderKey, kOrderValue, RRF_RT_REG_MULTI_SZ, nullptr,
+                     buffer.data(), &size) != ERROR_SUCCESS) {
+        return keys;
+    }
+    const WCHAR* end = buffer.data() + buffer.size();
+    for (const WCHAR* p = buffer.data(); p < end && *p; p += wcslen(p) + 1) {
+        keys.push_back(p);
+    }
+    return keys;
+}
+
+void SaveOverflowOrder() {
+    std::vector<std::wstring> keys;
+    for (auto const& icon : g_flyout.hidden) {
+        keys.push_back(HiddenIconKey(icon));
+    }
+    // Icons that aren't hidden right now keep their place for when they are.
+    for (auto const& key : LoadOverflowOrder()) {
+        if (std::find(keys.begin(), keys.end(), key) == keys.end()) {
+            keys.push_back(key);
+        }
+    }
+    std::wstring data;
+    for (auto const& key : keys) {
+        data += key;
+        data.push_back(L'\0');
+    }
+    data.push_back(L'\0');
+    HKEY key;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kOrderKey, 0, nullptr, 0, KEY_SET_VALUE, nullptr, &key,
+                        nullptr) == ERROR_SUCCESS) {
+        RegSetValueExW(key, kOrderValue, 0, REG_MULTI_SZ, (const BYTE*)data.data(),
+                       (DWORD)(data.size() * sizeof(WCHAR)));
+        RegCloseKey(key);
+    }
+}
+
+// Dragged icons first, in their order; the rest after them in tray order.
+void ApplyOverflowOrder() {
+    auto order = LoadOverflowOrder();
+    if (order.empty()) {
+        return;
+    }
+    auto& hidden = g_flyout.hidden;
+    std::vector<std::pair<size_t, size_t>> ranks;  // Place in the order, index.
+    for (size_t i = 0; i < hidden.size(); i++) {
+        auto it = std::find(order.begin(), order.end(), HiddenIconKey(hidden[i]));
+        ranks.push_back({(size_t)(it - order.begin()), i});
+    }
+    std::stable_sort(ranks.begin(), ranks.end(),
+                     [](auto const& a, auto const& b) { return a.first < b.first; });
+    std::vector<HiddenIcon> sorted;
+    for (auto const& [rank, i] : ranks) {
+        sorted.push_back(std::move(hidden[i]));
+    }
+    hidden = std::move(sorted);
+}
+// The folders set up under Classic Tray Folders (through variables, so the
+// build doesn't file them under this part): a name, an optional glyph, and
+// patterns for the icons that belong in it.
+struct FolderSetup {
+    std::wstring name, glyph;
+    std::vector<std::wstring> patterns;
+};
+
+std::vector<FolderSetup> LoadFolderSetups() {
+    constexpr PCWSTR kName = L"trayFolders.folders[%d].name";
+    constexpr PCWSTR kGlyph = L"trayFolders.folders[%d].glyph";
+    constexpr PCWSTR kIcon = L"trayFolders.folders[%d].icons[%d]";
+    auto text = [](PCWSTR value) {
+        std::wstring s = value ? value : L"";
+        Wh_FreeStringSetting(value);
+        return s;
+    };
+    std::vector<FolderSetup> setups;
+    for (int i = 0; i < 64; i++) {
+        FolderSetup setup;
+        setup.name = text(Wh_GetStringSetting(kName, i));
+        setup.glyph = text(Wh_GetStringSetting(kGlyph, i));
+        for (int k = 0; k < 256; k++) {
+            std::wstring pattern = text(Wh_GetStringSetting(kIcon, i, k));
+            if (pattern.empty()) break;
+            CharLowerBuffW(pattern.data(), (DWORD)pattern.size());
+            setup.patterns.push_back(pattern);
+        }
+        if (setup.name.empty() && setup.patterns.empty()) break;
+        setups.push_back(std::move(setup));
+    }
+    return setups;
+}
+
+// * any text, ? one character; both sides already lowercase.
+bool FolderPatternMatch(std::wstring_view pattern, std::wstring_view text) {
+    size_t p = 0, t = 0, star = std::wstring_view::npos, mark = 0;
+    while (t < text.size()) {
+        if (p < pattern.size() && (pattern[p] == L'?' || pattern[p] == text[t])) {
+            p++, t++;
+        } else if (p < pattern.size() && pattern[p] == L'*') {
+            star = p++, mark = t;
+        } else if (star != std::wstring_view::npos) {
+            p = star + 1, t = ++mark;
+        } else {
+            return false;
+        }
+    }
+    while (p < pattern.size() && pattern[p] == L'*') p++;
+    return p == pattern.size();
+}
+
+// The program's own name for itself (its file description), else "".
+std::wstring IconProgramDescription(HWND owner) {
+    static std::unordered_map<DWORD, std::wstring> cache;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(owner, &pid);
+    if (auto it = cache.find(pid); it != cache.end()) return it->second;
+    std::wstring description;
+    if (HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
+        WCHAR path[MAX_PATH];
+        DWORD size = ARRAYSIZE(path);
+        if (QueryFullProcessImageNameW(process, 0, path, &size)) {
+            DWORD handle = 0, bytes = GetFileVersionInfoSizeW(path, &handle);
+            std::vector<BYTE> data(bytes);
+            struct Translation { WORD language, codePage; }* translations = nullptr;
+            UINT length = 0;
+            if (bytes && GetFileVersionInfoW(path, 0, bytes, data.data()) &&
+                VerQueryValueW(data.data(), L"\\VarFileInfo\\Translation", (void**)&translations, &length) &&
+                length) {
+                WCHAR query[64];
+                swprintf_s(query, L"\\StringFileInfo\\%04x%04x\\FileDescription", translations[0].language,
+                           translations[0].codePage);
+                WCHAR* value = nullptr;
+                if (VerQueryValueW(data.data(), query, (void**)&value, &length) && length > 1) description = value;
+            }
+        }
+        CloseHandle(process);
+    }
+    CharLowerBuffW(description.data(), (DWORD)description.size());
+    cache[pid] = description;
+    return description;
+}
+
+// The hidden icons shared out into their folders (the first that matches by
+// the program's name, its file name or the tooltip); the rest stay loose.
+void SortIntoFolders() {
+    auto& f = g_flyout;
+    std::wstring openName = f.openFolder >= 0 && f.openFolder < (int)f.folders.size() ? f.folders[f.openFolder].name : L"";
+    f.folders.clear();
+    f.folderTiles = 0;
+    if (!g_settings.overflowFolders) {
+        f.openFolder = -1;
+        return;
+    }
+    auto setups = LoadFolderSetups();
+    if (setups.empty()) {
+        f.openFolder = -1;
+        return;
+    }
+    constexpr PCWSTR kShowEmpty = L"trayFolders.showEmptyFolders";
+    bool showEmpty = Wh_GetIntSetting(kShowEmpty) != 0;
+    std::vector<FlyoutState::OverflowFolder> folders(setups.size());
+    std::vector<HiddenIcon> loose;
+    for (auto& icon : f.hidden) {
+        std::wstring file = OwnerFileName(icon.owner);
+        std::wstring stem = file.ends_with(L".exe") ? file.substr(0, file.size() - 4) : file;
+        std::wstring tip = icon.tip;
+        CharLowerBuffW(tip.data(), (DWORD)tip.size());
+        std::wstring description = IconProgramDescription(icon.owner);
+        int home = -1;
+        for (int i = 0; i < (int)setups.size() && home < 0; i++) {
+            for (auto const& pattern : setups[i].patterns) {
+                if (FolderPatternMatch(pattern, tip) || FolderPatternMatch(pattern, file) ||
+                    FolderPatternMatch(pattern, stem) || (!description.empty() && FolderPatternMatch(pattern, description))) {
+                    home = i;
+                    break;
+                }
+            }
+        }
+        if (home >= 0) folders[home].icons.push_back(std::move(icon));
+        else loose.push_back(std::move(icon));
+    }
+    for (int i = 0; i < (int)setups.size(); i++) {
+        if (folders[i].icons.empty() && !showEmpty) continue;
+        folders[i].name = setups[i].name;
+        folders[i].glyph = setups[i].glyph;
+        f.folders.push_back(std::move(folders[i]));
+    }
+    // The folder that was open stays open, by name.
+    f.openFolder = -1;
+    for (int i = 0; i < (int)f.folders.size(); i++)
+        if (!openName.empty() && f.folders[i].name == openName) f.openFolder = i;
+    if (f.openFolder >= 0) {
+        f.hidden = f.folders[f.openFolder].icons;
+    } else {
+        f.hidden = std::move(loose);
+        f.folderTiles = (int)f.folders.size();
+    }
+}
+
+// A folder tile's preview: four icons at half size, from full-size pixels.
+std::vector<uint32_t> HalfPixels(std::vector<uint32_t> const& pixels, int size) {
+    int half = size / 2;
+    std::vector<uint32_t> out((size_t)half * half);
+    for (int y = 0; y < half; y++)
+        for (int x = 0; x < half; x++) {
+            uint32_t sum[4] = {};
+            for (int dy = 0; dy < 2; dy++)
+                for (int dx = 0; dx < 2; dx++) {
+                    uint32_t p = pixels[(size_t)(y * 2 + dy) * size + x * 2 + dx];
+                    for (int c = 0; c < 4; c++) sum[c] += (p >> (c * 8)) & 0xFF;
+                }
+            uint32_t v = 0;
+            for (int c = 0; c < 4; c++) v |= ((sum[c] / 4) & 0xFF) << (c * 8);
+            out[(size_t)y * half + x] = v;
+        }
+    return out;
+}
+
+void LoadOverflowFlyout() {
+    g_flyout.hidden.clear();
+    // Every icon, then the ones whose place is the overflow: the user's
+    // placements first, else where Explorer's tray has them.
+    RequestHiddenIcons(&g_flyout.hidden, kRelayAllIcons);
+    TrayPlaces places = TrayPlaces::Load();
+    std::erase_if(g_flyout.hidden, [&](HiddenIcon const& icon) {
+        return places.For(icon, HiddenIconKey(icon)) != kPlaceOverflow;
+    });
+    // The stand-in itself never belongs in its own flyout.
+    std::erase_if(g_flyout.hidden, [](HiddenIcon const& icon) {
+        return icon.owner == g_wnd && icon.id == kIconIdBase + kOverflow;
+    });
+    ApplyOverflowOrder();
+    SortIntoFolders();
+    int s = g_flyout.scale;
+    g_flyout.width = std::max(220 * s, 20 * s + OverflowColumns() * OverflowCell());
+}
+
+void RenderOverflow(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    if (f.openFolder >= 0 && f.openFolder < (int)f.folders.size()) {
+        // Inside a folder: its name, with the way back.
+        int id = MakeHit(kHitFolderBack, 0);
+        RECT back{c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(14)};
+        c.Text(g_flyout.label, hover == id ? ui::kCoral : ui::kSage, back,
+               L"< " + f.folders[f.openFolder].name, DT_LEFT, c.Px(1));
+        hits.push_back({back, id});
+        c.y += c.Px(14);
+    } else {
+        c.Label(L"Hidden icons", ui::kSage);
+    }
+    c.y += c.Px(8);
+
+    if (f.hidden.empty() && !f.folderTiles) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"No hidden icons");
+        c.y += c.Px(24);
+    } else {
+        int cell = OverflowCell();
+        int columns = OverflowColumns();
+        int tiles = f.folderTiles;
+        int rows = ((int)f.hidden.size() + tiles + columns - 1) / columns;
+        int left = (c.width - columns * cell) / 2;
+        int hovered = -1, hoveredFolder = -1;
+        f.overflowLeft = left;
+        f.overflowTop = c.y;
+        f.overflowCell = cell;
+        // The folders' tiles: four of their icons at half size, or the glyph.
+        for (int k = 0; k < tiles; k++) {
+            auto const& folder = f.folders[k];
+            RECT rc{left + (k % columns) * cell, c.y + (k / columns) * cell,
+                    left + (k % columns + 1) * cell, c.y + (k / columns + 1) * cell};
+            int id = MakeHit(kHitFolder, k);
+            c.Frame({rc.left + c.Px(2), rc.top + c.Px(2), rc.right - c.Px(2), rc.bottom - c.Px(2)}, ui::kLine);
+            if (hover == id) {
+                hoveredFolder = k;
+                c.Fill(rc, ui::kHover);
+                c.Frame(rc, ui::kEdge);
+            }
+            if (!folder.glyph.empty()) {
+                c.Text(f.body, ui::kInk, rc, folder.glyph, DT_CENTER);
+            } else {
+                for (int n = 0; n < 4 && n < (int)folder.icons.size(); n++) {
+                    auto const& icon = folder.icons[n];
+                    if (icon.size < 2) continue;
+                    int half = icon.size / 2;
+                    int x0 = rc.left + (cell - 2 * half) / 2 + (n % 2) * half;
+                    int y0 = rc.top + (cell - 2 * half) / 2 + (n / 2) * half;
+                    c.Pixels(HalfPixels(icon.pixels, icon.size), half, x0, y0);
+                }
+            }
+            hits.push_back({rc, id});
+        }
+        // While an icon is dragged, the others make room where it would land.
+        std::vector<int> order;
+        for (int i = 0; i < (int)f.hidden.size(); i++) {
+            order.push_back(i);
+        }
+        bool dragging = f.dragHidden >= 0 && f.dragMoved;
+        if (dragging && f.dragTarget >= 0) {
+            order.erase(order.begin() + f.dragHidden);
+            order.insert(order.begin() + f.dragTarget, f.dragHidden);
+        }
+        for (int place = 0; place < (int)order.size(); place++) {
+            int i = order[place];
+            int slot = place + tiles;
+            auto const& icon = f.hidden[i];
+            RECT rc{left + (slot % columns) * cell, c.y + (slot / columns) * cell,
+                    left + (slot % columns + 1) * cell, c.y + (slot / columns + 1) * cell};
+            int id = MakeHit(kHitHidden, i);
+            if (dragging ? i == f.dragHidden : hover == id) {
+                hovered = i;
+                c.Fill(rc, ui::kHover);
+                c.Frame(rc, ui::kEdge);
+            }
+            if (icon.size) {
+                c.Pixels(icon.pixels, icon.size, rc.left + (cell - icon.size) / 2,
+                         rc.top + (cell - icon.size) / 2);
+            }
+            hits.push_back({rc, id});
+        }
+        c.y += rows * cell + c.Px(6);
+
+        std::wstring line;
+        if (hoveredFolder >= 0) {
+            size_t count = f.folders[hoveredFolder].icons.size();
+            line = f.folders[hoveredFolder].name + L" (" + std::to_wstring(count) + (count == 1 ? L" icon)" : L" icons)");
+        } else if (hovered >= 0) {
+            line = f.hidden[hovered].tip.empty() ? L"(no tooltip)" : f.hidden[hovered].tip;
+            line.resize(std::min(line.size(), line.find(L'\n')));  // its first line: this is one line of caption
+        } else {
+            size_t count = f.hidden.size();
+            line = std::to_wstring(count) + (count == 1 ? L" hidden icon" : L" hidden icons");
+        }
+        c.Text(f.caption, hovered >= 0 ? ui::kInk : ui::kSageAlt,
+               {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)}, line);
+        c.y += c.Px(20);
+    }
+
+    c.Divider();
+    c.Link(L"Customize...", 0, hits, hover);
+    c.y += c.Px(10);
+}
+
+// StartAllBack's own list of tray icons when it's installed, else Windows'.
+void OpenTrayCustomization() {
+    WCHAR path[MAX_PATH];
+    if (ExpandEnvironmentStringsW(L"%ProgramFiles%\\StartAllBack\\StartAllBackCfg.exe", path,
+                                  ARRAYSIZE(path)) &&
+        GetFileAttributesW(path) != INVALID_FILE_ATTRIBUTES) {
+        Run(path);
+    } else {
+        OpenUri(L"ms-settings:taskbar");
+    }
+}
+
+// The slot under a point in the hidden icons grid, or -1 outside it.
+int HiddenSlotAt(POINT pt) {
+    auto const& f = g_flyout;
+    int count = (int)f.hidden.size();
+    if (!count || f.overflowCell <= 0 || pt.x < f.overflowLeft || pt.y < f.overflowTop) {
+        return -1;
+    }
+    int columns = OverflowColumns();
+    int rows = (count + f.folderTiles + columns - 1) / columns;
+    int column = (pt.x - f.overflowLeft) / f.overflowCell;
+    int row = (pt.y - f.overflowTop) / f.overflowCell;
+    if (column >= columns || row >= rows) {
+        return -1;
+    }
+    // The folder tiles come first: a drop on one lands at the start.
+    return std::clamp(row * columns + column - f.folderTiles, 0, count - 1);
+}
+
+void MoveHiddenIcon(int from, int to) {
+    auto& hidden = g_flyout.hidden;
+    HiddenIcon icon = std::move(hidden[from]);
+    hidden.erase(hidden.begin() + from);
+    hidden.insert(hidden.begin() + to, std::move(icon));
+    SaveOverflowOrder();
+}
+
+// A hidden icon dragged out of the flyout: it follows the pointer, and the
+// taskbar under it is told, so it can show where the icon would land.
+UINT TrayDragOverMessage() {
+    static UINT message = RegisterWindowMessageW(kTrayDragOverMessage);
+    return message;
+}
+
+void DragHiddenOutside(POINT screen) {
+    auto& f = g_flyout;
+    if (f.dragHidden < 0 || f.dragHidden >= (int)f.hidden.size()) {
+        return;
+    }
+    f.ghost.Move(f.hidden[f.dragHidden], screen);
+    HWND bar = DropTargetAt(screen, kTaskbarClassPrefix);
+    if (bar != f.dragOver && f.dragOver) {
+        PostMessageW(f.dragOver, TrayDragOverMessage(), 0, 0);
+    }
+    f.dragOver = bar;
+    if (bar) {
+        PostMessageW(bar, TrayDragOverMessage(), 1, MAKELPARAM(screen.x, screen.y));
+    }
+}
+
+void EndHiddenDragOutside() {
+    auto& f = g_flyout;
+    f.ghost.Hide();
+    if (f.dragOver) {
+        PostMessageW(f.dragOver, TrayDragOverMessage(), 0, 0);
+    }
+    f.dragOver = nullptr;
+}
+
+void LayoutFlyout(int iconKind);
+
+// The hidden icons flyout's own menu, from a right click off its icons: an icon onto the taskbar, or out
+// of both the taskbar and this flyout (and those taken out brought back). Every place is kept where the
+// taskbar reads it too.
+bool g_flyoutMenu = false;  // a menu opened from the flyout is up: the flyout stays open under it
+
+std::wstring MenuEscape(std::wstring text) {
+    for (size_t at = 0; (at = text.find(L'&', at)) != std::wstring::npos; at += 2) text.insert(at, 1, L'&');
+    return text;
+}
+
+// "Tooltip (program.exe)", or just the program when there's no tooltip.
+std::wstring IconMenuName(HiddenIcon const* icon, std::wstring const& key) {
+    std::wstring program = key.substr(0, key.find(L'|'));
+    std::wstring tip = icon ? icon->tip.substr(0, icon->tip.find_first_of(L"\r\n")) : L"";
+    if (tip.size() > 40) tip = tip.substr(0, 37) + L"...";
+    std::wstring name = tip.empty() || !_wcsicmp(tip.c_str(), program.c_str()) ? program : tip + L"  (" + program + L")";
+    return MenuEscape(icon ? name : name + L", not running");
+}
+
+void ShowOverflowMenu(POINT screen) {
+    std::vector<HiddenIcon> all;
+    RequestHiddenIcons(&all, kRelayAllIcons);
+    TrayPlaces places = TrayPlaces::Load();
+    auto placeIt = [](std::wstring key, int place) {
+        return [key, place] {
+            TrayPlaces::Load().Set(key, place);
+            LoadOverflowFlyout();
+            LayoutFlyout(-1);
+            if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+            TellTaskbars();
+        };
+    };
+    std::vector<MenuItem> toTaskbar, takeOut, bringBack;
+    std::vector<std::wstring> inFlyout;
+    for (auto const& icon : all) {
+        std::wstring key = HiddenIconKey(icon);
+        if (icon.owner == g_wnd && icon.id == kIconIdBase + kOverflow) continue;  // (the flyout's own stand-in)
+        if (places.For(icon, key) != kPlaceOverflow) continue;
+        inFlyout.push_back(key);
+        toTaskbar.push_back({IconMenuName(&icon, key), placeIt(key, kPlaceTray)});
+        takeOut.push_back({IconMenuName(&icon, key), placeIt(key, kPlaceHidden)});
+    }
+    for (auto const& [key, place] : places.places) {
+        if (place != kPlaceHidden) continue;
+        auto running = std::find_if(all.begin(), all.end(), [&](HiddenIcon const& i) { return HiddenIconKey(i) == key; });
+        bringBack.push_back({IconMenuName(running != all.end() ? &*running : nullptr, key), placeIt(key, kPlaceOverflow)});
+    }
+    auto byName = [](MenuItem const& a, MenuItem const& b) { return _wcsicmp(a.label.c_str(), b.label.c_str()) < 0; };
+    std::sort(toTaskbar.begin(), toTaskbar.end(), byName);
+    std::sort(takeOut.begin(), takeOut.end(), byName);
+    std::sort(bringBack.begin(), bringBack.end(), byName);
+
+    std::vector<MenuItem> items;
+    if (toTaskbar.empty()) {
+        items.push_back({L"No icons here to move", nullptr});
+    } else {
+        items.push_back({L"Show on the taskbar", nullptr, toTaskbar});
+        items.push_back({L"Take out of the taskbar and here", nullptr, takeOut});
+        items.push_back({L"Show them all on the taskbar", [inFlyout] {
+                             TrayPlaces places = TrayPlaces::Load();
+                             for (auto const& key : inFlyout) places.Set(key, kPlaceTray);
+                             LoadOverflowFlyout();
+                             LayoutFlyout(-1);
+                             if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+                             TellTaskbars();
+                         }});
+    }
+    if (!bringBack.empty()) {
+        items.push_back({});
+        items.push_back({L"Bring back here", nullptr, bringBack});
+    }
+    g_flyoutMenu = true;
+    ShowMenu(items, MAKELPARAM(screen.x, screen.y));
+    g_flyoutMenu = false;
+    // The flyout stayed open under the menu: it takes the focus back, so a click away still closes it.
+    if (g_flyout.hwnd && IsWindow(g_flyout.hwnd)) SetForegroundWindow(g_flyout.hwnd);
+}
+
+// An icon dragged from the taskbar's tray onto the flyout: into the overflow,
+// in the slot it was dropped on (at the end, off the grid).
+bool DropOnFlyout(HWND hWnd, POINT screen, std::wstring const& key) {
+    TrayPlaces::Load().Set(key, kPlaceOverflow);
+    POINT client = screen;
+    ScreenToClient(hWnd, &client);
+    int slot = HiddenSlotAt(client);
+    LoadOverflowFlyout();
+    auto& hidden = g_flyout.hidden;
+    for (int i = 0; i < (int)hidden.size(); i++) {
+        if (HiddenIconKey(hidden[i]) == key) {
+            MoveHiddenIcon(i, slot >= 0 && slot < (int)hidden.size() ? slot : (int)hidden.size() - 1);
+            break;
+        }
+    }
+    LayoutFlyout(-1);
+    InvalidateRect(hWnd, nullptr, FALSE);
+    return true;
+}
+void ClickHiddenIcon(int index, int button) {
+    if (index < 0 || index >= (int)g_flyout.hidden.size()) {
+        return;
+    }
+    HiddenIcon icon = g_flyout.hidden[index];
+    if (button == kClickLeft && OpensOnDoubleClick(icon.owner)) {
+        button = kClickDouble;
+    }
+    StartSticky(icon.owner);
+    ForwardHiddenClick(icon, button);
+}
+
+// Slow work for a flyout (a command line, a Windows Update search) runs on a
+// thread of its own; the result is posted back if the flyout is still open.
+
+struct FlyoutJob {
+    std::function<std::wstring()> work;
+    CRITICAL_SECTION lock;
+    HWND notify = nullptr;  // Guarded by lock.
+    std::wstring result;    // Guarded by lock.
+    bool done = false;      // Guarded by lock.
+    LONG refs = 2;
+
+    FlyoutJob() { InitializeCriticalSection(&lock); }
+    ~FlyoutJob() { DeleteCriticalSection(&lock); }
+    void Release() {
+        if (InterlockedDecrement(&refs) == 0) {
+            delete this;
+        }
+    }
+};
+
+DWORD WINAPI FlyoutJobProc(LPVOID parameter) {
+    auto* job = (FlyoutJob*)parameter;
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    std::wstring result = job->work();
+    CoUninitialize();
+    EnterCriticalSection(&job->lock);
+    job->result = std::move(result);
+    job->done = true;
+    HWND notify = job->notify;
+    LeaveCriticalSection(&job->lock);
+    if (notify) {
+        PostMessageW(notify, WM_APP_JOB_DONE, 0, 0);
+    }
+    job->Release();
+    return 0;
+}
+
+FlyoutJob* StartJob(std::function<std::wstring()> work) {
+    auto* job = new FlyoutJob();
+    job->work = std::move(work);
+    job->notify = g_flyout.hwnd;
+    HANDLE thread = CreateThread(nullptr, 0, FlyoutJobProc, job, 0, nullptr);
+    if (!thread) {
+        delete job;
+        return nullptr;
+    }
+    // Waited for when the mod unloads, like the brightness workers.
+    g_brightnessThreads.push_back(thread);
+    return job;
+}
+
+void CancelJob(FlyoutJob*& job) {
+    if (!job) {
+        return;
+    }
+    EnterCriticalSection(&job->lock);
+    job->notify = nullptr;
+    LeaveCriticalSection(&job->lock);
+    job->Release();
+    job = nullptr;
+}
+
+// The job's result once it's done, and lets go of it.
+bool TakeJobResult(FlyoutJob*& job, std::wstring* result) {
+    if (!job) {
+        return false;
+    }
+    EnterCriticalSection(&job->lock);
+    bool done = job->done;
+    if (done) {
+        *result = job->result;
+    }
+    LeaveCriticalSection(&job->lock);
+    if (done) {
+        CancelJob(job);
+    }
+    return done;
+}
+
+// Runs a command line without a window and returns what it printed.
+std::wstring RunCapture(std::wstring commandLine) {
+    SECURITY_ATTRIBUTES attributes{sizeof(attributes), nullptr, TRUE};
+    HANDLE read = nullptr, write = nullptr;
+    if (!CreatePipe(&read, &write, &attributes, 0)) {
+        return {};
+    }
+    SetHandleInformation(read, HANDLE_FLAG_INHERIT, 0);
+    STARTUPINFOW startup{sizeof(startup)};
+    startup.dwFlags = STARTF_USESTDHANDLES;
+    startup.hStdOutput = write;
+    startup.hStdError = write;
+    PROCESS_INFORMATION process;
+    if (!CreateProcessW(nullptr, commandLine.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW,
+                        nullptr, nullptr, &startup, &process)) {
+        CloseHandle(read);
+        CloseHandle(write);
+        return {};
+    }
+    CloseHandle(write);
+    std::string output;
+    char buffer[4096];
+    DWORD count = 0;
+    // Ends when the program exits and the pipe closes.
+    while (ReadFile(read, buffer, sizeof(buffer), &count, nullptr) && count) {
+        output.append(buffer, count);
+    }
+    WaitForSingleObject(process.hProcess, 5000);
+    CloseHandle(process.hProcess);
+    CloseHandle(process.hThread);
+    CloseHandle(read);
+    return Utf8ToWide(output);
+}
+
+// Windows Security flyout
+
+std::wstring FormatDateShort(SYSTEMTIME const& time) {
+    WCHAR text[64];
+    return GetDateFormatEx(LOCALE_NAME_USER_DEFAULT, 0, &time, L"MMM d", text, ARRAYSIZE(text), nullptr)
+               ? text
+               : L"";
+}
+
+std::wstring LastScanText() {
+    BYTE data[8];
+    DWORD size = sizeof(data);
+    if (RegGetValueW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows Defender\\Scan",
+                     L"LastScanRun", RRF_RT_REG_BINARY, nullptr, data, &size) != ERROR_SUCCESS ||
+        size != 8) {
+        return L"No scan yet";
+    }
+    FILETIME utc, local;
+    memcpy(&utc, data, 8);
+    SYSTEMTIME scan, now;
+    FileTimeToLocalFileTime(&utc, &local);
+    FileTimeToSystemTime(&local, &scan);
+    GetLocalTime(&now);
+    WCHAR text[64];
+    bool today = scan.wYear == now.wYear && scan.wMonth == now.wMonth && scan.wDay == now.wDay;
+    std::wstring date = today ? L"" : FormatDateShort(scan) + L" ";
+    swprintf_s(text, L"Last scan %ls%02u:%02u", date.c_str(), scan.wHour, scan.wMinute);
+    return text;
+}
+
+// Pending updates, from Windows Update's cached results (no online search).
+std::wstring SearchPendingUpdates() {
+    DWORD ignored = 0;
+    if (RegGetValueW(HKEY_LOCAL_MACHINE,
+                     L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate\\Auto Update\\RebootRequired",
+                     nullptr, RRF_RT_ANY, nullptr, nullptr, &ignored) == ERROR_SUCCESS) {
+        return L"restart";
+    }
+    constexpr GUID kClsidUpdateSession = {
+        0x4CB43D7F, 0x7EEE, 0x4906, {0x86, 0x98, 0x60, 0xDA, 0x1C, 0x38, 0xF2, 0xFE}};
+    constexpr GUID kIidUpdateSession = {
+        0x816858A4, 0x260D, 0x4260, {0x93, 0x3A, 0x25, 0x85, 0xF1, 0xAB, 0xC7, 0x6B}};
+    IUpdateSession* session = nullptr;
+    if (FAILED(CoCreateInstance(kClsidUpdateSession, nullptr, CLSCTX_INPROC_SERVER, kIidUpdateSession,
+                                (void**)&session))) {
+        return {};
+    }
+    std::wstring result;
+    IUpdateSearcher* searcher = nullptr;
+    if (SUCCEEDED(session->CreateUpdateSearcher(&searcher))) {
+        searcher->put_Online(VARIANT_FALSE);
+        ISearchResult* search = nullptr;
+        BSTR criteria = SysAllocString(L"IsInstalled=0 and IsHidden=0");
+        if (SUCCEEDED(searcher->Search(criteria, &search))) {
+            IUpdateCollection* updates = nullptr;
+            LONG count = 0;
+            if (SUCCEEDED(search->get_Updates(&updates))) {
+                updates->get_Count(&count);
+                updates->Release();
+                result = std::to_wstring(count);
+            }
+            search->Release();
+        }
+        SysFreeString(criteria);
+        searcher->Release();
+    }
+    session->Release();
+    return result;
+}
+
+void FillUpdatesRow(SecurityRow& row, std::wstring const& result) {
+    if (result == L"restart") {
+        row.art = "restart-required";
+        row.value = L"Restart";
+    } else if (result.empty()) {
+        row.art = "update";
+        row.value = L"...";  // Still searching.
+    } else if (result == L"unknown") {
+        row.art = "update";
+        row.value = L"Unknown";
+    } else if (result == L"0") {
+        row.art = "update";
+        row.value = L"Up to date";
+    } else {
+        row.art = "update-available";
+        row.value = result + L" pending";
+    }
+}
+
+void LoadSecurityFlyout() {
+    auto& f = g_flyout;
+    auto antivirus = ProviderHealth(WSC_SECURITY_PROVIDER_ANTIVIRUS);
+    auto firewall = ProviderHealth(WSC_SECURITY_PROVIDER_FIREWALL);
+    auto service = ProviderHealth(WSC_SECURITY_PROVIDER_SERVICE);
+
+    f.securityScan = LastScanText();
+    f.securityRows.clear();
+    f.securityRows.push_back(
+        {antivirus == WSC_SECURITY_PROVIDER_HEALTH_GOOD     ? "security-ok"
+         : antivirus == WSC_SECURITY_PROVIDER_HEALTH_POOR   ? "security-alert"
+         : antivirus == WSC_SECURITY_PROVIDER_HEALTH_SNOOZE ? "security-warn"
+                                                            : "security-off",
+         L"Virus & threat",
+         antivirus == WSC_SECURITY_PROVIDER_HEALTH_GOOD     ? L"OK"
+         : antivirus == WSC_SECURITY_PROVIDER_HEALTH_POOR   ? L"Action needed"
+         : antivirus == WSC_SECURITY_PROVIDER_HEALTH_SNOOZE ? L"Snoozed"
+                                                            : L"OFF",
+         L"windowsdefender://threat"});
+    bool firewallOn = firewall == WSC_SECURITY_PROVIDER_HEALTH_GOOD;
+    f.securityRows.push_back({firewallOn ? "firewall-on" : "firewall-off", L"Firewall",
+                              firewallOn ? L"ON" : L"OFF", L"windowsdefender://network"});
+    SecurityRow updates{"update", L"Updates", L"...", L"ms-settings:windowsupdate"};
+    FillUpdatesRow(updates, f.securityUpdates);
+    f.securityRows.push_back(updates);
+
+    ULARGE_INTEGER free{}, total{};
+    WCHAR system[MAX_PATH] = L"C:\\";
+    if (GetWindowsDirectoryW(system, ARRAYSIZE(system)) >= 3) {
+        system[3] = L'\0';
+    }
+    int used = GetDiskFreeSpaceExW(system, nullptr, &total, &free) && total.QuadPart
+                   ? (int)(100 - free.QuadPart * 100 / total.QuadPart)
+                   : -1;
+    f.securityRows.push_back({used >= 90 ? "health-warn" : "health-ok", L"Storage",
+                              used >= 0 ? std::to_wstring(used) + L"%" : L"...",
+                              L"ms-settings:storagesense"});
+    bool healthy = service == WSC_SECURITY_PROVIDER_HEALTH_GOOD;
+    f.securityRows.push_back({healthy ? "health-ok" : "health-alert", L"Device health",
+                              healthy ? L"OK" : L"Check", L"windowsdefender://perfcenter"});
+}
+
+void RenderSecurity(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    RECT title{c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(22)};
+    c.Text(f.body, ui::kInk, title, L"WINDOWS SECURITY", DT_LEFT, c.Px(2));
+    c.y += c.Px(24);
+    c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)}, f.securityScan);
+    c.y += c.Px(26);
+
+    for (size_t i = 0; i < f.securityRows.size(); i++) {
+        auto const& row = f.securityRows[i];
+        RECT rc{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(36)};
+        int id = MakeHit(kHitSecurityRow, (int)i);
+        if (hover == id) {
+            c.Fill(rc, ui::kHover);
+        }
+        c.Art(row.art, c.Px(15), c.y + c.Px(6), c.Px(24));
+        std::wstring label = row.label;
+        CharUpperBuffW(label.data(), (DWORD)label.size());
+        c.Text(f.label, ui::kSage, {c.Px(52), c.y, c.width - c.Px(110), c.y + c.Px(36)}, label, DT_LEFT,
+               c.Px(2));
+        c.Text(f.caption, ui::kCoral, {c.width - c.Px(110), c.y, c.width - c.Px(15), c.y + c.Px(36)},
+               row.value, DT_RIGHT);
+        hits.push_back({rc, id});
+        c.y += c.Px(36);
+    }
+
+    c.Divider();
+    c.Link(L"Open Windows Security", 0, hits, hover);
+    c.y += c.Px(10);
+}
+
+// VPN flyout: Windscribe's locations, connected through its command line so
+// its own window stays closed.
+
+// Just enough JSON for Windscribe's location list.
+struct Json {
+    enum Type { kNull, kBool, kNumber, kString, kArray, kObject } type = kNull;
+    double number = 0;
+    std::wstring text;
+    std::vector<Json> items;
+    std::vector<std::pair<std::wstring, Json>> members;
+
+    Json const* Get(std::wstring_view key) const {
+        for (auto const& [name, value] : members) {
+            if (name == key) {
+                return &value;
+            }
+        }
+        return nullptr;
+    }
+    std::wstring String(std::wstring_view key) const {
+        auto* value = Get(key);
+        return value && value->type == kString ? value->text : L"";
+    }
+    double Number(std::wstring_view key) const {
+        auto* value = Get(key);
+        return value && value->type == kNumber ? value->number : 0;
+    }
+};
+
+struct JsonParser {
+    std::wstring_view s;
+    size_t at = 0;
+    int depth = 0;
+
+    void Space() {
+        while (at < s.size() && iswspace(s[at])) {
+            at++;
+        }
+    }
+
+    bool Parse(Json& out) {
+        Space();
+        if (at >= s.size() || depth > 64) {
+            return false;
+        }
+        depth++;
+        bool ok = Value(out);
+        depth--;
+        return ok;
+    }
+
+    bool Value(Json& out) {
+        wchar_t c = s[at];
+        if (c == L'{' || c == L'[') {
+            bool object = c == L'{';
+            out.type = object ? Json::kObject : Json::kArray;
+            at++;
+            Space();
+            if (at < s.size() && s[at] == (object ? L'}' : L']')) {
+                at++;
+                return true;
+            }
+            while (true) {
+                std::wstring key;
+                if (object) {
+                    Space();
+                    if (at >= s.size() || s[at] != L'"' || !String(key)) {
+                        return false;
+                    }
+                    Space();
+                    if (at >= s.size() || s[at] != L':') {
+                        return false;
+                    }
+                    at++;
+                }
+                Json value;
+                if (!Parse(value)) {
+                    return false;
+                }
+                if (object) {
+                    out.members.emplace_back(std::move(key), std::move(value));
+                } else {
+                    out.items.push_back(std::move(value));
+                }
+                Space();
+                if (at < s.size() && s[at] == L',') {
+                    at++;
+                    continue;
+                }
+                if (at < s.size() && s[at] == (object ? L'}' : L']')) {
+                    at++;
+                    return true;
+                }
+                return false;
+            }
+        }
+        if (c == L'"') {
+            out.type = Json::kString;
+            return String(out.text);
+        }
+        for (auto [word, type] : {std::pair{L"true", Json::kBool}, std::pair{L"false", Json::kBool},
+                                  std::pair{L"null", Json::kNull}}) {
+            std::wstring_view literal = word;
+            if (s.substr(at, literal.size()) == literal) {
+                out.type = type;
+                out.number = literal == L"true";
+                at += literal.size();
+                return true;
+            }
+        }
+        size_t start = at;
+        while (at < s.size() && (iswdigit(s[at]) || s[at] == L'-' || s[at] == L'+' ||
+                                 s[at] == L'.' || s[at] == L'e' || s[at] == L'E')) {
+            at++;
+        }
+        if (at == start) {
+            return false;
+        }
+        out.type = Json::kNumber;
+        out.number = wcstod(std::wstring(s.substr(start, at - start)).c_str(), nullptr);
+        return true;
+    }
+
+    bool String(std::wstring& out) {
+        at++;  // The opening quote.
+        while (at < s.size()) {
+            wchar_t c = s[at++];
+            if (c == L'"') {
+                return true;
+            }
+            if (c != L'\\') {
+                out += c;
+                continue;
+            }
+            if (at >= s.size()) {
+                return false;
+            }
+            wchar_t escaped = s[at++];
+            switch (escaped) {
+                case L'n': out += L'\n'; break;
+                case L't': out += L'\t'; break;
+                case L'r': out += L'\r'; break;
+                case L'b':
+                case L'f': break;
+                case L'u':
+                    if (at + 4 > s.size()) {
+                        return false;
+                    }
+                    out += (wchar_t)wcstoul(std::wstring(s.substr(at, 4)).c_str(), nullptr, 16);
+                    at += 4;
+                    break;
+                default: out += escaped;
+            }
+        }
+        return false;
+    }
+};
+
+std::wstring WindscribeFile(PCWSTR name) {
+    WCHAR path[MAX_PATH];
+    std::wstring pattern = std::wstring(L"%ProgramFiles%\\Windscribe\\") + name;
+    if (ExpandEnvironmentStringsW(pattern.c_str(), path, ARRAYSIZE(path)) &&
+        GetFileAttributesW(path) != INVALID_FILE_ATTRIBUTES) {
+        return path;
+    }
+    return {};
+}
+
+// Windscribe keeps its location list as JSON in its settings.
+std::vector<VpnRegion> LoadWindscribeLocations() {
+    std::vector<VpnRegion> regions;
+    PCWSTR key = L"Software\\Windscribe\\Windscribe2";
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, key, L"wsnetSettings", RRF_RT_REG_SZ, nullptr, nullptr,
+                     &size) != ERROR_SUCCESS ||
+        !size) {
+        return regions;
+    }
+    std::wstring text(size / sizeof(WCHAR), L'\0');
+    if (RegGetValueW(HKEY_CURRENT_USER, key, L"wsnetSettings", RRF_RT_REG_SZ, nullptr, text.data(),
+                     &size) != ERROR_SUCCESS) {
+        return regions;
+    }
+    text.resize(wcsnlen(text.c_str(), text.size()));
+
+    Json settings;
+    JsonParser outer{text};
+    if (!outer.Parse(settings)) {
+        return regions;
+    }
+    std::wstring inventory = settings.String(L"invLocations");
+    Json locations;
+    JsonParser inner{inventory};
+    if (!inner.Parse(locations)) {
+        return regions;
+    }
+    auto* data = locations.Get(L"data");
+    auto* list = data ? data->Get(L"locations") : nullptr;
+    if (!list || list->type != Json::kArray) {
+        return regions;
+    }
+    for (auto const& location : list->items) {
+        VpnRegion region{location.String(L"name"), location.String(L"country_code"), {}};
+        if (auto* datacenters = location.Get(L"datacenters");
+            datacenters && datacenters->type == Json::kArray) {
+            for (auto const& datacenter : datacenters->items) {
+                if (datacenter.Number(L"status") == 1) {
+                    region.cities.push_back({datacenter.String(L"city"), datacenter.String(L"nick")});
+                }
+            }
+        }
+        if (!region.name.empty() && !region.cities.empty()) {
+            regions.push_back(std::move(region));
+        }
+    }
+    return regions;
+}
+
+constexpr int kMaxVisibleVpnRows = 9;
+
+// The list as shown: each region, and under the open one its cities.
+struct VpnRow {
+    int region;
+    int city;  // -1 for the region itself.
+};
+
+std::vector<VpnRow> VpnRows() {
+    std::vector<VpnRow> rows;
+    for (int r = 0; r < (int)g_flyout.vpnRegions.size(); r++) {
+        rows.push_back({r, -1});
+        if (r == g_flyout.vpnOpenRegion) {
+            for (int c = 0; c < (int)g_flyout.vpnRegions[r].cities.size(); c++) {
+                rows.push_back({r, c});
+            }
+        }
+    }
+    return rows;
+}
+
+// The last status Windscribe gave, so the flyout opens with it.
+std::wstring g_vpnLastStatus;
+bool g_vpnLastConnected;
+
+void ApplyVpnStatus(std::wstring const& output) {
+    auto& f = g_flyout;
+    f.vpnBusy = false;
+    f.vpnChecking = false;
+    f.vpnConnected = false;
+    f.vpnStatus = L"Windscribe isn't answering";
+    size_t at = output.find(L"Connect state:");
+    if (at != std::wstring::npos) {
+        size_t start = output.find_first_not_of(L" \t", at + 14);
+        size_t end = output.find_first_of(L"\r\n", start);
+        f.vpnStatus = output.substr(start, end == std::wstring::npos ? std::wstring::npos : end - start);
+        f.vpnConnected = f.vpnStatus.starts_with(L"Connected");
+    }
+    g_vpnLastStatus = f.vpnStatus;
+    g_vpnLastConnected = f.vpnConnected;
+}
+
+void RunVpnCommand(std::wstring const& arguments, std::wstring const& busyText) {
+    auto& f = g_flyout;
+    std::wstring cli = WindscribeFile(L"windscribe-cli.exe");
+    if (cli.empty()) {
+        return;
+    }
+    CancelJob(f.job);
+    // A plain status check keeps showing the last status while it runs.
+    if (arguments.empty()) {
+        f.vpnChecking = true;
+    } else {
+        f.vpnBusy = true;
+        f.vpnStatus = busyText;
+    }
+    std::wstring quoted = L"\"" + cli + L"\"";
+    f.job = StartJob([quoted, arguments] {
+        if (!arguments.empty()) {
+            RunCapture(quoted + L" " + arguments);
+        }
+        return RunCapture(quoted + L" status");
+    });
+}
+
+void LoadVpnFlyout() {
+    auto& f = g_flyout;
+    if (f.vpnRegions.empty()) {
+        f.vpnRegions = LoadWindscribeLocations();
+    }
+}
+
+void RenderVpn(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    c.Label(L"Windscribe", ui::kSage);
+    c.y += c.Px(6);
+    c.Art(f.vpnConnected ? "vpn-on" : "vpn", c.Px(15), c.y, c.Px(26));
+    c.Text(f.body, ui::kInk, {c.Px(51), c.y, c.width - c.Px(15), c.y + c.Px(26)}, f.vpnStatus);
+    c.y += c.Px(32);
+
+    RECT action{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(26)};
+    int actionId = MakeHit(kHitVpnAction, 0);
+    // Always there, so the list never jumps; dimmed while Windscribe works.
+    if (!f.vpnBusy && hover == actionId) {
+        c.Fill(action, ui::kHover);
+    }
+    c.Text(f.body, f.vpnBusy ? ui::kSageAlt : hover == actionId ? ui::kCoral : ui::kGreen,
+           {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(26)},
+           f.vpnConnected ? L"Disconnect" : L"Connect to the best location");
+    if (!f.vpnBusy) {
+        hits.push_back({action, actionId});
+    }
+    c.y += c.Px(26);
+
+    c.Divider();
+    c.Label(L"Locations", ui::kGreen);
+    c.y += c.Px(4);
+    auto rows = VpnRows();
+    if (rows.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"No locations saved by Windscribe yet");
+        c.y += c.Px(24);
+    }
+    int first = std::clamp(f.vpnScroll, 0, std::max(0, (int)rows.size() - kMaxVisibleVpnRows));
+    int last = std::min((int)rows.size(), first + kMaxVisibleVpnRows);
+    for (int i = first; i < last; i++) {
+        auto const& row = rows[i];
+        auto const& region = f.vpnRegions[row.region];
+        RECT rc{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(24)};
+        int id = MakeHit(kHitVpnRow, i);
+        if (hover == id) {
+            c.Fill(rc, ui::kHover);
+        }
+        if (row.city < 0) {
+            bool open = row.region == f.vpnOpenRegion;
+            c.Text(f.body, open ? ui::kGreen : ui::kInk,
+                   {c.Px(15), c.y, c.width - c.Px(50), c.y + c.Px(24)}, region.name);
+            c.Text(f.label, ui::kSageAlt, {c.width - c.Px(50), c.y, c.width - c.Px(15), c.y + c.Px(24)},
+                   region.country, DT_RIGHT, c.Px(1));
+        } else {
+            auto const& city = region.cities[row.city];
+            c.Text(f.body, ui::kSage, {c.Px(30), c.y, c.width - c.Px(15), c.y + c.Px(24)}, city.city);
+            SIZE size = c.Measure(f.body, city.city);
+            c.Text(f.caption, ui::kCoral,
+                   {c.Px(30) + size.cx + c.Px(10), c.y, c.width - c.Px(15), c.y + c.Px(24)}, city.nick);
+        }
+        hits.push_back({rc, id});
+        c.y += c.Px(24);
+    }
+    if ((int)rows.size() > kMaxVisibleVpnRows) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               std::to_wstring(first + 1) + L"-" + std::to_wstring(last) + L" of " +
+                   std::to_wstring(rows.size()) + L", scroll for more");
+        c.y += c.Px(20);
+    }
+
+    c.Divider();
+    c.Link(L"Open Windscribe", 0, hits, hover);
+    c.Link(L"VPN settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+void OnVpnRowClick(int index) {
+    auto& f = g_flyout;
+    auto rows = VpnRows();
+    if (index < 0 || index >= (int)rows.size() || f.vpnBusy) {
+        return;
+    }
+    auto const& row = rows[index];
+    if (row.city < 0) {
+        f.vpnOpenRegion = f.vpnOpenRegion == row.region ? -1 : row.region;
+        return;
+    }
+    auto const& city = f.vpnRegions[row.region].cities[row.city];
+    std::wstring target = city.nick.empty() ? city.city : city.nick;
+    RunVpnCommand(L"connect \"" + target + L"\"", L"Connecting to " + city.city + L"...");
+}
+
+// Bluetooth flyout: the radio, with a switch, then the paired devices. An
+// audio device can be connected or disconnected from here; anything else
+// opens Settings, since Windows has no public way to connect it.
+
+void LoadBluetoothDevices() {
+    auto& f = g_flyout;
+    f.btDevices = PairedBluetoothDevices();
+    FindBluetoothAudio(g_audioEnumerator, f.btDevices);
+    f.btRadioOn = g_bluetoothRadio != 0;
+}
+
+void ConnectBluetooth(BluetoothDevice const& device, bool connect) {
+    auto& f = g_flyout;
+    if (device.audioFilters.empty() || !f.btBusy.empty()) {
+        return;
+    }
+    CancelJob(f.job);
+    f.btNote.clear();
+    f.btBusy = (connect ? L"Connecting to " : L"Disconnecting ") + device.name + L"...";
+    std::vector<std::wstring> filters = device.audioFilters;
+    GUID container = device.container;
+    f.job = StartJob([filters, container, connect] {
+        if (!RequestBluetoothAudio(filters, connect)) {
+            return std::wstring(L"failed");
+        }
+        for (int i = 0; i < 40; i++) {
+            Sleep(250);
+            for (auto const& device : PairedBluetoothDevices()) {
+                if (IsEqualGUID(device.container, container) && device.connected == connect) {
+                    return std::wstring(L"ok");
+                }
+            }
+        }
+        return std::wstring(L"timeout");
+    });
+}
+
+void ToggleBluetoothRadio() {
+    auto& f = g_flyout;
+    if (!f.btBusy.empty()) {
+        return;
+    }
+    CancelJob(f.job);
+    f.btNote.clear();
+    bool on = !f.btRadioOn;
+    f.btBusy = on ? L"Turning on..." : L"Turning off...";
+    f.job = StartJob([on] { return SetBluetoothRadio(on); });
+}
+
+// A request finished: what it says, if it didn't work.
+void FinishBluetoothJob(std::wstring const& result) {
+    auto& f = g_flyout;
+    bool connecting = f.btBusy.starts_with(L"Connecting");
+    bool radio = f.btBusy.starts_with(L"Turning");
+    f.btBusy.clear();
+    if (result == L"denied") {
+        f.btNote = L"Windows didn't allow the change";
+    } else if (result == L"failed") {
+        f.btNote = radio ? L"Couldn't switch Bluetooth" : L"The device didn't answer";
+    } else if (result == L"timeout") {
+        f.btNote = connecting ? L"Not connected yet, is it in range?" : L"Still connected";
+    }
+    LoadBluetoothDevices();
+    RequestRefresh((1u << kBluetooth) | (1u << kVolume));
+}
+
+void RenderBluetooth(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    bool busy = !f.btBusy.empty();
+    bool anyConnected = std::any_of(f.btDevices.begin(), f.btDevices.end(),
+                                    [](BluetoothDevice const& d) { return d.connected; });
+
+    c.y = c.Px(15);
+    c.Label(L"Bluetooth", ui::kSage);
+    c.y += c.Px(6);
+    c.Art(!f.btRadioOn ? "bluetooth-off" : anyConnected ? "bluetooth-connected" : "bluetooth", c.Px(15), c.y,
+          c.Px(26));
+    std::wstring action = f.btRadioOn ? L"TURN OFF" : L"TURN ON";
+    SIZE size = c.Measure(f.label, action, c.Px(2));
+    RECT button{c.width - c.Px(15) - size.cx - c.Px(24), c.y + c.Px(2), c.width - c.Px(15), c.y + c.Px(24)};
+    std::wstring status = busy ? f.btBusy : !f.btNote.empty() ? f.btNote : f.btRadioOn ? L"On" : L"Off";
+    c.Text(f.body, !f.btNote.empty() && !busy ? ui::kCoral : ui::kInk,
+           {c.Px(51), c.y, button.left - c.Px(8), c.y + c.Px(26)}, status);
+    int toggleId = MakeHit(kHitBtToggle, 0);
+    bool hot = !busy && hover == toggleId;
+    c.Fill(button, hot ? ui::kHover : ui::kGround);
+    c.Frame(button, hot ? ui::kGreen : ui::kEdge);
+    c.CenteredText(f.label, busy ? ui::kSageAlt : hot ? ui::kGreen : ui::kSage, button, action, c.Px(2));
+    if (!busy) {
+        hits.push_back({button, toggleId});
+    }
+    c.y += c.Px(32);
+
+    c.Divider();
+    c.Label(L"Devices", ui::kGreen);
+    c.y += c.Px(4);
+    auto note = [&](PCWSTR text) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)}, text);
+        c.y += c.Px(24);
+    };
+    if (!f.btRadioOn) {
+        note(L"Bluetooth is off");
+    } else if (f.btDevices.empty()) {
+        note(L"No paired devices");
+    }
+    for (int i = 0; f.btRadioOn && i < (int)f.btDevices.size(); i++) {
+        auto const& device = f.btDevices[i];
+        bool selected = device.name == f.btSelected;
+        int rowHeight = c.Px(selected ? 66 : 38);
+        RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + rowHeight};
+        int rowId = MakeHit(kHitBtRow, i);
+        if (selected) {
+            c.Fill(row, ui::kRaised);
+            c.Frame(row, ui::kEdge);
+        } else if (hover == rowId) {
+            c.Fill(row, ui::kHover);
+        }
+        hits.push_back({row, rowId});
+
+        int artX = c.width - c.Px(15 + 26);
+        c.Art(device.connected ? "bluetooth-connected" : "bluetooth", artX, c.y + c.Px(6), c.Px(26));
+        c.Text(f.body, ui::kInk, {c.Px(15), c.y + c.Px(2), artX - c.Px(8), c.y + c.Px(20)}, device.name);
+        std::wstring detail = device.connected ? L"Connected" : L"Not connected";
+        if (device.connected && device.battery >= 0) {
+            detail += L" ... " + std::to_wstring(device.battery) + L"%";
+        }
+        c.Text(f.caption, device.connected ? ui::kCoral : ui::kSage,
+               {c.Px(15), c.y + c.Px(20), artX - c.Px(8), c.y + c.Px(34)}, detail);
+
+        if (selected) {
+            bool audio = !device.audioFilters.empty();
+            std::wstring label = !audio ? L"SETTINGS" : device.connected ? L"DISCONNECT" : L"CONNECT";
+            SIZE labelSize = c.Measure(f.label, label, c.Px(2));
+            RECT action{c.width - c.Px(15) - labelSize.cx - c.Px(24), c.y + c.Px(38), c.width - c.Px(15),
+                        c.y + c.Px(60)};
+            int actionId = MakeHit(kHitBtAction, i);
+            bool actionHot = !busy && hover == actionId;
+            c.Fill(action, actionHot ? ui::kHover : ui::kGround);
+            c.Frame(action, actionHot ? ui::kGreen : ui::kEdge);
+            c.CenteredText(f.label, busy ? ui::kSageAlt : actionHot ? ui::kGreen : ui::kSage, action, label,
+                           c.Px(2));
+            if (!busy) {
+                hits.push_back({action, actionId});
+            }
+        }
+        c.y += rowHeight + c.s;
+    }
+
+    RenderBluetoothBatteries(c);
+
+    c.Divider();
+    c.Link(L"Add a device", 0, hits, hover);
+    c.Link(L"Bluetooth settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+// The mixer's Bluetooth section: each paired audio device, with Connect or
+// Disconnect.
+void RenderMixerBluetooth(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    bool any = std::any_of(f.btDevices.begin(), f.btDevices.end(),
+                           [](BluetoothDevice const& d) { return !d.audioFilters.empty(); });
+    if (!any || !f.btRadioOn) {
+        return;
+    }
+    bool busy = !f.btBusy.empty();
+    c.Divider();
+    c.Label(L"Bluetooth", ui::kGreen);
+    c.y += c.Px(4);
+    if (busy || !f.btNote.empty()) {
+        c.Text(f.caption, busy ? ui::kSageAlt : ui::kCoral, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               busy ? f.btBusy : f.btNote);
+        c.y += c.Px(22);
+    }
+    for (int i = 0; i < (int)f.btDevices.size(); i++) {
+        auto const& device = f.btDevices[i];
+        if (device.audioFilters.empty()) {
+            continue;
+        }
+        int id = MakeHit(kHitMixerBt, i);
+        std::wstring action = device.connected ? L"Disconnect" : L"Connect";
+        SIZE size = c.Measure(f.caption, action);
+        RECT link{c.width - c.Px(15) - size.cx, c.y, c.width - c.Px(15), c.y + c.Px(26)};
+        c.Art(device.connected ? "bluetooth-connected" : "bluetooth", c.Px(15), c.y + c.Px(5), c.Px(16));
+        c.Text(f.body, device.connected ? ui::kInk : ui::kSage,
+               {c.Px(42), c.y, link.left - c.Px(10), c.y + c.Px(26)}, device.name);
+        c.Text(f.caption, busy ? ui::kSageAlt : hover == id ? ui::kCoral : ui::kGreen, link, action);
+        if (!busy) {
+            hits.push_back({link, id});
+        }
+        c.y += c.Px(26);
+    }
+}
+
+// Device batteries in the flyouts: their own flyout, opened from a device's
+// icon, and sections in the mixer (headsets) and the Bluetooth flyout (what
+// Bluetooth itself doesn't list).
+
+void LoadBatteriesFlyout() {
+    g_flyout.batteries = g_batteries;
+}
+
+// One device: its halo, name, and level. Large rows in the devices flyout,
+// compact ones in the mixer and Bluetooth flyouts.
+void BatteryRow(Canvas& c, bat::Device const& d, bool large) {
+    auto& f = g_flyout;
+    std::wstring const& name = d.name;
+    std::wstring detail = BatteryDetail(d);
+    COLORREF detailColor = d.charging ? ui::kGreen : d.online ? ui::kCoral : ui::kSageAlt;
+    if (large) {
+        int artX = c.width - c.Px(15 + 26);
+        c.Art(BatteryArtId(d), artX, c.y + c.Px(6), c.Px(26));
+        c.Text(f.body, d.online ? ui::kInk : ui::kSage, {c.Px(15), c.y + c.Px(2), artX - c.Px(8), c.y + c.Px(20)},
+               name);
+        c.Text(f.caption, detailColor, {c.Px(15), c.y + c.Px(20), artX - c.Px(8), c.y + c.Px(34)}, detail);
+        c.y += c.Px(38) + c.s;
+        return;
+    }
+    SIZE size = c.Measure(f.caption, detail);
+    RECT right{c.width - c.Px(15) - size.cx, c.y, c.width - c.Px(15), c.y + c.Px(26)};
+    c.Art(BatteryArtId(d), c.Px(15), c.y + c.Px(5), c.Px(16));
+    c.Text(f.body, d.online ? ui::kInk : ui::kSage, {c.Px(42), c.y, right.left - c.Px(10), c.y + c.Px(26)}, name);
+    c.Text(f.caption, detailColor, right, detail);
+    c.y += c.Px(26);
+}
+
+void RenderDevices(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    c.Label(L"Device batteries", ui::kSage);
+    c.y += c.Px(6);
+    if (f.batteries.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"No devices with a battery reading");
+        c.y += c.Px(24);
+    }
+    for (auto const& d : f.batteries) {
+        BatteryRow(c, d, true);
+    }
+    c.Divider();
+    c.Link(L"Check now", 0, hits, hover);
+    c.Link(L"Bluetooth settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+void RenderBatterySection(Canvas& c, PCWSTR label, bool (*include)(bat::Device const&)) {
+    if (!g_batterySettings.inFlyouts) {
+        return;
+    }
+    auto& list = g_flyout.batteries;
+    if (std::none_of(list.begin(), list.end(), include)) {
+        return;
+    }
+    c.Divider();
+    c.Label(label, ui::kGreen);
+    c.y += c.Px(4);
+    for (auto const& d : list) {
+        if (include(d)) {
+            BatteryRow(c, d, false);
+        }
+    }
+}
+
+// The mixer shows headsets; the Bluetooth flyout shows what its own list
+// doesn't already carry a level for.
+void RenderMixerBatteries(Canvas& c) {
+    RenderBatterySection(c, L"Headset battery",
+                         [](bat::Device const& d) { return BatteryKind(d) == "headset"; });
+}
+
+void RenderBluetoothBatteries(Canvas& c) {
+    RenderBatterySection(c, L"Device batteries",
+                         [](bat::Device const& d) { return d.source != "bluetooth"; });
+}
+
+// Volume mixer flyout: the output device and every program playing through
+// it, each with a slider and a mute button, like the Windows 7 mixer.
+
+constexpr GUID kIidAudioSessionManager2 = {
+    0x77AA99A0, 0x1BD6, 0x484F, {0x8B, 0xC7, 0x2C, 0x65, 0x4C, 0x9A, 0x9B, 0x6F}};
+constexpr GUID kIidAudioSessionControl2 = {
+    0xBFB7FF88, 0x7239, 0x4FC9, {0x8F, 0xA2, 0x07, 0xC9, 0x50, 0xBE, 0x9C, 0x6D}};
+constexpr GUID kIidSimpleAudioVolume = {
+    0x87CE5498, 0x68D6, 0x44E5, {0x92, 0x15, 0x6D, 0xA4, 0x7E, 0xF8, 0x83, 0xD8}};
+
+constexpr UINT_PTR kTimerMixer = 3;
+constexpr UINT kMixerRefreshMs = 1500;
+
+std::wstring ProcessPath(DWORD pid) {
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!process) {
+        return {};
+    }
+    WCHAR path[MAX_PATH * 2];
+    DWORD size = ARRAYSIZE(path);
+    std::wstring result = QueryFullProcessImageNameW(process, 0, path, &size) ? path : L"";
+    CloseHandle(process);
+    return result;
+}
+
+// The name a program gives itself: its file description, like the mixer.
+std::wstring FileDescription(std::wstring const& path) {
+    DWORD ignored = 0;
+    DWORD size = GetFileVersionInfoSizeW(path.c_str(), &ignored);
+    if (size) {
+        std::vector<BYTE> data(size);
+        struct Translation {
+            WORD language;
+            WORD codePage;
+        }* translations = nullptr;
+        UINT length = 0;
+        if (GetFileVersionInfoW(path.c_str(), 0, size, data.data()) &&
+            VerQueryValueW(data.data(), L"\\VarFileInfo\\Translation", (void**)&translations,
+                           &length) &&
+            length >= sizeof(Translation)) {
+            WCHAR query[64];
+            swprintf_s(query, L"\\StringFileInfo\\%04x%04x\\FileDescription",
+                       translations[0].language, translations[0].codePage);
+            WCHAR* description = nullptr;
+            UINT chars = 0;
+            if (VerQueryValueW(data.data(), query, (void**)&description, &chars) && chars > 1) {
+                return description;
+            }
+        }
+    }
+    std::wstring name = path.substr(path.find_last_of(L'\\') + 1);
+    if (name.size() > 4 && _wcsicmp(name.c_str() + name.size() - 4, L".exe") == 0) {
+        name.resize(name.size() - 4);
+    }
+    return name;
+}
+
+std::wstring SessionName(IAudioSessionControl2* control, std::wstring const& path) {
+    LPWSTR display = nullptr;
+    std::wstring name;
+    if (SUCCEEDED(control->GetDisplayName(&display)) && display && *display) {
+        if (display[0] == L'@') {
+            WCHAR resolved[256];
+            if (SUCCEEDED(SHLoadIndirectString(display, resolved, ARRAYSIZE(resolved), nullptr))) {
+                name = resolved;
+            }
+        } else {
+            name = display;
+        }
+    }
+    CoTaskMemFree(display);
+    if (name.empty() && !path.empty()) {
+        name = FileDescription(path);
+    }
+    return name.empty() ? L"Unknown app" : name;
+}
+
+// Programs' icons, loaded once each.
+std::map<std::wstring, HICON> g_appIcons;
+
+HICON AppIcon(std::wstring const& path, int size) {
+    std::wstring key = path + L"|" + std::to_wstring(size);
+    auto it = g_appIcons.find(key);
+    if (it != g_appIcons.end()) {
+        return it->second;
+    }
+    HICON icon = nullptr;
+    if (!path.empty()) {
+        SHDefExtractIconW(path.c_str(), 0, 0, &icon, nullptr, MAKELONG(size, size));
+    }
+    g_appIcons[key] = icon;
+    return icon;
+}
+
+void ReleaseMixer() {
+    for (auto& session : g_flyout.mixer) {
+        for (auto* control : session.controls) {
+            control->Release();
+        }
+    }
+    g_flyout.mixer.clear();
+}
+
+void LoadMixerFlyout() {
+    auto& f = g_flyout;
+    ReleaseMixer();
+    f.mixerDevice = g_audioDeviceName.empty() ? L"No output device" : g_audioDeviceName;
+    f.mixerMaster = -1;
+    f.mixerMasterMuted = false;
+    float level = 0;
+    BOOL muted = FALSE;
+    if (g_endpointVolume && SUCCEEDED(g_endpointVolume->GetMasterVolumeLevelScalar(&level))) {
+        f.mixerMaster = (int)(level * 100 + 0.5f);
+        g_endpointVolume->GetMute(&muted);
+        f.mixerMasterMuted = muted;
+    }
+
+    IMMDevice* device = nullptr;
+    if (!g_audioEnumerator ||
+        FAILED(g_audioEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device))) {
+        return;
+    }
+    IAudioSessionManager2* manager = nullptr;
+    if (SUCCEEDED(device->Activate(kIidAudioSessionManager2, CLSCTX_ALL, nullptr, (void**)&manager))) {
+        IAudioSessionEnumerator* sessions = nullptr;
+        if (SUCCEEDED(manager->GetSessionEnumerator(&sessions))) {
+            int count = 0;
+            sessions->GetCount(&count);
+            for (int i = 0; i < count; i++) {
+                IAudioSessionControl* control = nullptr;
+                if (FAILED(sessions->GetSession(i, &control))) {
+                    continue;
+                }
+                AudioSessionState state = AudioSessionStateExpired;
+                IAudioSessionControl2* control2 = nullptr;
+                ISimpleAudioVolume* volume = nullptr;
+                if (SUCCEEDED(control->GetState(&state)) && state != AudioSessionStateExpired &&
+                    SUCCEEDED(control->QueryInterface(kIidAudioSessionControl2, (void**)&control2)) &&
+                    SUCCEEDED(control->QueryInterface(kIidSimpleAudioVolume, (void**)&volume))) {
+                    DWORD pid = 0;
+                    control2->GetProcessId(&pid);
+                    bool system = control2->IsSystemSoundsSession() == S_OK;
+                    std::wstring path = system ? L"" : ProcessPath(pid);
+                    float value = 0;
+                    BOOL sessionMuted = FALSE;
+                    volume->GetMasterVolume(&value);
+                    volume->GetMute(&sessionMuted);
+                    // One row per program: a browser plays through several
+                    // sessions, some programs through several processes, and
+                    // they all follow the program's row.
+                    auto existing = std::find_if(f.mixer.begin(), f.mixer.end(), [&](MixerSession const& s) {
+                        return !system && !s.system &&
+                               (s.pid == pid || (!path.empty() && _wcsicmp(s.path.c_str(), path.c_str()) == 0));
+                    });
+                    if (existing != f.mixer.end()) {
+                        existing->controls.push_back(volume);
+                    } else {
+                        MixerSession session;
+                        session.pid = pid;
+                        session.system = system;
+                        session.path = path;
+                        session.name = system ? L"System sounds" : SessionName(control2, session.path);
+                        session.volume = (int)(value * 100 + 0.5f);
+                        session.muted = sessionMuted;
+                        session.controls.push_back(volume);
+                        f.mixer.push_back(std::move(session));
+                    }
+                    volume = nullptr;
+                }
+                if (volume) {
+                    volume->Release();
+                }
+                if (control2) {
+                    control2->Release();
+                }
+                control->Release();
+            }
+            sessions->Release();
+        }
+        manager->Release();
+    }
+    device->Release();
+
+    // System sounds first, then the programs by name.
+    std::stable_sort(f.mixer.begin(), f.mixer.end(), [](MixerSession const& a, MixerSession const& b) {
+        if (a.system != b.system) {
+            return a.system;
+        }
+        return _wcsicmp(a.name.c_str(), b.name.c_str()) < 0;
+    });
+}
+
+// Slider 0 is the device, then one per program.
+void SetMixerVolume(int slider, int value) {
+    auto& f = g_flyout;
+    value = std::clamp(value, 0, 100);
+    if (slider == 0) {
+        if (g_endpointVolume) {
+            g_endpointVolume->SetMasterVolumeLevelScalar(value / 100.0f, nullptr);
+            f.mixerMaster = value;
+        }
+        return;
+    }
+    if (slider - 1 < (int)f.mixer.size()) {
+        auto& session = f.mixer[slider - 1];
+        for (auto* control : session.controls) {
+            control->SetMasterVolume(value / 100.0f, nullptr);
+        }
+        session.volume = value;
+    }
+}
+
+void ToggleMixerMute(int slider) {
+    auto& f = g_flyout;
+    if (slider == 0) {
+        if (g_endpointVolume) {
+            f.mixerMasterMuted = !f.mixerMasterMuted;
+            g_endpointVolume->SetMute(f.mixerMasterMuted, nullptr);
+        }
+        return;
+    }
+    if (slider - 1 < (int)f.mixer.size()) {
+        auto& session = f.mixer[slider - 1];
+        session.muted = !session.muted;
+        for (auto* control : session.controls) {
+            control->SetMute(session.muted, nullptr);
+        }
+    }
+}
+
+std::string SpeakerArt(int volume, bool muted) {
+    if (muted) {
+        return "audio-mute";
+    }
+    return volume <= 0 ? "audio-0" : volume < 34 ? "audio-low" : volume < 67 ? "audio-mid" : "audio-high";
+}
+
+// One row: icon (a mute button), name, level, slider. The mute hit goes in
+// first so it wins over the row's slider.
+void MixerRow(Canvas& c, std::vector<Hit>& hits, int hover, int slider, std::wstring const& name,
+              int volume, bool muted, HICON icon) {
+    auto& f = g_flyout;
+    RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + c.Px(48)};
+    int sliderId = MakeHit(kHitMixerSlider, slider);
+    int muteId = MakeHit(kHitMixerMute, slider);
+    if (hover == sliderId || hover == muteId || f.dragMixer == slider) {
+        c.Fill(row, ui::kHover);
+    }
+    RECT mute{c.Px(10), c.y + c.Px(2), c.Px(36), c.y + c.Px(22)};
+    if (hover == muteId) {
+        c.Frame(mute, ui::kEdge);
+    }
+    if (icon && c.paint && !muted) {
+        int size = c.Px(16);
+        DrawIconEx(c.dc, c.Px(15), c.y + c.Px(4), icon, size, size, 0, nullptr, DI_NORMAL);
+    } else {
+        c.Art(muted ? "audio-mute" : SpeakerArt(volume, false), c.Px(15), c.y + c.Px(4), c.Px(16));
+    }
+    hits.push_back({mute, muteId});
+
+    c.Text(f.body, slider == 0 ? ui::kInk : ui::kSage,
+           {c.Px(42), c.y + c.Px(2), c.width - c.Px(70), c.y + c.Px(22)}, name);
+    std::wstring value = volume < 0 ? L"" : muted ? L"Muted" : std::to_wstring(volume) + L"%";
+    c.Text(f.caption, muted ? ui::kSageAlt : ui::kCoral,
+           {c.width - c.Px(70), c.y + c.Px(2), c.width - c.Px(15), c.y + c.Px(22)}, value, DT_RIGHT);
+
+    Hit hit{row, sliderId};
+    RECT track = SliderTrack(hit, c.s);
+    if (volume >= 0) {
+        c.Fill(track, ui::kRaised);
+        c.Frame(track, ui::kEdge);
+        int filled = track.left + (track.right - track.left) * volume / 100;
+        c.Fill({track.left + c.s, track.top + c.s, std::max<LONG>(track.left + c.s, filled), track.bottom - c.s},
+               muted ? ui::kSageAlt : ui::kGreen);
+        c.Fill({filled - c.Px(2), track.top - c.Px(4), filled + c.Px(2), track.bottom + c.Px(4)}, ui::kInk);
+        hits.push_back(hit);
+    }
+    c.y += c.Px(50);
+}
+
+void RenderMixer(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    c.y = c.Px(15);
+    c.Label(L"Device", ui::kSage);
+    c.y += c.Px(4);
+    MixerRow(c, hits, hover, 0, f.mixerDevice, f.mixerMaster, f.mixerMasterMuted, nullptr);
+
+    c.Divider();
+    c.Label(L"Applications", ui::kGreen);
+    c.y += c.Px(4);
+    if (f.mixer.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"Nothing is playing sound");
+        c.y += c.Px(24);
+    }
+    for (size_t i = 0; i < f.mixer.size(); i++) {
+        auto const& session = f.mixer[i];
+        MixerRow(c, hits, hover, (int)i + 1, session.name, session.volume, session.muted,
+                 session.system ? nullptr : AppIcon(session.path, c.Px(16)));
+    }
+    RenderMixerBatteries(c);
+    RenderMixerBluetooth(c, hits, hover);
+
+    c.Divider();
+    c.Link(L"Open Volume mixer", 0, hits, hover);
+    c.Link(L"Sound settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+void DragMixer(int slider, int x) {
+    for (auto const& hit : g_flyout.hits) {
+        if (hit.id == MakeHit(kHitMixerSlider, slider)) {
+            RECT track = SliderTrack(hit, g_flyout.scale);
+            SetMixerVolume(slider, (x - track.left) * 100 / std::max(1, (int)(track.right - track.left)));
+            InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+            return;
+        }
+    }
+}
+
+int MixerLevel(int slider) {
+    if (slider == 0) {
+        return g_flyout.mixerMaster;
+    }
+    return slider - 1 < (int)g_flyout.mixer.size() ? g_flyout.mixer[slider - 1].volume : 0;
+}
+
+void LayoutFlyout(int iconKind);
+
+// Notification centre and calendar flyout: notifications grouped by app in
+// the design's icons, then the month and the picked day's agenda.
+
+constexpr int kNotifyListHeight = 330;  // At 100%; the list scrolls past it.
+constexpr int kMaxAgendaRows = 6;
+
+int LocaleFirstDayOfWeek() {
+    WCHAR text[4];
+    // The locale says 0 for Monday; counted from Sunday here, as SYSTEMTIME does.
+    int monday = GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IFIRSTDAYOFWEEK, text, ARRAYSIZE(text))
+                     ? _wtoi(text)
+                     : 6;
+    return (monday + 1) % 7;
+}
+
+LONGLONG CalendarGridStart(int year, int month) {
+    SYSTEMTIME first{};
+    first.wYear = (WORD)year;
+    first.wMonth = (WORD)month;
+    first.wDay = 1;
+    LONGLONG day = MinutesOf(first);
+    SYSTEMTIME withWeekday = TimeOfMinutes(day);
+    int offset = (withWeekday.wDayOfWeek - LocaleFirstDayOfWeek() + 7) % 7;
+    return day - offset * 24 * 60;
+}
+
+void LoadCalendarMonth() {
+    auto& f = g_flyout;
+    LONGLONG start = CalendarGridStart(f.calYear, f.calMonth);
+    f.calMonthEvents = CalendarBetween(start, start + 42 * 24 * 60);
+}
+
+void LoadNotifyFlyout() {
+    auto& f = g_flyout;
+    f.notifyApps = LoadNotifications();
+    DWORD toasts = 1;
+    f.notifyDnd = ReadDword(HKEY_CURRENT_USER, kNotificationsPath, L"NOC_GLOBAL_SETTING_TOASTS_ENABLED", &toasts) &&
+                  !toasts;
+    int entries = 0;
+    for (auto const& app : f.notifyApps) {
+        entries += 1 + (int)app.items.size();
+    }
+    f.notifyEntries = entries;
+    f.notifyScroll = std::clamp(f.notifyScroll, 0, std::max(0, entries - 1));
+    LoadCalendarMonth();
+    f.width = 340 * f.scale;
+}
+
+int BlockLines(Canvas& c, HFONT font, int width, std::wstring const& text, int maxLines) {
+    if (text.empty()) {
+        return 0;
+    }
+    RECT rc{0, 0, width, 0};
+    HGDIOBJ old = SelectObject(c.dc, font);
+    SetTextCharacterExtra(c.dc, 0);
+    DrawTextW(c.dc, text.c_str(), -1, &rc, DT_CALCRECT | DT_WORDBREAK | DT_NOPREFIX | DT_EDITCONTROL);
+    TEXTMETRICW metrics{};
+    GetTextMetricsW(c.dc, &metrics);
+    SelectObject(c.dc, old);
+    int line = std::max(1, (int)metrics.tmHeight);
+    return std::clamp(((int)rc.bottom + line - 1) / line, 1, maxLines);
+}
+
+void TextBlock(Canvas& c, HFONT font, COLORREF color, RECT rc, std::wstring const& text) {
+    if (!c.paint || text.empty()) {
+        return;
+    }
+    HGDIOBJ old = SelectObject(c.dc, font);
+    SetTextCharacterExtra(c.dc, 0);
+    SetBkMode(c.dc, TRANSPARENT);
+    SetTextColor(c.dc, color);
+    DrawTextW(c.dc, text.c_str(), -1, &rc, DT_WORDBREAK | DT_NOPREFIX | DT_EDITCONTROL | DT_END_ELLIPSIS);
+    SelectObject(c.dc, old);
+}
+
+void RenderCalendar(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    SYSTEMTIME picked = TimeOfMinutes(f.calSelected);
+    c.Text(f.body, ui::kInk, {c.Px(15), c.y, c.width - c.Px(70), c.y + c.Px(20)},
+           FormatDate(picked, nullptr, DATE_LONGDATE));
+    RECT prev{c.width - c.Px(62), c.y, c.width - c.Px(40), c.y + c.Px(20)};
+    RECT next{c.width - c.Px(37), c.y, c.width - c.Px(15), c.y + c.Px(20)};
+    auto arrow = [&](RECT rc, int type, PCWSTR glyph) {
+        int id = MakeHit(type, 0);
+        if (hover == id) {
+            c.Fill(rc, ui::kHover);
+        }
+        c.Frame(rc, ui::kEdge);
+        c.CenteredText(f.body, hover == id ? ui::kCoral : ui::kGreen, rc, glyph, 0);
+        hits.push_back({rc, id});
+    };
+    arrow(prev, kHitCalPrev, L"<");
+    arrow(next, kHitCalNext, L">");
+    c.y += c.Px(26);
+
+    SYSTEMTIME month{};
+    month.wYear = (WORD)f.calYear;
+    month.wMonth = (WORD)f.calMonth;
+    month.wDay = 1;
+    std::wstring monthName = FormatDate(month, L"MMMM yyyy");
+    CharUpperBuffW(monthName.data(), (DWORD)monthName.size());
+    c.Text(f.label, ui::kSage, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(14)}, monthName, DT_LEFT, c.Px(2));
+    c.y += c.Px(18);
+
+    int cellWidth = (c.width - c.Px(30)) / 7;
+    int cellHeight = c.Px(22);
+    int firstDay = LocaleFirstDayOfWeek();
+    for (int col = 0; col < 7; col++) {
+        int weekday = (firstDay + col) % 7;
+        std::wstring name = LocaleString(weekday == 0 ? LOCALE_SSHORTESTDAYNAME7 : LOCALE_SSHORTESTDAYNAME1 + weekday - 1);
+        RECT rc{c.Px(15) + col * cellWidth, c.y, c.Px(15) + (col + 1) * cellWidth, c.y + c.Px(14)};
+        c.CenteredText(f.label, ui::kSageAlt, rc, name, 0);
+    }
+    c.y += c.Px(18);
+
+    SYSTEMTIME now;
+    GetLocalTime(&now);
+    LONGLONG today = DayStart(MinutesOf(now));
+    LONGLONG start = CalendarGridStart(f.calYear, f.calMonth);
+    for (int cell = 0; cell < 42; cell++) {
+        LONGLONG day = start + cell * 24 * 60;
+        SYSTEMTIME date = TimeOfMinutes(day);
+        RECT rc{c.Px(15) + (cell % 7) * cellWidth, c.y + (cell / 7) * cellHeight,
+                c.Px(15) + (cell % 7 + 1) * cellWidth, c.y + (cell / 7 + 1) * cellHeight};
+        int id = MakeHit(kHitCalDay, cell);
+        bool inMonth = date.wMonth == f.calMonth;
+        if (day == today || hover == id) {
+            c.Fill(rc, ui::kHover);
+        }
+        if (day == f.calSelected) {
+            c.Frame(rc, ui::kGreen);
+        } else if (day == today) {
+            c.Frame(rc, ui::kEdge);
+        }
+        c.CenteredText(f.caption, day == today ? ui::kInk : inMonth ? ui::kSage : ui::kLine, rc,
+                       std::to_wstring(date.wDay), 0);
+        bool busy = std::any_of(f.calMonthEvents.begin(), f.calMonthEvents.end(), [&](CalOccurrence const& o) {
+            return o.start < day + 24 * 60 && std::max(o.end, o.start + 1) > day;
+        });
+        if (busy) {
+            int cx = (rc.left + rc.right) / 2;
+            c.Fill({cx - c.s, rc.bottom - c.Px(4), cx + c.s, rc.bottom - c.Px(4) + 2 * c.s}, ui::kCoral);
+        }
+        hits.push_back({rc, id});
+    }
+    c.y += 6 * cellHeight + c.Px(8);
+
+    DWORD interval = 0;
+    if (CalendarSource(&interval).empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               L"No calendar connected");
+        c.y += c.Px(20);
+        return;
+    }
+    std::vector<CalOccurrence> agenda;
+    for (auto const& occurrence : f.calMonthEvents) {
+        if (occurrence.start < f.calSelected + 24 * 60 && std::max(occurrence.end, occurrence.start + 1) > f.calSelected) {
+            agenda.push_back(occurrence);
+        }
+    }
+    if (agenda.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               L"No events scheduled");
+        c.y += c.Px(20);
+    }
+    for (size_t i = 0; i < agenda.size() && i < (size_t)kMaxAgendaRows; i++) {
+        auto const& occurrence = agenda[i];
+        std::wstring when = occurrence.allDay ? L"All day" : FormatTime(TimeOfMinutes(occurrence.start), nullptr, TIME_NOSECONDS);
+        c.Text(f.caption, ui::kCoral, {c.Px(15), c.y, c.Px(85), c.y + c.Px(18)}, when);
+        c.Text(f.caption, ui::kInk, {c.Px(90), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               occurrence.title.empty() ? L"(no title)" : occurrence.title);
+        c.y += c.Px(18);
+    }
+    if (agenda.size() > (size_t)kMaxAgendaRows) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               L"+" + std::to_wstring(agenda.size() - kMaxAgendaRows) + L" more");
+        c.y += c.Px(18);
+    }
+}
+
+void RenderNotify(Canvas& c, std::vector<Hit>& hits, int hover) {
+    auto& f = g_flyout;
+    f.notifyTargets.clear();
+    c.y = c.Px(15);
+    int headerTop = c.y;
+    c.Label(L"Notifications", ui::kSage);
+    if (!f.notifyApps.empty()) {
+        RECT clear{c.width - c.Px(100), headerTop - c.Px(2), c.width - c.Px(15), headerTop + c.Px(16)};
+        int id = MakeHit(kHitNotifyClearAll, 0);
+        c.Text(f.caption, hover == id ? ui::kCoral : ui::kGreen, clear, L"Clear all", DT_RIGHT);
+        hits.push_back({clear, id});
+    }
+    c.y += c.Px(6);
+    if (f.notifyDnd) {
+        c.Text(f.caption, ui::kCoral, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               L"Do not disturb is on");
+        c.y += c.Px(20);
+    }
+
+    int listBottom = c.y + c.Px(kNotifyListHeight);
+    int textLeft = c.Px(40);
+    int entry = 0;
+    bool clipped = false;
+    for (int a = 0; a < (int)f.notifyApps.size() && !clipped; a++) {
+        auto const& app = f.notifyApps[a];
+        if (entry++ >= f.notifyScroll) {
+            if (c.y + c.Px(26) > listBottom) {
+                clipped = true;
+                break;
+            }
+            c.Art(app.design, c.Px(15), c.y + c.Px(5), c.Px(16));
+            std::wstring name = app.name;
+            CharUpperBuffW(name.data(), (DWORD)name.size());
+            c.Text(f.label, ui::kSage, {textLeft, c.y, c.width - c.Px(40), c.y + c.Px(26)}, name, DT_LEFT, c.Px(2));
+            RECT clear{c.width - c.Px(32), c.y + c.Px(4), c.width - c.Px(12), c.y + c.Px(22)};
+            int clearId = MakeHit(kHitNotifyClearApp, a);
+            c.CenteredText(f.body, hover == clearId ? ui::kCoral : ui::kSageAlt, clear, L"x", 0);
+            hits.push_back({clear, clearId});
+            c.y += c.Px(26);
+        }
+        for (int i = 0; i < (int)app.items.size(); i++) {
+            if (entry++ < f.notifyScroll) {
+                continue;
+            }
+            auto const& item = app.items[i];
+            int bodyWidth = c.width - textLeft - c.Px(15);
+            int lines = BlockLines(c, f.caption, bodyWidth, item.body, 2);
+            int lineHeight = c.Px(16);
+            int height = c.Px(20) + lines * lineHeight + (item.actions.empty() ? 0 : c.Px(20)) + c.Px(8);
+            if (c.y + height > listBottom) {
+                clipped = true;
+                break;
+            }
+            int target = (int)f.notifyTargets.size();
+            f.notifyTargets.push_back({a, i, -1});
+            RECT row{c.Px(5), c.y, c.width - c.Px(5), c.y + height - c.Px(4)};
+            int itemId = MakeHit(kHitNotifyItem, target);
+            int dismissId = MakeHit(kHitNotifyDismiss, target);
+            bool hot = hover == itemId || hover == dismissId;
+            if (hot) {
+                c.Fill(row, ui::kHover);
+            }
+            c.Text(f.body, ui::kInk, {textLeft, c.y, c.width - c.Px(72), c.y + c.Px(20)},
+                   item.title.empty() ? app.name : item.title);
+            c.Text(f.caption, ui::kSageAlt, {c.width - c.Px(72), c.y, c.width - c.Px(34), c.y + c.Px(20)},
+                   RelativeTime(item.arrival), DT_RIGHT);
+            RECT dismiss{c.width - c.Px(32), c.y + c.Px(1), c.width - c.Px(12), c.y + c.Px(19)};
+            c.CenteredText(f.body, hover == dismissId ? ui::kCoral : hot ? ui::kSage : ui::kLine, dismiss, L"x", 0);
+            hits.push_back({dismiss, dismissId});
+            int y = c.y + c.Px(20);
+            TextBlock(c, f.caption, ui::kSage, {textLeft, y, textLeft + bodyWidth, y + lines * lineHeight}, item.body);
+            y += lines * lineHeight;
+            int x = textLeft;
+            for (int k = 0; k < (int)item.actions.size(); k++) {
+                auto const& action = item.actions[k];
+                SIZE size = c.Measure(f.caption, action.label);
+                RECT button{x, y + c.Px(2), x + size.cx + c.Px(12), y + c.Px(18)};
+                if (button.right > c.width - c.Px(15)) {
+                    break;
+                }
+                int actionTarget = (int)f.notifyTargets.size();
+                f.notifyTargets.push_back({a, i, k});
+                int actionId = MakeHit(kHitNotifyAction, actionTarget);
+                c.Frame(button, hover == actionId ? ui::kCoral : ui::kEdge);
+                c.CenteredText(f.caption, hover == actionId ? ui::kCoral : ui::kGreen, button, action.label, 0);
+                hits.push_back({button, actionId});
+                x = button.right + c.Px(8);
+            }
+            hits.push_back({row, itemId});
+            c.y += height;
+        }
+    }
+    if (f.notifyApps.empty()) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(20)},
+               L"No new notifications");
+        c.y += c.Px(24);
+    } else if (clipped || f.notifyScroll > 0) {
+        c.Text(f.caption, ui::kSageAlt, {c.Px(15), c.y, c.width - c.Px(15), c.y + c.Px(18)},
+               clipped ? L"Scroll for more" : L"Scroll up for newer");
+        c.y += c.Px(18);
+    }
+
+    c.Divider();
+    RenderCalendar(c, hits, hover);
+    c.Divider();
+    c.Link(L"Notification settings", 0, hits, hover);
+    c.Link(L"Date and time settings", 1, hits, hover);
+    c.y += c.Px(10);
+}
+
+NotifyItem const* NotifyTargetItem(int target, int* action) {
+    auto& f = g_flyout;
+    if (target < 0 || target >= (int)f.notifyTargets.size()) {
+        return nullptr;
+    }
+    auto [a, i, k] = f.notifyTargets[target];
+    if (a >= (int)f.notifyApps.size() || i >= (int)f.notifyApps[a].items.size()) {
+        return nullptr;
+    }
+    *action = k;
+    return &f.notifyApps[a].items[i];
+}
+
+// Takes a notification off the list at once; Windows' database follows.
+void DropNotifyItem(NotifyItem const* item) {
+    auto& f = g_flyout;
+    for (auto app = f.notifyApps.begin(); app != f.notifyApps.end(); ++app) {
+        auto it = std::find_if(app->items.begin(), app->items.end(),
+                               [&](NotifyItem const& other) { return &other == item; });
+        if (it != app->items.end()) {
+            app->items.erase(it);
+            if (app->items.empty()) {
+                f.notifyApps.erase(app);
+            }
+            return;
+        }
+    }
+}
+
+void OnNotifyClick(int type, int index) {
+    auto& f = g_flyout;
+    switch (type) {
+        case kHitNotifyItem:
+        case kHitNotifyAction: {
+            int action = -1;
+            NotifyItem const* item = NotifyTargetItem(index, &action);
+            if (!item) {
+                return;
+            }
+            NotifyItem copy = *item;
+            CloseFlyout();
+            if (action >= 0 && action < (int)copy.actions.size()) {
+                auto const& chosen = copy.actions[action];
+                ActivateNotification(copy, chosen.arguments, chosen.activationType);
+            } else {
+                ActivateNotification(copy, copy.launch, copy.activationType);
+            }
+            return;
+        }
+        case kHitNotifyDismiss: {
+            int action = -1;
+            if (NotifyItem const* item = NotifyTargetItem(index, &action)) {
+                RemoveNotification(*item);
+                DropNotifyItem(item);
+            }
+            break;
+        }
+        case kHitNotifyClearApp:
+            if (index < (int)f.notifyApps.size()) {
+                ClearAppNotifications(f.notifyApps[index].aumid);
+                f.notifyApps.erase(f.notifyApps.begin() + index);
+            }
+            break;
+        case kHitNotifyClearAll:
+            for (auto const& app : f.notifyApps) {
+                ClearAppNotifications(app.aumid);
+            }
+            f.notifyApps.clear();
+            f.notifyScroll = 0;
+            break;
+        case kHitCalPrev:
+        case kHitCalNext: {
+            int month = f.calYear * 12 + (f.calMonth - 1) + (type == kHitCalNext ? 1 : -1);
+            f.calYear = month / 12;
+            f.calMonth = month % 12 + 1;
+            LoadCalendarMonth();
+            break;
+        }
+        case kHitCalDay: {
+            f.calSelected = CalendarGridStart(f.calYear, f.calMonth) + index * 24 * 60;
+            SYSTEMTIME picked = TimeOfMinutes(f.calSelected);
+            if (picked.wMonth != f.calMonth) {
+                f.calYear = picked.wYear;
+                f.calMonth = picked.wMonth;
+                LoadCalendarMonth();
+            }
+            break;
+        }
+    }
+    LayoutFlyout(-1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A new event from the calendar ("Right-click a day to add an event"): a small window for it, and "Add to
+// Google Calendar" opens Google Calendar's own new-event page in the browser with it filled in, where one
+// click saves it. Nothing is sent from here: it's a link opened in the browser.
+
+constexpr WCHAR kEventClass[] = L"TourneTrayEvent_" WH_MOD_ID;
+enum EventControl : int {
+    kEvTitle = 101, kEvDate, kEvAllDay, kEvStart, kEvEnd, kEvWhere, kEvImportance, kEvNotes, kEvStatus, kEvAccount
+};
+constexpr int kEvLabel = -1;  // the labels
+
+struct EventEditor {
+    HWND wnd = nullptr;
+    HFONT font = nullptr;
+    HBRUSH ground = nullptr, field = nullptr;
+    int scale = 1;
+    bool allDay = false;
+    int importance = 1;  // 0 low, 1 normal, 2 high
+    int account = 0;     // in g_settings.calendarAccounts
+    std::vector<RECT> frames;  // around the text boxes
+    std::wstring error;
+} g_event;
+
+constexpr PCWSTR kImportanceNames[] = {L"Low", L"Normal", L"High"};
+
+std::wstring EventText(int id) {
+    HWND control = GetDlgItem(g_event.wnd, id);
+    int length = GetWindowTextLengthW(control);
+    std::wstring text(length, L'\0');
+    if (length) GetWindowTextW(control, text.data(), length + 1);
+    return text;
+}
+
+// "9", "9:30", "0930", "9pm", "9:30 am", "21:15": minutes after midnight, or -1.
+int ParseEventTime(std::wstring text) {
+    std::wstring s;
+    for (WCHAR ch : text)
+        if (!iswspace(ch)) s += (WCHAR)towlower(ch);
+    int half = 0;  // 1 am, 2 pm
+    constexpr std::pair<PCWSTR, int> kSuffixes[] = {{L"am", 1}, {L"pm", 2}, {L"a", 1}, {L"p", 2}};
+    for (auto [suffix, which] : kSuffixes) {
+        std::wstring_view end(suffix);
+        if (s.size() > end.size() && std::wstring_view(s).ends_with(end)) {
+            s.resize(s.size() - end.size());
+            half = which;
+            break;
+        }
+    }
+    int hour = 0, minute = 0;
+    size_t colon = s.find_first_of(L":.");
+    auto digits = [](std::wstring const& d) { return !d.empty() && d.size() <= 2 && std::all_of(d.begin(), d.end(), iswdigit); };
+    if (colon != std::wstring::npos) {
+        std::wstring h = s.substr(0, colon), m = s.substr(colon + 1);
+        if (!digits(h) || !digits(m) || m.size() != 2) return -1;
+        hour = _wtoi(h.c_str());
+        minute = _wtoi(m.c_str());
+    } else if (s.size() >= 3 && s.size() <= 4 && std::all_of(s.begin(), s.end(), iswdigit)) {
+        hour = _wtoi(s.substr(0, s.size() - 2).c_str());
+        minute = _wtoi(s.substr(s.size() - 2).c_str());
+    } else if (digits(s)) {
+        hour = _wtoi(s.c_str());
+    } else {
+        return -1;
+    }
+    if (half) {
+        if (hour < 1 || hour > 12) return -1;
+        hour = hour % 12 + (half == 2 ? 12 : 0);
+    }
+    if (hour > 23 || minute > 59) return -1;
+    return hour * 60 + minute;
+}
+
+// "2026-10-03" (as the window fills it in): true with the day.
+bool ParseEventDate(std::wstring const& text, SYSTEMTIME* day) {
+    int y = 0, m = 0, d = 0;
+    if (swscanf_s(text.c_str(), L"%d-%d-%d", &y, &m, &d) != 3) return false;
+    SYSTEMTIME t{};
+    t.wYear = (WORD)y;
+    t.wMonth = (WORD)m;
+    t.wDay = (WORD)d;
+    FILETIME check;
+    if (y < 1900 || y > 2200 || !SystemTimeToFileTime(&t, &check)) return false;
+    *day = t;
+    return true;
+}
+
+std::wstring UrlEncode(std::wstring const& text) {
+    int length = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), (int)text.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8(length, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, text.c_str(), (int)text.size(), utf8.data(), length, nullptr, nullptr);
+    std::wstring out;
+    for (unsigned char ch : utf8) {
+        if (isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~') {
+            out += (WCHAR)ch;
+        } else {
+            WCHAR hex[4];
+            swprintf_s(hex, L"%%%02X", ch);
+            out += hex;
+        }
+    }
+    return out;
+}
+
+// A local time as Google wants it: in UTC, "20261003T143000Z".
+std::wstring GoogleUtc(SYSTEMTIME const& local) {
+    SYSTEMTIME utc;
+    if (!TzSpecificLocalTimeToSystemTime(nullptr, &local, &utc)) utc = local;
+    WCHAR out[20];
+    swprintf_s(out, L"%04u%02u%02uT%02u%02u00Z", utc.wYear, utc.wMonth, utc.wDay, utc.wHour, utc.wMinute);
+    return out;
+}
+
+std::wstring GoogleDay(SYSTEMTIME const& day) {
+    WCHAR out[12];
+    swprintf_s(out, L"%04u%02u%02u", day.wYear, day.wMonth, day.wDay);
+    return out;
+}
+
+// Google Calendar's new-event page for the window's fields; false (with the reason in e.error) if one's wrong.
+bool EventUrl(std::wstring* out) {
+    auto& e = g_event;
+    std::wstring title = EventText(kEvTitle);
+    SYSTEMTIME day;
+    if (!ParseEventDate(EventText(kEvDate), &day)) {
+        e.error = L"The day is written as year-month-day, like 2026-10-03.";
+        return false;
+    }
+    LONGLONG dayMinutes = MinutesOf(day);
+    std::wstring dates;
+    if (e.allDay) {
+        dates = GoogleDay(day) + L"/" + GoogleDay(TimeOfMinutes(dayMinutes + 24 * 60));
+    } else {
+        int start = ParseEventTime(EventText(kEvStart)), end = ParseEventTime(EventText(kEvEnd));
+        if (start < 0 || end < 0) {
+            e.error = L"Times are like 9:30, 14:00 or 2pm.";
+            return false;
+        }
+        LONGLONG from = dayMinutes + start, to = dayMinutes + end;
+        if (to <= from) to += 24 * 60;  // past midnight
+        dates = GoogleUtc(TimeOfMinutes(from)) + L"/" + GoogleUtc(TimeOfMinutes(to));
+    }
+    std::wstring notes = EventText(kEvNotes);
+    if (e.importance != 1) notes += std::wstring(notes.empty() ? L"" : L"\n\n") + L"Importance: " + kImportanceNames[e.importance];
+    if (e.importance == 2) title = L"! " + title;
+    std::wstring url = L"https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + UrlEncode(title) +
+                       L"&dates=" + dates;
+    if (!notes.empty()) url += L"&details=" + UrlEncode(notes);
+    if (std::wstring where = EventText(kEvWhere); !where.empty()) url += L"&location=" + UrlEncode(where);
+    // As the chosen account, not the browser's default one.
+    auto const& accounts = g_settings.calendarAccounts;
+    if (e.account >= 0 && e.account < (int)accounts.size()) url += L"&authuser=" + UrlEncode(accounts[e.account]);
+    *out = url;
+    return true;
+}
+
+// Opens that page in the browser.
+bool AddEventToGoogle() {
+    std::wstring url;
+    if (!EventUrl(&url)) return false;
+    ShellExecuteW(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    return true;
+}
+
+LRESULT CALLBACK EventWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    auto& e = g_event;
+    switch (msg) {
+        case WM_CTLCOLOREDIT:
+            SetTextColor((HDC)wParam, ui::kInk);
+            SetBkColor((HDC)wParam, ui::kRaised);
+            return (LRESULT)e.field;
+        case WM_CTLCOLORSTATIC:
+            SetTextColor((HDC)wParam, GetDlgCtrlID((HWND)lParam) == kEvStatus && !e.error.empty() ? ui::kCoral : ui::kSage);
+            SetBkColor((HDC)wParam, ui::kGround);
+            return (LRESULT)e.ground;
+        case WM_ERASEBKGND: {
+            RECT rc;
+            GetClientRect(wnd, &rc);
+            FillRect((HDC)wParam, &rc, e.ground);
+            HBRUSH edge = CreateSolidBrush(ui::kEdge);
+            for (RECT frame : e.frames) FrameRect((HDC)wParam, &frame, edge);
+            DeleteObject(edge);
+            return 1;
+        }
+        case WM_DRAWITEM: {
+            auto* item = (DRAWITEMSTRUCT*)lParam;
+            bool pressed = item->itemState & ODS_SELECTED, focused = item->itemState & ODS_FOCUS;
+            bool on = (item->CtlID == kEvAllDay && e.allDay) || item->CtlID == IDOK;
+            HBRUSH fill = CreateSolidBrush(pressed ? ui::kHover : on ? ui::kRaised : ui::kGround);
+            FillRect(item->hDC, &item->rcItem, fill);
+            DeleteObject(fill);
+            HBRUSH frame = CreateSolidBrush(focused || on ? ui::kGreen : ui::kEdge);
+            FrameRect(item->hDC, &item->rcItem, frame);
+            DeleteObject(frame);
+            std::wstring text(GetWindowTextLengthW(item->hwndItem), L'\0');
+            GetWindowTextW(item->hwndItem, text.data(), (int)text.size() + 1);
+            if (item->CtlID == kEvAllDay) text = e.allDay ? L"[x] All day" : L"[ ] All day";
+            if (item->CtlID == kEvImportance) text = std::wstring(L"Importance: ") + kImportanceNames[e.importance];
+            if (item->CtlID == kEvAccount && e.account < (int)g_settings.calendarAccounts.size()) {
+                text = g_settings.calendarAccounts[e.account];
+                if (g_settings.calendarAccounts.size() > 1) text += L"  >";  // (a click: the next one)
+            }
+            SetBkMode(item->hDC, TRANSPARENT);
+            SetTextColor(item->hDC, focused || on ? ui::kGreen : ui::kSage);
+            HGDIOBJ old = SelectObject(item->hDC, e.font);
+            DrawTextW(item->hDC, text.c_str(), -1, &item->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+            SelectObject(item->hDC, old);
+            return TRUE;
+        }
+        case WM_COMMAND:
+            switch (LOWORD(wParam)) {
+                case kEvAllDay:
+                    e.allDay = !e.allDay;
+                    EnableWindow(GetDlgItem(wnd, kEvStart), !e.allDay);
+                    EnableWindow(GetDlgItem(wnd, kEvEnd), !e.allDay);
+                    InvalidateRect(GetDlgItem(wnd, kEvAllDay), nullptr, FALSE);
+                    return 0;
+                case kEvImportance:
+                    e.importance = (e.importance + 1) % 3;
+                    InvalidateRect(GetDlgItem(wnd, kEvImportance), nullptr, FALSE);
+                    return 0;
+                case kEvAccount:
+                    if (!g_settings.calendarAccounts.empty())
+                        e.account = (e.account + 1) % (int)g_settings.calendarAccounts.size();
+                    InvalidateRect(GetDlgItem(wnd, kEvAccount), nullptr, FALSE);
+                    return 0;
+                case IDOK:
+                    if (AddEventToGoogle()) {
+                        DestroyWindow(wnd);
+                    } else {
+                        SetDlgItemTextW(wnd, kEvStatus, e.error.c_str());
+                    }
+                    return 0;
+                case IDCANCEL:
+                    DestroyWindow(wnd);
+                    return 0;
+            }
+            break;
+        case WM_CLOSE:
+            DestroyWindow(wnd);
+            return 0;
+        case WM_DESTROY:
+            if (e.font) DeleteObject(e.font);
+            if (e.ground) DeleteObject(e.ground);
+            if (e.field) DeleteObject(e.field);
+            e = {};
+            return 0;
+    }
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+// For the thread's message loop: Tab, Enter and Escape in the event window.
+bool EventDialogMessage(MSG* msg) {
+    return g_event.wnd && IsDialogMessageW(g_event.wnd, msg);
+}
+
+void OpenEventEditor(LONGLONG dayMinutes) {
+    if (g_event.wnd) {
+        SetForegroundWindow(g_event.wnd);
+        return;
+    }
+    static bool registered = false;
+    if (!registered) {
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = EventWndProc;
+        wc.hInstance = GetModuleHandleW(nullptr);
+        wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+        wc.lpszClassName = kEventClass;
+        registered = RegisterClassW(&wc) != 0;
+    }
+    POINT pt;
+    GetCursorPos(&pt);
+    UINT dpi = GetDpiForSystem();
+    int s = std::max(1, (int)(dpi + 48) / 96);
+    auto& e = g_event;
+    e.scale = s;
+    e.font = MakeFont({L"CozetteVector", L"scientifica"}, 13 * s);
+    e.ground = CreateSolidBrush(ui::kGround);
+    e.field = CreateSolidBrush(ui::kRaised);
+    int width = 380 * s, pad = 14 * s, row = 30 * s, labelWidth = 90 * s, fieldHeight = 22 * s;
+    bool accounts = !g_settings.calendarAccounts.empty();  // a row to pick the Google account
+    int height = pad + row * (accounts ? 7 : 6) + 70 * s + row + 22 * s + pad;
+    RECT frame{0, 0, width, height};
+    AdjustWindowRectExForDpi(&frame, WS_CAPTION | WS_SYSMENU, FALSE, WS_EX_TOOLWINDOW, dpi);
+    MONITORINFO monitor{sizeof(monitor)};
+    GetMonitorInfoW(MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST), &monitor);
+    int w = frame.right - frame.left, h = frame.bottom - frame.top;
+    RECT const& work = monitor.rcWork;
+    int x = std::clamp((int)pt.x - w / 2, (int)work.left, (int)work.right - w);
+    int y = std::clamp((int)pt.y - h - 12 * s, (int)work.top, (int)work.bottom - h);
+    SYSTEMTIME day = TimeOfMinutes(dayMinutes);
+    std::wstring dayName = FormatDate(day, nullptr, DATE_LONGDATE);
+    e.wnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_CONTROLPARENT, kEventClass,
+                            (L"New event, " + dayName).c_str(), WS_CAPTION | WS_SYSMENU | WS_POPUP, x, y, w, h,
+                            nullptr, nullptr, GetModuleHandleW(nullptr), nullptr);
+    if (!e.wnd) return;
+    BOOL dark = TRUE;
+    DwmSetWindowAttribute(e.wnd, 20 /* DWMWA_USE_IMMERSIVE_DARK_MODE */, &dark, sizeof(dark));
+    COLORREF caption = ui::kGround, text = ui::kInk, border = ui::kEdge;
+    DwmSetWindowAttribute(e.wnd, 35 /* DWMWA_CAPTION_COLOR */, &caption, sizeof(caption));
+    DwmSetWindowAttribute(e.wnd, 36 /* DWMWA_TEXT_COLOR */, &text, sizeof(text));
+    DwmSetWindowAttribute(e.wnd, 34 /* DWMWA_BORDER_COLOR */, &border, sizeof(border));
+
+    auto add = [&](PCWSTR cls, PCWSTR text, DWORD style, int id, int left, int top, int right, int bottom) {
+        HWND control = CreateWindowExW(0, cls, text, WS_CHILD | WS_VISIBLE | style, left, top, right - left,
+                                       bottom - top, e.wnd, (HMENU)(INT_PTR)id, GetModuleHandleW(nullptr), nullptr);
+        SendMessageW(control, WM_SETFONT, (WPARAM)e.font, FALSE);
+        return control;
+    };
+    auto label = [&](PCWSTR text, int top, int left = -1) {
+        int l = left < 0 ? pad : left;
+        add(L"STATIC", text, SS_LEFT | SS_CENTERIMAGE, kEvLabel, l, top, l + labelWidth, top + fieldHeight);
+    };
+    // A text box with a one-pixel frame drawn around it (in the window's colours, not the system's).
+    auto box = [&](int id, PCWSTR text, DWORD style, int left, int top, int right, int bottom) {
+        e.frames.push_back({left - 1, top - 1, right + 1, bottom + 1});
+        int inset = 4 * s;
+        return add(L"EDIT", text, WS_TABSTOP | ES_AUTOHSCROLL | style, id, left + inset, top + 3 * s, right - inset,
+                   bottom - 3 * s);
+    };
+    int fieldLeft = pad + labelWidth, right = width - pad;
+    int top = pad;
+    label(L"Title", top);
+    HWND title = box(kEvTitle, L"", 0, fieldLeft, top, right, top + fieldHeight);
+    top += row;
+    label(L"Day", top);
+    WCHAR date[16];
+    swprintf_s(date, L"%04u-%02u-%02u", day.wYear, day.wMonth, day.wDay);
+    box(kEvDate, date, 0, fieldLeft, top, fieldLeft + 110 * s, top + fieldHeight);
+    add(L"BUTTON", L"All day", WS_TABSTOP | BS_OWNERDRAW, kEvAllDay, right - 110 * s, top, right, top + fieldHeight);
+    top += row;
+    // A start on the next whole hour today, else at nine; an hour long.
+    SYSTEMTIME now;
+    GetLocalTime(&now);
+    int startHour = DayStart(MinutesOf(now)) == DayStart(dayMinutes) ? std::min(23, now.wHour + 1) : 9;
+    WCHAR from[8], to[8];
+    swprintf_s(from, L"%02d:00", startHour);
+    swprintf_s(to, L"%02d:00", (startHour + 1) % 24);
+    label(L"From", top);
+    box(kEvStart, from, 0, fieldLeft, top, fieldLeft + 80 * s, top + fieldHeight);
+    label(L"to", top, fieldLeft + 96 * s);
+    box(kEvEnd, to, 0, fieldLeft + 126 * s, top, fieldLeft + 206 * s, top + fieldHeight);
+    top += row;
+    label(L"Where", top);
+    box(kEvWhere, L"", 0, fieldLeft, top, right, top + fieldHeight);
+    top += row;
+    label(L"", top);
+    add(L"BUTTON", L"Importance", WS_TABSTOP | BS_OWNERDRAW, kEvImportance, fieldLeft, top, fieldLeft + 160 * s,
+        top + fieldHeight);
+    top += row;
+    if (accounts) {
+        label(L"Account", top);
+        add(L"BUTTON", L"Account", WS_TABSTOP | BS_OWNERDRAW, kEvAccount, fieldLeft, top, right, top + fieldHeight);
+        top += row;
+    }
+    label(L"Notes", top);
+    box(kEvNotes, L"", ES_MULTILINE | ES_WANTRETURN | ES_AUTOVSCROLL | WS_VSCROLL, fieldLeft, top, right, top + 70 * s);
+    top += 70 * s + 10 * s;
+    add(L"BUTTON", L"Add to Google Calendar", WS_TABSTOP | BS_OWNERDRAW | BS_DEFPUSHBUTTON, IDOK, width - pad - 300 * s,
+        top, width - pad - 100 * s, top + 24 * s);
+    add(L"BUTTON", L"Cancel", WS_TABSTOP | BS_OWNERDRAW, IDCANCEL, width - pad - 90 * s, top, width - pad, top + 24 * s);
+    top += row;
+    add(L"STATIC", L"Opens Google Calendar in your browser, where you save it.", SS_LEFT, kEvStatus, pad, top,
+        right, top + 22 * s);
+
+    ShowWindow(e.wnd, SW_SHOW);
+    SetForegroundWindow(e.wnd);
+    SetFocus(title);
+}
+
+// Window
+
+int Render(HDC dc, bool paint, std::vector<Hit>& hits) {
+    Canvas c{dc, paint, g_flyout.scale, g_flyout.fitWidth ? g_flyout.fitWidth : g_flyout.width};
+    hits.clear();
+    switch (g_flyout.kind) {
+        case kFlyoutNetwork: RenderNetwork(c, hits, g_flyout.hover); break;
+        case kFlyoutPower: RenderPower(c, hits, g_flyout.hover); break;
+        case kFlyoutBrightness: RenderBrightness(c, hits, g_flyout.hover); break;
+        case kFlyoutOverflow: RenderOverflow(c, hits, g_flyout.hover); break;
+        case kFlyoutVpn: RenderVpn(c, hits, g_flyout.hover); break;
+        case kFlyoutSecurity: RenderSecurity(c, hits, g_flyout.hover); break;
+        case kFlyoutMixer: RenderMixer(c, hits, g_flyout.hover); break;
+        case kFlyoutNotify: RenderNotify(c, hits, g_flyout.hover); break;
+        case kFlyoutBluetooth: RenderBluetooth(c, hits, g_flyout.hover); break;
+        case kFlyoutDevices: RenderDevices(c, hits, g_flyout.hover); break;
+    }
+    if (!paint) {
+        g_flyout.needed = c.needed;
+    }
+    return c.y;
+}
+
+// Sizes the window to its content and keeps it next to the tray.
+// A click in the Tourne taskbar's tray leaves the icon's rectangle on this
+// window (Shell_NotifyIconGetRect only knows Explorer's tray): left, top,
+// right and bottom as 16-bit values, and when it was left there.
+constexpr WCHAR kTaskbarAnchorProp[] = L"TourneTaskbar_Anchor";
+constexpr WCHAR kTaskbarAnchorTickProp[] = L"TourneTaskbar_AnchorTick";
+bool g_anchorFromTaskbar;
+RECT g_taskbarAnchor;
+bool g_flyoutAtTop;  // placed against the top of the screen (a taskbar at the top), not the bottom
+
+void TakeTaskbarAnchor() {
+    g_anchorFromTaskbar = false;
+    auto packed = (uint64_t)(ULONG_PTR)GetPropW(g_wnd, kTaskbarAnchorProp);
+    auto tick = (DWORD)(ULONG_PTR)GetPropW(g_wnd, kTaskbarAnchorTickProp);
+    RemovePropW(g_wnd, kTaskbarAnchorProp);
+    RemovePropW(g_wnd, kTaskbarAnchorTickProp);
+    if (!packed || GetTickCount() - tick > 1500) {
+        return;
+    }
+    g_taskbarAnchor = {(short)(packed & 0xFFFF), (short)((packed >> 16) & 0xFFFF),
+                       (short)((packed >> 32) & 0xFFFF), (short)((packed >> 48) & 0xFFFF)};
+    g_anchorFromTaskbar = true;
+}
+
+// The open flyout's rectangle, if the point is on it (a menu opened from inside it).
+bool FlyoutUnder(POINT pt, RECT* rc) {
+    return g_flyout.hwnd && IsWindowVisible(g_flyout.hwnd) && GetWindowRect(g_flyout.hwnd, rc) && PtInRect(rc, pt);
+}
+
+// For a right-click menu: the icon's rectangle on the Tourne taskbar, if the click came from there.
+bool TakeMenuAnchor(RECT* icon) {
+    TakeTaskbarAnchor();
+    if (!g_anchorFromTaskbar) return false;
+    *icon = g_taskbarAnchor;
+    g_anchorFromTaskbar = false;
+    return true;
+}
+
+// A flyout never reaches onto another screen: inside the work area of the screen "on" is on (its icon,
+// or where it already is), moved back in, and no bigger than that area.
+void KeepOnScreen(RECT* rc, RECT const& on) {
+    MONITORINFO monitor{sizeof(monitor)};
+    GetMonitorInfoW(MonitorFromRect(&on, MONITOR_DEFAULTTONEAREST), &monitor);
+    RECT const& work = monitor.rcWork;
+    LONG width = std::min(rc->right - rc->left, work.right - work.left);
+    LONG height = std::min(rc->bottom - rc->top, work.bottom - work.top);
+    LONG left = std::clamp(rc->left, work.left, work.right - width);
+    LONG top = std::clamp(rc->top, work.top, work.bottom - height);
+    *rc = {left, top, left + width, top + height};
+}
+
+void LayoutFlyout(int iconKind) {
+    HWND hwnd = g_flyout.hwnd;
+    HDC dc = GetDC(hwnd);
+    // Measured at the standard width first; with Auto width, laid out again
+    // as wide as the longest line wants, up to the maximum. The notification
+    // centre wraps its own text and the hidden icons flyout is a grid, so
+    // both keep their width.
+    g_flyout.fitWidth = g_flyout.width;
+    int height = Render(dc, false, g_flyout.hits);
+    bool fits = g_flyout.kind != kFlyoutNotify && g_flyout.kind != kFlyoutOverflow;
+    if (g_settings.flyoutAutoWidth && fits && g_flyout.needed > g_flyout.width) {
+        int maxWidth = std::max(g_flyout.width, g_settings.flyoutMaxWidth * g_flyout.scale);
+        g_flyout.fitWidth = std::min(g_flyout.needed, maxWidth);
+        height = Render(dc, false, g_flyout.hits);
+    }
+    ReleaseDC(hwnd, dc);
+    int width = g_flyout.fitWidth;
+
+    RECT anchor{};
+    NOTIFYICONIDENTIFIER identifier{sizeof(identifier)};
+    identifier.hWnd = g_wnd;
+    identifier.uID = kIconIdBase + iconKind;
+    if (g_anchorFromTaskbar && (iconKind >= 0 || !IsWindowVisible(hwnd))) {
+        anchor = g_taskbarAnchor;
+    } else if (iconKind < 0 || FAILED(Shell_NotifyIconGetRect(&identifier, &anchor))) {
+        RECT current;
+        if (GetWindowRect(hwnd, &current) && IsWindowVisible(hwnd)) {
+            // Keep the edge by the taskbar while resizing, as it was placed (a tall flyout, like the
+            // notification centre, reaches the top half of the screen either way), on its own screen.
+            RECT placed{current.left, g_flyoutAtTop ? current.top : current.bottom - height, 0, 0};
+            placed.right = placed.left + width;
+            placed.bottom = placed.top + height;
+            KeepOnScreen(&placed, current);
+            SetWindowPos(hwnd, nullptr, placed.left, placed.top, placed.right - placed.left, placed.bottom - placed.top,
+                         SWP_NOZORDER | SWP_NOACTIVATE);
+            return;
+        }
+        POINT pt;
+        GetCursorPos(&pt);
+        anchor = {pt.x, pt.y, pt.x, pt.y};
+    }
+
+    MONITORINFO monitor{sizeof(monitor)};
+    GetMonitorInfoW(MonitorFromRect(&anchor, MONITOR_DEFAULTTONEAREST), &monitor);
+    RECT work = monitor.rcWork;
+    int gap = 8 * g_flyout.scale;
+    int away = gap + g_settings.flyoutAway * g_flyout.scale;  // from the taskbar ("Flyout extra distance")
+    int along = g_settings.flyoutAlong * g_flyout.scale;
+    int x = std::clamp((int)(anchor.left + anchor.right) / 2 - width / 2 + along,
+                       (int)work.left + gap, (int)work.right - width - gap);
+    int y;
+    g_flyoutAtTop = false;
+    if (anchor.top >= work.bottom - gap) {
+        y = work.bottom - height - away;  // Taskbar at the bottom.
+    } else if (anchor.bottom <= work.top + gap) {
+        y = work.top + away;  // At the top.
+        g_flyoutAtTop = true;
+    } else {
+        y = std::clamp((int)anchor.top - height - away, (int)work.top + gap,
+                       (int)work.bottom - height - gap);
+        g_flyoutAtTop = y > anchor.bottom;  // (below its icon: grows down from there)
+    }
+    RECT placed{x, y, x + width, y + height};
+    KeepOnScreen(&placed, anchor);
+    SetWindowPos(hwnd, HWND_TOPMOST, placed.left, placed.top, placed.right - placed.left, placed.bottom - placed.top,
+                 SWP_NOACTIVATE);
+}
+
+void LoadFlyout() {
+    switch (g_flyout.kind) {
+        case kFlyoutNetwork: LoadNetworkFlyout(); break;
+        case kFlyoutPower: LoadPowerFlyout(); break;
+        case kFlyoutBrightness: break;  // Filled in by the worker.
+        case kFlyoutOverflow: LoadOverflowFlyout(); break;
+        case kFlyoutVpn: LoadVpnFlyout(); break;
+        case kFlyoutSecurity: LoadSecurityFlyout(); break;
+        // The mixer's timer reloads only its programs; Bluetooth devices are
+        // read here, when it opens and when something changed.
+        case kFlyoutMixer:
+            LoadMixerFlyout();
+            LoadBluetoothDevices();
+            LoadBatteriesFlyout();
+            break;
+        case kFlyoutNotify: LoadNotifyFlyout(); break;
+        case kFlyoutBluetooth:
+            LoadBluetoothDevices();
+            LoadBatteriesFlyout();
+            break;
+        case kFlyoutDevices: LoadBatteriesFlyout(); break;
+    }
+}
+
+bool IsFlyoutOpen(int flyoutKind) {
+    return g_flyout.hwnd && g_flyout.kind == flyoutKind;
+}
+
+void ReloadFlyout() {
+    if (g_flyout.hwnd &&
+        (g_flyout.kind == kFlyoutNetwork || g_flyout.kind == kFlyoutPower ||
+         g_flyout.kind == kFlyoutVpn || g_flyout.kind == kFlyoutSecurity ||
+         g_flyout.kind == kFlyoutMixer || g_flyout.kind == kFlyoutNotify ||
+         g_flyout.kind == kFlyoutBluetooth || g_flyout.kind == kFlyoutDevices)) {
+        PostMessageW(g_flyout.hwnd, WM_APP_FLYOUT_RELOAD, 0, 0);
+    }
+}
+
+void CloseFlyout() {
+    // Destroying the active window deactivates it, which would close it again.
+    if (g_flyout.hwnd && !g_flyoutClosing) {
+        g_flyoutClosing = true;
+        DestroyWindow(g_flyout.hwnd);
+        g_flyoutClosing = false;
+    }
+}
+
+void Execute(std::function<void()> action) {
+    if (action) {
+        action();
+    }
+}
+
+void OnFlyoutClick(int id) {
+    int type = id >> 16;
+    int index = id & 0xFFFF;
+    auto& f = g_flyout;
+    switch (type) {
+        case kHitWifiRow:
+            if (f.selectedNetwork == index) {
+                f.selectedNetwork = -1;
+                f.selectedSsid.clear();
+            } else if (index < (int)f.networks.size()) {
+                f.selectedNetwork = index;
+                f.selectedSsid = f.networks[index].ssid;
+            }
+            LayoutFlyout(-1);
+            break;
+        case kHitWifiAction:
+            if (index < (int)f.networks.size()) {
+                ConnectOrDisconnect(f.networks[index]);
+            }
+            break;
+        case kHitPlan:
+            if (index < (int)f.plans.size()) {
+                PowerSetActiveScheme(nullptr, &f.plans[index].guid);
+                LoadPowerFlyout();
+            }
+            break;
+        case kHitVpnAction:
+            if (f.vpnConnected) {
+                RunVpnCommand(L"disconnect", L"Disconnecting...");
+            } else {
+                RunVpnCommand(L"connect best", L"Connecting to the best location...");
+            }
+            LayoutFlyout(-1);
+            break;
+        case kHitVpnRow:
+            OnVpnRowClick(index);
+            LayoutFlyout(-1);
+            break;
+        case kHitSecurityRow:
+            if (index < (int)f.securityRows.size()) {
+                PCWSTR uri = f.securityRows[index].uri;
+                CloseFlyout();
+                OpenUri(uri);
+            }
+            return;
+        case kHitMixerMute:
+            ToggleMixerMute(index);
+            break;
+        case kHitBtToggle:
+            ToggleBluetoothRadio();
+            LayoutFlyout(-1);
+            break;
+        case kHitBtRow:
+            if (index < (int)f.btDevices.size()) {
+                f.btSelected = f.btSelected == f.btDevices[index].name ? L"" : f.btDevices[index].name;
+            }
+            LayoutFlyout(-1);
+            break;
+        case kHitBtAction:
+        case kHitMixerBt:
+            if (index < (int)f.btDevices.size()) {
+                auto const& device = f.btDevices[index];
+                if (device.audioFilters.empty()) {
+                    CloseFlyout();
+                    OpenUri(L"ms-settings:bluetooth");
+                    return;
+                }
+                ConnectBluetooth(device, !device.connected);
+            }
+            LayoutFlyout(-1);
+            break;
+        case kHitNotifyItem:
+        case kHitNotifyAction:
+        case kHitNotifyDismiss:
+        case kHitNotifyClearApp:
+        case kHitNotifyClearAll:
+        case kHitCalPrev:
+        case kHitCalNext:
+        case kHitCalDay:
+            OnNotifyClick(type, index);
+            break;
+        case kHitHidden:
+            ClickHiddenIcon(index, kClickLeft);
+            return;
+        case kHitFolder:
+        case kHitFolderBack:
+            // Into a folder, or back out to all the hidden icons.
+            f.openFolder = type == kHitFolder ? index : -1;
+            LoadOverflowFlyout();
+            LayoutFlyout(-1);
+            InvalidateRect(f.hwnd, nullptr, FALSE);
+            return;
+        case kHitLink:
+            if (f.kind == kFlyoutNetwork) {
+                CloseFlyout();
+                if (index == 0) {
+                    Run(L"control.exe", L"/name Microsoft.NetworkAndSharingCenter");
+                } else if (index == 2) {
+                    OpenUri(L"ms-settings:privacy-location");
+                } else if (index == 3) {
+                    OpenUri(L"ms-availablenetworks:");
+                } else {
+                    OpenUri(L"ms-settings:network");
+                }
+            } else if (f.kind == kFlyoutPower) {
+                if (index == 0) {
+                    CloseFlyout();
+                    ShowFlyout(kFlyoutBrightness, kBattery);
+                } else {
+                    CloseFlyout();
+                    Run(L"control.exe", L"/name Microsoft.PowerOptions");
+                }
+            } else if (f.kind == kFlyoutBrightness) {
+                CloseFlyout();
+                OpenUri(index == 0 ? L"ms-settings:nightlight" : L"ms-settings:display");
+            } else if (f.kind == kFlyoutOverflow) {
+                CloseFlyout();
+                OpenTrayCustomization();
+            } else if (f.kind == kFlyoutVpn) {
+                CloseFlyout();
+                if (index == 0) {
+                    std::wstring app = WindscribeFile(L"Windscribe.exe");
+                    if (!app.empty()) {
+                        Run(app.c_str());
+                    }
+                } else {
+                    OpenUri(L"ms-settings:network-vpn");
+                }
+            } else if (f.kind == kFlyoutSecurity) {
+                CloseFlyout();
+                OpenUri(L"windowsdefender:");
+            } else if (f.kind == kFlyoutMixer) {
+                CloseFlyout();
+                if (index == 0) {
+                    Run(L"SndVol.exe");
+                } else {
+                    OpenUri(L"ms-settings:sound");
+                }
+            } else if (f.kind == kFlyoutNotify) {
+                CloseFlyout();
+                OpenUri(index == 0 ? L"ms-settings:notifications" : L"ms-settings:dateandtime");
+            } else if (f.kind == kFlyoutBluetooth) {
+                CloseFlyout();
+                OpenUri(index == 0 ? L"ms-settings-connectabledevices:devicediscovery" : L"ms-settings:bluetooth");
+            } else if (f.kind == kFlyoutDevices) {
+                if (index == 0) {
+                    WakeBatteries();
+                } else {
+                    CloseFlyout();
+                    OpenUri(L"ms-settings:bluetooth");
+                }
+            }
+            return;
+    }
+    if (g_flyout.hwnd) {
+        InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+    }
+}
+
+// The smallest target under the point: a button inside a row (Wi-Fi's CONNECT, Bluetooth's) wins over
+// the row, whichever was listed first.
+int HitAt(POINT pt) {
+    int found = 0;
+    LONGLONG smallest = 0;
+    for (auto const& hit : g_flyout.hits) {
+        if (PtInRect(&hit.rc, pt)) {
+            LONGLONG area = (LONGLONG)(hit.rc.right - hit.rc.left) * (hit.rc.bottom - hit.rc.top);
+            if (!found || area < smallest) {
+                found = hit.id;
+                smallest = area;
+            }
+        }
+    }
+    return found;
+}
+
+void DragSlider(int monitor, int x) {
+    for (auto const& hit : g_flyout.hits) {
+        if (hit.id == MakeHit(kHitSlider, monitor)) {
+            RECT track = SliderTrack(hit, g_flyout.scale);
+            int value = (x - track.left) * 100 / std::max(1, (int)(track.right - track.left));
+            SetBrightness(monitor, value);
+            InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+            return;
+        }
+    }
+}
+
+LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(hWnd, &ps);
+            RECT client;
+            GetClientRect(hWnd, &client);
+            HDC mem = CreateCompatibleDC(dc);
+            HBITMAP bitmap = CreateCompatibleBitmap(dc, client.right, client.bottom);
+            HGDIOBJ old = SelectObject(mem, bitmap);
+            SetDCBrushColor(mem, ui::kGround);
+            FillRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+            Render(mem, true, g_flyout.hits);
+            SetDCBrushColor(mem, ui::kEdge);
+            FrameRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+            BitBlt(dc, 0, 0, client.right, client.bottom, mem, 0, 0, SRCCOPY);
+            SelectObject(mem, old);
+            DeleteObject(bitmap);
+            DeleteDC(mem);
+            EndPaint(hWnd, &ps);
+            return 0;
+        }
+
+        case WM_MOUSEMOVE: {
+            POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            if (g_flyout.dragHidden >= 0) {
+                if (!g_flyout.dragMoved &&
+                    (abs(pt.x - g_flyout.dragStart.x) > GetSystemMetrics(SM_CXDRAG) ||
+                     abs(pt.y - g_flyout.dragStart.y) > GetSystemMetrics(SM_CYDRAG))) {
+                    g_flyout.dragMoved = true;
+                }
+                if (g_flyout.dragMoved) {
+                    RECT client;
+                    GetClientRect(hWnd, &client);
+                    POINT screen = pt;
+                    ClientToScreen(hWnd, &screen);
+                    // Out of the flyout it follows the pointer, toward the taskbar.
+                    if (!PtInRect(&client, pt)) {
+                        DragHiddenOutside(screen);
+                    } else if (g_flyout.ghost.wnd) {
+                        EndHiddenDragOutside();
+                    }
+                    int target = HiddenSlotAt(pt);
+                    if (target != g_flyout.dragTarget) {
+                        g_flyout.dragTarget = target;
+                        InvalidateRect(hWnd, nullptr, FALSE);
+                    }
+                    return 0;
+                }
+            }
+            if (g_flyout.dragSlider >= 0) {
+                DragSlider(g_flyout.dragSlider, pt.x);
+                return 0;
+            }
+            if (g_flyout.dragMixer >= 0) {
+                DragMixer(g_flyout.dragMixer, pt.x);
+                return 0;
+            }
+            int hover = HitAt(pt);
+            if (hover != g_flyout.hover) {
+                g_flyout.hover = hover;
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            TRACKMOUSEEVENT track{sizeof(track), TME_LEAVE, hWnd};
+            TrackMouseEvent(&track);
+            return 0;
+        }
+
+        case WM_CAPTURECHANGED:
+            if (g_flyout.dragHidden >= 0 && (HWND)lParam != hWnd) {
+                EndHiddenDragOutside();
+                g_flyout.dragHidden = -1;
+                g_flyout.dragMoved = false;
+                g_flyout.dragTarget = -1;
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            return 0;
+        case WM_MOUSELEAVE:
+            if (g_flyout.hover) {
+                g_flyout.hover = 0;
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            return 0;
+
+        case WM_LBUTTONDBLCLK: {
+            // A double click on a hidden icon reaches its program as one; the
+            // first click already went through as a click.
+            POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            int id = HitAt(pt);
+            if ((id >> 16) == kHitHidden) {
+                int index = id & 0xFFFF;
+                g_flyout.swallowUp = true;
+                if (index < (int)g_flyout.hidden.size() &&
+                    !OpensOnDoubleClick(g_flyout.hidden[index].owner)) {
+                    ForwardHiddenClick(g_flyout.hidden[index], kClickSecondOfDouble);
+                }
+                return 0;
+            }
+            // Anywhere else it's a second press like the first.
+            [[fallthrough]];
+        }
+
+        case WM_LBUTTONDOWN: {
+            POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            int id = HitAt(pt);
+            if ((id >> 16) == kHitHidden && msg == WM_LBUTTONDOWN) {
+                // A press on a hidden icon may turn into a drag to move it.
+                g_flyout.dragHidden = id & 0xFFFF;
+                g_flyout.dragStart = pt;
+                g_flyout.dragMoved = false;
+                g_flyout.dragTarget = -1;
+                SetCapture(hWnd);
+            }
+            if ((id >> 16) == kHitSlider) {
+                g_flyout.dragSlider = id & 0xFFFF;
+                SetCapture(hWnd);
+                DragSlider(g_flyout.dragSlider, pt.x);
+            }
+            if ((id >> 16) == kHitMixerSlider) {
+                g_flyout.dragMixer = id & 0xFFFF;
+                SetCapture(hWnd);
+                DragMixer(g_flyout.dragMixer, pt.x);
+            }
+            return 0;
+        }
+
+        case WM_LBUTTONUP: {
+            if (g_flyout.dragHidden >= 0) {
+                int from = g_flyout.dragHidden;
+                int target = g_flyout.dragTarget;
+                bool moved = g_flyout.dragMoved;
+                HWND bar = g_flyout.dragOver;
+                std::wstring key = from < (int)g_flyout.hidden.size() ? HiddenIconKey(g_flyout.hidden[from]) : L"";
+                g_flyout.dragOver = nullptr;  // Kept from EndHiddenDragOutside: the drop tells it.
+                g_flyout.ghost.Hide();
+                g_flyout.dragHidden = -1;
+                g_flyout.dragMoved = false;
+                g_flyout.dragTarget = -1;
+                ReleaseCapture();
+                if (moved) {
+                    POINT screen = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+                    ClientToScreen(hWnd, &screen);
+                    if (bar && !key.empty()) {
+                        // Onto the taskbar: it's in the tray now, off this list.
+                        bool placed = SendTrayDrop(bar, hWnd, screen, key);
+                        PostMessageW(bar, TrayDragOverMessage(), 0, 0);
+                        if (placed) {
+                            LoadOverflowFlyout();
+                            LayoutFlyout(-1);
+                        }
+                    } else if (target >= 0 && target != from) {
+                        // A drop anywhere else outside the grid puts it back.
+                        MoveHiddenIcon(from, target);
+                    }
+                    InvalidateRect(hWnd, nullptr, FALSE);
+                    return 0;
+                }
+            }
+            if (g_flyout.dragSlider >= 0) {
+                g_flyout.dragSlider = -1;
+                ReleaseCapture();
+                InvalidateRect(hWnd, nullptr, FALSE);
+                return 0;
+            }
+            if (g_flyout.dragMixer >= 0) {
+                g_flyout.dragMixer = -1;
+                ReleaseCapture();
+                InvalidateRect(hWnd, nullptr, FALSE);
+                return 0;
+            }
+            if (g_flyout.swallowUp) {
+                g_flyout.swallowUp = false;
+                return 0;
+            }
+            POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            if (int id = HitAt(pt)) {
+                OnFlyoutClick(id);
+            }
+            return 0;
+        }
+
+        case WM_RBUTTONUP:
+        case WM_MBUTTONUP: {
+            POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            int id = HitAt(pt);
+            if ((id >> 16) == kHitHidden) {
+                ClickHiddenIcon(id & 0xFFFF, msg == WM_RBUTTONUP ? kClickRight : kClickMiddle);
+            } else if (msg == WM_RBUTTONUP && (id >> 16) == kHitCalDay && g_settings.calendarAdd) {
+                // A day in the calendar: a new event on it (the flyout closes as the window takes the focus).
+                OpenEventEditor(CalendarGridStart(g_flyout.calYear, g_flyout.calMonth) + (id & 0xFFFF) * 24 * 60);
+            } else if (msg == WM_RBUTTONUP && g_flyout.kind == kFlyoutOverflow && (id >> 16) != kHitFolder) {
+                // Off the icons: the flyout's own menu.
+                POINT screen = pt;
+                ClientToScreen(hWnd, &screen);
+                ShowOverflowMenu(screen);
+            }
+            return 0;
+        }
+
+        case WM_MOUSEWHEEL: {
+            int notches = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+            if (g_flyout.kind == kFlyoutNetwork) {
+                int maxScroll =
+                    std::max(0, (int)g_flyout.networks.size() - kMaxVisibleNetworks);
+                g_flyout.networkScroll =
+                    std::clamp(g_flyout.networkScroll - notches, 0, maxScroll);
+                g_flyout.selectedNetwork = -1;
+                g_flyout.selectedSsid.clear();
+                LayoutFlyout(-1);
+                InvalidateRect(hWnd, nullptr, FALSE);
+            } else if (g_flyout.kind == kFlyoutNotify) {
+                // Over the calendar the wheel turns months; elsewhere it
+                // scrolls the notifications.
+                int type = g_flyout.hover >> 16;
+                if (type == kHitCalDay || type == kHitCalPrev || type == kHitCalNext) {
+                    OnNotifyClick(notches > 0 ? kHitCalPrev : kHitCalNext, 0);
+                } else {
+                    g_flyout.notifyScroll = std::clamp(g_flyout.notifyScroll - notches, 0,
+                                                       std::max(0, g_flyout.notifyEntries - 1));
+                    LayoutFlyout(-1);
+                }
+                InvalidateRect(hWnd, nullptr, FALSE);
+            } else if (g_flyout.kind == kFlyoutMixer && (g_flyout.hover >> 16) == kHitMixerSlider) {
+                int slider = g_flyout.hover & 0xFFFF;
+                SetMixerVolume(slider, MixerLevel(slider) + notches * 2);
+                InvalidateRect(hWnd, nullptr, FALSE);
+            } else if (g_flyout.kind == kFlyoutVpn) {
+                int rows = (int)VpnRows().size();
+                g_flyout.vpnScroll = std::clamp(g_flyout.vpnScroll - notches, 0,
+                                                std::max(0, rows - kMaxVisibleVpnRows));
+                LayoutFlyout(-1);
+                InvalidateRect(hWnd, nullptr, FALSE);            } else if (g_flyout.kind == kFlyoutBrightness && (g_flyout.hover >> 16) == kHitSlider) {
+                int monitor = g_flyout.hover & 0xFFFF;
+                if (monitor < (int)g_flyout.monitors.size()) {
+                    SetBrightness(monitor, g_flyout.monitors[monitor].value + notches * 2);
+                    InvalidateRect(hWnd, nullptr, FALSE);
+                }
+            }
+            return 0;
+        }
+
+        case WM_TIMER:
+            // Programs start and stop playing while the mixer is open.
+            if (wParam == kTimerMixer && g_flyout.kind == kFlyoutMixer && g_flyout.dragMixer < 0) {
+                LoadMixerFlyout();
+                LayoutFlyout(-1);
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            return 0;
+
+        case WM_KEYDOWN:
+            if (wParam == VK_ESCAPE) {
+                CloseFlyout();
+            }
+            return 0;
+
+        case WM_ACTIVATE:
+            if (LOWORD(wParam) == WA_INACTIVE && !g_flyoutClosing && !g_flyoutMenu) {
+                if (g_stickyPid) {
+                    return 0;  // After an icon click the sticky hooks decide.
+                }
+                g_flyoutClosedTick = GetTickCount();
+                g_flyoutClosedKind = g_flyout.kind;
+                CloseFlyout();
+            }
+            return 0;
+
+        case WM_COPYDATA: {
+            // An icon dragged here from the taskbar's tray.
+            POINT screen;
+            std::wstring key;
+            if (g_flyout.kind == kFlyoutOverflow && ReadTrayDrop((COPYDATASTRUCT const*)lParam, &screen, &key)) {
+                return DropOnFlyout(hWnd, screen, key);
+            }
+            return FALSE;
+        }
+
+        case WM_APP_FLYOUT_RELOAD:
+            if (g_flyout.dragMixer >= 0) {
+                return 0;  // Mid-drag: the next refresh catches up.
+            }
+            LoadFlyout();
+            LayoutFlyout(-1);
+            InvalidateRect(hWnd, nullptr, FALSE);
+            return 0;
+
+        case WM_APP_JOB_DONE: {
+            std::wstring result;
+            if (TakeJobResult(g_flyout.job, &result)) {
+                if (g_flyout.kind == kFlyoutVpn) {
+                    // After a connect or disconnect the VPN icon catches up;
+                    // a plain status check changes nothing, so it doesn't.
+                    bool command = g_flyout.vpnBusy;
+                    ApplyVpnStatus(result);
+                    if (command) {
+                        RequestRefresh(kNetworkBits);
+                    }
+                } else if (g_flyout.kind == kFlyoutSecurity) {
+                    g_flyout.securityUpdates = result.empty() ? L"unknown" : result;
+                    LoadSecurityFlyout();
+                } else if (g_flyout.kind == kFlyoutBluetooth || g_flyout.kind == kFlyoutMixer) {
+                    FinishBluetoothJob(result);
+                }
+                LayoutFlyout(-1);
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            return 0;
+        }
+
+        case WM_APP_BRIGHTNESS_READY:
+            if (auto* shared = g_flyout.brightness) {
+                EnterCriticalSection(&shared->lock);
+                g_flyout.monitors = shared->levels;
+                g_flyout.monitorsLoaded = shared->loaded;
+                LeaveCriticalSection(&shared->lock);
+                g_brightnessCache = g_flyout.monitors;
+                LayoutFlyout(-1);
+                InvalidateRect(hWnd, nullptr, FALSE);
+            }
+            return 0;
+
+        case WM_DESTROY:
+            KillTimer(hWnd, kTimerMixer);
+            StopSticky();
+            ReleaseMixer();
+            g_flyout.dragMixer = -1;
+            EndHiddenDragOutside();
+            CancelJob(g_flyout.job);
+            StopBrightness();
+            if (g_flyout.hwnd == hWnd && g_flyout.kind == kFlyoutOverflow) {
+                g_overflowOpen = false;
+                RequestRefresh(1u << kOverflow);
+            }
+            if (g_flyout.hwnd == hWnd) {
+                g_flyout.hwnd = nullptr;
+                g_flyout.kind = kFlyoutNone;
+                g_flyout.hits.clear();
+            }
+            return 0;
+    }
+    return DefWindowProcW(hWnd, msg, wParam, lParam);
+}
+
+void ShowFlyout(int flyoutKind, int iconKind) {
+    // Clicking the icon of an open flyout deactivates the flyout first, which
+    // closes it; that click should leave it closed, like a toggle.
+    if (g_flyoutClosedKind == flyoutKind && GetTickCount() - g_flyoutClosedTick < 300) {
+        g_flyoutClosedKind = kFlyoutNone;
+        return;
+    }
+    // The Tourne taskbar never takes the focus, so there the flyout is still
+    // open when its icon is clicked again.
+    TakeTaskbarAnchor();
+    if (g_anchorFromTaskbar && g_flyout.hwnd && g_flyout.kind == flyoutKind) {
+        CloseFlyout();
+        return;
+    }
+    CloseFlyout();
+
+    HINSTANCE instance = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                           GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&FlyoutProc, &instance);
+
+    HWND hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST, kFlyoutClass, L"",
+                                WS_POPUP, 0, 0, 1, 1, nullptr, nullptr, instance, nullptr);
+    if (!hwnd) {
+        return;
+    }
+
+    // Pixel fonts and art only stay sharp at whole-number scales.
+    RECT anchor{};
+    NOTIFYICONIDENTIFIER identifier{sizeof(identifier)};
+    identifier.hWnd = g_wnd;
+    identifier.uID = kIconIdBase + iconKind;
+    POINT pt;
+    GetCursorPos(&pt);
+    if (g_anchorFromTaskbar) {
+        anchor = g_taskbarAnchor;
+        pt = {(anchor.left + anchor.right) / 2, (anchor.top + anchor.bottom) / 2};
+    } else if (SUCCEEDED(Shell_NotifyIconGetRect(&identifier, &anchor))) {
+        pt = {(anchor.left + anchor.right) / 2, (anchor.top + anchor.bottom) / 2};
+    }
+    UINT dpiX = USER_DEFAULT_SCREEN_DPI, dpiY = USER_DEFAULT_SCREEN_DPI;
+    using GetDpiForMonitor_t = HRESULT(WINAPI*)(HMONITOR, int, UINT*, UINT*);
+    static auto getDpiForMonitor = (GetDpiForMonitor_t)GetProcAddress(
+        LoadLibraryW(L"shcore.dll"), "GetDpiForMonitor");
+    if (getDpiForMonitor) {
+        getDpiForMonitor(MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST), 0, &dpiX, &dpiY);
+    }
+
+    g_flyout.hwnd = hwnd;
+    g_flyout.kind = flyoutKind;
+    g_flyout.scale = std::max(1, (int)(dpiX + USER_DEFAULT_SCREEN_DPI / 2) / USER_DEFAULT_SCREEN_DPI);
+    g_flyout.width = 300 * g_flyout.scale;
+    g_flyout.fitWidth = 0;
+    g_flyout.hover = 0;
+    g_flyout.dragSlider = -1;
+    g_flyout.swallowUp = false;
+    g_flyout.dragHidden = -1;
+    g_flyout.dragMoved = false;
+    g_flyout.openFolder = -1;  // opens on all the hidden icons
+    g_flyout.selectedNetwork = -1;
+    g_flyout.selectedSsid.clear();
+    g_flyout.networkScroll = 0;
+    g_flyout.btSelected.clear();
+    g_flyout.btBusy.clear();
+    g_flyout.btNote.clear();
+    if (flyoutKind == kFlyoutOverflow) {
+        g_overflowOpen = true;
+        RequestRefresh(1u << kOverflow);
+    }
+    CreateFonts(g_flyout.scale);
+
+    if (flyoutKind == kFlyoutNetwork) {
+        ScanWifi();
+    } else if (flyoutKind == kFlyoutBrightness) {
+        StartBrightness();
+        if (!g_brightnessCache.empty()) {
+            g_flyout.monitors = g_brightnessCache;
+            g_flyout.monitorsLoaded = true;
+        }
+    } else if (flyoutKind == kFlyoutSecurity) {
+        g_flyout.securityUpdates.clear();
+        g_flyout.job = StartJob(SearchPendingUpdates);
+    } else if (flyoutKind == kFlyoutNotify) {
+        SYSTEMTIME today;
+        GetLocalTime(&today);
+        g_flyout.calYear = today.wYear;
+        g_flyout.calMonth = today.wMonth;
+        g_flyout.calSelected = DayStart(MinutesOf(today));
+        g_flyout.notifyScroll = 0;
+        RefreshCalendar(false);
+    } else if (flyoutKind == kFlyoutMixer) {
+        g_flyout.dragMixer = -1;
+        SetTimer(hwnd, kTimerMixer, kMixerRefreshMs, nullptr);
+    } else if (flyoutKind == kFlyoutVpn) {
+        g_flyout.vpnOpenRegion = -1;
+        g_flyout.vpnScroll = 0;
+        g_flyout.vpnBusy = false;
+        g_flyout.vpnChecking = false;
+        g_flyout.vpnStatus = g_vpnLastStatus.empty() ? L"Checking..." : g_vpnLastStatus;
+        g_flyout.vpnConnected = g_vpnLastConnected;
+        RunVpnCommand(L"", L"");
+    }
+    LoadFlyout();
+    LayoutFlyout(iconKind);
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+    SetForegroundWindow(hwnd);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Tray tooltips in the Tourne style (in Explorer): the tray's own tooltip
+// windows, given the flyouts' font and drawn like them. The tooltip still
+// sizes itself, with the new font, so the text always fits.
+
+constexpr DWORD kWindowCornerPreference = 33;  // DWMWA_WINDOW_CORNER_PREFERENCE
+constexpr DWORD kCornerDoNotRound = 1;         // DWMWCP_DONOTROUND
+
+struct StyledTooltip {
+    HWND hwnd;
+    HFONT oldFont;
+    RECT oldMargin;
+    LONG_PTR oldStyle;
+};
+
+std::vector<StyledTooltip> g_styledTooltips;  // Explorer side thread only.
+std::map<int, HFONT> g_tooltipFonts;           // By scale.
+
+void PaintTooltip(HWND hwnd, HDC dc) {
+    RECT client;
+    GetClientRect(hwnd, &client);
+    SetDCBrushColor(dc, ui::kGround);
+    FillRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+    SetDCBrushColor(dc, ui::kEdge);
+    FrameRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+
+    WCHAR text[1024];
+    GetWindowTextW(hwnd, text, ARRAYSIZE(text));
+    RECT margin{};
+    SendMessageW(hwnd, TTM_GETMARGIN, 0, (LPARAM)&margin);
+    RECT area{client.left + margin.left, client.top + margin.top,
+              client.right - margin.right, client.bottom - margin.bottom};
+    HGDIOBJ old = SelectObject(dc, (HFONT)SendMessageW(hwnd, WM_GETFONT, 0, 0));
+    SetBkMode(dc, TRANSPARENT);
+    SetTextColor(dc, ui::kInk);
+    DrawTextW(dc, text, -1, &area, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_WORDBREAK | DT_EXPANDTABS);
+    SelectObject(dc, old);
+}
+
+LRESULT CALLBACK TooltipStyleProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, DWORD_PTR) {
+    switch (msg) {
+        case WM_ERASEBKGND:
+            return 1;
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(hwnd, &ps);
+            PaintTooltip(hwnd, dc);
+            EndPaint(hwnd, &ps);
+            return 0;
+        }
+        case WM_PRINTCLIENT:
+            // How the tooltip is drawn while it fades in.
+            PaintTooltip(hwnd, (HDC)wParam);
+            return 0;
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+std::vector<HWND> AllTrayToolbars() {
+    std::vector<HWND> toolbars;
+    for (PCWSTR taskbarClass : {L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd"}) {
+        for (HWND taskbar = FindWindowExW(nullptr, nullptr, taskbarClass, nullptr); taskbar;
+             taskbar = FindWindowExW(nullptr, taskbar, taskbarClass, nullptr)) {
+            HWND notify = FindWindowExW(taskbar, nullptr, L"TrayNotifyWnd", nullptr);
+            if (HWND toolbar = notify ? FindWindowExW(notify, nullptr, TOOLBARCLASSNAMEW, nullptr) : nullptr) {
+                toolbars.push_back(toolbar);
+            }
+        }
+    }
+    if (HWND overflow = FindWindowW(L"NotifyIconOverflowWindow", nullptr)) {
+        if (HWND toolbar = FindWindowExW(overflow, nullptr, TOOLBARCLASSNAMEW, nullptr)) {
+            toolbars.push_back(toolbar);
+        }
+    }
+    return toolbars;
+}
+
+void EnsureTooltipStyle() {
+    std::erase_if(g_styledTooltips, [](StyledTooltip const& tip) { return !IsWindow(tip.hwnd); });
+    for (HWND toolbar : AllTrayToolbars()) {
+        DWORD pid = 0;
+        GetWindowThreadProcessId(toolbar, &pid);
+        HWND tooltip = pid == GetCurrentProcessId()
+                           ? (HWND)SendMessageW(toolbar, TB_GETTOOLTIPS, 0, 0)
+                           : nullptr;
+        if (!tooltip || std::any_of(g_styledTooltips.begin(), g_styledTooltips.end(),
+                                    [&](StyledTooltip const& tip) { return tip.hwnd == tooltip; })) {
+            continue;
+        }
+        int scale = std::max(1, (int)(GetDpiForWindow(toolbar) + USER_DEFAULT_SCREEN_DPI / 2) /
+                                    USER_DEFAULT_SCREEN_DPI);
+        HFONT& font = g_tooltipFonts[scale];
+        if (!font) {
+            font = MakeFont({L"CozetteVector", L"scientifica"}, 13 * scale);
+        }
+        StyledTooltip styled{tooltip, (HFONT)SendMessageW(tooltip, WM_GETFONT, 0, 0), {},
+                             GetWindowLongPtrW(tooltip, GWL_STYLE)};
+        SendMessageW(tooltip, TTM_GETMARGIN, 0, (LPARAM)&styled.oldMargin);
+        if (!WindhawkUtils::SetWindowSubclassFromAnyThread(tooltip, TooltipStyleProc, 0)) {
+            continue;
+        }
+        SendMessageW(tooltip, WM_SETFONT, (WPARAM)font, FALSE);
+        // No fade: it's drawn from the system's own look before the first paint.
+        SetWindowLongPtrW(tooltip, GWL_STYLE, styled.oldStyle | TTS_NOANIMATE | TTS_NOFADE);
+        RECT margin{6 * scale, 4 * scale, 6 * scale, 4 * scale};
+        SendMessageW(tooltip, TTM_SETMARGIN, 0, (LPARAM)&margin);
+        DwmSetWindowAttribute(tooltip, kWindowCornerPreference, &kCornerDoNotRound,
+                              sizeof(kCornerDoNotRound));
+        g_styledTooltips.push_back(styled);
+    }
+}
+
+void StopTooltipStyle() {
+    for (auto& tip : g_styledTooltips) {
+        if (!IsWindow(tip.hwnd)) {
+            continue;
+        }
+        WindhawkUtils::RemoveWindowSubclassFromAnyThread(tip.hwnd, TooltipStyleProc);
+        SendMessageW(tip.hwnd, WM_SETFONT, (WPARAM)tip.oldFont, FALSE);
+        SendMessageW(tip.hwnd, TTM_SETMARGIN, 0, (LPARAM)&tip.oldMargin);
+        SetWindowLongPtrW(tip.hwnd, GWL_STYLE, tip.oldStyle);
+    }
+    g_styledTooltips.clear();
+    for (auto& [scale, font] : g_tooltipFonts) {
+        DeleteObject(font);
+    }
+    g_tooltipFonts.clear();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Everything that runs inside Explorer, in one place: tooltip capture, the
+// design on other programs' icons, and the tooltip style. Called every few
+// seconds (it only acts on what's new), from the Explorer relay in the split
+// suite and from the mod thread when this runs inside Explorer itself.
+
+HWND g_explorerSideTray;  // The taskbar whose existing icons were handled.
+
+// TODO: with a scheme taken from a theme (taskbarStyle, visualStyle), other
+// apps' icons themed here only take new colours on a settings change, not
+// when Windows' visual style, dark or light mode or accent colour changes.
+// This side should react to WM_THEMECHANGED and "ImmersiveColorSet" too (or
+// the tool process could tell it) and call ExplorerSideSettingsChanged(true).
+
+void ExplorerSideSettingsChanged(bool loadSettings) {
+    if (loadSettings) {
+        g_settings = LoadSettings();
+    }
+    g_themeEnabled = g_settings.trayTheme;
+    g_explorerSideTray = nullptr;  // Theme the existing icons again.
+    if (!g_settings.tourneTooltips) {
+        StopTooltipStyle();
+    }
+}
+
+// Programs whose state lives in a settings file get their icon redrawn when
+// the file changes. One thread, asleep until then.
+HANDLE g_appStateThread;
+HANDLE g_appStateStop;
+
+DWORD WINAPI AppStateThread(LPVOID) {
+    HANDLE watch = FindFirstChangeNotificationW(TamerSettingsFolder().c_str(), FALSE,
+                                                FILE_NOTIFY_CHANGE_LAST_WRITE);
+    if (watch == INVALID_HANDLE_VALUE) {
+        return 0;
+    }
+    HANDLE events[] = {g_appStateStop, watch};
+    while (WaitForMultipleObjects(2, events, FALSE, INFINITE) == WAIT_OBJECT_0 + 1) {
+        // Programs save in more than one write; redraw once it has settled.
+        if (WaitForSingleObject(g_appStateStop, 200) == WAIT_OBJECT_0) {
+            break;
+        }
+        if (g_themeEnabled) {
+            ThemeExistingIcons();
+        }
+        FindNextChangeNotification(watch);
+    }
+    FindCloseChangeNotification(watch);
+    return 0;
+}
+
+void StartAppStateWatch() {
+    if (g_appStateThread) {
+        return;
+    }
+    g_appStateStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (g_appStateStop) {
+        g_appStateThread = CreateThread(nullptr, 0, AppStateThread, nullptr, 0, nullptr);
+    }
+}
+
+void StopAppStateWatch() {
+    if (g_appStateThread) {
+        SetEvent(g_appStateStop);
+        WaitForSingleObject(g_appStateThread, 5000);
+        CloseHandle(g_appStateThread);
+        g_appStateThread = nullptr;
+    }
+    if (g_appStateStop) {
+        CloseHandle(g_appStateStop);
+        g_appStateStop = nullptr;
+    }
+}
+void EnsureExplorerSide() {
+    EnsureTipCapture();
+    HWND tray = g_tipsTrayWnd;
+    if (tray && tray != g_explorerSideTray) {
+        g_explorerSideTray = tray;
+        if (g_themeEnabled) {
+            ThemeExistingIcons();
+        }
+        PokeForTooltips();
+    }
+    if (g_settings.tourneTooltips) {
+        EnsureTooltipStyle();
+    }
+    StartAppStateWatch();
+}
+
+void StopExplorerSide() {
+    StopAppStateWatch();
+    StopTooltipStyle();
+    StopTipCapture();
+    ClearHostedIcons();
+    g_explorerSideTray = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Click behavior
+
+void OnPrimary(int kind, WPARAM anchor) {
+    switch (kind) {
+        case kNetwork: ShowFlyout(kFlyoutNetwork, kNetwork); break;
+        case kVolume: ShowFlyout(kFlyoutMixer, kVolume); break;
+        case kVpn:
+            if (!WindscribeFile(L"windscribe-cli.exe").empty()) {
+                ShowFlyout(kFlyoutVpn, kVpn);
+            } else {
+                OpenUri(L"ms-settings:network-vpn");
+            }
+            break;
+        case kBattery: ShowFlyout(kFlyoutPower, kBattery); break;
+        case kNotifications:
+        case kFocus: ShowFlyout(kFlyoutNotify, kind); break;
+        case kNightLight: OpenUri(L"ms-settings:nightlight"); break;
+        case kBrightness: ShowFlyout(kFlyoutBrightness, kBrightness); break;
+        case kMicrophone: OpenUri(L"ms-settings:privacy-microphone"); break;
+        case kCamera: OpenUri(L"ms-settings:privacy-webcam"); break;
+        case kLocation: OpenUri(L"ms-settings:privacy-location"); break;
+        case kAccessibility: SendHotkey({VK_LWIN, 'U'}); break;
+        case kPower: ShowMenu(PowerMenu(), anchor); break;
+        case kInput: SendHotkey({VK_LWIN, VK_SPACE}); break;
+        case kRecycleBin: OpenUri(L"shell:RecycleBinFolder"); break;
+        case kClipboard: SendHotkey({VK_LWIN, 'V'}); break;
+        case kCapture: SendHotkey({VK_LWIN, VK_SHIFT, 'S'}); break;
+        case kOverflow: ShowFlyout(kFlyoutOverflow, kOverflow); break;
+        case kSecurity: ShowFlyout(kFlyoutSecurity, kSecurity); break;
+        case kBluetooth: ShowFlyout(kFlyoutBluetooth, kBluetooth); break;
+    }
+}
+
+void OnContextMenu(int kind, WPARAM anchor) {
+    switch (kind) {
+        case kNetwork:
+        case kVpn:
+            ShowMenu({{L"Network && internet settings", Uri(L"ms-settings:network")},
+                      {L"Wi-Fi settings", Uri(L"ms-settings:network-wifi")},
+                      {L"VPN settings", Uri(L"ms-settings:network-vpn")}},
+                     anchor);
+            break;
+        case kVolume: {
+            std::vector<MenuItem> items = {{L"Open Volume mixer", [] { Run(L"SndVol.exe"); }},
+                                           {L"Sound settings", Uri(L"ms-settings:sound")}};
+            for (auto& spatial : SpatialSoundMenu()) {
+                items.push_back(std::move(spatial));
+            }
+            items.push_back({});
+            items.push_back({L"Playback devices", [] { Run(L"control.exe", L"mmsys.cpl,,0"); }});
+            items.push_back({L"Recording devices", [] { Run(L"control.exe", L"mmsys.cpl,,1"); }});
+            items.push_back({L"Sounds", [] { Run(L"control.exe", L"mmsys.cpl,,2"); }});
+            ShowMenu(items, anchor);
+            break;
+        }
+        case kBattery:
+            ShowMenu({{L"Power && battery settings", Uri(L"ms-settings:powersleep")},
+                      {L"Battery saver", Uri(L"ms-settings:batterysaver")}},
+                     anchor);
+            break;
+        case kNotifications:
+            ShowMenu({{L"Open notification center", [] { SendHotkey({VK_LWIN, 'N'}); }},
+                      {L"Notification settings", Uri(L"ms-settings:notifications")}},
+                     anchor);
+            break;
+        case kFocus:
+            ShowMenu({{L"Open notification center", [] { SendHotkey({VK_LWIN, 'N'}); }},
+                      {L"Focus settings", Uri(L"ms-settings:quiethours")}},
+                     anchor);
+            break;
+        case kNightLight:
+        case kBrightness:
+            ShowMenu({{L"Night light settings", Uri(L"ms-settings:nightlight")},
+                      {L"Display settings", Uri(L"ms-settings:display")}},
+                     anchor);
+            break;
+        case kMicrophone:
+        case kCamera:
+        case kLocation:
+            OnPrimary(kind, anchor);
+            break;
+        case kAccessibility:
+            ShowMenu({{L"Accessibility settings", Uri(L"ms-settings:easeofaccess")}}, anchor);
+            break;
+        case kPower:
+            ShowMenu(PowerMenu(), anchor);
+            break;
+        case kInput:
+            ShowMenu({{L"Language settings", Uri(L"ms-settings:regionlanguage")},
+                      {L"Typing settings", Uri(L"ms-settings:typing")}},
+                     anchor);
+            break;
+        case kRecycleBin:
+            ShowMenu({{L"Open", Uri(L"shell:RecycleBinFolder")},
+                      {L"Empty Recycle Bin",
+                       [] {
+                           // Windows asks for confirmation itself.
+                           SHEmptyRecycleBinW(g_wnd, nullptr, 0);
+                           RequestRefresh(1u << kRecycleBin);
+                       }}},
+                     anchor);
+            break;
+        case kClipboard:
+            ShowMenu({{L"Clipboard settings", Uri(L"ms-settings:clipboard")}}, anchor);
+            break;
+        case kCapture:
+            ShowMenu({{L"Capture now", [] { SendHotkey({VK_LWIN, VK_SHIFT, 'S'}); }}},
+                     anchor);
+            break;
+        case kOverflow:
+            ShowMenu({{L"Taskbar settings", Uri(L"ms-settings:taskbar")}}, anchor);
+            break;
+        case kSecurity:
+            ShowMenu({{L"Open Windows Security", Uri(L"windowsdefender:")},
+                      {L"Virus && threat protection", Uri(L"windowsdefender://threat")},
+                      {L"Firewall && network protection", Uri(L"windowsdefender://network")}},
+                     anchor);
+            break;
+        case kBluetooth:
+            // When Windows' own Bluetooth icon is gone and its menu with it.
+            ShowMenu({{L"Bluetooth settings", Uri(L"ms-settings:bluetooth")},
+                      {L"Add a device", Uri(L"ms-settings-connectabledevices:devicediscovery")},
+                      {},
+                      {L"Send a file", [] { Run(L"fsquirt.exe", L"-send"); }},
+                      {L"Receive a file", [] { Run(L"fsquirt.exe", L"-receive"); }}},
+                     anchor);
+            break;
+    }
+}
+
+DWORD g_lastMiddleTick;
+int g_wheelRemainder;
+
+// The toolbar watcher and the tray callback can both report one middle click.
+void OnMiddleClick() {
+    DWORD now = GetTickCount();
+    if (now - g_lastMiddleTick < 400) {
+        return;
+    }
+    g_lastMiddleTick = now;
+    CycleOutputDevice();
+}
+
+// A click that came from the Tourne taskbar's tray (it left an anchor here
+// just now). Windows' own icons live in Explorer's tray, so their menus would
+// open there, not by the icon that was clicked.
+bool ClickFromTaskbar() {
+    auto tick = (DWORD)(ULONG_PTR)GetPropW(g_wnd, kTaskbarAnchorTickProp);
+    return GetPropW(g_wnd, kTaskbarAnchorProp) && GetTickCount() - tick <= 1500;
+}
+
+void OnTrayEvent(int kind, UINT event, WPARAM anchor) {
+    bool primary = event == NIN_SELECT || event == NIN_KEYSELECT;
+    bool secondary = event == WM_RBUTTONDOWN || event == WM_RBUTTONUP ||
+                     event == WM_CONTEXTMENU;
+
+    if (kind == kVolume && event == WM_MBUTTONUP) {
+        OnMiddleClick();
+        return;
+    }
+
+    // Right clicks on network, volume and battery go to the system icon, so
+    // its own menu opens; left clicks are the mod's.
+    if (secondary && !ClickFromTaskbar() &&
+        (kind == kNetwork || kind == kVolume || kind == kBattery || kind == kSecurity ||
+         kind == kBluetooth)) {
+        if (RelayForward(kind, event, anchor)) {
+            return;
+        }
+    }
+
+    if (primary) {
+        OnPrimary(kind, anchor);
+    } else if (event == WM_CONTEXTMENU) {
+        OnContextMenu(kind, anchor);
+    }
+}
+
+// A device battery icon: the devices flyout, or a menu.
+void OnBatteryTrayEvent(int slot, UINT event, WPARAM anchor) {
+    if (event == NIN_SELECT || event == NIN_KEYSELECT) {
+        ShowFlyout(kFlyoutDevices, kBatteryIdBase + slot);
+    } else if (event == WM_CONTEXTMENU) {
+        ShowMenu({{L"Check now", [] { WakeBatteries(); }},
+                  {L"Bluetooth settings", Uri(L"ms-settings:bluetooth")}},
+                 anchor);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Change notifications
+
+struct NlmSink final : INetworkListManagerEvents {
+    LONG refs = 1;
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** out) override {
+        if (IsEqualIID(riid, IID_IUnknown) ||
+            IsEqualIID(riid, kIidNetworkListManagerEvents)) {
+            *out = static_cast<INetworkListManagerEvents*>(this);
+            AddRef();
+            return S_OK;
+        }
+        *out = nullptr;
+        return E_NOINTERFACE;
+    }
+    ULONG STDMETHODCALLTYPE AddRef() override { return InterlockedIncrement(&refs); }
+    ULONG STDMETHODCALLTYPE Release() override {
+        LONG count = InterlockedDecrement(&refs);
+        if (!count) {
+            delete this;
+        }
+        return count;
+    }
+    HRESULT STDMETHODCALLTYPE ConnectivityChanged(NLM_CONNECTIVITY) override {
+        RequestRefresh(kNetworkBits);
+        return S_OK;
+    }
+};
+
+IConnectionPoint* g_nlmConnectionPoint;
+DWORD g_nlmCookie;
+HANDLE g_ipNotify;
+std::array<HPOWERNOTIFY, 3> g_powerNotify;
+ULONG g_binNotify;
+UINT g_shellHookMessage;
+UINT g_taskbarCreatedMessage;
+
+VOID WINAPI OnIpInterfaceChange(PVOID, PMIB_IPINTERFACE_ROW, MIB_NOTIFICATION_TYPE) {
+    RequestRefresh(kNetworkBits);
+}
+
+VOID WINAPI OnWlanNotification(PWLAN_NOTIFICATION_DATA, PVOID) {
+    RequestRefresh(kNetworkBits);
+}
+
+void StartNetworkWatch() {
+    if (SUCCEEDED(CoCreateInstance(kClsidNetworkListManager, nullptr, CLSCTX_ALL,
+                                   kIidNetworkListManager,
+                                   (void**)&g_networkListManager))) {
+        IConnectionPointContainer* container = nullptr;
+        if (SUCCEEDED(g_networkListManager->QueryInterface(
+                IID_IConnectionPointContainer, (void**)&container))) {
+            if (SUCCEEDED(container->FindConnectionPoint(
+                    kIidNetworkListManagerEvents, &g_nlmConnectionPoint))) {
+                auto* sink = new NlmSink();
+                g_nlmConnectionPoint->Advise(sink, &g_nlmCookie);
+                sink->Release();
+            }
+            container->Release();
+        }
+    } else {
+        Wh_Log(L"Network List Manager unavailable, internet state is unknown");
+    }
+
+    NotifyIpInterfaceChange(AF_UNSPEC, OnIpInterfaceChange, nullptr, FALSE,
+                            &g_ipNotify);
+
+    OpenWlan();
+}
+
+// Windows' Wi-Fi service, and its notifications. Opened again when a call fails: a handle from before
+// the service restarted (an update, waking from sleep) fails every call after it, which left the flyout
+// with no networks but the one connected.
+void OpenWlan() {
+    if (g_wlan) {
+        WlanRegisterNotification(g_wlan, WLAN_NOTIFICATION_SOURCE_NONE, TRUE, nullptr, nullptr, nullptr, nullptr);
+        WlanCloseHandle(g_wlan, nullptr);
+        g_wlan = nullptr;
+    }
+    DWORD version;
+    if (WlanOpenHandle(2, nullptr, &version, &g_wlan) == ERROR_SUCCESS) {
+        WlanRegisterNotification(
+            g_wlan, WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM,
+            TRUE, OnWlanNotification, nullptr, nullptr, nullptr);
+    } else {
+        g_wlan = nullptr;
+    }
+}
+
+// The Wi-Fi interfaces, opening the service again once if the handle has gone stale.
+WLAN_INTERFACE_INFO_LIST* WlanInterfaces() {
+    WLAN_INTERFACE_INFO_LIST* interfaces = nullptr;
+    if (g_wlan && WlanEnumInterfaces(g_wlan, nullptr, &interfaces) == ERROR_SUCCESS) {
+        return interfaces;
+    }
+    OpenWlan();
+    if (g_wlan && WlanEnumInterfaces(g_wlan, nullptr, &interfaces) == ERROR_SUCCESS) {
+        return interfaces;
+    }
+    return nullptr;
+}
+
+void StopNetworkWatch() {
+    if (g_ipNotify) {
+        CancelMibChangeNotify2(g_ipNotify);
+        g_ipNotify = nullptr;
+    }
+    if (g_wlan) {
+        WlanRegisterNotification(g_wlan, WLAN_NOTIFICATION_SOURCE_NONE, TRUE,
+                                 nullptr, nullptr, nullptr, nullptr);
+        WlanCloseHandle(g_wlan, nullptr);
+        g_wlan = nullptr;
+    }
+    if (g_nlmConnectionPoint) {
+        g_nlmConnectionPoint->Unadvise(g_nlmCookie);
+        g_nlmConnectionPoint->Release();
+        g_nlmConnectionPoint = nullptr;
+    }
+    if (g_networkListManager) {
+        g_networkListManager->Release();
+        g_networkListManager = nullptr;
+    }
+}
+
+// Registry keys whose changes refresh some icons.
+struct RegistryWatch {
+    HKEY root;
+    std::wstring path;
+    UINT bits;
+    HKEY key = nullptr;
+    HANDLE event = nullptr;
+};
+
+std::vector<RegistryWatch> g_watches;
+
+bool ArmWatch(RegistryWatch& watch) {
+    if (!watch.event) {
+        watch.event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+    }
+    if (!watch.key &&
+        RegOpenKeyExW(watch.root, watch.path.c_str(), 0, KEY_NOTIFY | KEY_READ,
+                      &watch.key) != ERROR_SUCCESS) {
+        watch.key = nullptr;
+        return false;
+    }
+    if (RegNotifyChangeKeyValue(watch.key, TRUE,
+                                REG_NOTIFY_CHANGE_NAME | REG_NOTIFY_CHANGE_LAST_SET,
+                                watch.event, TRUE) != ERROR_SUCCESS) {
+        // The key went away; reopen it next time.
+        RegCloseKey(watch.key);
+        watch.key = nullptr;
+        return false;
+    }
+    return true;
+}
+
+void StartRegistryWatches() {
+    std::wstring consent = kConsentStorePath;
+    g_watches = {
+        {HKEY_LOCAL_MACHINE, kRadioStatePath, kNetworkBits},
+        {HKEY_CURRENT_USER, kNotificationsPath, 1u << kNotifications},
+        {HKEY_CURRENT_USER, kNightLightPath, 1u << kNightLight},
+        {HKEY_CURRENT_USER, consent + L"microphone", 1u << kMicrophone},
+        {HKEY_CURRENT_USER, consent + L"webcam", 1u << kCamera},
+        {HKEY_CURRENT_USER, consent + L"location", 1u << kLocation},
+    };
+    for (auto& watch : g_watches) {
+        ArmWatch(watch);
+    }
+}
+
+void StopRegistryWatches() {
+    for (auto& watch : g_watches) {
+        if (watch.key) {
+            RegCloseKey(watch.key);
+        }
+        if (watch.event) {
+            CloseHandle(watch.event);
+        }
+    }
+    g_watches.clear();
+}
+
+void StartWindowWatches(HWND hWnd) {
+    g_powerNotify[0] = RegisterPowerSettingNotification(
+        hWnd, &kGuidBatteryPercentage, DEVICE_NOTIFY_WINDOW_HANDLE);
+    g_powerNotify[1] = RegisterPowerSettingNotification(
+        hWnd, &kGuidAcDcPowerSource, DEVICE_NOTIFY_WINDOW_HANDLE);
+    g_powerNotify[2] = RegisterPowerSettingNotification(
+        hWnd, &kGuidPowerSavingStatus, DEVICE_NOTIFY_WINDOW_HANDLE);
+
+    PIDLIST_ABSOLUTE bin = nullptr;
+    if (SUCCEEDED(SHGetSpecialFolderLocation(nullptr, CSIDL_BITBUCKET, &bin))) {
+        SHChangeNotifyEntry entry{bin, TRUE};
+        g_binNotify = SHChangeNotifyRegister(
+            hWnd, SHCNRF_ShellLevel | SHCNRF_InterruptLevel,
+            SHCNE_CREATE | SHCNE_DELETE | SHCNE_MKDIR | SHCNE_RMDIR |
+                SHCNE_RENAMEITEM | SHCNE_RENAMEFOLDER | SHCNE_UPDATEDIR |
+                SHCNE_UPDATEITEM,
+            WM_APP_BIN, 1, &entry);
+        CoTaskMemFree(bin);
+    }
+
+    g_shellHookMessage = RegisterWindowMessageW(L"SHELLHOOK");
+    RegisterShellHookWindow(hWnd);
+}
+
+void StopWindowWatches(HWND hWnd) {
+    for (auto& notify : g_powerNotify) {
+        if (notify) {
+            UnregisterPowerSettingNotification(notify);
+            notify = nullptr;
+        }
+    }
+    if (g_binNotify) {
+        SHChangeNotifyDeregister(g_binNotify);
+        g_binNotify = 0;
+    }
+    DeregisterShellHookWindow(hWnd);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Mod window and thread
+
+// Runs in the suite's own tray host process, so any taskbar will do; the
+// icons go to whichever Explorer is hosting it.
+bool IsTaskbarProcess() {
+    return FindWindowW(L"Shell_TrayWnd", nullptr) != nullptr;
+}
+
+bool g_started;
+
+void Start(HWND hWnd) {
+    g_started = true;
+    StartNetworkWatch();
+    StartAudio();
+    StartRegistryWatches();
+    StartWindowWatches(hWnd);
+    WscRegisterForChanges(nullptr, &g_securityWatch, OnSecurityChange, nullptr);
+    StartRadioWatch();
+    StartDeviceWatch();
+    WarmBrightnessCache(hWnd);
+    g_notificationsWatch = FindFirstChangeNotificationW(
+        NotificationsFolder().c_str(), FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_SIZE);
+    RefreshCalendar(false);
+    LoadBatterySlots();
+    StartBatteries();
+    SetTimer(hWnd, kTimerPeriodic, kPeriodicMs, nullptr);
+    RequestRefresh(kAllBits);
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    // Scroll and middle clicks arrive from the Explorer relay.
+    if (g_msgRelayWheel && msg == g_msgRelayWheel) {
+        msg = WM_APP_WHEEL;
+    } else if (g_msgRelayMiddle && msg == g_msgRelayMiddle) {
+        msg = WM_APP_MIDDLE;
+    }
+
+    static const UINT notificationCentre = RegisterWindowMessageW(L"TourneTray_NotificationCenter");
+    if (msg == notificationCentre) {
+        // The Tourne clock was clicked: a toggle, like the tray icons. A click
+        // on the taskbar doesn't take the focus, so an open flyout is still
+        // open here and closes; one the click just closed stays closed.
+        if (IsFlyoutOpen(kFlyoutNotify)) {
+            CloseFlyout();
+        } else {
+            ShowFlyout(kFlyoutNotify, -1);
+        }
+        return 0;
+    }
+
+    if (msg == WM_APP_TRAY) {
+        UINT event = LOWORD(lParam);
+        int kind = (int)HIWORD(lParam) - (int)kIconIdBase;
+        if (kind >= 0 && kind < kIconCount) {
+            OnTrayEvent(kind, event, wParam);
+        } else if (kind >= (int)kBatteryIdBase && kind < (int)kBatteryIdBase + kBatterySlots) {
+            OnBatteryTrayEvent(kind - (int)kBatteryIdBase, event, wParam);
+        }
+        return 0;
+    }
+
+    if (g_taskbarCreatedMessage && msg == g_taskbarCreatedMessage) {
+        for (auto& applied : g_applied) {
+            applied = {};
+        }
+        // The new tray has none of them; Refresh adds them back.
+        for (auto& icon : g_batteryIcons) {
+            icon = {};
+        }
+        RequestRefresh(kAllBits);
+        return 0;
+    }
+
+    if (g_shellHookMessage && msg == g_shellHookMessage) {
+        if (wParam == HSHELL_LANGUAGE || wParam == HSHELL_WINDOWACTIVATED ||
+            wParam == HSHELL_RUDEAPPACTIVATED) {
+            RequestRefresh(1u << kInput);
+        }
+        return 0;
+    }
+
+    switch (msg) {
+        // The Tourne-styled popup menus (ShowMenu).
+        case WM_MEASUREITEM:
+            if (MenuMeasureItem((MEASUREITEMSTRUCT*)lParam)) {
+                return TRUE;
+            }
+            break;
+
+        case WM_DRAWITEM:
+            if (MenuDrawItem((DRAWITEMSTRUCT*)lParam)) {
+                return TRUE;
+            }
+            break;
+
+        case WM_APP_REFRESH:
+            g_refreshPosted = false;
+            if (g_started) {
+                Refresh(g_pendingBits.exchange(0));
+            }
+            return 0;
+
+        case WM_APP_SETTINGS:
+            g_settings = LoadSettings();
+            if (g_started) {
+                OnBatterySettings();
+            }
+            RequestRefresh(kAllBits);
+            return 0;
+
+        case WM_APP_BATTERIES:
+            if (g_started) {
+                OnBatteriesFound();
+            }
+            return 0;
+
+        case WM_COPYDATA: {
+            auto* copyData = (const COPYDATASTRUCT*)lParam;
+            if (copyData && copyData->dwData == kHiddenIconsCopyId) {
+                g_receivedHidden =
+                    UnpackHiddenIcons((const BYTE*)copyData->lpData, copyData->cbData);
+                g_hiddenReceived = true;
+                return TRUE;
+            }
+            break;
+        }
+
+        case WM_APP_CALENDAR_READY:
+            g_calendarFetching = false;
+            if (IsFlyoutOpen(kFlyoutNotify)) {
+                PostMessageW(g_flyout.hwnd, WM_APP_FLYOUT_RELOAD, 0, 0);
+            }
+            return 0;
+
+        case WM_APP_BRIGHTNESS_READY:
+            FinishBrightnessWarm();
+            ApplyBrightnessWheel();
+            return 0;
+
+        case WM_APP_BIN:
+            RequestRefresh(1u << kRecycleBin);
+            return 0;
+
+        case WM_APP_WHEEL: {
+            // lParam: the icon scrolled over, plus one (0, from older relays,
+            // is the volume icon).
+            g_wheelRemainder += (int)(short)wParam;
+            int notches = g_wheelRemainder / WHEEL_DELTA;
+            g_wheelRemainder -= notches * WHEEL_DELTA;
+            int kind = lParam ? (int)lParam - 1 : kVolume;
+            if (kind == kVolume) {
+                ChangeVolume(notches);
+            } else if (kind == kBrightness) {
+                WheelBrightness(notches);
+            }
+            return 0;
+        }
+
+        case WM_APP_MIDDLE:
+            if (!lParam || (int)lParam - 1 == kVolume) {
+                OnMiddleClick();
+            }
+            return 0;
+
+        case WM_APP_AUDIO_DEVICE:
+            BindAudioEndpoint();
+            // A Bluetooth speaker or headset connecting or disconnecting.
+            RequestRefresh((1u << kVolume) | (1u << kBluetooth));
+            return 0;
+
+        case WM_POWERBROADCAST:
+            if (wParam == PBT_POWERSETTINGCHANGE || wParam == PBT_APMPOWERSTATUSCHANGE) {
+                RequestRefresh(1u << kBattery);
+            } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
+                RequestRefresh(kAllBits);
+            }
+            return TRUE;
+
+        case WM_THEMECHANGED:
+            // Another visual style: its colours, for the schemes taken from it.
+            if (IsThemeScheme(g_settings.scheme)) {
+                PostMessageW(hWnd, WM_APP_SETTINGS, 0, 0);
+            }
+            return 0;
+
+        case WM_SETTINGCHANGE:
+            // Dark or light mode, or the accent colour.
+            if (lParam && !wcscmp((PCWSTR)lParam, L"ImmersiveColorSet") && IsThemeScheme(g_settings.scheme)) {
+                PostMessageW(hWnd, WM_APP_SETTINGS, 0, 0);
+                return 0;
+            }
+            [[fallthrough]];
+        case WM_DISPLAYCHANGE:
+            // Re-renders only if the tray icon size changed with the DPI.
+            RequestRefresh(0);
+            return 0;
+
+        case WM_TIMER:
+            if (wParam == kTimerNotifications) {
+                KillTimer(hWnd, kTimerNotifications);
+                RequestRefresh(1u << kNotifications);
+                return 0;
+            }
+            if (wParam == kTimerBreath) {
+                g_breathFrame ^= 1;
+                ApplyBatteryIcons();
+                return 0;
+            }
+            if (wParam == kTimerFindTray) {
+                if (FindWindowW(L"Shell_TrayWnd", nullptr)) {
+                    KillTimer(hWnd, kTimerFindTray);
+                    if (IsTaskbarProcess()) {
+                        Start(hWnd);
+                    } else {
+                        Wh_Log(L"Not the taskbar process, staying idle");
+                    }
+                }
+            } else if (wParam == kTimerPeriodic) {
+                // Battery time left, Recycle Bin, retries for icons the tray
+                // refused, toolbars that were recreated, and registry keys
+                // that didn't exist yet (night light's is only created once
+                // it's first used).
+                for (auto& watch : g_watches) {
+                    if (!watch.key && ArmWatch(watch)) {
+                        RequestRefresh(watch.bits);
+                    }
+                }
+                RequestRefresh((1u << kBattery) | (1u << kRecycleBin) |
+                               kNetworkBits | (1u << kBluetooth));
+            }
+            return 0;
+
+        case WM_APP_EXIT:
+            CloseFlyout();
+            for (int k = 0; k < kIconCount; k++) {
+                RemoveIcon(k);
+            }
+            RemoveBatteryIcons();
+            DestroyWindow(hWnd);
+            return 0;
+
+        case WM_DESTROY:
+            KillTimer(hWnd, kTimerPeriodic);
+            KillTimer(hWnd, kTimerFindTray);
+            KillTimer(hWnd, kTimerBreath);
+            if (g_started) {
+                StopBatteries();
+                StopWindowWatches(hWnd);
+                if (g_securityWatch) {
+                    WscUnRegisterChanges(g_securityWatch);
+                    g_securityWatch = nullptr;
+                }
+                StopDeviceWatch();
+                StopRadioWatch();
+                FinishBrightnessWarm();
+                StopBrightnessWheel();
+                if (g_notificationsWatch != INVALID_HANDLE_VALUE) {
+                    FindCloseChangeNotification(g_notificationsWatch);
+                    g_notificationsWatch = INVALID_HANDLE_VALUE;
+                }
+            }
+            g_wnd = nullptr;
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProcW(hWnd, msg, wParam, lParam);
+}
+
+constexpr WCHAR kWindowClass[] = L"TourneTraySystemIcons_" WH_MOD_ID;
+
+HANDLE g_thread;
+
+DWORD WINAPI ThreadProc(LPVOID parameter) {
+    HANDLE ready = (HANDLE)parameter;
+    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+    // Explorer gave these windows per-monitor DPI for free; a process of its
+    // own has to ask, or flyouts and icons are scaled blurry.
+    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    RegisterRelayMessages();
+
+    HINSTANCE instance = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                           GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&WndProc, &instance);
+
+    WNDCLASSW windowClass{};
+    windowClass.lpfnWndProc = WndProc;
+    windowClass.hInstance = instance;
+    windowClass.lpszClassName = kWindowClass;
+    RegisterClassW(&windowClass);
+
+    WNDCLASSW flyoutClass{};
+    flyoutClass.style = CS_DROPSHADOW | CS_DBLCLKS;
+    flyoutClass.lpfnWndProc = FlyoutProc;
+    flyoutClass.hInstance = instance;
+    flyoutClass.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    flyoutClass.lpszClassName = kFlyoutClass;
+    RegisterClassW(&flyoutClass);
+
+    g_settings = LoadSettings();
+    g_taskbarCreatedMessage = RegisterWindowMessageW(L"TaskbarCreated");
+
+    // A hidden top-level window: TaskbarCreated, WM_SETTINGCHANGE and power
+    // notifications only reach top-level windows.
+    HWND hWnd = CreateWindowExW(WS_EX_TOOLWINDOW, kWindowClass, L"", WS_POPUP, 0,
+                                0, 0, 0, nullptr, nullptr, instance, nullptr);
+    g_wnd = hWnd;
+    SetEvent(ready);
+
+    if (hWnd) {
+        if (FindWindowW(L"Shell_TrayWnd", nullptr)) {
+            if (IsTaskbarProcess()) {
+                Start(hWnd);
+            } else {
+                Wh_Log(L"Not the taskbar process, staying idle");
+            }
+        } else {
+            // Explorer is still starting; wait for the taskbar.
+            SetTimer(hWnd, kTimerFindTray, 500, nullptr);
+        }
+
+        bool running = true;
+        while (running) {
+            std::vector<HANDLE> events;
+            for (auto& watch : g_watches) {
+                if (watch.key && watch.event) {
+                    events.push_back(watch.event);
+                }
+            }
+            if (g_notificationsWatch != INVALID_HANDLE_VALUE) {
+                events.push_back(g_notificationsWatch);
+            }
+            DWORD result = MsgWaitForMultipleObjectsEx(
+                (DWORD)events.size(), events.data(), INFINITE, QS_ALLINPUT,
+                MWMO_INPUTAVAILABLE);
+            if (result < WAIT_OBJECT_0 + events.size()) {
+                if (events[result - WAIT_OBJECT_0] == g_notificationsWatch) {
+                    // Windows writes the database in bursts; one refresh
+                    // after it settles.
+                    FindNextChangeNotification(g_notificationsWatch);
+                    SetTimer(g_wnd, kTimerNotifications, 250, nullptr);
+                    continue;
+                }
+                for (auto& watch : g_watches) {
+                    if (watch.event == events[result - WAIT_OBJECT_0]) {
+                        RequestRefresh(watch.bits);
+                        ArmWatch(watch);
+                        break;
+                    }
+                }
+                continue;
+            }
+            MSG msg;
+            while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
+                if (msg.message == WM_QUIT) {
+                    running = false;
+                    break;
+                }
+                if (EventDialogMessage(&msg)) {
+                    continue;
+                }
+                TranslateMessage(&msg);
+                DispatchMessageW(&msg);
+            }
+        }
+    }
+
+    StopRegistryWatches();
+    StopAudio();
+    StopNetworkWatch();
+    DestroyFonts();
+    UnregisterClassW(kFlyoutClass, instance);
+    UnregisterClassW(kWindowClass, instance);
+    CoUninitialize();
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Mod lifecycle
+
+BOOL Wh_ModInit() {
+    Wh_Log(L">");
+
+    HANDLE ready = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_thread = CreateThread(nullptr, 0, ThreadProc, ready, 0, nullptr);
+    if (!g_thread) {
+        CloseHandle(ready);
+        return FALSE;
+    }
+    WaitForSingleObject(ready, 5000);
+    CloseHandle(ready);
+    return TRUE;
+}
+
+void Wh_ModUninit() {
+    Wh_Log(L">");
+
+    if (HWND wnd = g_wnd) {
+        PostMessageW(wnd, WM_APP_EXIT, 0, 0);
+    }
+    if (g_thread) {
+        WaitForSingleObject(g_thread, 10000);
+        CloseHandle(g_thread);
+        g_thread = nullptr;
+    }
+    // A brightness worker can be mid DDC/CI write; its code must stay loaded
+    // until it returns.
+    for (HANDLE thread : g_brightnessThreads) {
+        WaitForSingleObject(thread, 5000);
+        CloseHandle(thread);
+    }
+    g_brightnessThreads.clear();
+}
+
+void Wh_ModSettingsChanged() {
+    Wh_Log(L">");
+
+    if (HWND wnd = g_wnd) {
+        PostMessageW(wnd, WM_APP_SETTINGS, 0, 0);
+    }
+}

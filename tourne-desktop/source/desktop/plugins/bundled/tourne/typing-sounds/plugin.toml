@@ -1,0 +1,44 @@
+id = "tourne/typing-sounds"
+name = "Typing Sounds"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Typing Sounds)"
+license = "MIT"
+dependencies = []
+tags = ["sound", "keyboard", "fun"]
+icon = "keyboard"
+description = "A click for every key you press, like a mechanical keyboard or a typewriter. Made by the plugin, nothing downloaded. Only that a key went down reaches it, never which key. Click the bar button to turn it on or off."
+
+[[setting]]
+key = "style"
+type = "select"
+label = "Sound"
+default = "mechanical"
+
+  [[setting.options]]
+  value = "mechanical"
+  label = "Mechanical (clicky)"
+
+  [[setting.options]]
+  value = "typewriter"
+  label = "Typewriter"
+
+  [[setting.options]]
+  value = "soft"
+  label = "Soft (membrane)"
+
+[[setting]]
+key = "volume"
+type = "int"
+label = "Volume (0 to 100)"
+default = 45
+
+[[setting]]
+key = "clicks"
+type = "bool"
+label = "Mouse clicks too"
+default = false
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

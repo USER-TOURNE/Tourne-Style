@@ -1,0 +1,81 @@
+## Tourne'Suite [WIND] Development Update
+
+Alright boys, here's where things currently stand and what's still on the menu.
+
+### Still To Do
+
+**Winaero Tweaker integration**
+
+I'm getting close to finishing the registry side of Winaero Tweaker.
+
+The goal is to take essentially everything in Winaero that has configurable options and rebuild those settings as native toggles within the mod. I'm having to handle some of these differently because of Winaero's policies, but the end goal is full functionality from **Windows 7 through the latest preview builds**.
+
+Once finished, the settings will be implemented and maintained directly rather than relying on Winaero itself.
+
+**StartAllBack rebuild**
+
+I'm also planning to rebuild the relevant StartAllBack functionality from scratch and expose it through native toggles/dropdowns with all the support it has for current themes that exist (devianart, vsthemes, etc.) A huge part of this is because I want everything that someone is currently using to directly translate into the suite. No compromises.
+
+Right now, the taskbar theming side utilizes StartAllBack's functionality. I intentionally started this way to guarantee compatibility between the two, including compatibility with existing StartAllBack themes. So even when its no longer "needed" you can have both configured simultaneously.
+
+Once the standalone implementation is finished, that dependency can be removed.
+
+**Dark Mode fixes**
+
+All of the various dark mode fixes will also be converted into individual toggles.
+
+I'm specifically focusing on the fixes that actually work, rather than throwing every random "dark mode" registry tweak into the pile. If/when something I missed is brought up or requested- I'll add the functionality.
+
+That includes things like:
+
+* Control Panel
+* Explorer
+* List views
+* System dialogs
+* Other areas of Windows that still refuse to respect dark mode
+
+### What's Already Done
+
+At this point, basically everything outside of the Winaero/StartAllBack/dark mode work is already implemented.
+
+That includes functionality comparable to pretty much every major theming application/mod in this space:
+
+* MSStyle theming
+* Context menu modification
+* Chrome theming
+* System-wide resource editing
+* Local themes
+* Web themes
+* System-wide flyouts
+* ICS calendar integration, with support for as many calendars as you want
+* System taskbar icons
+* Bring-your-own taskbar icons
+* Native web and local theme packages
+* Functionality comparable to StartAllBack and resource redirection
+
+The theme system is designed to handle all of this natively rather than requiring a pile of separate mods/applications to accomplish the same thing.
+
+### UI Process Architecture
+
+The Windhawk UI process split is also already done.
+
+The UI only runs inside Explorer when it absolutely has to. Each module is responsible for telling you when and why it needs Explorer access.
+
+The goal here is to keep the footprint as low as possible instead of having everything permanently hooked into Explorer just because it can be.
+
+### Additional Functionality
+
+Also already finished:
+
+* Custom menu settings
+* Custom icon settings
+* Custom taskbar settings
+* Wi-Fi device visibility
+* Battery information for supported 2.4 GHz devices (more on the way)
+* Native integration of all of the above into the existing theme system
+
+So at this point, I'm mostly in the "finish the last major systems and start beating Windows into full submission" phase.
+
+The Winaero registry implementation is getting close. Once that's wrapped up, I'll be moving further into the StartAllBack rebuild and then cleaning up the remaining dark mode fixes.
+
+We're getting there.
