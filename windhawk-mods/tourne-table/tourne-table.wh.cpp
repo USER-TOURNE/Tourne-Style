@@ -9,7 +9,6 @@
 // @donateUrl           https://ko-fi.com/tourne
 // @license             MIT
 // @include             windhawk.exe
-// @architecture        x86-64
 // @compilerOptions     -lcabinet -lurlmon -ldxgi -ld2d1 -ld3d11 -ldcomp -ldwmapi -ldwrite -lgdi32 -lshcore -lshlwapi -lole32 -lshell32 -lksuser -lwindowscodecs -lruntimeobject -lwindowsapp -luuid -luser32 -ladvapi32 -lcomctl32 -lcomdlg32
 // ==/WindhawkMod==
 

@@ -16,7 +16,8 @@ The Tourne'Table that runs inside Tourne Desktop, released as a Windhawk mod of 
 
 ### ✦ Changed
 - The right-click menu opens over Tourne Desktop's own bar, not behind it, when the visualizer sits in or near it.
-- No longer a beta: the name, description and readme say so, and it's marked 64-bit only like 1.x.
+- No longer a beta: the name, description and readme say so.
+- Builds for 32-bit as well as 64-bit (1.x was 64-bit only), so it also runs where Windhawk starts tool mods in a 32-bit process, such as Windhawk 1.x. The experimental NPU workload stays 64-bit only, since OpenVINO is.
 
 ---
 
