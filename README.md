@@ -8,7 +8,7 @@ Linux-level customizing for Windows, with no phoning home. Everything Tourne has
 | **Windhawk mods** | 17 mods: the Tourne'Suite (all hook parts in one), Tourne'Table 2.1, Tourne'Icons, Tourne Menus, and the standalones. | [`windhawk-mods/`](windhawk-mods/) |
 | **Icon packs** | The complete ink pack (add-ons folded in), the red and green pack, the pixel tray icons, Start orbs. | [`icon-packs/`](icon-packs/) |
 | **Community styles** | Tourne'Table styles people share, with a gallery and a bot that takes them in. | [`community/`](community/) |
-| **Devlogs** | The full devlog, the handoffs and every session note. | [`devlogs/`](devlogs/) |
+| **Devlogs** | The story of how it was built, from the first build to now. | [`devlogs/`](devlogs/) |
 
 ## Start here
 
