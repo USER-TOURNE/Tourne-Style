@@ -221,6 +221,11 @@ def issue_setup():
     return issue, title, login, text, about
 
 
+def title_name(title):
+    """The name typed in the issue's title ("Setup: <name>"), which wins over the style's own name."""
+    return re.sub(r"^setup:\s*", "", title.strip(), flags=re.I)[:60].strip()
+
+
 def cmd_issue(out):
     keys, quick = load_keys()
     issue, title, login, text, about = issue_setup()
@@ -238,8 +243,7 @@ def cmd_issue(out):
         if not s or not s["values"]:
             result["comment"] = "That text isn't a Tourne'Table setup I can read (it should start with `Tourne'Table setup 1`)."
         else:
-            if not s["name"]:
-                s["name"] = re.sub(r"^setup:\s*", "", title, flags=re.I)[:60] or "Untitled"
+            s["name"] = title_name(title) or s["name"] or "Untitled"
             if not s["author"]:
                 s["author"] = login
             c, notes = clean(s, keys, quick)
@@ -265,8 +269,7 @@ def cmd_add(out):
     if not s or not s["values"]:
         json.dump({"ok": False, "comment": "Nothing to add: this issue has no readable setup."}, open(out, "w"))
         return 0
-    if not s["name"]:
-        s["name"] = re.sub(r"^setup:\s*", "", title, flags=re.I)[:60] or "Untitled"
+    s["name"] = title_name(title) or s["name"] or "Untitled"
     if not s["author"]:
         s["author"] = login
     c, _ = clean(s, keys, quick)
