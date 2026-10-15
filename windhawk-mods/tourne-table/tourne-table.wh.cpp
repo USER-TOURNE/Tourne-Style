@@ -14,11 +14,11 @@
 
 // ==WindhawkModReadme==
 /*
-![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/BANNER/tourne-header.png)
+![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/tourne-header.png)
 
 # `Tourne'Table` **[Audio Visualizer]**
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/11.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/11.gif)
 
 *The Oscilloscope shape running live audio: bottom-left placement, blurred panel, single-pixel border.*
 
@@ -104,9 +104,9 @@ Medians across 543 samples with it running and 384 without, at 1.25 s intervals.
 
 When audio stops, rendering stops, not "slows down," *stops*.
 
-Full methodology, raw traces and caveats live in [the project repo](https://github.com/USER-TOURNE/TOURNE-TABLE) rather than on this page.
+Full methodology, raw traces and caveats live in [the bench notes](https://github.com/USER-TOURNE/Tourne-Style/tree/main/windhawk-mods/tourne-table/bench) rather than on this page.
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/10.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/10.gif)
 
 *Bottom-left placement against a dark wallpaper, with the Now Playing label sitting above the panel.*
 
@@ -128,7 +128,7 @@ Full methodology, raw traces and caveats live in [the project repo](https://gith
 | **Oscilloscope** | A single line tracing the actual sound wave. |
 | **Goniometer** | The stereo field: every sample plotted with mono straight up and width sideways, with a correlation bar underneath. *(2.0)* |
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/8.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/8.gif)
 
 *Closeup: the waveform drawn as one continuous line, with the Now Playing label and media buttons alongside.*
 
@@ -164,7 +164,7 @@ Fades in on track change, fades out after a configurable delay. Custom color, fo
 
 ---
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/7.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/7.gif)
 
 *A narrower panel. The trace scales to whatever width the bar settings give it.*
 
@@ -501,7 +501,7 @@ If the GPU is ever lost mid-session (a driver update, a driver reset, a laptop s
 
 ---
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/4.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/4.gif)
 
 *The same shape in a warm colour: the Oscilloscope picks up Color Mode like every other shape.*
 
@@ -596,7 +596,7 @@ The animated surface covers only the panel; the text has a surface of its own th
 
 ---
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/2.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/2.gif)
 
 *The full-width strip in a red colour mode.*
 
@@ -604,13 +604,13 @@ The animated surface covers only the panel; the text has a surface of its own th
 
 The figures above come from HWiNFO64 sensor logging: two captures taken back to back in one session, one with the mod running and one with it disabled, with the same music playing throughout both so the only thing that changed was the mod itself. 543 samples running, 384 disabled, at 1.25 s intervals.
 
-The full write-up (raw tables, the method, run-to-run variance, and an honest account of where the measurements fall short) is in [the project repo](https://github.com/USER-TOURNE/TOURNE-TABLE). It does not belong on a catalog page, so it is not reproduced here.
+The full write-up (raw tables, the method, run-to-run variance, and an honest account of where the measurements fall short) is in [the bench notes](https://github.com/USER-TOURNE/Tourne-Style/tree/main/windhawk-mods/tourne-table/bench). It does not belong on a catalog page, so it is not reproduced here.
 
 The caveats worth stating up front: **HWiNFO measures the whole machine, not this process alone.** A number quoted as the mod's cost therefore includes the work the mod causes elsewhere, in the compositor and the graphics driver, not only the time spent in its own threads. That makes it larger than a per-process trace would show, and it is the honest figure to quote, because it is what the machine actually pays. Both captures also contained short unrelated background spikes, which is why the numbers above are medians rather than averages.
 
 ---
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/3.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/3.gif)
 
 *Near-silence: the trace flattens out. When audio stops entirely, the render loop stops with it.*
 
@@ -18779,7 +18779,7 @@ bool VizOpenSetupFile(HWND owner, std::wstring* text) {
     return ok;
 }
 
-// ---- The community list: setups in a folder of the TOURNE-TABLE repository on GitHub ----
+// ---- The community list: setups in a folder of the Tourne-Style repository on GitHub ----
 // index.txt there has a line per setup, "file|name|author|about". Nothing is fetched until the
 // Community button is pressed, and then only those small text files.
 struct VizCommunityItem {
