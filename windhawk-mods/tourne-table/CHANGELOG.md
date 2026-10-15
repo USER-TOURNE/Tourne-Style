@@ -11,7 +11,7 @@
 The Tourne'Table that runs inside Tourne Desktop, released as a Windhawk mod of its own. It takes the public id (`tourne-table-desktop-audio-visualizer`), so it replaces the 1.x release; turn off any 2.0 beta copies (`tourne-table-v2`, `tourne-table-beta-2`, the scope tests) so only one runs.
 
 ### ✦ New
-- **Community styles** live in the [Tourne repo](https://github.com/USER-TOURNE/Tourne/tree/main/community): the Style Editor's **Community** button lists them, and **Share Mine to the Community** opens a ready issue there. A bot checks each shared style, answers with a code anyone can paste to try it, and adds it to the list once it's approved. There's a gallery page with live previews too.
+- **Community styles** live in the [Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community): the Style Editor's **Community** button lists them, and **Share Mine to the Community** opens a ready issue there. A bot checks each shared style, answers with a code anyone can paste to try it, and adds it to the list once it's approved. There's a gallery page with live previews too.
 - Everything in the 2.0 entry below that came after the first 2.0 beta: Place In = Taskbar and Panel, Split Into Two Pieces, Dock To App, Snap while dragging, bar modifiers, decimal sizes, Click to Seek, Outline and Shadow, and setup sharing (codes and `.ttstyle` files).
 
 ### ✦ Changed

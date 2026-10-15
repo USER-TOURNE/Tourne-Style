@@ -280,7 +280,7 @@ def cmd_add(out):
     write_index_line(file, c["name"], c["author"], about or f"Shared in #{issue['number']}")
     cmd_gallery()
     json.dump({"ok": True, "file": file, "name": c["name"],
-               "comment": f"Added as [`{file}`](https://github.com/{os.environ.get('GITHUB_REPOSITORY', 'USER-TOURNE/Tourne')}"
+               "comment": f"Added as [`{file}`](https://github.com/{os.environ.get('GITHUB_REPOSITORY', 'USER-TOURNE/Tourne-Style')}"
                           f"/blob/main/community/setups/{file}). It's in everyone's **Community** list now. Thank you!"},
               open(out, "w", encoding="utf-8"))
     return 0

@@ -1,4 +1,4 @@
-# Tourne
+# Tourne'Style - Cogs in the shell
 
 Linux-level customizing for Windows, with no phoning home. Everything Tourne has made, in one place: **Tourne Desktop**, every **Windhawk mod** (latest versions only), the **icon packs**, the **Tourne'Table community styles**, and the devlogs that explain how it all got here.
 
@@ -33,7 +33,7 @@ Each of these also lives inside the suite as a part. Run the standalone **or** t
 
 ## Share your Tourne'Table style
 
-Right-click the visualizer, then **My Styles > Style Editor > Community > Share Mine to the Community**. It opens an issue here with your style in it; a bot checks it and replies with a code anyone can paste to try it. Browse what's there in [`community/`](community/) or on the [gallery page](https://user-tourne.github.io/Tourne/).
+Right-click the visualizer, then **My Styles > Style Editor > Community > Share Mine to the Community**. It opens an issue here with your style in it; a bot checks it and replies with a code anyone can paste to try it. Browse what's there in [`community/`](community/) or on the [gallery page](https://user-tourne.github.io/Tourne-Style/).
 
 ## What was left out on purpose
 

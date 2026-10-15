@@ -2,7 +2,7 @@
 
 Styles people share for [Tourne'Table](../windhawk-mods/tourne-table/). Every one here shows up in the visualizer's own **Community** list, and you can try any of them in a few seconds: it plays at once, and you choose **Keep** or **No**.
 
-There's also a visual gallery with live previews: the [community page](https://user-tourne.github.io/Tourne/) (GitHub Pages, from `docs/`).
+There's also a visual gallery with live previews: the [community page](https://user-tourne.github.io/Tourne-Style/) (GitHub Pages, from `docs/`).
 
 ## Try a style
 
@@ -55,9 +55,9 @@ Then `setting=value` lines (only the ones that differ from the defaults) and `qu
 
 ### Tourne Everforest
 
-by **USER-TOURNE** · Tourne's own: thin coral bars on an acrylic panel, green beat flash, now playing in a pixel font
+by **USER-TOURNE** · Tourne's own: a coral oscilloscope on a dark panel with a green edge, beat flash, reflection and now playing above
 
-Shape `line` · Parts: Look, Motion, Extras · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d`, `#FFE57474`, `#594CE38D`, `#FFA95D5D`
+Shape `oscilloscope` · Parts: Look, Motion, Extras · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d`, `#FFE57474`, `#594CE38D`, `#FFA95D5D`
 
 [Open the file](setups/tourne-everforest.ttstyle) · copy this code, then **Paste code** in the Style Editor:
 
