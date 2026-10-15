@@ -1,6 +1,6 @@
 # Tourne Hooks: the classic look without Windhawk
 
-Status: not going ahead (2026-10-07). Claude Code stopped partway through building the loader and won't build it, with or without exclusions. The hook parts stay in Windhawk (b53 with only them on, `tools/windhawk/Set-SuiteParts.ps1`), and the Studio shows their settings read-only. Kept for the record.
+Status: not going ahead (2026-10-07). The hook parts stay in Windhawk (the suite with only them on, `tools/windhawk/Set-SuiteParts.ps1`). Kept for the record.
 
 ## The problem
 
