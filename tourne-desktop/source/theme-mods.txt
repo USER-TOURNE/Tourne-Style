@@ -1,0 +1,37 @@
+# Mods a theme profile covers: their settings and whether they're on.
+# One Windhawk mod id per line; lines starting with # are ignored.
+
+# Tourne
+local@tourne-suite
+local@tourne-suite-split
+local@tourne-suite-redirect
+local@tourne-suite-redirect-branch-wintweaks
+local@tourne-change-tray-icons
+local@tourne-classic-tray-folders
+local@tourne-tray-system-icons
+local@tourne-tray-icons
+local@tourne-system-text-color
+local@tourne-menu-no-icons
+local@tourne-menu-no-duplicates
+local@tourne-tray-clock
+
+# Third-party theming
+icon-resource-redirect
+classic-menus
+dark-menus
+eradicate-immersive-menus
+control-panel-color-fix
+explorer-visual-tweaks-dark
+fix-explorer-white-flash
+disable-rounded-corners
+native-shadow-tuner
+win11-accent-border
+hide-titlebar-elements
+msg-box-font-fix
+windows-11-notification-center-styler
+cef-titlebar-enabler-universal
+local@taskbar-thumbnail-hide-icon
+desktop-marquee-fade
+disable-tray-icons
+ultimate-custom-tray
+chrome-context-menu-items

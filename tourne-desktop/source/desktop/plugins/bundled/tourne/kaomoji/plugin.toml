@@ -1,0 +1,34 @@
+id = "tourne/kaomoji"
+name = "Kaomoji Picker"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Kaomoji Picker)"
+license = "MIT"
+dependencies = []
+tags = ["productivity", "text"]
+icon = "mood-happy"
+description = "Search about 3,200 kaomoji by mood or tag and copy one with a click."
+
+[[setting]]
+key = "closeOnCopy"
+type = "bool"
+label = "Close after copying"
+default = true
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 520
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the picker, e.g. Ctrl+Alt+K. Empty: none"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

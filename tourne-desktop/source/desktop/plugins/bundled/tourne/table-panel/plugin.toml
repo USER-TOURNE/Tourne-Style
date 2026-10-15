@@ -1,0 +1,13 @@
+id = "tourne/table-panel"
+name = "Tourne'Table Panel"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne"
+license = "MIT"
+tags = ["music", "visualizer"]
+icon = "wave-sine"
+description = "A bar button for Tourne'Table's panel: click to show or hide the visualizer's window, right click to keep it on top. Set Tourne'Table's Place In to Panel first."
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

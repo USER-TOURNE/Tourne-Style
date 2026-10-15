@@ -1,0 +1,20 @@
+id = "tourne/bongo-cat"
+name = "Bongo Cat"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Bongo Cat)"
+license = "MIT"
+dependencies = []
+tags = ["fun", "keyboard", "bar"]
+icon = "cat"
+description = "A cat on the bar that drums its paws as you type and click. Only that a key went down reaches it, never which key. Click it to send it to sleep (or wake it)."
+
+[[setting]]
+key = "clicks"
+type = "bool"
+label = "Drums on mouse clicks too"
+default = true
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

@@ -1,0 +1,276 @@
+# Ported to Tourne Desktop from alexander's Screen Toolkit (MIT).
+#
+# Screen Toolkit: a unified set of screen utilities.
+#
+# All tool logic (captures, OCR, palette, QR, lens, recording, sharing) lives in a headless
+# [[service]]; the bar [[widget]], control-center [[shortcut]], and the main [[panel]] are thin
+# clients that read the published state and drive the service through the plugin's "command"
+# state channel. On Windows, captures and the color picker go through Tourne's own screen picker
+# (tourne.screenPick), recording through ffmpeg, and pixel work through tesseract, zbarimg and
+# ImageMagick's magick; uploads use Windows' built-in curl.
+
+id = "tourne/screen-toolkit"
+name = "Screen Toolkit"
+version = "1.5.4"
+plugin_api = 13
+author = "Tourne (from alexander's Screen Toolkit)"
+license = "MIT"
+icon = "crosshair"
+description = "Screen tools: color picker, OCR, QR, palette, lens, annotate, measure, and recording."
+tags = ["recording", "utility", "bar", "panel", "shortcut", "service"]
+dependencies = [
+  # Pixel pipelines over the picker's captures.
+  "tesseract",
+  "imagemagick",
+  "zbar",
+  # Image uploads (uguu.se / x02.me) and Google Lens: Windows' own curl.
+  "curl",
+  # Optional OCR translation; without it the text opens in Google Translate.
+  "translate-shell",
+  # Recording, GIF conversion and thumbnails.
+  "ffmpeg",
+  "ffprobe",
+]
+
+# ── Panel entries ──
+
+# Main toolkit panel: tool grid + per-tool result views + recording controls.
+# Standard layout (default). The bar widget / shortcut open either the
+# standard or legacy entry based on the "panel-mode" setting.
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 260
+placement = "floating"
+position = "center"
+keyboard_focus = "on_demand"
+capture_keys = ["Tab", "Backtab", "Shift+Tab", "Up", "Down", "Left", "Right", "Return", "Enter", "Space", "Escape"]
+
+# Legacy-mode layout: the original screen-toolkit v4 panel.
+[[panel]]
+id = "panel-legacy"
+entry = "panel.luau"
+width = 380
+height = 260
+placement = "floating"
+position = "center"
+keyboard_focus = "on_demand"
+capture_keys = ["Tab", "Backtab", "Shift+Tab", "Up", "Down", "Left", "Right", "Return", "Enter", "Space", "Escape"]
+
+# Result panel: opened by the service when a capture tool finishes.
+[[panel]]
+id = "result"
+entry = "result.luau"
+width = 560
+height = 520
+placement = "floating"
+position = "center"
+
+# ── Plugin-level settings (shared by every entry) ──
+
+[[setting]]
+key = "video-path"
+type = "folder"
+label_key = "settings.video_path.label"
+description_key = "settings.video_path.description"
+default = "~/Videos"
+
+# Windows: where captures for Markup land (the plugin may write only in folders its settings name).
+[[setting]]
+key = "screenshot-path"
+type = "folder"
+label_key = "settings.screenshot_path.label"
+description_key = "settings.screenshot_path.description"
+default = "~/Pictures/Screenshots"
+
+[[setting]]
+key = "filename-format"
+type = "string"
+label_key = "settings.filename_format.label"
+description_key = "settings.filename_format.description"
+default = "%Y-%m-%d_%H-%M-%S"
+
+[[setting]]
+key = "selected-ocr-lang"
+type = "string"
+label_key = "settings.selected_ocr_lang.label"
+description_key = "settings.selected_ocr_lang.description"
+default = "eng"
+
+[[setting]]
+key = "search-engine-url"
+type = "string"
+label_key = "settings.search_engine_url.label"
+description_key = "settings.search_engine_url.description"
+default = ""
+
+# Windows: the editor Markup opens captures in (Linux used the shell's own annotation editor).
+[[setting]]
+key = "annotate-editor"
+type = "string"
+label = "Markup Editor"
+description = "The program captures open in for drawing on: mspaint (Paint), paintdotnet, krita, gimp, pinta or ksnip, or its full path in quotes. The capture's path is added at the end. Empty: Paint."
+default = "mspaint"
+
+[[setting]]
+key = "x02-api-key"
+type = "string"
+label_key = "settings.x02_api_key.label"
+description_key = "settings.x02_api_key.description"
+default = ""
+
+[[setting]]
+key = "x02-expiry"
+type = "select"
+label_key = "settings.x02_expiry.label"
+description_key = "settings.x02_expiry.description"
+default = "7d"
+options = [
+  { value = "1h", label_key = "settings.x02_expiry.options.1h" },
+  { value = "1d", label_key = "settings.x02_expiry.options.1d" },
+  { value = "7d", label_key = "settings.x02_expiry.options.7d" },
+  { value = "30d", label_key = "settings.x02_expiry.options.30d" },
+  { value = "permanent", label_key = "settings.x02_expiry.options.permanent" },
+]
+
+[[setting]]
+key = "share-skip-popover"
+type = "bool"
+label_key = "settings.share_skip_popover.label"
+description_key = "settings.share_skip_popover.description"
+default = false
+
+[[setting]]
+key = "record-audio-out"
+type = "bool"
+label_key = "settings.record_audio_out.label"
+description_key = "settings.record_audio_out.description"
+default = false
+
+[[setting]]
+key = "record-audio-in"
+type = "bool"
+label_key = "settings.record_audio_in.label"
+description_key = "settings.record_audio_in.description"
+default = false
+
+# Windows: ffmpeg records a microphone by its DirectShow name (Linux asked pactl for the default source).
+[[setting]]
+key = "record-mic-device"
+type = "string"
+label = "Microphone"
+description = "A recording device's name as ffmpeg lists it (ffmpeg -list_devices true -f dshow -i dummy). Empty: the first one ffmpeg finds."
+default = ""
+
+[[setting]]
+key = "hide-when-unused"
+type = "bool"
+label_key = "settings.hide_when_unused.label"
+description_key = "settings.hide_when_unused.description"
+default = false
+
+[[setting]]
+key = "hide-cursor"
+type = "bool"
+label_key = "settings.hide_cursor.label"
+description_key = "settings.hide_cursor.description"
+default = true
+
+[[setting]]
+key = "record-codec"
+type = "select"
+label_key = "settings.record_codec.label"
+description_key = "settings.record_codec.description"
+default = "h264"
+options = [
+  { value = "h264", label_key = "settings.record_codec.options.h264" },
+  { value = "hevc", label_key = "settings.record_codec.options.hevc" },
+  { value = "av1", label_key = "settings.record_codec.options.av1" },
+]
+
+# Windows: which encoder ffmpeg uses for the codec above (Linux picked gpu-screen-recorder, wl-screenrec or wf-recorder).
+[[setting]]
+key = "record-encoder"
+type = "select"
+label = "Encoder"
+description = "CPU works everywhere (libx264, libx265, libsvtav1); the others use the graphics card."
+default = "cpu"
+options = [
+  { value = "cpu", label = "CPU" },
+  { value = "nvidia", label = "NVIDIA (NVENC)" },
+  { value = "amd", label = "AMD (AMF)" },
+  { value = "intel", label = "Intel (Quick Sync)" },
+]
+
+[[setting]]
+key = "record-capture"
+type = "select"
+label = "Capture"
+description = "Desktop Duplication copies the screen on the graphics card and keeps up at high frame rates (ffmpeg 6 or newer). GDI is the old way, slow past 30 to 60 fps."
+default = "dda"
+options = [
+  { value = "dda", label = "Desktop Duplication (fast)" },
+  { value = "gdi", label = "GDI (old, slow)" },
+]
+
+[[setting]]
+key = "record-fps"
+type = "int"
+label_key = "settings.record_fps.label"
+description_key = "settings.record_fps.description"
+default = 60
+min = 15
+max = 240
+
+[[setting]]
+key = "record-skip-confirmation"
+type = "bool"
+label_key = "settings.record_skip_confirmation.label"
+description_key = "settings.record_skip_confirmation.description"
+default = false
+
+[[setting]]
+key = "record-copy-to-clipboard"
+type = "bool"
+label_key = "settings.record_copy_to_clipboard.label"
+description_key = "settings.record_copy_to_clipboard.description"
+default = false
+
+[[setting]]
+key = "gif-max-seconds"
+type = "int"
+label_key = "settings.gif_max_seconds.label"
+description_key = "settings.gif_max_seconds.description"
+default = 30
+min = 1
+max = 600
+
+[[setting]]
+key = "panel-mode"
+type = "select"
+label_key = "settings.panel_mode.label"
+description_key = "settings.panel_mode.description"
+default = "standard"
+options = [
+  { value = "standard", label_key = "settings.panel_mode.options.standard" },
+  { value = "legacy", label_key = "settings.panel_mode.options.legacy" },
+]
+
+# ── Entries ──
+
+# Bar widget: crosshair glyph; shows a pulsing red dot while recording.
+# Left click toggles the main panel; right click quick-picks a color.
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+# Control-center quick tile. Mirrors the bar widget.
+[[shortcut]]
+id = "toggle"
+entry = "shortcut.luau"
+
+# Headless engine: owns captures, tool pipelines, recording, and persistence.
+[[service]]
+id = "service"
+entry = "service.luau"

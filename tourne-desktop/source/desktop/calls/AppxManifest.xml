@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tourne Calls as a local package beside its own files (a package "with external location"): it gives
+     TourneCalls.exe the identity and capabilities Windows asks of a program driving a phone's calls.
+     Registered by Register-TourneCalls.ps1 (Developer Mode on). -->
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+         xmlns:uap13="http://schemas.microsoft.com/appx/manifest/uap/windows10/13"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         IgnorableNamespaces="uap uap10 uap13 rescap">
+  <Identity Name="Tourne.Calls" Publisher="CN=Tourne" Version="1.0.0.0" ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>Tourne Calls</DisplayName>
+    <PublisherDisplayName>Tourne</PublisherDisplayName>
+    <Logo>Assets\logo.png</Logo>
+    <uap10:AllowExternalContent>true</uap10:AllowExternalContent>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26300.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Capabilities>
+    <uap:Capability Name="phoneCall" />
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+    <rescap:Capability Name="phoneLineTransportManagement" />
+    <rescap:Capability Name="phoneCallSystem" />
+    <DeviceCapability Name="bluetooth" />
+  </Capabilities>
+  <Applications>
+    <Application Id="TourneCalls" Executable="TourneCalls.exe" uap10:TrustLevel="mediumIL" uap10:RuntimeBehavior="win32App">
+      <uap:VisualElements AppListEntry="none" DisplayName="Tourne Calls" Description="Your phone's calls through this PC"
+                          BackgroundColor="transparent" Square150x150Logo="Assets\logo.png" Square44x44Logo="Assets\logo.png" />
+      <Extensions>
+        <!-- (Windows starts the app registered for the phone's hands-free when a call comes: this one) -->
+        <uap13:Extension Category="windows.phoneCallActivation" />
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>

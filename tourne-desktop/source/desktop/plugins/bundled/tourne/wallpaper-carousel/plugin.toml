@@ -1,0 +1,101 @@
+id = "tourne/wallpaper-carousel"
+name = "Wallpaper Carousel"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from motor-dev's Wallpaper Carousel)"
+license = "MIT"
+dependencies = []
+tags = ["wallpaper", "theming"]
+icon = "carousel-horizontal"
+description = "Browse your wallpaper folder as a carousel and set one with a click."
+
+[[setting]]
+key = "wallpaperDirectory"
+type = "folder"
+label = "Wallpaper folder"
+description = "Empty: the desktop slideshow's folder, else the folder of the wallpaper showing now"
+default = ""
+
+[[setting]]
+key = "carouselMode"
+type = "select"
+label = "At the ends"
+description = "Stop at the first and last picture, or wrap around"
+default = "wrap"
+
+  [[setting.options]]
+  value = "standard"
+  label = "Stop"
+
+  [[setting.options]]
+  value = "wrap"
+  label = "Wrap around"
+
+[[setting]]
+key = "visibleCount"
+type = "int"
+label = "Pictures shown"
+description = "How many pictures the carousel shows at once (odd numbers keep the chosen one centred)"
+default = 5
+min = 3
+max = 9
+
+[[setting]]
+key = "itemWidth"
+type = "int"
+label = "Picture width"
+default = 200
+min = 100
+max = 480
+
+[[setting]]
+key = "selectedScale"
+type = "int"
+label = "Chosen picture size (%)"
+default = 125
+min = 100
+max = 160
+
+[[setting]]
+key = "applyToAllMonitors"
+type = "bool"
+label = "Every screen"
+description = "Off: only the screen with the window in front"
+default = true
+
+[[setting]]
+key = "closeOnApply"
+type = "bool"
+label = "Close after setting one"
+default = true
+
+[[setting]]
+key = "shuffleOnOpen"
+type = "bool"
+label = "Shuffle the order"
+default = false
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 1180
+height = 400
+placement = "floating"
+position = "center"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens and closes the carousel, e.g. Win+Shift+W. Empty: none"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "glyph"
+  type = "glyph"
+  label = "Icon"
+  default = "carousel-horizontal"

@@ -1,0 +1,37 @@
+{
+  "panel": {
+    "automatic": "자동",
+    "clear_cache": "캐시 지우기",
+    "off": "꺼짐",
+    "on": "켜짐",
+    "output": {
+      "ready": "마스크 적용됨"
+    },
+    "outputs": "출력",
+    "settings": "설정",
+    "setup": {
+      "checking": "로컬 모델 확인",
+      "disclosure": "설치 과정에서 격리된 Python 환경을 생성하고 Apache-2.0 라이선스의 99MB 크기 Depth Anything V2 Small 모델을 Hugging Face에서 다운로드합니다. 배경화면은 업로드되지 않습니다.",
+      "error": "설치 실패",
+      "install": "모델 설치",
+      "missing": "설치 필요"
+    }
+  },
+  "service": {
+    "invalid_settings": "플러그인 설정이 유효하지 않습니다.",
+    "offline": "설정 전에 쉘 오프라인 모드를 비활성화합니다.",
+    "python_missing": "Python이 설치되어 있지 않습니다.",
+    "setup_failed": "설치 실패",
+    "setup_missing": "모델과 런타임이 설치되어 있지 않습니다.",
+    "setup_running": "런타임을 설치하고 99MB의 모델을 다운로드합니다.",
+    "start_clear_cache_failed": "캐시 정리를 시작하지 못했습니다.",
+    "start_setup_failed": "설치를 시작하지 못했습니다.",
+    "start_validation_failed": "설치 검증을 시작하지 못했습니다.",
+    "validation_failed": "설치 검증 실패"
+  },
+  "settings": {
+    "auto_generate": {
+      "label": "자동 생성"
+    }
+  }
+}

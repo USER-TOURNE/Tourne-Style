@@ -1,0 +1,125 @@
+[
+ {
+  "id": "identity-wise-wolf",
+  "name": "Wise Wolf",
+  "family": "Identity",
+  "source": "Tourne'Suite design scope (from the Wise Wolf monochrome desktop's idea)",
+  "why": "One seed colour, a monochrome ramp through every surface, hairline frames, see-through acrylic so the wallpaper art is the focal point, slow smooth motion.",
+  "palette": {
+   "ground": "#15171a",
+   "raised": "#212326",
+   "line": "#2d2f32",
+   "edge": "#47494c",
+   "text": "#e6e8ea",
+   "accent": "#cdd1d7",
+   "muted": "#a3a5a7",
+   "dim": "#67696b",
+   "warn": "#d5b993",
+   "bad": "#c5857f",
+   "accent2": "#cdd1d7",
+   "good": "#9abc9a"
+  },
+  "settings": {
+   "theme.source": "seed",
+   "theme.seed": "#9AA3AD",
+   "theme.profile": "monochrome",
+   "theme.mode": "dark",
+   "identity.shape": "subtle",
+   "identity.frame": "1",
+   "identity.material": "acrylic",
+   "identity.opacity": "70",
+   "identity.motion": "smooth",
+   "identity.speed": "80"
+  }
+ },
+ {
+  "id": "identity-wise-wolf-snow",
+  "name": "Wise Wolf Snow",
+  "family": "Identity",
+  "source": "Tourne'Suite design scope (Wise Wolf, light)",
+  "variant": "light",
+  "palette": {
+   "ground": "#f2f5f9",
+   "raised": "#e5e8ec",
+   "line": "#d8dbdf",
+   "edge": "#bec1c5",
+   "text": "#1a1b1c",
+   "accent": "#44484c",
+   "muted": "#535558",
+   "dim": "#848689",
+   "warn": "#866d49",
+   "bad": "#925651",
+   "accent2": "#44484c",
+   "good": "#4d6d4e"
+  },
+  "settings": {
+   "theme.source": "seed",
+   "theme.seed": "#9AA3AD",
+   "theme.profile": "monochrome",
+   "theme.mode": "light",
+   "identity.shape": "subtle",
+   "identity.frame": "1",
+   "identity.material": "acrylic",
+   "identity.opacity": "80",
+   "identity.motion": "smooth",
+   "identity.speed": "80"
+  }
+ },
+ {
+  "id": "identity-everforest",
+  "name": "Everforest",
+  "family": "Identity",
+  "source": "Tourne'Suite design scope (Everforest palette by sainnhe)",
+  "why": "A fixed palette kept with discipline: no wallpaper sync, soft rounded shapes, Mica, calm motion.",
+  "palette": {
+   "ground": "#2d353b",
+   "raised": "#393f43",
+   "line": "#484c4d",
+   "edge": "#5b5e5a",
+   "text": "#d3c6aa",
+   "accent": "#7fbbb3",
+   "muted": "#999383",
+   "dim": "#475258",
+   "warn": "#dbbc7f",
+   "bad": "#e67e80",
+   "accent2": "#d699b6",
+   "good": "#a7c080"
+  },
+  "settings": {
+   "identity.shape": "rounded",
+   "identity.frame": "2",
+   "identity.material": "mica",
+   "identity.motion": "smooth",
+   "identity.speed": "100"
+  }
+ },
+ {
+  "id": "identity-ghost-shell",
+  "name": "Ghost Shell",
+  "family": "Identity",
+  "source": "Tourne'Suite design scope (palette from electrocrem/gits, MIT)",
+  "source_url": "https://github.com/electrocrem/gits/blob/main/docs/PALETTE.md",
+  "why": "CRT cyan on navy-black, red for alerts only, square corners, thin frames, solid panels, snappy motion.",
+  "palette": {
+   "ground": "#060a14",
+   "raised": "#0a1226",
+   "line": "#0c1a33",
+   "edge": "#254f5d",
+   "text": "#c8f4ff",
+   "accent": "#2ed3d7",
+   "muted": "#9fc5d6",
+   "dim": "#254f5d",
+   "warn": "#e8c547",
+   "bad": "#e5432b",
+   "accent2": "#398ff0",
+   "good": "#34d399"
+  },
+  "settings": {
+   "identity.shape": "square",
+   "identity.frame": "1",
+   "identity.material": "none",
+   "identity.motion": "snap",
+   "identity.speed": "100"
+  }
+ }
+]

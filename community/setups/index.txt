@@ -1,0 +1,5 @@
+# Tourne'Table community setups: one line each, file|name|author|about.
+# Tourne'Table's Community button reads this file from the main branch of USER-TOURNE/Tourne.
+tourne-everforest.ttstyle|Tourne Everforest|USER-TOURNE|Tourne's own: a coral oscilloscope on a dark panel with a green edge, beat flash, reflection and now playing above
+mono-mirror.ttstyle|Mono Mirror|Tourne'Table|White mirrored bars with a soft glow
+neon-gradient.ttstyle|Neon Gradient|Tourne'Table|Pink to cyan with bloom, peak caps and a reflection

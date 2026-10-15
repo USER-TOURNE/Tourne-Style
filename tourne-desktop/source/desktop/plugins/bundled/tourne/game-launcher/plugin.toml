@@ -1,0 +1,21 @@
+id = "tourne/game-launcher"
+name = "Game Launcher"
+version = "1.1.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Lutris Launcher)"
+license = "MIT"
+dependencies = []
+tags = ["games", "launcher"]
+icon = "device-gamepad-2"
+description = "Your Steam and Epic games in the launcher: type `g` and a name, Enter starts it through its own store's launcher. Read from the stores' own lists on this PC; nothing goes online."
+
+[[launcher_provider]]
+id = "games"
+entry = "launcher.luau"
+prefix = "g"
+glyph = "device-gamepad-2"
+include_in_global_search = true
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"

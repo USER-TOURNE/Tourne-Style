@@ -1,0 +1,92 @@
+﻿group,id,name,tooltip,png,ico
+"Overflow",overflow-up,"Show hidden","Show hidden icons",tray-overflow-up.png,tray-overflow-up.ico
+"Overflow",overflow-down,"Hide","Hide icons",tray-overflow-down.png,tray-overflow-down.ico
+"Overflow",overflow-new,"Show hidden, new","Show hidden icons ... 1 new",tray-overflow-new.png,tray-overflow-new.ico
+"Security",security-ok,"Protected","Windows Security ... No actions needed",tray-security-ok.png,tray-security-ok.ico
+"Security",security-warn,"Action recommended","Windows Security ... Action recommended",tray-security-warn.png,tray-security-warn.ico
+"Security",security-alert,"Threat found","Windows Security ... Threat found",tray-security-alert.png,tray-security-alert.ico
+"Security",security-off,"Protection off","Real-time protection ... OFF",tray-security-off.png,tray-security-off.ico
+"Security",firewall-on,"Firewall","Firewall ... ON",tray-firewall-on.png,tray-firewall-on.ico
+"Security",security-scan,"Scanning","Quick scan ... 42%",tray-security-scan.png,tray-security-scan.ico
+"Health",health-ok,"Device health","Device health ... OK",tray-health-ok.png,tray-health-ok.ico
+"Health",health-warn,"Health warning","Storage ... 92% used",tray-health-warn.png,tray-health-warn.ico
+"Health",health-alert,"Health alert","Driver ... Not responding",tray-health-alert.png,tray-health-alert.ico
+"Health",update-available,"Update available","Windows Update ... 2 pending",tray-update-available.png,tray-update-available.ico
+"Health",update-download,"Update downloading","Windows Update ... Downloading",tray-update-download.png,tray-update-download.ico
+"Health",restart-required,"Restart required","Restart to finish updating",tray-restart-required.png,tray-restart-required.ico
+"Audio",audio-mute,"Muted","Speakers ... Muted",tray-audio-mute.png,tray-audio-mute.ico
+"Audio",audio-0,"Volume 0","Speakers ... 0%",tray-audio-0.png,tray-audio-0.ico
+"Audio",audio-low,"Volume low","Speakers ... 24%",tray-audio-low.png,tray-audio-low.ico
+"Audio",audio-mid,"Volume mid","Speakers ... 56%",tray-audio-mid.png,tray-audio-mid.ico
+"Audio",audio-high,"Volume high","Speakers ... 100%",tray-audio-high.png,tray-audio-high.ico
+"Audio",audio-headphones,"Headphones","Headphones ... 62%",tray-audio-headphones.png,tray-audio-headphones.ico
+"Audio",audio-headphones-off,"Headphones off","Headphones ... Disconnected",tray-audio-headphones-off.png,tray-audio-headphones-off.ico
+"Audio",audio-no-device,"No output","No audio output device",tray-audio-no-device.png,tray-audio-no-device.ico
+"Audio",mic,"Microphone","Microphone ... 40%",tray-mic.png,tray-mic.ico
+"Audio",mic-muted,"Mic muted","Microphone ... Muted",tray-mic-muted.png,tray-mic-muted.ico
+"Audio",mic-in-use,"Mic in use","Microphone in use ... 1 app",tray-mic-in-use.png,tray-mic-in-use.ico
+"Network",wifi-4,"Wi-Fi full","TOURNE-STAGE ... Internet access",tray-wifi-4.png,tray-wifi-4.ico
+"Network",wifi-3,"Wi-Fi good","FOH-5G ... Signal good",tray-wifi-3.png,tray-wifi-3.ico
+"Network",wifi-2,"Wi-Fi fair","GREENROOM ... Signal fair",tray-wifi-2.png,tray-wifi-2.ico
+"Network",wifi-1,"Wi-Fi weak","GUEST ... Signal weak",tray-wifi-1.png,tray-wifi-1.ico
+"Network",wifi-no-internet,"No internet","TOURNE-STAGE ... No internet",tray-wifi-no-internet.png,tray-wifi-no-internet.ico
+"Network",wifi-off,"Wi-Fi off","Wi-Fi ... OFF",tray-wifi-off.png,tray-wifi-off.ico
+"Network",wifi-disconnected,"Not connected","Not connected ... Networks available",tray-wifi-disconnected.png,tray-wifi-disconnected.ico
+"Network",ethernet,"Ethernet","Ethernet ... Internet access",tray-ethernet.png,tray-ethernet.ico
+"Network",ethernet-no-internet,"Ethernet, no internet","Ethernet ... No internet",tray-ethernet-no-internet.png,tray-ethernet-no-internet.ico
+"Network",ethernet-unplugged,"Cable unplugged","Network cable unplugged",tray-ethernet-unplugged.png,tray-ethernet-unplugged.ico
+"Network",airplane,"Airplane mode","Airplane mode ... ON",tray-airplane.png,tray-airplane.ico
+"Network",vpn,"VPN","VPN ... Not connected",tray-vpn.png,tray-vpn.ico
+"Network",vpn-on,"VPN connected","VPN ... TOURNE-OPS",tray-vpn-on.png,tray-vpn-on.ico
+"Network",hotspot,"Mobile hotspot","Mobile hotspot ... 2 of 8 devices",tray-hotspot.png,tray-hotspot.ico
+"Power",battery-full,"Battery full","100% ... Fully charged",tray-battery-full.png,tray-battery-full.ico
+"Power",battery-high,"Battery 76%","76% ... 4 h 12 m left",tray-battery-high.png,tray-battery-high.ico
+"Power",battery-mid,"Battery 40%","40% ... 2 h 03 m left",tray-battery-mid.png,tray-battery-mid.ico
+"Power",battery-low,"Battery low","9% ... Plug in soon",tray-battery-low.png,tray-battery-low.ico
+"Power",battery-charging,"Charging","64% ... Charging",tray-battery-charging.png,tray-battery-charging.ico
+"Power",battery-saver,"Battery saver","Battery saver ... ON",tray-battery-saver.png,tray-battery-saver.ico
+"Power",battery-none,"No battery","No battery detected",tray-battery-none.png,tray-battery-none.ico
+"Power",power,"Power","Power ... Sleep, shut down, restart",tray-power.png,tray-power.ico
+"Devices",bluetooth,"Bluetooth","Bluetooth ... ON",tray-bluetooth.png,tray-bluetooth.ico
+"Devices",bluetooth-connected,"Bluetooth connected","Bluetooth ... 2 devices",tray-bluetooth-connected.png,tray-bluetooth-connected.ico
+"Devices",bluetooth-off,"Bluetooth off","Bluetooth ... OFF",tray-bluetooth-off.png,tray-bluetooth-off.ico
+"Devices",usb,"USB drive","Safely remove hardware",tray-usb.png,tray-usb.ico
+"Devices",usb-ready,"Safe to remove","USB drive ... Safe to remove",tray-usb-ready.png,tray-usb-ready.ico
+"Devices",printer,"Printer","Print queue ... 1 document",tray-printer.png,tray-printer.ico
+"Devices",printer-error,"Printer error","Printer ... Out of paper",tray-printer-error.png,tray-printer-error.ico
+"Devices",display,"Display","Project ... Duplicate",tray-display.png,tray-display.ico
+"Devices",phone,"Phone link","Phone link ... Connected",tray-phone.png,tray-phone.ico
+"Devices",keyboard,"Input","Input ... ENG US",tray-keyboard.png,tray-keyboard.ico
+"Devices",camera-in-use,"Camera in use","Camera in use ... 1 app",tray-camera-in-use.png,tray-camera-in-use.ico
+"Devices",location-in-use,"Location in use","Location in use ... 1 app",tray-location-in-use.png,tray-location-in-use.ico
+"Notifications & focus",bell,"Notifications","No new notifications",tray-bell.png,tray-bell.ico
+"Notifications & focus",bell-unread,"Unread","3 new notifications",tray-bell-unread.png,tray-bell-unread.ico
+"Notifications & focus",bell-dnd,"Do not disturb","Do not disturb ... ON",tray-bell-dnd.png,tray-bell-dnd.ico
+"Notifications & focus",focus,"Focus","Focus session ... 25 m",tray-focus.png,tray-focus.ico
+"Notifications & focus",night-light,"Night light","Night light ... ON",tray-night-light.png,tray-night-light.ico
+"Notifications & focus",brightness,"Brightness","Brightness ... 70%",tray-brightness.png,tray-brightness.ico
+"Notifications & focus",accessibility,"Accessibility","Accessibility",tray-accessibility.png,tray-accessibility.ico
+"Flyout & tooltip",info,"Info","Info",tray-info.png,tray-info.ico
+"Flyout & tooltip",warning,"Warning","Warning",tray-warning.png,tray-warning.ico
+"Flyout & tooltip",error,"Error","Error",tray-error.png,tray-error.ico
+"Flyout & tooltip",success,"Success","Done",tray-success.png,tray-success.ico
+"Flyout & tooltip",close,"Close","Close",tray-close.png,tray-close.ico
+"Flyout & tooltip",back,"Back","Back",tray-back.png,tray-back.ico
+"Flyout & tooltip",forward,"Forward","Next",tray-forward.png,tray-forward.ico
+"Flyout & tooltip",chevron-right,"Expand","Expand",tray-chevron-right.png,tray-chevron-right.ico
+"Flyout & tooltip",chevron-left,"Collapse","Collapse",tray-chevron-left.png,tray-chevron-left.ico
+"Flyout & tooltip",more,"More","More options",tray-more.png,tray-more.ico
+"Flyout & tooltip",pin,"Pin","Pin to taskbar",tray-pin.png,tray-pin.ico
+"Flyout & tooltip",settings,"Settings","Settings",tray-settings.png,tray-settings.ico
+"Flyout & tooltip",folder,"Folder","Open folder",tray-folder.png,tray-folder.ico
+"Flyout & tooltip",download,"Download","Download",tray-download.png,tray-download.ico
+"Hidden apps",app-cloud,"Cloud sync","Cloud sync ... Up to date",tray-app-cloud.png,tray-app-cloud.ico
+"Hidden apps",app-cloud-sync,"Cloud syncing","Cloud sync ... 12 files",tray-app-cloud-sync.png,tray-app-cloud-sync.ico
+"Hidden apps",app-cloud-error,"Cloud error","Cloud sync ... Paused",tray-app-cloud-error.png,tray-app-cloud-error.ico
+"Hidden apps",app-chat,"Chat","Chat ... 4 unread",tray-app-chat.png,tray-app-chat.ico
+"Hidden apps",app-game,"Game launcher","Game launcher ... Online",tray-app-game.png,tray-app-game.ico
+"Hidden apps",app-clipboard,"Clipboard","Clipboard history",tray-app-clipboard.png,tray-app-clipboard.ico
+"Hidden apps",app-capture,"Screen capture","Screen capture ... Ready",tray-app-capture.png,tray-app-capture.ico
+"Hidden apps",app-bin,"Null.bin","NULL.BIN ... 14 items",tray-app-bin.png,tray-app-bin.ico
+"Hidden apps",app-updater,"Updater","Updater ... Checking",tray-app-updater.png,tray-app-updater.ico
+"Hidden apps",app-audio,"Audio console","Audio console ... 48 kHz",tray-app-audio.png,tray-app-audio.ico

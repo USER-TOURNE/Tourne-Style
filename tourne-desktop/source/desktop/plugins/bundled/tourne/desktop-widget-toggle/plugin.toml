@@ -1,0 +1,14 @@
+id = "tourne/desktop-widget-toggle"
+name = "Desktop Widget Toggle"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Desktop Widget Toggle)"
+license = "MIT"
+dependencies = []
+tags = ["desktop", "bar", "utility"]
+icon = "layout-dashboard"
+description = "A bar button that hides every plugin's desktop widgets and shows them again, for a clean desktop in a screenshot or a share."
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

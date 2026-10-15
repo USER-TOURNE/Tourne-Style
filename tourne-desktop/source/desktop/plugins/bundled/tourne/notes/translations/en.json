@@ -1,0 +1,52 @@
+{
+  "bad_extension": "The file extension setting isn't usable, so md is used",
+  "confirm_delete": "Delete?",
+  "confirm_empty": "Empty?",
+  "copy_failed": "Couldn't copy {name} in",
+  "counts": "{words} words · {chars} chars",
+  "editing": "Editing…",
+  "editor_placeholder": "Write your note… (Ctrl+V pastes pictures too)",
+  "empty": "No notes yet. Make one with +",
+  "no_matches": "No notes match",
+  "paste_failed": "Couldn't save the picture",
+  "rename_exists": "A note with that name already exists",
+  "save_failed": "Couldn't save the note",
+  "saved": "Saved",
+  "scratchpad": "Scratchpad",
+  "search_placeholder": "Search notes",
+  "trash": "Trash",
+  "trash_empty": "The trash is empty",
+  "untitled": "Untitled",
+  "settings": {
+    "editor_font": {
+      "label": "Editor font",
+      "description": "The font notes are written in",
+      "pixel": "Pixel (the flyouts' font)",
+      "mono": "Consolas",
+      "smooth": "Segoe UI"
+    },
+    "editor_size": {
+      "label": "Editor text size",
+      "description": "How big the text you write is",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "extension": {
+      "description": "Extension for note files (without the dot); only files with it are listed",
+      "label": "File extension"
+    },
+    "glyph": {
+      "label": "Bar glyph"
+    },
+    "hotkey": {
+      "label": "Hotkey to open Notes",
+      "description": "Like Ctrl+Alt+N or Win+Shift+N. Empty: none"
+    },
+    "notes_dir": {
+      "description": "Where note files are kept",
+      "label": "Notes folder"
+    }
+  },
+  "title": "Notes"
+}

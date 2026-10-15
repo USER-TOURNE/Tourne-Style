@@ -1,0 +1,21 @@
+id = "tourne/display-profiles"
+name = "Display Profiles"
+version = "1.1.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Niri Display Settings)"
+license = "MIT"
+dependencies = []
+tags = ["display", "launcher", "utility"]
+icon = "device-desktop"
+description = "Screens' resolution and refresh rate from the launcher: type `dp` to see each screen's modes, pick one, or save how every screen is set now as a profile (gaming, work, 60 Hz to save power) and switch to it in one go."
+
+[[launcher_provider]]
+id = "profiles"
+entry = "launcher.luau"
+prefix = "dp"
+glyph = "device-desktop"
+include_in_global_search = false
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"

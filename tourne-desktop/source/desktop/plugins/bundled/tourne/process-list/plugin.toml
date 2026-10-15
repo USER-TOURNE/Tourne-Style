@@ -1,0 +1,72 @@
+id = "tourne/process-list"
+name = "Process List"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from Mithgroth's Process List)"
+license = "MIT"
+dependencies = []
+tags = ["system", "monitor"]
+icon = "list-details"
+description = "Live processes with CPU and memory: grouped by program, sorted any way, apps or Windows' own, and an End button."
+
+[[setting]]
+key = "refreshSeconds"
+type = "int"
+label = "Refresh every (seconds)"
+default = 2
+min = 1
+max = 30
+
+[[setting]]
+key = "groupByName"
+type = "bool"
+label = "Group by program"
+description = "One row per program, with how many are running; click it to see each"
+default = true
+
+[[setting]]
+key = "hideIdle"
+type = "bool"
+label = "Hide idle ones"
+description = "Leave out processes using no CPU"
+default = false
+
+[[setting]]
+key = "rows"
+type = "int"
+label = "Rows at most"
+default = 60
+min = 10
+max = 400
+
+[[setting]]
+key = "allowEnd"
+type = "bool"
+label = "End button"
+description = "Shows a button to end a process (asks again first)"
+default = false
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 520
+height = 620
+placement = "floating"
+position = "center_right"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens and closes the list, e.g. Ctrl+Shift+Esc is Task Manager's, so pick another. Empty: none"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "showText"
+  type = "bool"
+  label = "Show CPU and memory on the bar"
+  default = false

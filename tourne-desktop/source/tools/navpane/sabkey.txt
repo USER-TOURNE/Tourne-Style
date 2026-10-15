@@ -1,0 +1,4 @@
+
+HKEY_CURRENT_USER\Software\StartIsBack
+    Disabled    REG_DWORD    0x1
+

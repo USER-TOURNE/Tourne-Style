@@ -1,0 +1,35 @@
+id = "tourne/breathing"
+name = "Breathing"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Breathing)"
+license = "MIT"
+dependencies = []
+tags = ["health", "focus"]
+icon = "wind"
+description = "Guided breathing in a panel: six techniques, a circle that grows and shrinks with each phase, and a chime between phases."
+
+[[setting]]
+key = "chime"
+type = "string"
+label = "Chime between phases"
+description = "A .wav or .mp3. Empty: silent"
+default = "C:\\Windows\\Media\\Windows Ding.wav"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 460
+placement = "floating"
+position = "center"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

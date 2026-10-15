@@ -1,0 +1,17 @@
+time "9" -> 540
+time "9:30" -> 570
+time "0930" -> 570
+time "9pm" -> 1260
+time "9:30 am" -> 570
+time "21:15" -> 1275
+time "12am" -> 0
+time "12pm" -> 720
+time "25" -> -1
+time "9:5" -> -1
+time "abc" -> -1
+date ok 1, bad 0
+14:30 local on 2026-10-03 -> 20261003T183000Z
+encoded: Dentist%20%26%20caf%C3%A9%2C%202nd%20floor
+fields: title "Dentist", day "2026-10-03", from "09:00" to "10:00"
+link: https://calendar.google.com/calendar/render?action=TEMPLATE&text=%21%20Dentist&dates=20261003T130000Z/20261003T140000Z&details=Bring%20the%20forms%0A%0AImportance%3A%20High&location=Main%20St%20%26%202nd&authuser=other.person%40gmail.com
+window 396x399 saved

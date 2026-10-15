@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Beside TourneCalls.exe: started directly, it takes Tourne.Calls' package identity (AppxManifest.xml). -->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <assemblyIdentity version="1.0.0.0" name="Tourne.Calls" type="win32" />
+  <msix xmlns="urn:schemas-microsoft-com:msix.v1" publisher="CN=Tourne" packageName="Tourne.Calls" applicationId="TourneCalls" />
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
+    </windowsSettings>
+  </application>
+</assembly>

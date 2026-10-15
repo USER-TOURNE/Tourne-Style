@@ -1,0 +1,44 @@
+module,resource,icon,what it is in Windows
+SndVolSSO.dll,100,audio-high,Volume mixer app icon
+SndVolSSO.dll,120,audio-mute,Tray volume: muted
+SndVolSSO.dll,121,audio-0,Tray volume: 0
+SndVolSSO.dll,122,audio-low,Tray volume: low
+SndVolSSO.dll,123,audio-mid,Tray volume: medium
+SndVolSSO.dll,124,audio-high,Tray volume: high
+SndVolSSO.dll,125,audio-no-device,Tray volume: no output device
+SndVolSSO.dll,126,audio-0,Tray volume with spatial sound: 0
+SndVolSSO.dll,127,audio-low,Tray volume with spatial sound: low
+SndVolSSO.dll,128,audio-mid,Tray volume with spatial sound: medium
+SndVolSSO.dll,129,audio-high,Tray volume with spatial sound: high
+SndVolSSO.dll,140,mic,Microphone
+SndVolSSO.dll,141,mic,Microphone (small)
+SecurityHealthSSO.dll,100,security-ok,Windows Security tray: shield
+SecurityHealthSSO.dll,110,security-ok,Windows Security tray: shield
+SecurityHealthSSO.dll,111,security-ok,Windows Security tray: shield (dark taskbar)
+SecurityHealthSSO.dll,112,security-ok,Windows Security tray: shield (light taskbar)
+SecurityHealthSSO.dll,120,security-alert,Windows Security tray: threat / action required
+SecurityHealthSSO.dll,121,security-alert,Windows Security tray: threat (dark taskbar)
+SecurityHealthSSO.dll,122,security-alert,Windows Security tray: threat (light taskbar)
+SecurityHealthSSO.dll,130,security-warn,Windows Security tray: action recommended
+SecurityHealthSSO.dll,131,security-warn,Windows Security tray: action recommended (dark taskbar)
+SecurityHealthSSO.dll,132,security-warn,Windows Security tray: action recommended (light taskbar)
+SecurityHealthSSO.dll,160,security-ok,Windows Security tray: no actions needed
+SecurityHealthSSO.dll,161,security-ok,Windows Security tray: no actions needed (dark taskbar)
+SecurityHealthSSO.dll,162,security-ok,Windows Security tray: no actions needed (light taskbar)
+SecurityHealthSystray.exe,IDI_DEFENDERSHELLICON,security-ok,Windows Security tray app icon
+user32.dll,101,warning,Message box: warning
+user32.dll,103,error,Message box: error
+user32.dll,104,info,Message box: information
+imageres.dll,81,info,Dialog: information
+imageres.dll,84,warning,Dialog: warning
+imageres.dll,86,accessibility,Ease of Access
+imageres.dll,98,error,Dialog: error
+imageres.dll,105,security-alert,Security and Maintenance: problem
+imageres.dll,106,security-ok,Security and Maintenance: OK
+imageres.dll,107,security-warn,Security and Maintenance: warning
+bthprops.cpl,151,bluetooth,Bluetooth
+hotplug.dll,100,usb,Safely Remove Hardware
+hotplug.dll,101,usb,Safely Remove Hardware (drive)
+stobject.dll,200,usb,Safely Remove Hardware (legacy tray)
+stobject.dll,210,usb-ready,Safely Remove Hardware: safe to remove
+InputSwitch.dll,2110,close,Input switcher: close

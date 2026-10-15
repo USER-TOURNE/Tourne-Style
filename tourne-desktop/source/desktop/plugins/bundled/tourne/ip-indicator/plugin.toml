@@ -1,0 +1,36 @@
+id = "tourne/ip-indicator"
+name = "IP Indicator"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's IP Indicator)"
+license = "MIT"
+dependencies = []
+tags = ["network", "privacy"]
+icon = "world-www"
+description = "Your public IP, country and provider on the bar, a VPN check, the round trip time, and your local addresses. Middle click hides the IP."
+
+[[setting]]
+key = "refreshMinutes"
+type = "int"
+label = "Check every (minutes)"
+default = 10
+min = 1
+max = 120
+
+[[setting]]
+key = "hidden"
+type = "bool"
+label = "Start hidden"
+description = "Show the country only until you middle click"
+default = false
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 400
+placement = "attached"

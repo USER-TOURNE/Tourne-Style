@@ -1,0 +1,52 @@
+id = "tourne/hydrate"
+name = "Hydrate"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Hydrate)"
+license = "MIT"
+dependencies = []
+tags = ["health", "productivity"]
+icon = "glass-full"
+description = "A water reminder on the bar: it changes when it's time to drink, right click logs a cup, and the panel shows today's progress."
+
+[[setting]]
+key = "goal"
+type = "int"
+label = "Cups a day"
+default = 8
+min = 1
+max = 30
+
+[[setting]]
+key = "cupMl"
+type = "int"
+label = "Cup size (ml)"
+default = 250
+min = 50
+max = 1000
+
+[[setting]]
+key = "intervalMinutes"
+type = "int"
+label = "Remind every (minutes)"
+default = 60
+min = 10
+max = 240
+
+[[setting]]
+key = "notify"
+type = "bool"
+label = "Notification too"
+description = "Off: only the bar icon changes"
+default = false
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 320
+height = 360
+placement = "attached"
