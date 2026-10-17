@@ -1,8 +1,8 @@
 # TourneSuite one-click setups, glass and Studio proposal
 
-Written 2026-10-04. Proposal only: no code until Tourne says go.
+Written 2026-10-04. Proposal only: no code until I say go.
 
-Tourne's ask (2026-10-04):
+My ask (2026-10-04):
 
 - Make the looks in the uploaded clips and the "12 themes one shell" video into **one-click setups**.
 - Auto palettes like omarchy-auto-theme (YouTube HBVhvTdfqvY) and pywal.
@@ -14,7 +14,7 @@ Stills from every clip are in `tourne-research/reference-visuals/one-click-setup
 
 ## 1. What the references are (checked)
 
-| Reference | What it is | Licence | How Tourne may use it |
+| Reference | What it is | Licence | How I may use it |
 | --- | --- | --- | --- |
 | Clip 1 (Omarchy "Glass Tuner") | A liquid glass look on every window: thick glass rim with edge bend, rainbow fringe, edge glow and top highlight; an animated "oil film" option; a "click glow". A tuner panel has saved looks, live sliders, "hold to compare: glass off", "Load Apple-ish starting point", a test window and next wallpaper. | Unknown (a Hyprland shader setup) | Ideas only |
 | Clip 2 | A Caelestia-style shell: big clock, a glass lock screen, kitty terminals with rainbow glass edges, and a notification sidebar with quick toggles. | Caelestia is GPL | Ideas only (standing rule) |
@@ -92,7 +92,7 @@ A **set** is one folder, shared as one file (zip), applied with one click and un
 
 Applying a set keeps a backup of everything it changes, so "Undo set" puts the desktop back exactly. The format grows out of the v1 Theme Contract (handoff) and section 12 of the 12 themes breakdown, once those reports are in this project.
 
-**Starter sets, from the references:** Liquid Glass (clip 1), Forest Terminal (clip 3), Caelestia-style Night (clip 2; Tourne's own design, ideas only), Mochi Desk (clip 4, with the pet shelf), and up to 12 more from the 12 themes video. Each needs pieces that don't exist yet, so sets arrive as their pieces do.
+**Starter sets, from the references:** Liquid Glass (clip 1), Forest Terminal (clip 3), Caelestia-style Night (clip 2; my own design, ideas only), Mochi Desk (clip 4, with the pet shelf), and up to 12 more from the 12 themes video. Each needs pieces that don't exist yet, so sets arrive as their pieces do.
 
 ## 5. Auto palettes (omarchy-auto-theme and pywal, made for Windows)
 

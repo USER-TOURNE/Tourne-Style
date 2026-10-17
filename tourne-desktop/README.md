@@ -1,14 +1,14 @@
 # Tourne Desktop
 
-Tourne's own desktop for Windows, as one program: a classic taskbar drawn from StartAllBack themes, a Windows 7 style Start menu, Alt+Tab with switcher views and komorebi-style tiling, borders and window motion, the system icons with their flyouts (network, volume and mixer, Bluetooth, batteries, notifications and calendar, security), Tourne Studio for every setting, Keys and rules (hyprland-style binds), capture, phone texts and notifications, Luau plugins with a bar and panels, UI sounds, and Tourne'Table built in. Nothing phones home.
+My own desktop for Windows, as one program: a classic taskbar drawn from StartAllBack themes, a Windows 7 style Start menu, Alt+Tab with switcher views and komorebi-style tiling, borders and window motion, the system icons with their flyouts (network, volume and mixer, Bluetooth, batteries, notifications and calendar, security), Tourne Studio for every setting, Keys and rules (hyprland-style binds), capture, phone texts and notifications, Luau plugins with a bar and panels, UI sounds, and Tourne'Table built in. Nothing phones home.
 
-> **Work in progress.** Tourne Desktop is one person's daily desktop, shared as it stands. It runs every day on Tourne's PC, but it has been tested on very few other PCs, it changes often, and some parts are unfinished (listed below). Back up first, read "What can go wrong" before turning on shell mode or the killswitch, and expect rough edges.
+> **Work in progress.** Tourne Desktop is my daily desktop, shared as it stands. It runs every day on my PC, but it has been tested on very few other PCs, it changes often, and some parts are unfinished (listed below). Back up first, read "What can go wrong" before turning on shell mode or the killswitch, and expect rough edges.
 
-On Tourne's PC it runs as the Windows shell (shell mode), with Explorer kept underneath for Windows apps. It runs just as well as a normal program on top of Explorer.
+On my PC it runs as the Windows shell (shell mode), with Explorer kept underneath for Windows apps. It runs just as well as a normal program on top of Explorer.
 
 ## Get it
 
-- **Ready to run:** [`release/TourneDesktop-77a6918.zip`](release/) holds `TourneDesktop.exe`, its manifest, `tournectl.exe` (control it from scripts) and the README. Built from commit `77a6918` (2026-10-15), the newest build published here. Tourne's own PC already runs a few later fixes that aren't in this zip yet: startup apps in shell mode, tray icons that come back after a restart, and plugins that apply their settings at once.
+- **Ready to run:** [`release/TourneDesktop-77a6918.zip`](release/) holds `TourneDesktop.exe`, its manifest, `tournectl.exe` (control it from scripts) and the README. Built from commit `77a6918` (2026-10-15), the newest build published here. My own PC already runs a few later fixes that aren't in this zip yet: startup apps in shell mode, tray icons that come back after a restart, and plugins that apply their settings at once.
 - **Build it yourself:** the whole source is in [`source/`](source/). From PowerShell:
 
       .\source\desktop\Build-TourneDesktop.ps1                    # every module
@@ -76,7 +76,7 @@ Most bundled plugins need nothing. These call a free tool you install yourself, 
 
 ## What works, and what isn't finished
 
-**Working, in daily use on Tourne's PC:** the taskbar, the Start menu, Alt+Tab with its list, Flip 3D and Cover Flow views, tiling and borders, the system icons and their flyouts, the tray (with folders), Tourne Studio, presets, the Tourne theme, identities, glass, shell mode with startup apps, keys and rules, Tourne Menu (the LiteMenu replacement, with its editor), UI sounds, Luau plugins with the bar and panels, and the built-in Tourne'Table.
+**Working, in daily use on my PC:** the taskbar, the Start menu, Alt+Tab with its list, Flip 3D and Cover Flow views, tiling and borders, the system icons and their flyouts, the tray (with folders), Tourne Studio, presets, the Tourne theme, identities, glass, shell mode with startup apps, keys and rules, Tourne Menu (the LiteMenu replacement, with its editor), UI sounds, Luau plugins with the bar and panels, and the built-in Tourne'Table.
 
 **Working, but not finished:**
 - Shell mode has no balloon tips yet, and Win+A, Win+N and the system icons' "original menu" don't work in it (they belong to Explorer).

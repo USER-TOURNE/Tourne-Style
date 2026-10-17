@@ -1,8 +1,8 @@
 # Noctalia plugins in Tourne Desktop
 
-Written 2026-10-06. Research and a proposal: no code until Tourne says go.
+Written 2026-10-06. Research and a proposal: no code until I say go.
 
-Tourne's ask: "look into noctalia plugins and how we can get a section in tourne desktop there."
+My ask: "look into noctalia plugins and how we can get a section in tourne desktop there."
 
 **Short answer:** it fits unusually well. Noctalia v5 is a native C++ shell (no Qt) with TOML config, GUI-managed overrides and theme roles, like Tourne Desktop. Its plugins are small **Luau** scripts against a documented API, listed in two catalogues (249 plugins, 96% MIT). Tourne Desktop could embed the Luau VM, answer that API the way `host\module-shim.inl` answers Windhawk's, and show the catalogues as a "Noctalia" source in the Studio's Extensions page (plan section 7). Plugins that only use the API (clocks, timers, translators, GitHub, AI usage meters, notes) would run as they are. Ones that shell out to Linux tools (`hyprctl`, `nmcli`, `playerctl`) won't, and can be detected and marked.
 

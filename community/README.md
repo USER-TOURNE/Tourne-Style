@@ -4,6 +4,8 @@ Styles people share for [Tourne'Table](../windhawk-mods/tourne-table/). Every on
 
 There's also a visual gallery with live previews: the [community page](https://user-tourne.github.io/Tourne-Style/) (GitHub Pages, from `docs/`).
 
+You can also share styles and see everyone else's in the ▧｜table-styles forum on the [Tourne'Style Discord](https://discord.gg/5JsHEMBxvY).
+
 ## Try a style
 
 Either way works:
@@ -55,7 +57,7 @@ Then `setting=value` lines (only the ones that differ from the defaults) and `qu
 
 ### Tourne Everforest
 
-by **USER-TOURNE** · Tourne's own: a coral oscilloscope on a dark panel with a green edge, beat flash, reflection and now playing above
+by **USER-TOURNE** · My own: a coral oscilloscope on a dark panel with a green edge, beat flash, reflection and now playing above
 
 Shape `oscilloscope` · Parts: Look, Motion, Extras · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d`, `#FFE57474`, `#594CE38D`, `#FFA95D5D`
 

@@ -5,7 +5,7 @@ and borders, and the system icons with their flyouts), run as one small
 program of their own instead of inside Windhawk. Windhawk stays for the parts that must hook Explorer (Start, the
 tray icons, the clock).
 
-Status: runs on Windows as the shell on Tourne's PC since 2026-10-05 (shell mode); the newest state is at the bottom of DEVLOG.md.
+Status: runs on Windows as the shell on my PC since 2026-10-05 (shell mode); the newest state is at the bottom of DEVLOG.md.
 
 ## Build
 

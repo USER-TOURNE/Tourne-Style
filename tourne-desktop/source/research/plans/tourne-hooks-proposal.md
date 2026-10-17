@@ -17,7 +17,7 @@ Tourne Desktop draws its own taskbar, tray, clock, switcher and flyouts, so thos
 | iconRedirect | Themed icons in Explorer, Start and apps | explorer.exe and others |
 | tweaks | Winaero Tweaker options | explorer.exe |
 
-Target look: Tourne's screenshots of 2026-10-02 and 2026-10-04 (Explorer with the Windows 7 navigation pane and command bar, drive bars and text in the palette's green, the pixel font; Task Manager and Chrome in the same colours; Explorer with glass).
+Target look: my screenshots of 2026-10-02 and 2026-10-04 (Explorer with the Windows 7 navigation pane and command bar, drive bars and text in the palette's green, the pixel font; Task Manager and Chrome in the same colours; Explorer with glass).
 
 ## The plan
 
@@ -43,7 +43,7 @@ A DLL of Tourne's own, `tourne-hooks.dll`, that Tourne Desktop loads into the pr
 2. textColor and the menu parts in their listed programs.
 3. iconRedirect and tweaks.
 
-Each step is swapped in and checked on its own. After step 3, Windhawk isn't needed for the suite (other Windhawk mods Tourne uses are separate).
+Each step is swapped in and checked on its own. After step 3, Windhawk isn't needed for the suite (other Windhawk mods I use are separate).
 
 ## Meanwhile
 

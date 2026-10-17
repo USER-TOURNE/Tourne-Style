@@ -1,8 +1,8 @@
 # TourneSuite wallpaper manager proposal
 
-Written 2026-10-04. Proposal only: no code until Tourne says go.
+Written 2026-10-04. Proposal only: no code until I say go.
 
-Tourne's ask: a wallpaper manager "stylish, almost exactly like" saneAspect's "The Perfect Wallpaper Recolorizer for Hyprland" (YouTube S3QsAuLO7fQ), "way more user friendly, absolutely no terminal". The video and its thumbnail can't be reached from the server (YouTube is blocked here, and this time its thumbnails were too), so this proposal is built from the handoff's description: a wallpaper picker, plus a recolourer that fits any wallpaper to any palette or set. Screenshots or the clip would let the look match it closely; until then the look below is a guess.
+My ask: a wallpaper manager "stylish, almost exactly like" saneAspect's "The Perfect Wallpaper Recolorizer for Hyprland" (YouTube S3QsAuLO7fQ), "way more user friendly, absolutely no terminal". The video and its thumbnail can't be reached from the server (YouTube is blocked here, and this time its thumbnails were too), so this proposal is built from the handoff's description: a wallpaper picker, plus a recolourer that fits any wallpaper to any palette or set. Screenshots or the clip would let the look match it closely; until then the look below is a guess.
 
 ## What the user gets
 
@@ -70,7 +70,7 @@ The theme engine already makes a palette from whatever wallpaper Windows shows. 
 | **A. Direct2D, drawn by Tourne** (recommended) | Same drawing as the taskbar and switcher, coloured by the Tourne theme, rounded cards, smooth scrolling. | No new runtime. Small exe growth. More work for text boxes and scrolling. |
 | B. WebView2 page inside Tourne | Easiest to make very fancy (CSS, animations); could reuse the CSS injector's palette CSS. | Runs a browser engine while open (about 100 MB of memory), though it's already on every Windows 11 PC. |
 
-Recommended: A, because Tourne asked for resource-efficient, and the window then looks like the rest of the shell.
+Recommended: A, because I asked for resource-efficient, and the window then looks like the rest of the shell.
 
 ## Config (all off by default)
 

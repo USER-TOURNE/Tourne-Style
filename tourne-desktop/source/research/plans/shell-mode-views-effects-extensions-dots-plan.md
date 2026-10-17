@@ -1,8 +1,8 @@
 # TourneSuite plan: shell mode, views, shaders, motion, extensions and dots
 
-Written 2026-10-05. Proposal only: no code until Tourne says go.
+Written 2026-10-05. Proposal only: no code until I say go.
 
-Tourne's asks (2026-10-05):
+My asks (2026-10-05):
 
 - **Shell mode** for the killswitch: Windows' taskbar and Start gone for real (chosen on the card over the outside-only route).
 - **Many switcher views** like CKFlip3D's Flip 3D and Cover Flow, next to PrinceWM's infinite canvas. "So varied and expressive."
@@ -13,7 +13,7 @@ Tourne's asks (2026-10-05):
 
 ## 1. What the references are (checked)
 
-| Reference | What it is | Licence | How Tourne may use it |
+| Reference | What it is | Licence | How I may use it |
 | --- | --- | --- | --- |
 | [CKFlip3D](https://github.com/CYMERKAROL/CKFlip3D) | Flip 3D and Cover Flow for Windows 11: live window tiles in a 3D stack, Tab or wheel to cycle, hover lifts a tile, close animation reflows the stack. C++20, Direct3D 11. | PolyForm Noncommercial 1.0.0 (checked in its README) | Ideas only |
 | [PrinceWM](https://github.com/Ravestars/PrinceWM) | Infinite-canvas Alt+Tab. | MIT | Ideas (already planned as a Switcher style) |

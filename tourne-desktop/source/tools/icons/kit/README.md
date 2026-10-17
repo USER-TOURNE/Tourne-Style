@@ -28,4 +28,4 @@ copy. With MinGW-w64 (Linux or MSYS2):
 
     tools/icons/kit/build.sh [output folder]
 
-`kit.ico` is drawn by Tourne's pack-maker (bright palette).
+`kit.ico` is drawn by my pack-maker (bright palette).

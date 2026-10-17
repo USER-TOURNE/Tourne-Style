@@ -1,18 +1,22 @@
 # Tourne'Style - Cogs in the shell
 
-Linux-level customizing for Windows, with no phoning home. Everything Tourne has made, in one place: **Tourne Desktop**, every **Windhawk mod** (latest versions only), the **icon packs**, the **Tourne'Table community styles**, and the devlogs that explain how it all got here.
+Linux-level customizing for Windows, with no phoning home. Everything I've made, in one place: **Tourne Desktop**, every **Windhawk mod** (latest versions only), the **icon packs**, the **Tourne'Table community styles**, and the devlogs that explain how it all got here.
 
 | | What it is | Where |
 |---|---|---|
-| **Tourne Desktop** | The taskbar, Start menu, switcher with tiling, system icons and flyouts, Studio, plugins and the built-in Tourne'Table, as one program. On Tourne's PC it runs as the Windows shell. | [`tourne-desktop/`](tourne-desktop/) |
+| **Tourne Desktop** | The taskbar, Start menu, switcher with tiling, system icons and flyouts, Studio, plugins and the built-in Tourne'Table, as one program. On my PC it runs as the Windows shell. | [`tourne-desktop/`](tourne-desktop/) |
 | **Windhawk mods** | 17 mods: the Tourne'Suite (all hook parts in one), Tourne'Table 2.1, Tourne'Icons, Tourne Menus, and the standalones. | [`windhawk-mods/`](windhawk-mods/) |
 | **Icon packs** | The complete ink pack (add-ons folded in), the red and green pack, the pixel tray icons, Start orbs. | [`icon-packs/`](icon-packs/) |
 | **Community styles** | Tourne'Table styles people share, with a gallery and a bot that takes them in. | [`community/`](community/) |
 | **Devlogs** | The story of how it was built, from the first build to now. | [`devlogs/`](devlogs/) |
 
+## Discord
+
+[Join the Tourne'Style Discord](https://discord.gg/5JsHEMBxvY). It's my hub for everything here: share your Tourne'Table styles, icon packs, plugins and setups, see what's coming in the roadmap, devlogs and releases, get help, report bugs, suggest ideas, and test builds before they're out. When you join, pick what you use to get release pings for it.
+
 ## Status
 
-Everything here is a **work in progress**, shared as it runs on Tourne's own PC. Tourne'Table 2.1 is waiting to be passed into the official Windhawk catalog; Tourne Desktop and the suite are tested on very few PCs. Read [what Tourne Desktop needs and what can go wrong](tourne-desktop/README.md#before-you-install) before installing it, and back up first.
+Everything here is a **work in progress**, shared as it runs on my own PC. Tourne'Table 2.1 is waiting to be passed into the official Windhawk catalog; Tourne Desktop and the suite are tested on very few PCs. Read [what Tourne Desktop needs and what can go wrong](tourne-desktop/README.md#before-you-install) before installing it, and back up first.
 
 **What the pieces need:** Windows 11, 64-bit (24H2 or later is what it's built on). [Windhawk](https://windhawk.net) 1.7.3 or newer for every mod. StartAllBack is optional: the suite's Clock and Classic Tray Folders parts style its taskbar and do nothing without it. No Node.js anywhere; Python only for two optional plugins. Developer Mode only for Tourne Desktop's phone calls.
 
@@ -25,7 +29,7 @@ What Tourne'Style is aiming for. These are intentions, not promises or dates.
 **Next up**
 
 - **Tourne'Table in the Windhawk catalog.** 2.1 is in review now. The update after it, already built and in testing, adds Engine Cores (which processor cores do the work), Frame Sync (VSync, Adaptive and Fast Sync), Low Latency, and an optional x2 frame generation.
-- **A newer Tourne Desktop release** with the fixes already running on Tourne's PC: startup apps in shell mode, tray icons that survive a restart, and plugins that apply their settings at once. Then a steadier Tourne Studio.
+- **A newer Tourne Desktop release** with the fixes already running on my PC: startup apps in shell mode, tray icons that survive a restart, and plugins that apply their settings at once. Then a steadier Tourne Studio.
 - **Shell mode without gaps:** balloon tips, and Tourne's own answers to Win+A and Win+N.
 - **Icons that stay put:** Tourne'Icons Lasting keeping every icon without the live mod, an Apps folder for Store and other packaged apps, and the last icons drawn in the ink style.
 - **Devices:** the GMK87 keyboard's battery, and hover tooltips in plugin panels.
@@ -70,9 +74,9 @@ Right-click the visualizer, then **My Styles > Style Editor > Community > Share 
 ## What was left out on purpose
 
 - **Older builds.** Only the newest version of each mod is here: suite b55, Tourne'Table 2.1, Tourne'Icons 2.7.1, and so on.
-- **Personal settings.** The suite and Tweaks bake their author's settings in as defaults; paths into Tourne's own folders and e-mail addresses were blanked, and the `.reg` exports of Tourne's own settings aren't included. Icon pack rows that only pointed at files on Tourne's PC were dropped (85 in the ink pack, 34 in the red and green pack).
+- **Personal settings.** The suite and Tweaks bake my settings in as defaults; paths into my own folders and e-mail addresses were blanked, and the `.reg` exports of my own settings aren't included. Icon pack rows that only pointed at files on my PC were dropped (85 in the ink pack, 34 in the red and green pack).
 - **Third-party theme files** (Bouquet, Everforest and others) aren't redistributed; the research notes that describe them are.
 
 ## Licenses
 
-Tourne's own code, mods, icons and docs are MIT ([`LICENSE`](LICENSE)). Third-party pieces keep their own licenses, listed in [`CREDITS.md`](CREDITS.md).
+My own code, mods, icons and docs are MIT ([`LICENSE`](LICENSE)). Third-party pieces keep their own licenses, listed in [`CREDITS.md`](CREDITS.md).

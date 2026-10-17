@@ -1,6 +1,6 @@
-# Inspiration: melting liquid glass video (shared by Tourne, 2026-10-05)
+# Inspiration: melting liquid glass video (shared by me, 2026-10-05)
 
-Tourne's words: "Same with this" (gorgeous). A 107 second compositor shader demo (a terminal in it shows a branch named feat/custom-blur-shader). The author and licence aren't shown, so it is ideas only.
+My words: "Same with this" (gorgeous). A 107 second compositor shader demo (a terminal in it shows a branch named feat/custom-blur-shader). The author and licence aren't shown, so it is ideas only.
 
 Frame: screens/inspiration-melting-glass.png.
 

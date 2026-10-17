@@ -1,6 +1,6 @@
-# Inspiration: Hyprland panel shell video (shared by Tourne, 2026-10-05)
+# Inspiration: Hyprland panel shell video (shared by me, 2026-10-05)
 
-Tourne's words: "This is also gorgeous". Decision 2026-10-05: build it after the plan (with the extras), not before views. An 85 second screen recording of a Hyprland rice (a "Submit to r/unixporn" card is in its bar). The author and licence aren't shown, so it is ideas only, like CKFlip3D.
+My words: "This is also gorgeous". Decision 2026-10-05: build it after the plan (with the extras), not before views. An 85 second screen recording of a Hyprland rice (a "Submit to r/unixporn" card is in its bar). The author and licence aren't shown, so it is ideas only, like CKFlip3D.
 
 Frames: screens/inspiration-panel-shell-light.png and screens/inspiration-panel-shell-dark.png.
 

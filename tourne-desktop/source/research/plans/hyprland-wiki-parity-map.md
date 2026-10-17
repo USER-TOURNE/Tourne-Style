@@ -1,6 +1,6 @@
 # TourneSuite Hyprland wiki parity map
 
-Written 2026-10-04 for Tourne. Tourne's ask: "reference the entire wiki for a full ecosystem of what I'd like part wise ... it should have every functionality we can, just made to be used with windows instead of for linux".
+Written 2026-10-04. My ask: "reference the entire wiki for a full ecosystem of what I'd like part wise ... it should have every functionality we can, just made to be used with windows instead of for linux".
 
 **Sources.** wiki.hypr.land is blocked from the server, so every Hyprland claim here comes from the wiki's own source files, at github.com/hyprwm/hyprland-wiki (branch main, the "latest git" wiki). Each section names its source file. The site address is the same path (for example `content/configuring/core/dispatchers.md` is wiki.hypr.land/configuring/core/dispatchers/; that mapping is inferred from the site's structure). A copy of every page used is in `tourne-research/hyprland-wiki-cache/`. Plugins come from github.com/hyprwm/hyprland-plugins and Pyprland from github.com/hyprland-community/pyprland. Anything not read from a source is marked "inferred".
 
@@ -36,13 +36,13 @@ Tourne's rules apply to every row below: new features default **off**, hotkeys d
 | --- | --- | --- | --- | --- | --- |
 | 878 | 43 | 75 | 588 | 172 | 170 |
 
-Top 5 gaps (most value for Tourne's goal, all possible):
+Top 5 gaps (most value for my goal, all possible):
 
 1. **Binds engine with submaps and a window rules engine** (P1). Every Hyprland setup is built on these two; Tourne has per-part hotkeys and float lists only.
 2. **Workspace tools on top of Windows desktops** (P2): scratchpads, pin to all desktops, rename, persistent desktops, back and forth, send to screen.
 3. **Layouts**: dwindle and master messages, and the scrolling layout (P2).
 4. **IPC and `tournectl`** with Hyprland-like events (P1), so bars, scripts and the settings window share one control path.
-5. **Ecosystem parts**: wallpaper manager with recolourer (first, as Tourne asked), idle, colour picker, screenshot, launcher, OSD, clipboard (P5).
+5. **Ecosystem parts**: wallpaper manager with recolourer (first, as I asked), idle, colour picker, screenshot, launcher, OSD, clipboard (P5).
 
 ## 1. Config language
 
@@ -55,7 +55,7 @@ Source: [configuring/core/_index](https://github.com/hyprwm/hyprland-wiki/blob/m
 | `Auto reload on save` | Apply on save | Exists | Folder watch, only changed modules told | Yes | Done |
 | `Sourcing other files (source = ...)` | Split config across files | Missing | `source = path` in tourne.conf; sets use it | Yes | P1 |
 | `Variables ($var)` | Reusable values | Missing | Variables in tourne.conf | Yes | P1 |
-| `Lua scripting, lambdas, conditional binds` | Programmable config | Missing | Not planned: Tourne asked for no terminal. Rules, binds and events cover the uses; a plugin API later (inferred decision, Tourne to confirm) | Approximate | P7 |
+| `Lua scripting, lambdas, conditional binds` | Programmable config | Missing | Not planned: I asked for no terminal. Rules, binds and events cover the uses; a plugin API later (inferred decision, still mine to confirm) | Approximate | P7 |
 | `Expressions in rules (monitor_w * 0.5)` | Math in sizes | Missing | Small expression evaluator for rule values | Yes | P1 |
 | `Data types: color (rgba, gradients with angle)` | Colour syntax | Exists (borders: "#64aa89 #121c21 0,1 1,0" gradient form) | Accept Hyprland's rgba() and 0xAARRGGBB too | Yes | P1 |
 | `Config errors shown on screen` | Error bar | Partial (logged, skipped; desktop.log) | Tourne toast with the line number | Yes | P1 |

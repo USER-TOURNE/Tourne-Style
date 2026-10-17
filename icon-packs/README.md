@@ -2,7 +2,7 @@
 
 | Pack | What's in it | How to use it |
 |---|---|---|
-| [Tourne ink pack](tourne-ink-pack/) | The complete ink set: 1,060 entries (programs, Store apps, Windows' own icons, file types, and Tourne Desktop's taskbar buttons), filled in Tourne's dark green. Pack 5 with add-ons 1, 2 and 3 and the Taskbar buttons set folded in, so there's nothing extra to apply. | Tourne'Icons 2.7+: **Apply a pack**, open `pack.tsv`. Say yes when it asks about icons you set yourself to keep them. |
+| [Tourne ink pack](tourne-ink-pack/) | The complete ink set: 1,060 entries (programs, Store apps, Windows' own icons, file types, and Tourne Desktop's taskbar buttons), filled in my dark green. Pack 5 with add-ons 1, 2 and 3 and the Taskbar buttons set folded in, so there's nothing extra to apply. | Tourne'Icons 2.7+: **Apply a pack**, open `pack.tsv`. Say yes when it asks about icons you set yourself to keep them. |
 | [Tourne red and green pack](tourne-red-green-pack/) | The earlier red and green pixel set: 915 entries. | The same. `pack (keeps yours).tsv` isn't needed: Tourne'Icons asks. |
 | [Tourne tray icons](tourne-tray-icons/) | The pixel tray icons: 91 designs in sage, ink and alt tones, as PNG (1x to 8x) and 8-size ICO (`art/`), plus resource-only DLL packages for Resource Redirect with one-click Apply and Revert (`resource-redirect/`). | Tourne'Tray [System Icons] and the suite draw them live; the packages are for Resource Redirect users. |
 | [Tourne Start orbs](tourne-start-orbs/) | Start buttons in the Start Mark designs (bar, stack, level, split) as StartAllBack orb strips, 54 x 162 at 96 DPI, at 16 px, 1x, 2x and 3x, plus a null orb. | StartAllBack's Start button picker, or copy them into %LOCALAPPDATA%\Tourne\Orbs for Tourne Desktop's taskbar. |
@@ -14,4 +14,4 @@
 
 ## Left out
 
-Rows that only pointed at files on Tourne's PC (Tourne'Icons' own cache, Downloads) can't match on anyone else's, so they were dropped: 85 from the ink pack and 34 from the red and green pack.
+Rows that only pointed at files on my PC (Tourne'Icons' own cache, Downloads) can't match on anyone else's, so they were dropped: 85 from the ink pack and 34 from the red and green pack.

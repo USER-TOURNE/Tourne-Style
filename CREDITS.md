@@ -15,4 +15,4 @@ Third-party pieces in this repo keep their own licenses. Each ships with its lic
 | DankLinux / Noctalia plugins | Ideas and MIT ports for Tourne Desktop's bundled plugins, credited in each plugin | per plugin | `tourne-desktop/source/desktop/plugins/bundled/` |
 | gmk87-node (codedgar, MIT) and its reference.py (Jochen Eisinger, BSD) | How the GMK87 keyboard protocol works; the plugin is our own code | MIT / BSD | `.../plugins/bundled/tourne/gmk87/` |
 
-Programs Tourne's work talks to but doesn't include (StartAllBack, Winaero Tweaker, Simple Window Switcher, Resource Redirect, AlienFX Tools, yt-dlp and others) are named in the READMEs where they matter. Their code isn't copied here; where a Tourne part replaces one, it was written from scratch.
+Programs my work talks to but doesn't include (StartAllBack, Winaero Tweaker, Simple Window Switcher, Resource Redirect, AlienFX Tools, yt-dlp and others) are named in the READMEs where they matter. Their code isn't copied here; where a Tourne part replaces one, I wrote it from scratch.

@@ -1,6 +1,6 @@
 # Windhawk mods
 
-Every Windhawk mod Tourne has made, newest version only. Each folder holds the mod's `.wh.cpp` and its README (taken from the mod's own readme block).
+Every Windhawk mod I've made, newest version only. Each folder holds the mod's `.wh.cpp` and its README (taken from the mod's own readme block).
 
 **Install one:** in Windhawk, **Create a new mod**, paste the file, **Compile mod**. On Windhawk 2 you can also run `windhawk-cli mod install --file <path to .wh.cpp>`, or drop files on [Tourne Drop Install](tourne-drop-install/).
 
@@ -47,4 +47,4 @@ Run either the standalone or the suite with that part on, not both.
 
 - The suite's file keeps its build id (`tourne-suite-b55`), so it installs next to older builds instead of over them. Run one suite at a time.
 - Tourne'Table 2.1 is the copy under review for the Windhawk Explore catalog ([#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)); the catalog offers 1.x until it's merged. It takes the public id `tourne-table-desktop-audio-visualizer`, so it replaces the 1.x release. Turn off any 2.0 beta copies.
-- Defaults that pointed into Tourne's own folders (icons, themes, pictures) were blanked for sharing; set your own in each mod's settings.
+- Defaults that pointed into my own folders (icons, themes, pictures) were blanked for sharing; set your own in each mod's settings.
