@@ -87,6 +87,8 @@ Most bundled plugins need nothing. These call a free tool you install yourself, 
 - Tourne Studio has been less steady in the newest builds; save often.
 - The killswitch: an app flashing for attention can still make Windows' taskbar peek.
 
+What comes next is in [Where we're going](../README.md#where-were-going).
+
 ## Run
 
     TourneDesktop.exe              # start (a tray icon shows its menu)

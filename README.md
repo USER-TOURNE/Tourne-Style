@@ -16,6 +16,32 @@ Everything here is a **work in progress**, shared as it runs on Tourne's own PC.
 
 **What the pieces need:** Windows 11, 64-bit (24H2 or later is what it's built on). [Windhawk](https://windhawk.net) 1.7.3 or newer for every mod. StartAllBack is optional: the suite's Clock and Classic Tray Folders parts style its taskbar and do nothing without it. No Node.js anywhere; Python only for two optional plugins. Developer Mode only for Tourne Desktop's phone calls.
 
+## Where we're going
+
+What Tourne'Style is aiming for. These are intentions, not promises or dates.
+
+**The idea:** Linux-level customizing for Windows (the Hyprland way of doing things: every part a switch, your own keys, rules, motion and looks), without a terminal, without anything phoning home, and cheap enough to run all day. Anything Tourne changes in Windows goes back the way it was when you turn it off.
+
+**Next up**
+
+- **Tourne'Table in the Windhawk catalog.** 2.1 is in review now. The update after it, already built and in testing, adds Engine Cores (which processor cores do the work), Frame Sync (VSync, Adaptive and Fast Sync), Low Latency, and an optional x2 frame generation.
+- **A newer Tourne Desktop release** with the fixes already running on Tourne's PC: startup apps in shell mode, tray icons that survive a restart, and plugins that apply their settings at once. Then a steadier Tourne Studio.
+- **Shell mode without gaps:** balloon tips, and Tourne's own answers to Win+A and Win+N.
+- **Icons that stay put:** Tourne'Icons Lasting keeping every icon without the live mod, an Apps folder for Store and other packaged apps, and the last icons drawn in the ink style.
+- **Devices:** the GMK87 keyboard's battery, and hover tooltips in plugin panels.
+
+**Further out**
+
+- **Everything Hyprland does, made for Windows.** A part by part map of the Hyprland wiki is the checklist ([`research/plans`](tourne-desktop/source/research/plans/)).
+- **Motion everywhere:** every part of the desktop following the same animation settings, not only the bar and borders.
+- **Richer glass:** glass that bends what's behind it at its edges, and shader looks to pick from.
+- **More switcher views**, such as an infinite canvas of your windows.
+- **A wallpaper manager** with a library, colour filters and recolouring, all point and click.
+- **Tourne Menu** as a full replacement for LiteMenu's desktop menu.
+- **A panel shell look:** the bar as separate islands that can sit on any edge.
+- **More plugins**, including ports from the Noctalia shell's catalogue, which uses the same Luau plugin language.
+- **The community:** more shared Tourne'Table styles, and sharing for whole desktop looks the same way.
+
 ## Start here
 
 1. **Want the whole look?** Download `tourne-desktop/release/TourneDesktop-<commit>.zip`, unzip it anywhere, run `TourneDesktop.exe`. Its tray icon opens Tourne Studio, where every part is a switch. Then add the Windhawk mods in the "Use together" list below for the parts that have to live inside Explorer.
