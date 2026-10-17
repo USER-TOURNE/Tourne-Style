@@ -1,6 +1,8 @@
 # Tourne Menu: a full LiteMenu replacement
 
-Asked by Tourne on 2026-10-08: build LiteMenu (PopEx) into Tourne as a full replacement, and widen it with Tourne Desktop's own functions.
+*October 8, 2026.*
+
+I want LiteMenu (PopEx) built into Tourne as a full replacement, and widened with Tourne Desktop's own functions.
 
 ## Why
 
@@ -27,6 +29,6 @@ Live submenus, as a submenu row's command: `tourne:windows` (open windows; a cli
 ## Stages
 
 1. Done (0fb7727): LiteMenu's menu on Tourne's desktop, host code.
-2. Done (tourne-menu.cpp): the module menu: rows or LiteMenu's file, Tourne's look, `tourne:` actions and live submenus, desktop and bar activation, hotkey. Host code only forwards the click. LiteMenu itself can then be closed or uninstalled (Tourne's call).
+2. Done (tourne-menu.cpp): the module menu: rows or LiteMenu's file, Tourne's look, `tourne:` actions and live submenus, desktop and bar activation, hotkey. Host code only forwards the click. After that I can close or uninstall LiteMenu itself.
 3. Done (2026-10-12): not a Studio page but its own window laid out like LiteMenu's configurator (desktop/host/menu-editor.cpp): the rows as a tree (add, remove, move, drag into submenus), Properties, Activation, "Copy LiteMenu's menu", pickers for `tourne:` actions. The Studio shows the rows as one row that opens it.
 4. Later: more than one menu (per place: desktop, bar, a screen corner), switcher views as actions (they're in the switcher module).

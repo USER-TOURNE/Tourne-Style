@@ -1,10 +1,10 @@
 # Noctalia plugins in Tourne Desktop
 
-Written 2026-10-06. Research and a proposal: no code until I say go.
+*October 6, 2026.*
 
-My ask: "look into noctalia plugins and how we can get a section in tourne desktop there."
+Research and a proposal, no code yet. I wanted to know how Noctalia's plugins work and whether Tourne Desktop could get a section for them.
 
-**Short answer:** it fits unusually well. Noctalia v5 is a native C++ shell (no Qt) with TOML config, GUI-managed overrides and theme roles, like Tourne Desktop. Its plugins are small **Luau** scripts against a documented API, listed in two catalogues (249 plugins, 96% MIT). Tourne Desktop could embed the Luau VM, answer that API the way `host\module-shim.inl` answers Windhawk's, and show the catalogues as a "Noctalia" source in the Studio's Extensions page (plan section 7). Plugins that only use the API (clocks, timers, translators, GitHub, AI usage meters, notes) would run as they are. Ones that shell out to Linux tools (`hyprctl`, `nmcli`, `playerctl`) won't, and can be detected and marked.
+**Short version:** it fits unusually well. Noctalia v5 is a native C++ shell (no Qt) with TOML config, GUI-managed overrides and theme roles, like Tourne Desktop. Its plugins are small **Luau** scripts against a documented API, listed in two catalogues (249 plugins, 96% MIT). Tourne Desktop could embed the Luau VM, answer that API the way `host\module-shim.inl` answers Windhawk's, and show the catalogues as a "Noctalia" source in the Studio's Extensions page (plan section 7). Plugins that only use the API (clocks, timers, translators, GitHub, AI usage meters, notes) would run as they are. Ones that shell out to Linux tools (`hyprctl`, `nmcli`, `playerctl`) won't, and can be detected and marked.
 
 ## 1. What Noctalia's plugins are (checked 2026-10-06)
 
@@ -51,11 +51,11 @@ My ask: "look into noctalia plugins and how we can get a section in tourne deskt
 - **Won't, as they are:** ones built on Linux tools or Wayland: Hyprland and Niri controls, NetworkManager, `playerctl`, ASUS and IdeaPad hardware, `mpvpaper`, package updaters.
 - **Tell them apart before install:** scan the entry scripts for `runAsync`, `runStream`, `runInTerminal`, `commandExists` and `processMatches`, and read the `tags`. The card says "Works on Windows", "Needs <command>" or "Linux only". A later step could map common commands (media keys, volume, brightness) to Tourne's own services.
 
-## 4. The decision this needs from Tourne
+## 4. The decision I have to make
 
 Plan section 7 says an extension "changes how the desktop looks, never what it runs". Noctalia plugins **run code**: Luau is sandboxed (no `os` or `io`), but the API itself offers HTTP, file writes and command execution. Three ways to square it:
 
-1. **Permissions per plugin (recommended).** Every plugin runs; HTTP, writing files outside its own folder, and running commands each need a yes on install, shown on its card. Runs inside TourneDesktop.exe, at almost no cost while idle.
+1. **Permissions per plugin (my pick).** Every plugin runs; HTTP, writing files outside its own folder, and running commands each need a yes on install, shown on its card. Runs inside TourneDesktop.exe, at almost no cost while idle.
 2. **Pure plugins only.** Only plugins that need no commands are installable. Simplest and safest, but hides much of the catalogue.
 3. **Their own process.** Plugins run in a helper process, so a bad one can't take the shell down. Safest, at the cost of one process and some delay per draw.
 
@@ -68,7 +68,7 @@ Plan section 7 also says later widgets would use WebView2. A Luau host is far li
 - Cards from both catalogues, read only when the page opens: thumbnail (`thumbnail.webp`), name, the 120-character description, author, licence, tags, and the Windows verdict from section 3.
 - **Install** fetches only that plugin's folder at the catalogue's `rev`, into `%LOCALAPPDATA%\Tourne\Plugins\<author>\<name>`. **Enable** adds its entries (a bar item, a panel, a tile...). Updates are compared by `version`.
 - Each installed plugin gets its own Studio page from its manifest settings, with `@role` colours like every other setting.
-- GPL and AGPL plugins are fetched by the user and never bundled (same rule as shaders); their licence is shown on the card.
+- GPL and AGPL plugins are downloaded by whoever installs them and never bundled (same rule as shaders); their licence is shown on the card.
 
 ## 6. Order
 
