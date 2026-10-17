@@ -1,6 +1,6 @@
 # Fuck me, this was pain
 
-The TL;DR of every handoff. The bugs that cost the most, in one line each, and what actually fixed them.
+The TL;DR of everything that went wrong. The bugs that cost the most, in one line each, and what actually fixed them.
 
 | What happened | What it actually was | The fix |
 |---|---|---|

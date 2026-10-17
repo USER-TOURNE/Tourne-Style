@@ -44,4 +44,4 @@ Alt+Tab got seven views, drawn in Direct3D 11: **List, Flip 3D, Cover Flow, Grid
 
 ## Idle means idle
 
-I asked for Tourne Desktop to cost nothing over a default Windows install when nothing is happening. Measured: Explorer wakes about 3 times a second idle; Tourne Desktop was waking about **300 times a second**. The biggest share was the taskbar checking hiding and fading every 100 ms on three bars. After two seconds with no input, the bars now **rest**: those checks stop until a hook sees input again. Borders stopped following every window's moves, the mouse pointer's included, and only follow the front window.
+I want Tourne Desktop to cost nothing over a default Windows install when nothing is happening. Measured: Explorer wakes about 3 times a second idle; Tourne Desktop was waking about **300 times a second**. The biggest share was the taskbar checking hiding and fading every 100 ms on three bars. After two seconds with no input, the bars now **rest**: those checks stop until a hook sees input again. Borders stopped following every window's moves, the mouse pointer's included, and only follow the front window.
