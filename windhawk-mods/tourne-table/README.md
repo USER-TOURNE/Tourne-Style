@@ -1,5 +1,7 @@
 ![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/tourne-header.png)
 
+> **Status: in review.** This is the current in-progress pull request for 2.1.0, waiting to be passed into the official Windhawk Explore catalog ([ramensoftware/windhawk-mods#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)). Until it is merged, the catalog still offers the older 1.x release. This file is the exact copy under review; what changed over the earlier 2.1 copy is in the [CHANGELOG](CHANGELOG.md).
+
 # `Tourne'Table` **[Audio Visualizer]**
 
 ![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/11.gif)
@@ -31,9 +33,9 @@ Tourne'Table doesn't live inside `explorer.exe`. It runs as its own dedicated pr
 
 ## ✧ NEW IN 2.0 AND 2.1
 
-2.1 is the build that runs inside Tourne Desktop, as a Windhawk mod of its own. It replaces the 1.x release and the 2.0 betas (turn those off: only one Tourne'Table should run). The performance figures further down were measured on 1.x and haven't been re-measured on 2.x yet.
+2.1 replaces 1.x. If you ran one of the 2.0 test builds from GitHub, turn it off: only one Tourne'Table should run. If you also use **Tourne Desktop** (my separate desktop app, not part of Windhawk), its taskbar counts as the taskbar for Place In = Taskbar, and it can show, hide or pin the panel through the window message `TourneTable.Panel`. The performance figures further down were measured on 1.x and haven't been re-measured on 2.x yet.
 
-**Share your style.** Right-click > My Styles > Style Editor > Share: **Copy code** puts your setup on the clipboard as one line for any chat, **Save file** writes a `.ttstyle` file, and **Community** lists the setups people have shared in [the Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community) (read only when you press it) and opens a ready GitHub issue to share yours. Your audio device, hotkeys, file paths and hardware never go in a setup. Browse them all on the [community page](https://github.com/USER-TOURNE/Tourne-Style/blob/main/community/README.md).
+**Share your style.** Right-click > My Styles > Style Editor > Share: **Copy code** puts your setup on the clipboard as one line for any chat, **Save file** writes a `.ttstyle` file, and **Community** opens the setups people have shared in [the Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community) in your browser (bring one in with **Paste code** or **Open file**; the mod itself never goes online) or opens a ready GitHub issue to share yours. A setup carries every setting except the ones that belong to your PC: the audio device, icon files, panel hotkey, monitor, docked app and graphics card. Browse them all on the [community page](https://github.com/USER-TOURNE/Tourne-Style/blob/main/community/README.md).
 
 **Every bar is its own measurement now.** Up to 1.5 the analysis split the sound into 7 fixed bands and every bar interpolated between those 7 numbers, so Bar Count and FFT Size changed how many bars you saw, not how much they knew. The new **Precision** engine gives each bar its own frequency band with its own edges, measured straight from the spectrum:
 
@@ -45,7 +47,7 @@ Tourne'Table doesn't live inside `explorer.exe`. It runs as its own dedicated pr
 
 The 1.4 analysis is still there as **Analysis Engine = Classic**.
 
-**You choose where the work runs.** **Workload** is GPU, CPU or Hybrid: Hybrid analyses on the CPU and draws on the GPU (the cheapest split almost everywhere), GPU does both on the graphics chip, CPU does both on the processor. NPU stays as an experimental option.
+**You choose where the work runs.** **Workload** is GPU, CPU or Hybrid: Hybrid analyses on the CPU and draws on the GPU (the cheapest split almost everywhere), GPU does both on the graphics chip, CPU does both on the processor.
 
 **A new renderer built to cost next to nothing.** **Renderer = Direct3D 11** draws everything from one tiny shader and a buffer of bar heights, **skips any frame where nothing moved**, keeps the text on its own surface that only redraws when the text changes, and tells Windows when the panel is opaque so it copies instead of blending. When audio stops, drawing stops, and after a few more seconds of silence the audio stream itself stops (**Deep Idle**). The 1.5 Direct2D path is still there for comparison.
 
@@ -57,13 +59,13 @@ The 1.4 analysis is still there as **Analysis Engine = Classic**.
 
 **Glow and Bloom.** A soft halo around every bar, worked out in the same shader pass that draws it, and a lens-style bloom from a quarter-size blur that only runs on frames that change. Direct3D 11 renderer.
 
-**A Media Card.** Media Controls > Layout = Card: album art with previous / play / next on hover, a seek bar, one-click output switching and a volume slider. Theme its background, border, corner radius, art size and accent (icon colour, custom, album art or your Windows accent).
+**A Media Card.** Media Controls > Layout = Card: album art with previous / play / next on hover, a seek bar, one-click output switching and a volume slider. The output button changes the **Windows default output** for every app (through the same undocumented Windows interface sound-switcher tools use), and the slider sets the **system master volume**; both act only when you click, drag or scroll them, and both stay as set after the mod is turned off, like any change made in Windows' own sound settings. Theme its background, border, corner radius, art size and accent (icon colour, custom, album art or your Windows accent).
 
 **My Styles.** Right-click > My Styles > Style Editor: mix a base style, colours, bar sizes, reflection, glow and bloom while the visualizer previews it live, save it under a name, and pick it from the menu any time.
 
 **Finer looks.** Outline and Shadow around every bar; bar modifiers Hollow, Dashed, Tilt, Afterimage (a slowly falling trail) and Mirror Gap; scale numbers on Spectrogram and VU Needles; album colours that ease in; any Unicode character in Terminal. Reflection now works on both renderers.
 
-**Exact sizes.** Bar width, gap, height, padding, borders, radii, fonts and offsets take decimals (turn Pixel Snap off to keep the fractions).
+**Exact sizes.** Bar width, gap, height, padding, borders, radii, fonts and offsets take decimals down to 0.01, and so do Sensitivity, Smoothing, Input Gain, Blur, Glow, Bloom, Shadow, Reflection, Afterimage, Beat Flash Intensity, Rainbow Speed and the dock, split and snap distances (turn Pixel Snap off to keep the fractions). The Style Editor's sliders step by 0.01 with the arrow keys.
 
 **Placement.** Drag snaps to the screen's edges and centre, the taskbar, the tray and the Start button (hold Shift to place freely). Position > Place In = Taskbar puts it inside the taskbar. Position > Dock To App keeps the visualizer beside an app's window as it moves, and Split Into Two Pieces cuts it in two, e.g. either side of the taskbar's centred icons, at almost no cost.
 
@@ -454,7 +456,6 @@ There are two jobs in this mod, and they can run on different silicon: **analysi
 - **Hybrid** *(default)*: analysis on the CPU, drawing on the GPU. Analysis is a fraction of a percent of one core, and the GPU draws for almost nothing, so this is the cheapest split on nearly every PC.
 - **GPU**: the analysis runs on the graphics chip as well, in four small compute passes that feed the drawing directly, so the CPU only copies audio and nothing comes back each frame but 8 bytes of statistics. Needs the Precision engine and the Direct3D 11 renderer, and uses at most FFT Size 4096. Worth trying on a strong iGPU; measure it against Hybrid rather than assume.
 - **CPU**: analysis and drawing both on the processor (drawing in software, through WARP). The GPU is left with nothing but Windows' own compositing. Fine for a small widget; a full-width strip at a high frame rate is real CPU work.
-- **NPU** *(experimental)*: the FFTs run on an Intel AI Boost NPU, drawing on the GPU. See the NPU section below for why this rarely saves anything.
 
 **Drawing Device**: Which GPU draws.
 - **Auto** *(default)*: the GPU your chosen monitor is plugged into. On a laptop with two GPUs, or a desktop with the iGPU left on, drawing on the *other* one means every frame gets copied across to the GPU that scans it out, which is exactly the kind of uneven frame time this mod is trying to avoid. Auto asks Windows which GPU owns that screen and uses it, and follows if the answer changes.
@@ -473,8 +474,6 @@ If the GPU is ever lost mid-session (a driver update, a driver reset, a laptop s
 
 **Opaque Panel**: When the background panel can't show anything behind it (**Blur** on, or a panel colour with full alpha) and **Auto-Hide** is off, the Direct3D 11 renderer creates the panel's surface with alpha ignored and lets the compositor cut the rounded corners. Windows then copies those pixels instead of blending them every frame; Chromium measured the same switch at 3.12 W against 2.28 W. **Off** always blends, for comparison.
 
-**NPU Runtime Folder**: Where Intel's OpenVINO runtime lives. Blank searches the usual places. Only read when Workload is NPU.
-
 **Smooth Mode**: Frame timing locked to the display, and motion on elapsed time. **Auto** *(default)* turns it on when drawing runs on an integrated GPU or the CPU; **On** works on any GPU and is worth trying on a discrete one too; **Off** is the 1.4 timing. What it changes:
 
 - **Frame timing locked to the display.** The 1.4 loop asks for a frame every `1000 / Target FPS` milliseconds and lets the timer's wake-up latency pile up, which is why 144 requested measured 141.7 delivered. On a 144 Hz panel that is a couple of refreshes every second with no new frame: a repeat, which you see as a hitch. Smooth Mode schedules from Windows' own composition clock instead, places every frame half a refresh away from the deadline on either side, and never accumulates drift.
@@ -488,32 +487,6 @@ If the GPU is ever lost mid-session (a driver update, a driver reset, a laptop s
 ![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/4.gif)
 
 *The same shape in a warm colour: the Oscilloscope picks up Color Mode like every other shape.*
-
-# ◇ RUNNING THE ANALYSIS ON AN NPU (EXPERIMENTAL)
-
-Written against an **Alienware Aurora ACT1250** (the 2025 Aurora: Core Ultra 7 265K / 265KF or Ultra 9 285K, RTX 50-series), but it applies to any Intel Core Ultra machine.
-
-**Read this first: it almost certainly won't save power.** An NPU is a matrix-multiply engine. It wins when the work is a large, dense block of multiply-accumulates that runs continuously, like a neural network. An FFT is neither: to run on the NPU it has to be rewritten as matrix multiplies, which is roughly 25 times more arithmetic than an FFT, and every call has a fixed start-up cost the FFT is far too small to pay back. Calling it once per frame also keeps the NPU from power-gating between calls. Meanwhile the CPU does the whole analysis in well under 1% of one core. More bars don't change that: with the Precision engine every bar adds up its own bins once per frame, so 240 bars cost the same as 7.
-
-It stays as an option because the plumbing is the hard, reusable part (finding the runtime, compiling off the audio path, proving the result against a known answer, falling back to the CPU with a reason), and because the NPU's real use in a visualizer is still to come: neural models such as note transcription (a piano-roll mode, note names on musical bars) or stem separation (colour each bar by whether drums, bass or vocals drive it). Those are dense, continuous matrix work, which is what an NPU is for.
-
-**What's in there.** Arrow Lake desktop chips carry Intel's NPU 3, sold as *Intel AI Boost*: about 13 TOPS, the same generation as Meteor Lake, and present on K, KF and F models alike (the F only drops the iGPU). It is a separate block from both the CPU cores and the GPU, built for large batches of multiply-accumulates in low precision (FP16 / INT8).
-
-**Making sure it's on.**
-1. Device Manager should have a **Neural processors** category with **Intel(R) AI Boost** under it. Task Manager on Windows 11 24H2 and later also shows an **NPU** graph on the Performance tab.
-2. If it's missing, install the **Intel NPU driver** (from Dell's support page for the Aurora, or Intel's own "Intel NPU Driver - Windows" download). It needs Windows 11.
-3. Still missing after that: check the BIOS for an NPU / AI Boost switch. Some Arrow Lake firmware ships one, and Intel's own guidance for Windows 10 machines is to turn the NPU off there.
-
-**Giving this mod a way to talk to it.** Intel exposes the NPU through its **OpenVINO** runtime, which this mod loads at runtime if it's present. Nothing is bundled and nothing is installed for you. Any of these works:
-- Download the OpenVINO archive for Windows from Intel and extract it (to `C:\Program Files (x86)\Intel\openvino_<version>` is the conventional spot, which the mod searches on its own), or
-- `pip install openvino` into a Python install (the mod searches the usual Python locations too), or
-- put the folder holding `openvino_c.dll` into **NPU Runtime Folder**.
-
-Use an OpenVINO version at least as new as the one your NPU driver's release notes name. Then set **Workload** to **NPU**. The Windhawk log says what happened: which runtime and device it found, how long the model took to compile, and every 30 seconds the mean and worst NPU time per FFT. If anything is missing, the settings-problems window says which piece and what to do, and the analysis stays on the CPU in the meantime.
-
-> **64-bit only.** OpenVINO ships 64-bit builds only. Windhawk 1.x runs tool mods in a 32-bit process, so there the NPU option reports that and stays on the CPU.
-
-**How it works.** The FFT is rewritten as matrix multiplies (a "four-step" DFT: a DFT down the columns, a twiddle multiply, a DFT along the rows). The model is generated in memory for your FFT Size, compiled for the NPU once, and checked against a known answer before it's trusted. Its output feeds exactly the same band maths as the CPU path, for either engine, so the bars look identical. Measure it with HWiNFO against Hybrid, the same way the CPU figures above were measured, and keep whichever costs less.
 
 # ▲ WHERE THE EFFICIENCY COMES FROM
 
@@ -571,7 +544,7 @@ Every present hands Windows' compositor a new buffer and wakes it to blend that 
 
 - **Playing**: one wake per frame.
 - **Silent** (after Pause When Silent): wakes only when audio arrives or four times a second, and presents nothing unless something changes.
-- **Deep Idle** (five seconds later): the loopback stream itself is stopped, and Windows' own peak meter is read four times a second instead. A running capture stream registers an audio power request, which can hold the PC out of sleep (check `powercfg /requests`); a stopped one doesn't. The engine thread also asks Windows for efficiency-core scheduling (EcoQoS) while idle, and opts out of it while playing so frame pacing stays tight.
+- **Deep Idle** (five seconds later): the loopback stream itself is stopped, and Windows' own peak meter is read four times a second instead. A running capture stream registers an audio power request, which can hold the PC out of sleep (check `powercfg /requests`); a stopped one doesn't. The engine thread also asks Windows for efficiency-core scheduling (EcoQoS) while idle, and leaves the choice to Windows while playing.
 
 ### 11. Less for the compositor to blend *(2.0, Direct3D 11 renderer)*
 

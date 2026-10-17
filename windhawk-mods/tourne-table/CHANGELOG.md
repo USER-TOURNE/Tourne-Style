@@ -6,18 +6,39 @@
 
 ---
 
+## ❀ v2.1.0 (in review): The Catalog Review Copy
+
+**Status:** the current in-progress pull request, waiting to be passed into the official Windhawk Explore catalog ([ramensoftware/windhawk-mods#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)). The catalog still offers 1.x until it's merged. Same version number and id as the 2.1.0 entry below; this is that build after two rounds of the catalog's review.
+
+### ✦ Changed over the first 2.1.0 copy
+- **The mod never goes online.** The catalog doesn't allow mods to download anything, so **Community** now opens the shared setups and a ready GitHub issue in your browser instead of fetching the list itself. Bring a setup in with **Paste code** or **Open file**. The download library is no longer linked.
+- **Setups carry every setting** except the ones that belong to your PC: the audio device, icon files, panel hotkey, monitor, docked app and graphics card. A setting saved as 0 now stays 0 when the setup is opened.
+- **Keyboard Move** is off by default, only hooks the keyboard while it's on, ignores AltGr, and only swallows a key-up after it took that key's key-down.
+- **Fewer ways to drop or block input:** the right-click menu takes focus with an empty input call instead of a fake key press, seeking runs outside the mouse hook, queued media commands are no longer dropped, and dragging lets mouse moves through and ends cleanly on a desktop switch.
+- **Bars:** one thread writes them, the Classic engine's values are clamped, and Workload = GPU falls back to the CPU for the styles that draw their bars there.
+- **NPU removed** from the catalog build (it loaded a runtime from outside the mod, which the catalog doesn't allow).
+- **Media Card disclosure:** the readme now says the output button changes the Windows default output for every app and the slider sets the system master volume, both only when you use them.
+- **Decimal settings:** sizes, borders, FX, sensitivity and the measurement settings take 0.01 steps.
+- **Tourne Desktop:** the readme explains why its taskbar counts for Place In = Taskbar and what the `TourneTable.Panel` message does.
+- **Fixes:** the 32-bit build compiles again; Direct2D style resources (reflection, shadow, spectrogram) are released when the renderer rebuilds or the mod unloads; the taskbar list used for overlap checks is cached for a second instead of re-read on every check.
+
+### ✦ Not in this build
+Engine Cores, Frame Sync, Low Latency and Frame Generation are still in testing and will come in a later update.
+
+---
+
 ## ❀ v2.1.0: Out of Tourne Desktop, Into Its Own Mod, With a Community
 
 The Tourne'Table that runs inside Tourne Desktop, released as a Windhawk mod of its own. It takes the public id (`tourne-table-desktop-audio-visualizer`), so it replaces the 1.x release; turn off any 2.0 beta copies (`tourne-table-v2`, `tourne-table-beta-2`, the scope tests) so only one runs.
 
 ### ✦ New
-- **Community styles** live in the [Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community): the Style Editor's **Community** button lists them, and **Share Mine to the Community** opens a ready issue there. A bot checks each shared style, answers with a code anyone can paste to try it, and adds it to the list once it's approved. There's a gallery page with live previews too.
+- **Community styles** live in the [Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community): the Style Editor's **Community** button opens them in your browser, and **Share Mine to the Community** opens a ready issue there. A bot checks each shared style, answers with a code anyone can paste to try it, and adds it to the list once it's approved. There's a gallery page with live previews too.
 - Everything in the 2.0 entry below that came after the first 2.0 beta: Place In = Taskbar and Panel, Split Into Two Pieces, Dock To App, Snap while dragging, bar modifiers, decimal sizes, Click to Seek, Outline and Shadow, and setup sharing (codes and `.ttstyle` files).
 
 ### ✦ Changed
 - The right-click menu opens over Tourne Desktop's own bar, not behind it, when the visualizer sits in or near it.
 - No longer a beta: the name, description and readme say so.
-- Builds for 32-bit as well as 64-bit (1.x was 64-bit only), so it also runs where Windhawk starts tool mods in a 32-bit process, such as Windhawk 1.x. The experimental NPU workload stays 64-bit only, since OpenVINO is.
+- Builds for 32-bit as well as 64-bit (1.x was 64-bit only), so it also runs where Windhawk starts tool mods in a 32-bit process, such as Windhawk 1.x.
 
 ---
 

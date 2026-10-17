@@ -11,7 +11,7 @@ Every Windhawk mod Tourne has made, newest version only. Each folder holds the m
 | [Tourne'Suite](tourne-suite/) | b55 | Every Tourne part that hooks Windows, in one mod, each part a switch: System Icons and the Explorer relay, Change Tray Icons, Tray Folders, Clock, System Text Color, Menu No Icons and No Duplicates, Classic Menus, Icon Redirect, Explorer Style and Colors, Theme Gaps, Dark Magic, Tweaks, plus the older test Taskbar and Switcher (Tourne Desktop has the current ones). |
 | [Tourne Menus](tourne-menus/) | 1.0.6 | Explorer's, the file dialogs' and Windows' menus in Tourne Desktop's look. |
 | [Tourne'Icons](tourne-icons/) | 2.7.1 | Change any icon everywhere from a picker in the tray; applies icon packs. Comes with **Tourne'Icons Lasting** 1.7.1 (no hooks, changes stay with the mod off) and **Tourne'Icons Kit** (the same as a plain program, no Windhawk). |
-| [Tourne'Table](tourne-table/) | 2.1.0 | The desktop audio visualizer, ported out of Tourne Desktop as a mod of its own, with community styles. |
+| [Tourne'Table](tourne-table/) | 2.1.0 (in review) | The desktop audio visualizer, ported out of Tourne Desktop as a mod of its own, with community styles. This is the copy in the pull request waiting to be passed into the Windhawk Explore catalog. |
 
 ## Standalones that are also suite parts
 
@@ -46,5 +46,5 @@ Run either the standalone or the suite with that part on, not both.
 ## Notes
 
 - The suite's file keeps its build id (`tourne-suite-b55`), so it installs next to older builds instead of over them. Run one suite at a time.
-- Tourne'Table 2.1 takes the public id `tourne-table-desktop-audio-visualizer`, so it replaces the 1.x release. Turn off any 2.0 beta copies.
+- Tourne'Table 2.1 is the copy under review for the Windhawk Explore catalog ([#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)); the catalog offers 1.x until it's merged. It takes the public id `tourne-table-desktop-audio-visualizer`, so it replaces the 1.x release. Turn off any 2.0 beta copies.
 - Defaults that pointed into Tourne's own folders (icons, themes, pictures) were blanked for sharing; set your own in each mod's settings.
