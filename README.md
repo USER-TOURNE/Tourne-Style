@@ -37,7 +37,7 @@ What Tourne'Style is aiming for. These are intentions, not promises or dates.
 - **Richer glass:** glass that bends what's behind it at its edges, and shader looks to pick from.
 - **More switcher views**, such as an infinite canvas of your windows.
 - **A wallpaper manager** with a library, colour filters and recolouring, all point and click.
-- **Tourne Menu** as a full replacement for LiteMenu's desktop menu.
+- **More than one Tourne Menu** (the LiteMenu replacement): a menu per place, such as the desktop, the bar or a screen corner, with the switcher views as actions.
 - **A panel shell look:** the bar as separate islands that can sit on any edge.
 - **More plugins**, including ports from the Noctalia shell's catalogue, which uses the same Luau plugin language.
 - **The community:** more shared Tourne'Table styles, and sharing for whole desktop looks the same way.

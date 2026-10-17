@@ -76,7 +76,7 @@ Most bundled plugins need nothing. These call a free tool you install yourself, 
 
 ## What works, and what isn't finished
 
-**Working, in daily use on Tourne's PC:** the taskbar, the Start menu, Alt+Tab with its list, Flip 3D and Cover Flow views, tiling and borders, the system icons and their flyouts, the tray (with folders), Tourne Studio, presets, the Tourne theme, identities, glass, shell mode with startup apps, keys and rules, UI sounds, Luau plugins with the bar and panels, and the built-in Tourne'Table.
+**Working, in daily use on Tourne's PC:** the taskbar, the Start menu, Alt+Tab with its list, Flip 3D and Cover Flow views, tiling and borders, the system icons and their flyouts, the tray (with folders), Tourne Studio, presets, the Tourne theme, identities, glass, shell mode with startup apps, keys and rules, Tourne Menu (the LiteMenu replacement, with its editor), UI sounds, Luau plugins with the bar and panels, and the built-in Tourne'Table.
 
 **Working, but not finished:**
 - Shell mode has no balloon tips yet, and Win+A, Win+N and the system icons' "original menu" don't work in it (they belong to Explorer).
