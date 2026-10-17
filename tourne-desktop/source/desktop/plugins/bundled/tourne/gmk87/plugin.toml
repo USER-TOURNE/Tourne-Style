@@ -1,0 +1,32 @@
+# Tourne Desktop's GMK87: lighting, screen pictures, the clock and the settings of a Zuoya GMK87 keyboard.
+# The protocol is as gmk87-node (codedgar, MIT) and its reference.py (Jochen Eisinger, BSD) worked it out;
+# this is our own code.
+
+id = "tourne/gmk87"
+name = "GMK87"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne"
+license = "MIT"
+dependencies = []
+tags = ["keyboard", "lighting", "device"]
+icon = "keyboard"
+description = "Your Zuoya GMK87: backlight effect, colour, brightness and speed (also through its 2.4 GHz dongle), and with its cable in, the screen's pictures and GIFs, its clock and its own settings."
+
+[[setting]]
+key = "syncClock"
+type = "bool"
+label = "Set its clock when Tourne Desktop starts"
+description = "Only while the keyboard is plugged in by its cable"
+default = false
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 420
+height = 560
+placement = "attached"

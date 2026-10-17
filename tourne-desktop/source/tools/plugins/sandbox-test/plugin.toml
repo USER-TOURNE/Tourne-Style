@@ -1,0 +1,12 @@
+id = "test/sandbox"
+name = "Sandbox test"
+version = "1"
+[[widget]]
+id = "bad"
+entry = "bad.luau"
+
+# A folder setting whose default is the whole profile: must not open it up.
+[[setting]]
+key = "dir"
+type = "folder"
+default = "~"

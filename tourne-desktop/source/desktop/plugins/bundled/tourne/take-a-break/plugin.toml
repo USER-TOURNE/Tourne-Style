@@ -1,0 +1,70 @@
+id = "tourne/take-a-break"
+name = "Take a Break"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Take a Break)"
+license = "MIT"
+dependencies = []
+tags = ["health", "productivity"]
+icon = "eye"
+description = "Short eye breaks and longer stretch breaks on a cycle, a heads-up first, a break screen with a countdown, and no breaks over games or full-screen video."
+
+[[setting]]
+key = "workMinutes"
+type = "int"
+label = "Work between breaks (minutes)"
+default = 20
+min = 5
+max = 120
+
+[[setting]]
+key = "shortSeconds"
+type = "int"
+label = "Short break (seconds)"
+default = 20
+min = 10
+max = 300
+
+[[setting]]
+key = "longEvery"
+type = "int"
+label = "Long break after this many short ones"
+default = 3
+min = 1
+max = 10
+
+[[setting]]
+key = "longMinutes"
+type = "int"
+label = "Long break (minutes)"
+default = 5
+min = 1
+max = 30
+
+[[setting]]
+key = "warnSeconds"
+type = "int"
+label = "Heads-up before (seconds)"
+description = "A notification this long before a break. 0: none"
+default = 10
+min = 0
+max = 120
+
+[[setting]]
+key = "skipWhenBusy"
+type = "bool"
+label = "Not over full-screen apps"
+description = "A game, a video or a presentation in front puts the break off"
+default = true
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 520
+height = 320
+placement = "floating"
+position = "center"

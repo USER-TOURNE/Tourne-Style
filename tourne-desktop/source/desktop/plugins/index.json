@@ -1,0 +1,2528 @@
+{
+  "made": "2026-10-06T20:00:27Z",
+  "sources": [
+    {
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e"
+    },
+    {
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848"
+    }
+  ],
+  "plugins": [
+    {
+      "id": "mirei124/bangumi-progress",
+      "name": "Bangumi Progress",
+      "version": "1.1.0",
+      "api": 15,
+      "author": "Mirei124",
+      "license": "MIT",
+      "description": "Track Bangumi anime and episode progress from desktop widgets, and update watched episodes from the panel.",
+      "tags": [
+        "bar",
+        "desktop",
+        "panel",
+        "service",
+        "animation",
+        "media",
+        "network",
+        "productivity"
+      ],
+      "icon": "device-tv",
+      "entries": [
+        "desktop_widget",
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "bangumi-progress",
+      "files": [
+        "bar.luau",
+        "desktop_widget.luau",
+        "LICENSE",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api.bgm.tv",
+            "bgm.tv",
+            "github.com"
+          ]
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        }
+      ]
+    },
+    {
+      "id": "yugaaank/better-clock",
+      "name": "Better Clock",
+      "version": "1.0.0",
+      "api": 19,
+      "author": "yugaaank",
+      "license": "MIT",
+      "description": "A minimal digital clock desktop widget with customizable format.",
+      "tags": [
+        "desktop",
+        "clock",
+        "time",
+        "utility"
+      ],
+      "icon": "clock",
+      "entries": [
+        "desktop_widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "better-clock",
+      "files": [
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": []
+    },
+    {
+      "id": "nirvam/bitdjinn",
+      "name": "BitDjinn",
+      "version": "1.0.0",
+      "api": 19,
+      "author": "nirvam",
+      "license": "MIT",
+      "description": "Real-time cryptocurrency ticker, trend charts, and blockchain balance monitoring with transaction alerts.",
+      "tags": [
+        "utility",
+        "indicator",
+        "network",
+        "panel",
+        "bar"
+      ],
+      "icon": "currency-bitcoin",
+      "entries": [
+        "desktop_widget",
+        "panel",
+        "service",
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "bitdjinn",
+      "files": [
+        "bar.luau",
+        "desktop.luau",
+        "LICENSE",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "lib/format.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api.coingecko.com",
+            "api.mainnet-beta.solana.com",
+            "ethereum-rpc.publicnode.com",
+            "mempool.space"
+          ]
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "yuuto/calculator",
+      "name": "Calculator",
+      "version": "1.0.0",
+      "api": 3,
+      "author": "yuuto",
+      "license": "MIT",
+      "description": "A theme-aware calculator with a bar widget and a panel: full expression evaluation, a button grid, and typed input.",
+      "tags": [
+        "utility",
+        "productivity",
+        "bar",
+        "panel"
+      ],
+      "icon": "calculator",
+      "entries": [
+        "panel",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "calculator",
+      "files": [
+        "bar.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/tr.json"
+      ],
+      "needs": [
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "nzlov/daily-wallpaper",
+      "name": "Daily Wallpaper",
+      "version": "1.1.0",
+      "api": 3,
+      "author": "nzlov",
+      "license": "MIT",
+      "description": "Fetches a new daily wallpaper from Bing or NASA, and shows its caption on the bar, in a panel, and on the desktop.",
+      "tags": [
+        "wallpaper",
+        "desktop",
+        "bar",
+        "panel",
+        "service"
+      ],
+      "icon": "photo",
+      "entries": [
+        "desktop_widget",
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "daily-wallpaper",
+      "files": [
+        "daily_wallpaper.luau",
+        "desktop_widget.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "www.bing.com",
+            "www.nasa.gov"
+          ]
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        },
+        {
+          "kind": "wallpaper"
+        }
+      ]
+    },
+    {
+      "id": "alpzy/deepseek-peak",
+      "name": "DeepSeek Peak Hours",
+      "version": "1.0.0",
+      "api": 22,
+      "author": "Alpzy",
+      "license": "MIT",
+      "description": "DeepSeek and Ollama Cloud peak/off-peak API rate windows with a live countdown, progress bar, and policy-drift alerts.",
+      "tags": [
+        "bar",
+        "panel",
+        "indicator",
+        "ai",
+        "countdown"
+      ],
+      "icon": "zap",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "deepseek-peak",
+      "files": [
+        "checker.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "schedule.json",
+        "thumbnail.webp",
+        "widget.luau",
+        "lib/schedule.luau",
+        "lib/settings.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api-docs.deepseek.com",
+            "docs.ollama.com",
+            "ollama.com",
+            "www.deepseek.com"
+          ]
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "coder/deepseek_usage",
+      "name": "DeepSeek Usage",
+      "version": "1.0.0",
+      "api": 19,
+      "author": "coder",
+      "license": "MIT",
+      "description": "DeepSeek API credit and balance monitor for Noctalia shell",
+      "tags": [
+        "utility",
+        "productivity",
+        "bar",
+        "panel"
+      ],
+      "icon": "wallet",
+      "entries": [
+        "panel",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "deepseek_usage",
+      "files": [
+        "deepseek_usage.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api.deepseek.com",
+            "platform.deepseek.com"
+          ]
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "noctalia/example",
+      "name": "Example",
+      "version": "1.3.1",
+      "api": 9,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "A reference plugin demonstrating every supported entry type and common runtime APIs.",
+      "tags": [
+        "demo"
+      ],
+      "icon": "puzzle",
+      "entries": [
+        "launcher_provider",
+        "panel",
+        "service",
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "example",
+      "files": [
+        "data.txt",
+        "declarative.luau",
+        "dnd.luau",
+        "finder.luau",
+        "hello.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "ticker.luau",
+        "translations/ar.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "alexmnrs/github-activity",
+      "name": "GitHub Activity",
+      "version": "1.4.0",
+      "api": 24,
+      "author": "AlexMnrs",
+      "license": "MIT",
+      "description": "A native GitHub contribution calendar for your Noctalia bar.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "development",
+        "productivity",
+        "utility",
+        "network",
+        "hyprland",
+        "arch"
+      ],
+      "icon": "brand-github",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "github-activity",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "sync.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "lib/activity.luau",
+        "lib/settings.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "program",
+          "program": "gh",
+          "label": "GitHub CLI (gh)"
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "hy4ri/github-notifications",
+      "name": "GitHub Notifications",
+      "version": "0.3.0",
+      "api": 24,
+      "author": "hy4ri",
+      "license": "MIT",
+      "description": "A fast, clean GitHub notification inbox for your Noctalia bar.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "development",
+        "productivity",
+        "utility",
+        "network"
+      ],
+      "icon": "brand-github",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "github-notifications",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "lib/notifications.luau",
+        "lib/time.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "program",
+          "program": "gh",
+          "label": "GitHub CLI (gh)"
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "pozzoo/hassio",
+      "name": "Home Assistant",
+      "version": "2.0.8",
+      "api": 9,
+      "author": "Pozzoo",
+      "license": "MIT",
+      "description": "Monitor and control Home Assistant entities from the bar. Displays entity states and provides quick toggles.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "shortcut",
+        "network",
+        "indicator"
+      ],
+      "icon": "smart-home",
+      "entries": [
+        "panel",
+        "service",
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "hassio",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service_sse.luau",
+        "shortcut_2.luau",
+        "shortcut_3.luau",
+        "shortcut_4.luau",
+        "shortcut_panel.luau",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json",
+        "translations/pt-BR.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "nilsonlinux/inventory-manager",
+      "name": "Inventory Manager",
+      "version": "1.0.1",
+      "api": 15,
+      "author": "Nilsonlinux",
+      "license": "MIT",
+      "description": "Inventory Manager for managing product inventory with categories, low stock alerts, and data export.",
+      "tags": [
+        "utility",
+        "productivity",
+        "service",
+        "panel",
+        "bar"
+      ],
+      "icon": "package",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "inventory-manager",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json",
+        "translations/pt-BR.json"
+      ],
+      "needs": [
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "borderliner/jalali_calendar",
+      "name": "Jalali Calendar",
+      "version": "1.0.1",
+      "api": 22,
+      "author": "borderliner",
+      "license": "MIT",
+      "description": "Iranian Solar Hijri calendar with official holidays, plus Hijri Qamari and Gregorian dates.",
+      "tags": [
+        "time",
+        "clock",
+        "utility"
+      ],
+      "icon": "calendar",
+      "entries": [
+        "panel",
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "jalali_calendar",
+      "files": [
+        "calendar.luau",
+        "check.sh",
+        "fmt.luau",
+        "hijri.luau",
+        "holidays.luau",
+        "host.luau",
+        "jalali.luau",
+        "LICENSE",
+        "occasions.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "screenshot-bar.webp",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "fonts/LICENSE-Vazirmatn.txt",
+        "fonts/Vazirmatn-Bold.ttf",
+        "fonts/Vazirmatn-Regular.ttf",
+        "tests/calendar_spec.luau",
+        "tests/fmt_spec.luau",
+        "tests/harness.luau",
+        "tests/hijri_spec.luau",
+        "tests/holidays_spec.luau",
+        "tests/jalali_spec.luau",
+        "tests/run.luau",
+        "tools/generate_occasions.py",
+        "translations/en.json"
+      ],
+      "needs": []
+    },
+    {
+      "id": "noctalia/kaomoji",
+      "name": "Kaomoji",
+      "version": "1.0.1",
+      "api": 3,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "Browse and search kaomoji emoticons from the launcher and copy them to the clipboard.",
+      "tags": [
+        "emoticon",
+        "launcher"
+      ],
+      "icon": "mood-smile",
+      "entries": [
+        "launcher_provider"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "kaomoji",
+      "files": [
+        "database.json",
+        "kaomoji.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "translations/ar.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "cwhirly/lunar-calendar",
+      "name": "Lunar Calendar",
+      "version": "1.0.0",
+      "api": 22,
+      "author": "cwhirly",
+      "license": "MIT",
+      "description": "Chinese lunisolar calendar: Gregorian date, weekday, lunar date, 24 solar terms, festivals and CN statutory holidays.",
+      "tags": [
+        "clock",
+        "time",
+        "bar",
+        "panel",
+        "utility"
+      ],
+      "icon": "calendar-event",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "lunar-calendar",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "lib/data.luau",
+        "lib/format.luau",
+        "lib/holiday.luau",
+        "lib/locale.luau",
+        "lib/lunar.luau",
+        "lib/plugin.luau",
+        "tools/generate_data.py",
+        "tools/README.md",
+        "translations/en.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "nuddel69/nightscout-monitor",
+      "name": "Nightscout Monitor",
+      "version": "1.0.0",
+      "api": 3,
+      "author": "Nuddel69",
+      "license": "AGPL-3.0",
+      "description": "Widget icon for monitoring nightscout glucose information",
+      "tags": [
+        "bar",
+        "utility"
+      ],
+      "icon": "vaccine-bottle",
+      "entries": [
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "nightscout-monitor",
+      "files": [
+        "LICENSE",
+        "monitor.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "ticker.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "noctalia/notes",
+      "name": "Notes",
+      "version": "1.0.5",
+      "api": 9,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "Quick text notes in a full-height side panel.",
+      "tags": [
+        "productivity"
+      ],
+      "icon": "notes",
+      "entries": [
+        "launcher_provider",
+        "panel",
+        "widget"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "notes",
+      "files": [
+        "launcher.luau",
+        "notes.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "translations/ar.json",
+        "translations/ca.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/es.json",
+        "translations/fr.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "clipboardRead"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "zumik3-del/opencode-go-usage",
+      "name": "Opencode Go Usage",
+      "version": "1.2.0",
+      "api": 28,
+      "author": "zumik3-del",
+      "license": "MIT",
+      "description": "Opencode Go usage limits in the bar, with a details panel for the 5-hour, weekly and monthly meters.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "ai",
+        "productivity",
+        "indicator"
+      ],
+      "icon": "brand-openai",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "opencode-go-usage",
+      "files": [
+        "bar.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "opencode.ai"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wy3z/opencodex-bar",
+      "name": "OpenCodexBar",
+      "version": "1.0.2",
+      "api": 24,
+      "author": "wy3z",
+      "license": "MIT",
+      "description": "OpenCodex account, quota, usage, and routing control.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "ai",
+        "indicator",
+        "utility"
+      ],
+      "icon": "brand-openai",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "opencodex-bar",
+      "files": [
+        "common.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "open"
+        }
+      ]
+    },
+    {
+      "id": "danielel/owntone-control",
+      "name": "OwnTone Control",
+      "version": "0.3.1",
+      "api": 12,
+      "author": "danielel",
+      "license": "MIT",
+      "description": "Play/pause, volume, now-playing, and audio outputs panel for OwnTone — no browser needed.",
+      "tags": [
+        "bar",
+        "audio",
+        "network",
+        "panel",
+        "utility"
+      ],
+      "icon": "music",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "owntone-control",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json",
+        "translations/it.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "files"
+        }
+      ]
+    },
+    {
+      "id": "mezoahmedii/quranwidget",
+      "name": "Quran Widget",
+      "version": "1.0.1",
+      "api": 3,
+      "author": "MezoAhmedII",
+      "license": "MIT",
+      "description": "A Noctalia widget to show a random Quranic Ayah/verse on the desktop",
+      "tags": [
+        "desktop",
+        "utility"
+      ],
+      "icon": "book",
+      "entries": [
+        "desktop_widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "quranwidget",
+      "files": [
+        "Kitab-Regular.ttf",
+        "OFL.txt",
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api.alquran.cloud",
+            "quran.com"
+          ]
+        },
+        {
+          "kind": "open"
+        }
+      ]
+    },
+    {
+      "id": "pmason314/rss-feeds",
+      "name": "RSS Feeds",
+      "version": "1.0.0",
+      "api": 24,
+      "author": "Peter Mason",
+      "license": "MIT",
+      "description": "Displays recent entries from up to 5 RSS feeds of your choice.",
+      "tags": [
+        "desktop",
+        "utility"
+      ],
+      "icon": "rss",
+      "entries": [
+        "desktop_widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "rss-feeds",
+      "files": [
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "open"
+        }
+      ]
+    },
+    {
+      "id": "noctalia/timer",
+      "name": "Timer",
+      "version": "1.4.0",
+      "api": 20,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "A countdown timer with bar widget, panel, and desktop widget.",
+      "tags": [
+        "countdown",
+        "utility"
+      ],
+      "icon": "clock",
+      "entries": [
+        "desktop_widget",
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "timer",
+      "files": [
+        "bar.luau",
+        "desktop.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "sounds/alarm.wav",
+        "translations/ar.json",
+        "translations/ca.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/es.json",
+        "translations/fr.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "notify"
+        },
+        {
+          "kind": "sound"
+        }
+      ]
+    },
+    {
+      "id": "nightwatch75/todo",
+      "name": "To Do",
+      "version": "1.2.2",
+      "api": 28,
+      "author": "nightwatch75",
+      "license": "MIT",
+      "description": "A prioritised task list with a bar widget and editable panel.",
+      "tags": [
+        "bar",
+        "panel",
+        "productivity"
+      ],
+      "icon": "checklist",
+      "entries": [
+        "panel",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "todo",
+      "files": [
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "storage.luau",
+        "thumbnail.webp",
+        "todo.luau",
+        "sounds/task-complete.wav",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/fr.json"
+      ],
+      "needs": [
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        },
+        {
+          "kind": "sound"
+        }
+      ]
+    },
+    {
+      "id": "noctalia/translator",
+      "name": "Translator",
+      "version": "1.0.8",
+      "api": 3,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "Translate text from the launcher via Google Translate or DeepL.",
+      "tags": [
+        "language",
+        "launcher"
+      ],
+      "icon": "language",
+      "entries": [
+        "launcher_provider"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "translator",
+      "files": [
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "translator.luau",
+        "translations/ar.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": [
+            "api-free.deepl.com",
+            "api.deepl.com",
+            "translate.googleapis.com"
+          ]
+        },
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "neuro/upbeat",
+      "name": "Upbeat",
+      "version": "1.0.1",
+      "api": 3,
+      "author": "neuro",
+      "license": "MIT",
+      "description": "A bar widget that displays Swatch Internet (.beat) Time",
+      "tags": [
+        "fun",
+        "clock",
+        "utility",
+        "time"
+      ],
+      "icon": "at",
+      "entries": [
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "upbeat",
+      "files": [
+        "plugin.toml",
+        "README.md",
+        "thumbnail.webp",
+        "upbeat.luau",
+        "translations/de.json",
+        "translations/en.json"
+      ],
+      "needs": []
+    },
+    {
+      "id": "notoxus/vietnamese-lunar-calendar",
+      "name": "Vietnamese Lunar Calendar",
+      "version": "1.0.0",
+      "api": 22,
+      "author": "notoxus",
+      "license": "MIT",
+      "description": "Vietnamese lunar calendar with lunar dates, Can Chi and traditional festivals.",
+      "tags": [
+        "panel",
+        "shortcut",
+        "bar",
+        "time",
+        "utility"
+      ],
+      "icon": "moon-stars",
+      "entries": [
+        "panel",
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "vietnamese-lunar-calendar",
+      "files": [
+        "LICENSE",
+        "lunar.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": []
+    },
+    {
+      "id": "omertahaoztop/vikunja",
+      "name": "Vikunja",
+      "version": "1.0.2",
+      "api": 24,
+      "author": "omertahaoztop",
+      "license": "MIT",
+      "description": "Today's and overdue Vikunja tasks, with quick add, complete and postpone.",
+      "tags": [
+        "bar",
+        "panel",
+        "service",
+        "launcher",
+        "productivity"
+      ],
+      "icon": "checkbox",
+      "entries": [
+        "launcher_provider",
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "vikunja",
+      "files": [
+        "launcher.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "assets/vikunja-grey.png",
+        "assets/vikunja.png",
+        "screenshots/panel-project-buckets.webp",
+        "screenshots/panel-projects.webp",
+        "screenshots/panel-today.webp",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "internet",
+          "hosts": []
+        },
+        {
+          "kind": "open"
+        },
+        {
+          "kind": "clipboardWrite"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "kavya-nama/wallpaper-switcher",
+      "name": "Wallpaper Switcher",
+      "version": "1.0.0",
+      "api": 3,
+      "author": "kavya-nama",
+      "license": "MIT",
+      "description": "Switch to the next wallpaper from a bar widget.",
+      "tags": [
+        "bar",
+        "shortcut",
+        "wallpaper"
+      ],
+      "icon": "image",
+      "entries": [
+        "shortcut",
+        "widget"
+      ],
+      "repo": "noctalia-dev/community-plugins",
+      "rev": "a1b78275df2c1c25dab6d1bbcefd68de97a74848",
+      "path": "wallpaper-switcher",
+      "files": [
+        "plugin.toml",
+        "README.md",
+        "shortcut.luau",
+        "thumbnail.webp",
+        "widget.luau",
+        "translations/en.json"
+      ],
+      "needs": [
+        {
+          "kind": "notify"
+        }
+      ]
+    },
+    {
+      "id": "noctalia/world_clock",
+      "name": "World Clock",
+      "version": "1.2.0",
+      "api": 19,
+      "author": "noctalia",
+      "license": "MIT",
+      "description": "A world clock panel and bar widget for tracking multiple timezones.",
+      "tags": [
+        "clock",
+        "time",
+        "utility"
+      ],
+      "icon": "world",
+      "entries": [
+        "panel",
+        "service",
+        "widget"
+      ],
+      "repo": "noctalia-dev/official-plugins",
+      "rev": "233782933e999bc69aca1ac6bc1bb285b6b26a3e",
+      "path": "world_clock",
+      "files": [
+        "bar.luau",
+        "panel.luau",
+        "plugin.toml",
+        "README.md",
+        "service.luau",
+        "thumbnail.webp",
+        "translations/ar.json",
+        "translations/de.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/it.json",
+        "translations/ko.json",
+        "translations/pt-BR.json",
+        "translations/tr.json",
+        "translations/zh-Hans.json"
+      ],
+      "needs": [
+        {
+          "kind": "files"
+        },
+        {
+          "kind": "notify"
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "id": "0lucasmatheus/awwwall",
+      "name": "Awwwall",
+      "why": "runs awww, awww-daemon, exec; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "3ri4ng0ld/ip-monitor",
+      "name": "IP Monitor",
+      "why": "runs ip; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "8bury/lid-guard",
+      "name": "Lid Guard",
+      "why": "runs systemctl, systemd-inhibit, systemd-run; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "8bury/mini-docker",
+      "name": "Mini Docker",
+      "why": "runs docker; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "aabidk20/yt-music",
+      "name": "YouTube Music",
+      "why": "runs find, mkdir, pkill; builds 13 command line(s) the scan can't read; reads Linux paths (/etc/); reads XDG_CURRENT_DESKTOP"
+    },
+    {
+      "id": "ahmedhossamdev/reading-list",
+      "name": "Reading List",
+      "why": "runs python3"
+    },
+    {
+      "id": "ahmedhossamdev/sticky-notes",
+      "name": "Sticky Notes",
+      "why": "runs mkdir, sh; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "ahmedhossamdev/timezone-hub",
+      "name": "Timezone Hub",
+      "why": "runs pkexec, sh, timedatectl; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "alexander/game-launcher",
+      "name": "Game Launcher",
+      "why": "builds 4 command line(s) the scan can't read; reads XDG_CACHE_HOME"
+    },
+    {
+      "id": "alexander/mimir",
+      "name": "Mimir",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "alexander/screen-toolkit",
+      "name": "Screen Toolkit",
+      "why": "runs ffprobe, gimp, gpu-screen-recorder, mpv, pactl, pkill, rm, satty, slurp, stat, swappy, tensaku, trans, wf-recorder, wl-screenrec; builds 9 command line(s) the scan can't read; reads NIRI_SOCKET"
+    },
+    {
+      "id": "alitura1/ayet-kosesi",
+      "name": "Ayet Köşesi",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "andrewdems/printers",
+      "name": "Printers",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "andrewdems/vpn-manager",
+      "name": "VPN Manager",
+      "why": "runs kdialog, nm-connection-editor, nmcli, nmtui-edit, zenity; builds 2 command line(s) the scan can't read; asks Linux for processMatches; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "apex077/eyecare",
+      "name": "Eye-Care Reminders",
+      "why": "runs dbus-monitor; builds 3 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "aristides/udiskie",
+      "name": "Udiskie Manager",
+      "why": "runs df, udiskie-info, udiskie-mount, udiskie-umount, udisksctl; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "arrifat346afs/systempulse",
+      "name": "SystemPulse",
+      "why": "runs nvtop; reads Linux paths (/proc/); reads XDG_CURRENT_DESKTOP"
+    },
+    {
+      "id": "ashur-d/nvim-projects",
+      "name": "Neovim Projects",
+      "why": "builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "ashur-d/wallpaper-widget",
+      "name": "Wallpaper Widget",
+      "why": "runs mkdir; builds 3 command line(s) the scan can't read; reads XDG_CACHE_HOME"
+    },
+    {
+      "id": "autumn/network-toolkit",
+      "name": "Network Toolkit",
+      "why": "runs bluetoothctl, for, ip, iw, nmcli, timeout; builds 28 command line(s) the scan can't read; reads Linux paths (/var/)"
+    },
+    {
+      "id": "avivbintangaringga/nextboot-selector",
+      "name": "Next Boot Selector",
+      "why": "runs efibootmgr; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "avivbintangaringga/nix-monitor",
+      "name": "Nix Monitor",
+      "why": "runs home-manager, pkill; builds 6 command line(s) the scan can't read"
+    },
+    {
+      "id": "ayagmar/obs-control",
+      "name": "OBS Control",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "azokyen/spotify-media",
+      "name": "Spotify Media",
+      "why": "runs hyprctl, playerctl, spotify-launcher"
+    },
+    {
+      "id": "baizhu/asus-gpu-mode",
+      "name": "ASUS GPU Mode Switcher",
+      "why": "runs supergfxctl; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "baizhu/input-echo-bar",
+      "name": "Input Echo Bar",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "baizhu/paged-todo",
+      "name": "Paged Todo List",
+      "why": "reads Linux paths (~/.config)"
+    },
+    {
+      "id": "bardiz12/9router-monitor",
+      "name": "9Router Monitor",
+      "why": "runs chmod, secret-tool, sh"
+    },
+    {
+      "id": "blackbartblues/audio-switcher",
+      "name": "Audio Switcher",
+      "why": "runs bluetoothctl, LC_ALL=C, pactl; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "blackbartblues/keymap",
+      "name": "Keymap",
+      "why": "runs hyprctl; builds 13 command line(s) the scan can't read; reads Linux paths (~/.config); reads XDG_CURRENT_DESKTOP"
+    },
+    {
+      "id": "carlocamacho/taildrop",
+      "name": "Taildrop",
+      "why": "runs mktemp; builds 7 command line(s) the scan can't read"
+    },
+    {
+      "id": "cleboost/anilist",
+      "name": "AniList (UNOFFICIAL)",
+      "why": "runs kdialog, python3, stdbuf, zenity; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "cleboost/asus-fans-controller-ec",
+      "name": "Asus Fans Controler EC",
+      "why": "builds 6 command line(s) the scan can't read"
+    },
+    {
+      "id": "cleboost/hotspot",
+      "name": "Wi-Fi Hotspot",
+      "why": "runs ip, iw, nmcli; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "cleboost/jetbrains-provider",
+      "name": "JetBrains Provider",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "cleboost/librelinkup",
+      "name": "LibreLinkUp",
+      "why": "runs printf"
+    },
+    {
+      "id": "cleboost/ssh-launcher",
+      "name": "SSH Launcher",
+      "why": "runs ssh; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "cleboost/zed-provider",
+      "name": "Zed Provider",
+      "why": "builds 3 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "cmoro-deusto/nan-usage",
+      "name": "NaN Usage",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "congluantran/calibre",
+      "name": "Calibre",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "conqazht/share-wifi",
+      "name": "Share WiFi",
+      "why": "builds 6 command line(s) the scan can't read; reads Linux paths (/etc/)"
+    },
+    {
+      "id": "damian-ds7/battery-threshold",
+      "name": "Battery Threshold Control",
+      "why": "runs test; builds 1 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "davemhammer/gocryptfs",
+      "name": "Gocryptfs",
+      "why": "runs cat, fusermount, fusermount3, gocryptfs, keyctl, secret-tool; builds 10 command line(s) the scan can't read; reads Linux paths (/dev/)"
+    },
+    {
+      "id": "davemhammer/k8s-status",
+      "name": "K8s Status",
+      "why": "runs k9s; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "davemhammer/obsidian",
+      "name": "Obsidian",
+      "why": "builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "davemhammer/opnsense",
+      "name": "OPNsense",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "davemhammer/tailscale",
+      "name": "Tailscale",
+      "why": "runs tailscale; builds 8 command line(s) the scan can't read"
+    },
+    {
+      "id": "decksters-lab/palette-creator",
+      "name": "Palette Creator",
+      "why": "runs hyprpicker; builds 1 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "detluck/razer",
+      "name": "Razer Devices",
+      "why": "runs busctl, systemctl"
+    },
+    {
+      "id": "dotnetrob/cat",
+      "name": "Cat",
+      "why": "reads Linux paths (/proc/)"
+    },
+    {
+      "id": "dpvpro/sing-box-status",
+      "name": "Sing-Box Status",
+      "why": "runs pgrep"
+    },
+    {
+      "id": "dragged/cider",
+      "name": "Cider",
+      "why": "builds 1 command line(s) the scan can't read; reads Linux paths (~/.cache)"
+    },
+    {
+      "id": "dumbasaroc/bazaarsearch",
+      "name": "Bazaar Search",
+      "why": "runs busctl; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "dunarand/bookmarks",
+      "name": "Bookmarks",
+      "why": "builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "dunarand/tmux-provider",
+      "name": "tmux Provider",
+      "why": "runs tmux, tmuxp; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "egno/vial_keymap",
+      "name": "Vial Keymap",
+      "why": "runs hyprctl, python3"
+    },
+    {
+      "id": "elijaharch/wl-screen-mirror",
+      "name": "Wayland Screen Mirror",
+      "why": "runs wl-mirror; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "emiliovenegas/omp-launcher",
+      "name": "Oh My Pi Launcher",
+      "why": "runs python3; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "emrtnn/pass",
+      "name": "Pass",
+      "why": "builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "estvoid/sony_headphones",
+      "name": "Sony Headphones",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "eternalself-2328/undershell",
+      "name": "undershell",
+      "why": "runs systemctl, undershell; builds 4 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "etrigan63/rum-updates",
+      "name": "RUM Updates",
+      "why": "runs flatpak, rakuos-software, rum; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "ezequiel/mango_layouts",
+      "name": "Mango Layouts",
+      "why": "runs mmsg"
+    },
+    {
+      "id": "fel/agent-glow",
+      "name": "Agent Glow",
+      "why": "runs python3; reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "fel/ocr",
+      "name": "OCR",
+      "why": "runs grim, slurp, tesseract; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "fel/podcasts",
+      "name": "Podcasts",
+      "why": "runs socat; builds 9 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "fel/quill",
+      "name": "Quill",
+      "why": "runs opencode; builds 4 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "fel/radio",
+      "name": "Radio",
+      "why": "runs socat; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "fel/vidi",
+      "name": "Vidi",
+      "why": "runs jq, mpv, vidi; builds 2 command line(s) the scan can't read; reads Linux paths (~/.cache)"
+    },
+    {
+      "id": "felipeartur/ai-usagebar",
+      "name": "AI Usage",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "frai3mega/battery-graph",
+      "name": "Battery graph",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "gabedunn/voxtype",
+      "name": "Voxtype",
+      "why": "runs voxtype; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "gamaraan/mx-control",
+      "name": "MX Control",
+      "why": "runs hyprctl, pkill, python3"
+    },
+    {
+      "id": "gambled23/mangowm-keymode",
+      "name": "Mangowm Keymode",
+      "why": "runs mmsg"
+    },
+    {
+      "id": "goatnath/spotify-lyrics",
+      "name": "Spotify Lyrics",
+      "why": "reads Linux paths (~/.cache)"
+    },
+    {
+      "id": "goodroot/noctwhspr",
+      "name": "noctwhspr",
+      "why": "builds 3 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "grassyloki/kwallet-secrets",
+      "name": "KWallet Secrets",
+      "why": "runs pkill, python3, systemd-cat; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "gustav0ar/drive-health",
+      "name": "Drive Health",
+      "why": "runs lsblk, pkexec, smartctl; builds 9 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "gustav0ar/wireview-pro-ii",
+      "name": "WireView Pro II",
+      "why": "runs python3; builds 8 command line(s) the scan can't read"
+    },
+    {
+      "id": "h-jangra/keyviz",
+      "name": "Key Visualizer",
+      "why": "runs kill, pkill, python3"
+    },
+    {
+      "id": "h-jangra/region-recorder",
+      "name": "Region Recorder",
+      "why": "runs gpu-screen-recorder, slurp, wf-recorder, wl-screenrec; builds 4 command line(s) the scan can't read; asks Linux for processMatches"
+    },
+    {
+      "id": "h465855hgg/lyrics",
+      "name": "Lyrics",
+      "why": "runs chmod, cp, playerctl; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "hakanct/saved-desktop-widgets",
+      "name": "Saved Desktop Widgets",
+      "why": "reads Linux paths (~/.local)"
+    },
+    {
+      "id": "harveywuk/airpods",
+      "name": "AirPods",
+      "why": "builds 1 command line(s) the scan can't read; reads XDG_STATE_HOME"
+    },
+    {
+      "id": "harveywuk/pulsar-mouse",
+      "name": "Pulsar Mouse",
+      "why": "runs pulsar-mouse; builds 2 command line(s) the scan can't read; reads Linux paths (~/.cache)"
+    },
+    {
+      "id": "hy4ri/ds4-color",
+      "name": "DS4 Color",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "hy4ri/herdr",
+      "name": "Herdr",
+      "why": "runs herdr, hyprctl, ps; builds 4 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "icefish/phone-connect",
+      "name": "Phone Connect",
+      "why": "runs gdbus, kdeconnect-cli, kdeconnectd, kdialog, zenity; builds 7 command line(s) the scan can't read"
+    },
+    {
+      "id": "icefish/phone-operate",
+      "name": "Phone Operate",
+      "why": "runs adb, gdbus, kdeconnect-cli, kdeconnectd, kdialog, pgrep, pkill, zenity; builds 10 command line(s) the scan can't read"
+    },
+    {
+      "id": "imjustdoingmypart/niri-animations",
+      "name": "Niri Animations",
+      "why": "builds 1 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "ismay/sway-mode",
+      "name": "Sway Mode",
+      "why": "runs swaymsg"
+    },
+    {
+      "id": "ismay/sway-scratchpad",
+      "name": "Sway Scratchpad",
+      "why": "runs swaymsg"
+    },
+    {
+      "id": "jamesfeeder/special-workspaces",
+      "name": "Special Workspaces",
+      "why": "runs socat; builds 3 command line(s) the scan can't read; reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "jinliu/imagemagick-clock",
+      "name": "ImageMagick Clock",
+      "why": "runs mv; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "joshuaslate/shelly",
+      "name": "Shelly",
+      "why": "runs shelly; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "jrohland/claudecode",
+      "name": "Claude Code Usage",
+      "why": "runs bash, jq; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "k4n4t4/hypr-submap",
+      "name": "Hyprland Submap",
+      "why": "runs hyprctl, stdbuf; reads HYPRLAND_INSTANCE_SIGNATURE"
+    },
+    {
+      "id": "kenn/keybind-cheatsheet",
+      "name": "Keybind Cheatsheet",
+      "why": "runs hyprctl; reads Linux paths (~/.config); reads HYPRLAND_INSTANCE_SIGNATURE"
+    },
+    {
+      "id": "kjvdven/case-convert",
+      "name": "Case Convert",
+      "why": "runs wl-paste"
+    },
+    {
+      "id": "knyrps/nix-search",
+      "name": "Nix Search",
+      "why": "runs nix, nix-search-tv, setsid; builds 1 command line(s) the scan can't read; reads Linux paths (/run/)"
+    },
+    {
+      "id": "kv7499/asus-fan",
+      "name": "ASUS TUF Fan Speed and Profile Switcher",
+      "why": "runs asusctl; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "levi/warp",
+      "name": "Cloudflare WARP",
+      "why": "runs warp-cli; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "lfdominguez/claude-sessions",
+      "name": "Claude Sessions",
+      "why": "runs cd, kill; builds 7 command line(s) the scan can't read; reads Linux paths (~/.cache)"
+    },
+    {
+      "id": "liamwh/emoji-picker",
+      "name": "Emoji & Symbol Picker",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "linux-fertxo/hyprland-visual-editor",
+      "name": "Hyprland Visual Editor",
+      "why": "runs bash, mkdir; reads XDG_CACHE_HOME"
+    },
+    {
+      "id": "lowcache/claude-companion",
+      "name": "Claude Companion",
+      "why": "runs mkdir, python3, rm; builds 3 command line(s) the scan can't read; reads Linux paths (/proc/); reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "lucasoe/proton-pass",
+      "name": "Proton Pass",
+      "why": "runs pass-cli"
+    },
+    {
+      "id": "luochen1990/niri-ribbon",
+      "name": "Niri Ribbon",
+      "why": "runs niri, while"
+    },
+    {
+      "id": "lux/ideapad-conservation-mode",
+      "name": "IdeaPad Conservation Mode",
+      "why": "builds 1 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "m4sc/profile-switcher",
+      "name": "Profile Switcher",
+      "why": "reads Linux paths (~/.config)"
+    },
+    {
+      "id": "maddingo/hypr-layout-switcher",
+      "name": "Hyprland Layout Switcher",
+      "why": "runs hyprctl; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "marccvictoria/llamanager",
+      "name": "Llamanager",
+      "why": "runs ollama; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "mdj2812/mihomo-control",
+      "name": "Mihomo Control",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "mdj2812/thunderbird-companion",
+      "name": "Thunderbird Companion",
+      "why": "runs python3, thunderbird; builds 2 command line(s) the scan can't read; reads Linux paths (~/.local); reads XDG_STATE_HOME"
+    },
+    {
+      "id": "mellotanica/launcher-pass",
+      "name": "Launcher pass",
+      "why": "runs test, wtype; builds 14 command line(s) the scan can't read"
+    },
+    {
+      "id": "mgeldi/pixel-shift",
+      "name": "Pixel Shift",
+      "why": "runs grim; builds 1 command line(s) the scan can't read; reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "mindnbytes/nix-status",
+      "name": "Nix Status",
+      "why": "reads Linux paths (/run/)"
+    },
+    {
+      "id": "muhammadessam/misr-quran-radio",
+      "name": "Holy Quran Radio",
+      "why": "runs mpv, pkill; builds 1 command line(s) the scan can't read; asks Linux for processMatches"
+    },
+    {
+      "id": "muhammadessam/network-control",
+      "name": "Network Control",
+      "why": "runs ip, nmcli; builds 2 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "muhammadessam/umbriel-monitor-control",
+      "name": "Umbriel Monitor Control",
+      "why": "runs sh, umbriel; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "neyfua/obs-integration",
+      "name": "OBS Integration",
+      "why": "runs cd, find, osc, rm; builds 5 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "nicomaure/agy",
+      "name": "Antigravity AGY",
+      "why": "runs agy, alacritty"
+    },
+    {
+      "id": "nightwatch75/claude-cockpit",
+      "name": "Claude Cockpit",
+      "why": "runs ba, bash, code, jq, rm, zed; builds 4 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "nightwatch75/dns-switcher",
+      "name": "DNS Switcher",
+      "why": "runs dig, nmcli, nslookup; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "nightwatch75/file-search",
+      "name": "File Search",
+      "why": "runs du, fzf, gdbus, lsblk; builds 6 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "nightwatch75/topgrade-wrapper",
+      "name": "Topgrade Wrapper",
+      "why": "runs export, topgrade; builds 4 command line(s) the scan can't read; asks Linux for processMatches; reads Linux paths (~/.config); reads XDG_CONFIG_HOME"
+    },
+    {
+      "id": "nikolaj-zwergius/iio_lock",
+      "name": "iio-lock",
+      "why": "runs pgrep, pkill; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "nilsonlinux/contact-sounds",
+      "name": "Contact Notification Sounds",
+      "why": "runs bash, chmod, python3; builds 2 command line(s) the scan can't read; reads Linux paths (~/.config); reads XDG_CONFIG_HOME"
+    },
+    {
+      "id": "nilsonlinux/link-ip-monitor",
+      "name": "Link/IP Monitor",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "nilsonlinux/rss-notifier",
+      "name": "RSS/Atom Notifier",
+      "why": "runs mkdir"
+    },
+    {
+      "id": "nilsonlinux/speedtest-meter",
+      "name": "Speedtest Meter",
+      "why": "runs apk, apt, dnf, getent, kill, pacman, python3, speedtest, speedtest-cli, stdbuf, zypper; builds 3 command line(s) the scan can't read; reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "nilsonlinux/world-radio",
+      "name": "World Radio",
+      "why": "runs kill, mpv, playerctl; builds 3 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "nocode-96/cmd-runner",
+      "name": "Command Runner",
+      "why": "builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "noctalia/bitwarden",
+      "name": "Bitwarden",
+      "why": "runs bw; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "noctalia/bongocat",
+      "name": "Bongo Cat",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "noctalia/mpvpaper",
+      "name": "Video Wallpaper",
+      "why": "runs exec, mkdir, mpvpaper, pkill, socat, systemctl; builds 6 command line(s) the scan can't read; reads XDG_CACHE_HOME"
+    },
+    {
+      "id": "noctalia/screen_recorder",
+      "name": "Screen Recorder",
+      "why": "runs (sleep, flatpak, gpu-screen-recorder, pkill; builds 2 command line(s) the scan can't read; asks Linux for processMatches; reads Linux paths (~/.local); reads XDG_STATE_HOME"
+    },
+    {
+      "id": "noctalia/umbriel-companion",
+      "name": "Umbriel Companion",
+      "why": "runs umbriel; asks Linux for processMatches"
+    },
+    {
+      "id": "noctalia/wallhaven",
+      "name": "Wallhaven",
+      "why": "runs mkdir; reads XDG_STATE_HOME"
+    },
+    {
+      "id": "noctalia/wallpaper_depth",
+      "name": "Wallpaper Depth",
+      "why": "runs python3"
+    },
+    {
+      "id": "nomadcxx/gamer-mode",
+      "name": "Gamer Mode",
+      "why": "runs pkexec, powerprofilesctl; builds 2 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "nomadcxx/gslapper",
+      "name": "gSlapper Wallpaper",
+      "why": "runs :, gslapper, gst-launch-1.0, socat; builds 6 command line(s) the scan can't read; asks Linux for processMatches; reads Linux paths (/run/); reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "notfinaldev/agentik",
+      "name": "Agentik",
+      "why": "runs python3, wl-copy; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "notfinaldev/spotify",
+      "name": "Spotify Search",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "notfinaldev/web-search",
+      "name": "Web Search",
+      "why": "runs cat"
+    },
+    {
+      "id": "notfinaldev/youtube-search",
+      "name": "YouTube Search",
+      "why": "runs yt-dlp; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "notoxus/media-island",
+      "name": "Media Island",
+      "why": "runs busctl; builds 2 command line(s) the scan can't read; reads Linux paths (/dev/); uses MPRIS (Linux media players)"
+    },
+    {
+      "id": "oldirtty/color_picker",
+      "name": "Color Picker",
+      "why": "runs hyprpicker; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "osp54/oppo-pods",
+      "name": "OPPO Pods",
+      "why": "builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "piero-93/battery-power-management",
+      "name": "Battery & Power Management",
+      "why": "runs echo, powerprofilesctl, upower; builds 2 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "piero-93/thinkpad-fan",
+      "name": "ThinkPad Fan & Thermal Control",
+      "why": "runs echo; builds 1 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "profidev/hypr-screen-mirror",
+      "name": "Hypr-Screen-Mirror",
+      "why": "runs hyprctl; builds 3 command line(s) the scan can't read; reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "prponkshe/mango-displays",
+      "name": "Mango Displays",
+      "why": "runs kill, mmsg, wdisplays, wl-mirror, wlr-randr; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "prponkshe/umbriel-displays",
+      "name": "Umbriel Displays",
+      "why": "runs umbriel"
+    },
+    {
+      "id": "pulser/hover-widgets",
+      "name": "Hover Widgets",
+      "why": "runs nvidia-smi, playerctl, sh, wlrctl, wpctl; builds 1 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "radimous/prismlauncher-instances",
+      "name": "PrismLauncher Instances",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "ramosdetrigo/godot-provider",
+      "name": "Godot Provider",
+      "why": "builds 1 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "raycursive/discord-voice",
+      "name": "Discord Voice",
+      "why": "runs python3; builds 5 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "raycursive/github-prs",
+      "name": "GitHub Pull Requests",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "raycursive/niri-displays",
+      "name": "Niri Displays",
+      "why": "runs niri; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "reaperhound/ambient-sounds",
+      "name": "Ambient Sounds",
+      "why": "runs mpv, pkill, rmdir, sh, wpctl"
+    },
+    {
+      "id": "redxtech/super-productivity",
+      "name": "Super Productivity",
+      "why": "runs python3; builds 2 command line(s) the scan can't read; asks Linux for flatpakAppInstalled; reads Linux paths (~/.config); reads XDG_DATA_HOME"
+    },
+    {
+      "id": "remo/noctes",
+      "name": "Noctes",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "riversyx/noctaproton-vpn",
+      "name": "NoctaProton VPN",
+      "why": "runs nmcli, protonvpn, python3; builds 1 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "rxtsel/portctl",
+      "name": "Portctl",
+      "why": "runs kill, ss"
+    },
+    {
+      "id": "rylos/remmina",
+      "name": "Remmina",
+      "why": "runs remmina; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "rylos/syncthing",
+      "name": "Syncthing",
+      "why": "runs gio; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "rylos/tailnet",
+      "name": "Tailnet",
+      "why": "runs gio, ssh, tailscale, xdg-user-dir; builds 5 command line(s) the scan can't read"
+    },
+    {
+      "id": "salemsayed/codexbar-meter",
+      "name": "CodexBar Meter",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "salemsayed/niri-active-workspace",
+      "name": "Niri Active Workspace",
+      "why": "runs niri"
+    },
+    {
+      "id": "samuelskovbakke/calculator-plus",
+      "name": "Calculator Plus",
+      "why": "runs qalc"
+    },
+    {
+      "id": "sankity/soundcore-buds",
+      "name": "Soundcore Buds",
+      "why": "runs ba, bluetoothctl, openscq30; builds 8 command line(s) the scan can't read"
+    },
+    {
+      "id": "setyvii/niri-rules-studio",
+      "name": "Niri Rules Studio",
+      "why": "runs niri; builds 1 command line(s) the scan can't read; reads Linux paths (~/.config)"
+    },
+    {
+      "id": "shangshui0302/github-kanban",
+      "name": "GitHub Kanban",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "shin/lrc",
+      "name": "LRC",
+      "why": "runs lrc_tty, playerctl"
+    },
+    {
+      "id": "srounce/systemd",
+      "name": "Systemd Units",
+      "why": "runs systemctl; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "strob3/dnf-updater",
+      "name": "DNF Updater",
+      "why": "runs dnf, dnf5, flatpak, sudo; builds 8 command line(s) the scan can't read; reads Linux paths (/usr/)"
+    },
+    {
+      "id": "surumeika1987/vrchat-status",
+      "name": "VRChat Status",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "tadomika_ari/config-swap",
+      "name": "Config Swap",
+      "why": "builds 2 command line(s) the scan can't read; reads XDG_STATE_HOME"
+    },
+    {
+      "id": "tadomika_ari/w-engine",
+      "name": "W Engine",
+      "why": "runs ffmpeg, pkill; builds 4 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "tausif/ncs-visualizer",
+      "name": "NCS Visualizer",
+      "why": "runs cava; builds 2 command line(s) the scan can't read; asks Linux for processMatches; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "teagar/niri-workspace-preview",
+      "name": "Niri Workspace Preview",
+      "why": "runs niri; builds 1 command line(s) the scan can't read; reads XDG_CONFIG_HOME"
+    },
+    {
+      "id": "teagar/omniroute-quota",
+      "name": "OmniRoute Quota",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "thaer99ob/default-apps",
+      "name": "Default Apps",
+      "why": "runs xdg-mime; builds 1 command line(s) the scan can't read; reads Linux paths (~/.local); reads XDG_DATA_DIRS"
+    },
+    {
+      "id": "thatonecalculator/um5606_fan_state",
+      "name": "ASUS UM5606 Fan State",
+      "why": "runs fan_state"
+    },
+    {
+      "id": "theblackdon/kineticwe-layouts",
+      "name": "KineticWE Layouts",
+      "why": "runs dbus-monitor; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "theblackdon/theme-switcher",
+      "name": "Theme Switcher",
+      "why": "runs gnome-screenshot, grim, maim, scrot, spectacle; builds 2 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "thepunkoff/pomodoro",
+      "name": "Pomodoro Timer",
+      "why": "runs ffplay"
+    },
+    {
+      "id": "tiobaka/vm-manager",
+      "name": "VM Manager",
+      "why": "runs virsh, virt-viewer; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "tmelik/system-monitor",
+      "name": "System Monitor",
+      "why": "runs cat, ps; builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "tordex/nvtop",
+      "name": "NVTOP",
+      "why": "runs kill, pkill; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "tordex/processes",
+      "name": "Processes",
+      "why": "runs kill, python3; builds 2 command line(s) the scan can't read; reads Linux paths (/dev/); reads XDG_RUNTIME_DIR"
+    },
+    {
+      "id": "tordex/system-updater",
+      "name": "System Updates Manager",
+      "why": "builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "tphilippot/git_companion",
+      "name": "Git Companion",
+      "why": "builds 4 command line(s) the scan can't read"
+    },
+    {
+      "id": "tranzem/media-lyrics",
+      "name": "Media Lyrics",
+      "why": "builds 5 command line(s) the scan can't read; reads Linux paths (/dev/); uses MPRIS (Linux media players)"
+    },
+    {
+      "id": "umedbazarov/crashes",
+      "name": "Crashes",
+      "why": "runs id, notify-send, setsid; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "umedbazarov/layout-fix",
+      "name": "Layout Fix",
+      "why": "runs echo, pkexec, pkill, setsid, test; builds 9 command line(s) the scan can't read"
+    },
+    {
+      "id": "umedbazarov/ruh-vpn",
+      "name": "Ruh VPN",
+      "why": "builds 3 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "umedbazarov/webapp-maker",
+      "name": "Webapp Maker",
+      "why": "runs bash, cp; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "vavadik/headsetcontrol",
+      "name": "Headset Control",
+      "why": "builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "vn1k/cursor",
+      "name": "Cursor",
+      "why": "runs p=$(zenity, python3, zenity; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "weinguyen/9router-control",
+      "name": "9Router Control",
+      "why": "builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "weinguyen/opencode-companion",
+      "name": "OpenCode Companion",
+      "why": "runs opencode; builds 4 command line(s) the scan can't read; reads Linux paths (/proc/)"
+    },
+    {
+      "id": "weinguyen/procmon",
+      "name": "Process Monitor",
+      "why": "builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "weinguyen/shell-command",
+      "name": "Shell Command",
+      "why": "runs .., bash, fish; builds 3 command line(s) the scan can't read"
+    },
+    {
+      "id": "whyoolw/dropwall",
+      "name": "DropWall",
+      "why": "runs python3; builds 2 command line(s) the scan can't read"
+    },
+    {
+      "id": "whyoolw/sharednd",
+      "name": "ShareDND",
+      "why": "runs niri; builds 1 command line(s) the scan can't read; reads NIRI_SOCKET"
+    },
+    {
+      "id": "ycf/mawaqit",
+      "name": "Mawaqit",
+      "why": "runs (, paplay, pkill, pw-cat"
+    },
+    {
+      "id": "yocraft/battery-widget",
+      "name": "Battery Widget",
+      "why": "runs gdbus; builds 2 command line(s) the scan can't read; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "yocraft/custom-shortcut",
+      "name": "Custom Shortcut",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "yocraft/desktop-launcher",
+      "name": "Desktop Launcher",
+      "why": "builds 2 command line(s) the scan can't read; reads Linux paths (~/.local)"
+    },
+    {
+      "id": "yocraft/qrcode",
+      "name": "QR Code Encoder",
+      "why": "runs qrencode; builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "yocraft/web-launcher",
+      "name": "Web Launcher",
+      "why": "builds 1 command line(s) the scan can't read"
+    },
+    {
+      "id": "yuki/lunar-workspaces",
+      "name": "Lunar Workspaces",
+      "why": "runs convert, hyprctl, magick, niri, socat; builds 4 command line(s) the scan can't read; reads HYPRLAND_INSTANCE_SIGNATURE"
+    },
+    {
+      "id": "yuuto/arch-updater",
+      "name": "Arch Updater",
+      "why": "runs checkupdates, flatpak, pactree, paru, pkexec, rm, yay; builds 16 command line(s) the scan can't read; reads Linux paths (/etc/)"
+    },
+    {
+      "id": "zeti1223/thinkpad-led",
+      "name": "ThinkPad Logo LED",
+      "why": "runs echo; reads Linux paths (/sys/)"
+    },
+    {
+      "id": "zhangdm-520/niri-media-idle",
+      "name": "Niri Media Idle",
+      "why": "runs python3"
+    },
+    {
+      "id": "zhangdm/als-brightness",
+      "name": "ALS Brightness",
+      "why": "reads Linux paths (/sys/)"
+    },
+    {
+      "id": "zyrex/run-path",
+      "name": "Run / Open Path",
+      "why": "builds 2 command line(s) the scan can't read"
+    }
+  ]
+}

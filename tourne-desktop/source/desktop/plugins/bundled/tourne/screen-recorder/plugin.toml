@@ -1,0 +1,222 @@
+id = "tourne/screen-recorder"
+name = "Screen Recorder"
+version = "1.1.0"
+plugin_api = 9
+author = "Tourne (from YoungJurry's Screen Recorder YS)"
+license = "MIT"
+dependencies = ["ffmpeg"]
+tags = ["recording", "video"]
+icon = "video"
+description = "Record a screen with ffmpeg from the bar: frame rate, quality, size, encoder (CPU or NVIDIA, AMD, Intel), cursor, the PC's sound, a microphone, a countdown."
+
+[[setting]]
+key = "ffmpeg"
+type = "string"
+label = "ffmpeg"
+description = "ffmpeg's name on the PATH, or its full path (winget install Gyan.FFmpeg)"
+default = "ffmpeg"
+
+[[setting]]
+key = "folder"
+type = "folder"
+label = "Save to"
+default = "~/Videos"
+
+[[setting]]
+key = "monitor"
+type = "string"
+label = "Screen"
+description = "DISPLAY1, DISPLAY2... Empty: the main screen"
+default = ""
+
+[[setting]]
+key = "fps"
+type = "select"
+label = "Frame rate"
+default = "60"
+
+  [[setting.options]]
+  value = "15"
+  label = "15"
+
+  [[setting.options]]
+  value = "30"
+  label = "30"
+
+  [[setting.options]]
+  value = "60"
+  label = "60"
+
+  [[setting.options]]
+  value = "120"
+  label = "120"
+
+  [[setting.options]]
+  value = "144"
+  label = "144"
+
+[[setting]]
+key = "capture"
+type = "select"
+label = "Capture"
+description = "Desktop Duplication copies the screen on the graphics card and keeps up at 120 fps and more (ffmpeg 6 or newer). GDI is the old way, slow past 30 to 60 fps"
+default = "dda"
+
+  [[setting.options]]
+  value = "dda"
+  label = "Desktop Duplication (fast)"
+
+  [[setting.options]]
+  value = "gdi"
+  label = "GDI (old, slow)"
+
+[[setting]]
+key = "quality"
+type = "select"
+label = "Quality"
+default = "high"
+
+  [[setting.options]]
+  value = "medium"
+  label = "Medium"
+
+  [[setting.options]]
+  value = "high"
+  label = "High"
+
+  [[setting.options]]
+  value = "veryhigh"
+  label = "Very high"
+
+  [[setting.options]]
+  value = "ultra"
+  label = "Ultra"
+
+[[setting]]
+key = "resolution"
+type = "select"
+label = "Size"
+default = "native"
+
+  [[setting.options]]
+  value = "native"
+  label = "Native"
+
+  [[setting.options]]
+  value = "1080"
+  label = "1080p"
+
+  [[setting.options]]
+  value = "720"
+  label = "720p"
+
+[[setting]]
+key = "encoder"
+type = "select"
+label = "Encoder"
+description = "CPU works everywhere; the others use the graphics card"
+default = "libx264"
+
+  [[setting.options]]
+  value = "libx264"
+  label = "H.264 (CPU)"
+
+  [[setting.options]]
+  value = "h264_nvenc"
+  label = "H.264 (NVIDIA)"
+
+  [[setting.options]]
+  value = "hevc_nvenc"
+  label = "HEVC (NVIDIA)"
+
+  [[setting.options]]
+  value = "av1_nvenc"
+  label = "AV1 (NVIDIA 40 series)"
+
+  [[setting.options]]
+  value = "h264_amf"
+  label = "H.264 (AMD)"
+
+  [[setting.options]]
+  value = "hevc_amf"
+  label = "HEVC (AMD)"
+
+  [[setting.options]]
+  value = "h264_qsv"
+  label = "H.264 (Intel)"
+
+  [[setting.options]]
+  value = "hevc_qsv"
+  label = "HEVC (Intel)"
+
+[[setting]]
+key = "container"
+type = "select"
+label = "File type"
+description = "MKV survives a crash mid-recording; MP4 plays everywhere"
+default = "mkv"
+
+  [[setting.options]]
+  value = "mkv"
+  label = "MKV"
+
+  [[setting.options]]
+  value = "mp4"
+  label = "MP4"
+
+[[setting]]
+key = "cursor"
+type = "bool"
+label = "Record the pointer"
+default = true
+
+[[setting]]
+key = "systemSound"
+type = "select"
+label = "PC sound"
+description = "What a sound output plays, recorded with the video. Default output follows the one Windows uses"
+default = "none"
+options_from = "sound-outputs"
+
+[[setting]]
+key = "audioDevice"
+type = "string"
+label = "Microphone"
+description = "A recording device's name as ffmpeg lists it (the panel's List devices), mixed with the PC sound. Empty: none"
+default = ""
+
+[[setting]]
+key = "countdown"
+type = "select"
+label = "Countdown"
+default = "0"
+
+  [[setting.options]]
+  value = "0"
+  label = "None"
+
+  [[setting.options]]
+  value = "3"
+  label = "3 seconds"
+
+  [[setting.options]]
+  value = "5"
+  label = "5 seconds"
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 400
+height = 420
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the recorder, e.g. Win+Alt+R is Game Bar's, so pick another. Empty: none"
+  default = ""

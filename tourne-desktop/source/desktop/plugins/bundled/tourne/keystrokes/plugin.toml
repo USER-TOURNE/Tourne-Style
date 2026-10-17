@@ -1,0 +1,14 @@
+id = "tourne/keystrokes"
+name = "Keystrokes"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from Tz-slayer's Keystrokes and hthienloc's Screenkey)"
+license = "MIT"
+dependencies = []
+tags = ["keyboard", "screencast", "productivity"]
+icon = "keyboard"
+description = "A bar button that shows or hides the keycaps on screen (Studio > Keystrokes): the keys you press and the clicks you make, for screencasts and demos. Right click: its settings."
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

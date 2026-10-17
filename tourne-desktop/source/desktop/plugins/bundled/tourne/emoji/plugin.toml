@@ -1,0 +1,34 @@
+id = "tourne/emoji"
+name = "Emoji Picker"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Emoji Picker (idea only; its data is GPL, so the list here is Unicode's own))"
+license = "MIT"
+dependencies = []
+tags = ["productivity", "text"]
+icon = "mood-smile"
+description = "Search every Unicode emoji by name or group and copy one with a click."
+
+[[setting]]
+key = "closeOnCopy"
+type = "bool"
+label = "Close after copying"
+default = true
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 420
+height = 520
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the picker, e.g. Ctrl+Alt+K. Empty: none"
+  default = ""
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"

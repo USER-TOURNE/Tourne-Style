@@ -1,0 +1,131 @@
+// ==WindhawkMod==
+// @id              tourne-icons-lasting
+// @name            Tourne'Icons Lasting
+// @description     Change program, folder and file type icons from one picker, written into Windows' own settings so they stay with the mod off
+// @version         1.7.1
+// @author          USER-TOURNE
+// @github          https://github.com/USER-TOURNE
+// @donateUrl       https://ko-fi.com/tourne
+// @include         windhawk.exe
+// @compilerOptions -luser32 -lshell32 -lole32 -lgdi32 -ladvapi32 -luuid
+// @license         MIT
+// ==/WindhawkMod==
+
+// ==WindhawkModReadme==
+/*
+# Tourne'Icons Lasting
+
+Change icons from one picker, and they stay: they're written into Windows'
+own settings, so they keep working with this mod turned off or removed. It
+needs nothing but Windhawk, and runs nothing inside your other programs.
+
+## How to change an icon
+
+1. Click **Tourne'Icons Lasting** in the tray (its picture icon). It opens
+   the picker.
+2. Pick what to change: something on your **taskbar**, on your **desktop**
+   or in **Start**, one of **Windows icons**, or a **file type**. Type in the
+   search box to find something quickly. Nothing needs a path.
+3. Click **Choose new icon** and pick a picture: `.ico`, `.png`, `.svg`,
+   `.jpg`, `.bmp` or `.gif`, or an icon inside another program. It's made
+   into a proper icon at every size Windows uses (16 to 256 pixels).
+4. Click **Apply everywhere**.
+
+**Your changes** lists everything you've changed; pick one and click **Put
+back original** to undo it. Put things back before removing the mod if you
+want the originals again, since the mod's own list goes with it.
+
+## Tourne Desktop's taskbar buttons
+
+**Taskbar buttons** lists each open window's button and the pinned ones, the
+way Tourne Desktop tells them apart: by the app id a program gives its
+windows (a web app, Discord, a Store app), else by its file name. A new icon
+there shows on that button on Tourne Desktop's taskbar, and in its tray and
+Alt+Tab, and stays with the mod off, since Tourne Desktop keeps reading it.
+
+## Many at once: Save lists and Apply a pack
+
+**Save lists** (under the lists) writes every entry of every list, with its
+icon as it shows now, to a new folder in Downloads: a picture per entry and
+`pack.tsv`, which says what each picture is for. To make a set, draw new
+pictures, point the first column of `pack.tsv` at them (or swap the pictures
+in place), and click **Apply a pack** to put them all on at once. Rows with no
+picture are skipped; Your changes lists everything it changed.
+
+## What lasts
+
+- **Programs:** every shortcut to the program gets the new icon: in Start,
+  on the desktop, and the taskbar's pinned buttons. That counts shortcuts
+  that start it through an updater (Discord's Update.exe) and ones whose icon
+  comes from the program's file (Discord's app.ico). A shortcut made later
+  (a program installed, pinned or updated after) gets it the next time the
+  mod starts.
+- **Windows icons:** folders, drives (and the Windows drive), discs and
+  Windows' other stock icons, This PC, the Recycle Bin (empty and full),
+  Network, Control Panel, your user folder, Documents, Pictures, Music,
+  Videos, Downloads and Desktop, through Windows' own icon settings. Folders',
+  drives' and the other stock icons are one setting for every account, so
+  they need Windhawk running as admin (it normally does).
+- **File types:** Windows' own setting for each type, under your account.
+- **The settings:** an icon theme, theme paths and the Redirects rows work
+  as in the live version (so the same settings paste into both), and are
+  written into the same places: every shortcut, file type and Windows icon
+  whose icon comes from a file a row names gets that row's icon. A theme
+  DLL like `imageres.dll` restyles file types, This PC, the Recycle Bin,
+  folders, drives and the rest of Windows' stock icons. Change or clear a
+  row and what it did is put back.
+
+## Stubborn icons
+
+Some apps remake their shortcuts when they update, which puts their own icon
+back. Add those under **Stubborn redirects** in the settings: what to catch
+(the program, like `*\discord.exe`, the shortcut, like `*\Discord.lnk`, or
+the icon file it uses, like `*\discord\app.ico`) and the new icon. While the
+mod runs, those shortcuts are watched and fixed a few seconds after anything
+rewrites them. **Put icons back when a shortcut changes** watches everything
+you changed in the picker the same way.
+
+## Packs keep your own icons
+
+**Apply a pack** finds entries that already have an icon you set: in Your
+changes, in Tourne'Icons (the live one), in the suite's Icon Redirect or in
+Tourne Desktop's button icons, by entry or by the file the icon comes from.
+It asks first and keeps them unless you say to replace them too. Entries a
+pack set are not "yours", so a newer pack replaces them. In `pack.tsv`, a
+picture of `-` puts that entry back, and rows saved from Your changes always
+go back on as they were.
+
+## What doesn't
+
+Some icons only exist while something answers for them, so they need
+**Tourne'Icons** (the live version) running instead:
+
+- a program's own windows, its tray icon, Alt+Tab, and its icon in File
+  Explorer's file lists;
+- the tray's own icons (volume, network, battery, Bluetooth, the clock's
+  flyouts) and anything else Windows draws straight from its files while
+  it runs, such as Redirects rows for `SndVolSSO.dll` or `stobject.dll`;
+- Store apps' logos (Settings, Calculator, Photos and the like);
+- the Windows logo pictures (branding);
+- any other icon inside a Windows file.
+
+They're listed in the picker with a note saying so. The two versions can
+run together.
+
+## Good to know
+
+- Rather have no Windhawk at all? **Tourne'Icons Kit** is this picker as a
+  program of its own: open it, change icons or apply a pack, close it.
+  Nothing of it runs after that; open it again after an update to put icons
+  back on remade shortcuts. It keeps its own list, separate from this mod's.
+- Explorer is told to refresh its icons straight away; **Refresh icons** (in
+  the picker, or on the tray icon's right-click menu) asks again if one stays
+  old.
+- What each change replaced is kept in the mod's folder (`lasting.txt`), so
+  Put back original restores exactly what was there.
+- If you used Tourne'Suite or Tourne Desktop before, the first run takes in
+  the program icons you set there (Button icons marked Use everywhere, and
+  Icon Redirect's rows).
+*/
+// ==/WindhawkModReadme==
+

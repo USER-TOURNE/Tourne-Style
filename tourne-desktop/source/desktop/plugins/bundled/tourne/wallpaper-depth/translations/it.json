@@ -1,0 +1,69 @@
+{
+  "panel": {
+    "automatic": "Automatico",
+    "clear_cache": "Pulisci cache",
+    "description": "Genera una maschera di profondità del primo piano per ogni sfondo, in modo che i widget del desktop possano passare dietro elementi scenici vicini.",
+    "feather": "Sfumatura bordo",
+    "generate": "Genera maschere",
+    "no_outputs": "Nessun output collegato.",
+    "off": "Off",
+    "on": "On",
+    "output": {
+      "cached": "profondità nella cache",
+      "error": "Generazione fallita",
+      "no_wallpaper": "Nessuna immagine di sfondo",
+      "processing": "Stima profondità in corso",
+      "ready": "Maschera applicata",
+      "ready_time": "Maschera applicata in {seconds} s",
+      "waiting": "In attesa di generare"
+    },
+    "outputs": "Outputs",
+    "parameters": "Parametri maschera",
+    "settings": "Impostazioni",
+    "setup": {
+      "checking": "Controllando modello locale",
+      "disclosure": "Il setup crea un ambiente privato Python e scarica il modello 99 MB Apache-2.0 Depth Anything V2 Small da Hugging Face. Nessuno sfondo viene caricato.",
+      "error": "Setup fallito",
+      "install": "Installa il modello",
+      "missing": "Setup richiesto",
+      "offline": "Modalità offline dello Shell blocca i downloads del setup.",
+      "prerequisites": "Installa i comandi richiesti prima: {commands}.",
+      "ready": "Modello pronto",
+      "retry": "Riprova il setup",
+      "running": "Configurando modello per la profondità"
+    },
+    "threshold": "Soglia primo piano"
+  },
+  "service": {
+    "busy": "Aspetta la fine dell'operazione corrente.",
+    "clear_cache_failed": "Impossibile pulire la cache.",
+    "generation_failed": "Generazione profondità fallita.",
+    "invalid_result": "L'helper di profondità ha ritornato un risultato non valido.",
+    "invalid_settings": "Impostazioni del plugin non valide.",
+    "offline": "Disabilita la modalità offline dello shell prima del setup.",
+    "python_missing": "Python non installato.",
+    "setup_failed": "Setup fallito.",
+    "setup_missing": "Il modello e runtime non sono installati.",
+    "setup_running": "Installando la runtimee scaricando il modello di 99 MB.",
+    "start_clear_cache_failed": "Impossibile iniziare la pulizia della cache.",
+    "start_helper_failed": "Impossibile iniziare l'helper di profondità.",
+    "start_setup_failed": "Impossibile iniziare il setup.",
+    "start_validation_failed": "Impossibile iniziare validificazione setup.",
+    "validation_failed": "Validificazione Setup fallita."
+  },
+  "settings": {
+    "auto_generate": {
+      "description": "Rigenera la maschera di output quando lo sfondo o i parametri della maschera cambiano.",
+      "label": "Genera automaticamente"
+    },
+    "feather": {
+      "description": "Larghezza della transizione graduale attorno alla soglia di profondità.",
+      "label": "Sfumatura bordo"
+    },
+    "threshold": {
+      "description": "Profondità normalizatta sopra la quale lo sfondo cancella i widget del desktop. Valori bassi posizionano più in avanti la scena.",
+      "label": "Soglia Primo Piano"
+    }
+  },
+  "title": "Profondità Sfondo"
+}

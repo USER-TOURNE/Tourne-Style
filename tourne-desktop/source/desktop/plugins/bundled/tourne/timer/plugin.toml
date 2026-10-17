@@ -1,0 +1,69 @@
+id = "tourne/timer"
+name = "Timer"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (from hthienloc's Timer)"
+license = "MIT"
+dependencies = []
+tags = ["productivity", "time"]
+icon = "clock-hour-4"
+description = "A countdown on the bar: preset minutes, your own, pause, a sound and a notification at the end, and an optional lock, sleep or shut down."
+
+[[setting]]
+key = "presets"
+type = "string"
+label = "Preset minutes"
+description = "Comma separated"
+default = "1, 5, 10, 15, 25, 45, 60"
+
+[[setting]]
+key = "sound"
+type = "string"
+label = "Sound at the end"
+description = "A .wav or .mp3 (Windows' own are in C:\\Windows\\Media). Empty: none"
+default = "C:\\Windows\\Media\\Alarm01.wav"
+
+[[setting]]
+key = "autoReset"
+type = "bool"
+label = "Ready again after it ends"
+description = "Off: it shows 0:00 until you reset it"
+default = true
+
+[[setting]]
+key = "whenDone"
+type = "select"
+label = "When it ends"
+description = "Also do this (you can change it in the panel each time)"
+default = "none"
+
+  [[setting.options]]
+  value = "none"
+  label = "Nothing more"
+
+  [[setting.options]]
+  value = "lock"
+  label = "Lock"
+
+  [[setting.options]]
+  value = "sleep"
+  label = "Sleep"
+
+  [[setting.options]]
+  value = "hibernate"
+  label = "Hibernate"
+
+  [[setting.options]]
+  value = "shutdown"
+  label = "Shut down"
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 340
+height = 330
+placement = "attached"

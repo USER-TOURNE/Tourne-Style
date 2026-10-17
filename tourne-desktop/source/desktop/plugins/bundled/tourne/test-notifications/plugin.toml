@@ -1,0 +1,24 @@
+id = "tourne/test-notifications"
+name = "Test Notifications"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne"
+license = "MIT"
+dependencies = []
+tags = ["notifications", "testing", "utility"]
+icon = "bell-ringing"
+description = "A bar button that sends test notifications: real ones, so they show as Tourne's pop-ups and in the notification centre, as any app's do. Right-click it to choose how many, how urgent, the words, and whether your phone gets one too through your ntfy topic (the ntfy app subscribed to it)."
+
+[[setting]]
+key = "interval"
+type = "int"
+label = "Seconds between several (1 to 30)"
+default = 2
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"

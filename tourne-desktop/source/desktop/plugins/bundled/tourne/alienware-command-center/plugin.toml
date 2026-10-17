@@ -1,0 +1,55 @@
+# Tourne Desktop's own Alienware Command Center, after psyreactor's DMS plugin (ideas only; fresh code).
+
+id = "tourne/alienware-command-center"
+name = "Alienware Command Center"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (after psyreactor's Alienware Command Center)"
+license = "MIT"
+dependencies = []
+tags = ["alienware", "power", "fans", "system"]
+icon = "alien"
+description = "Thermal modes (Quiet, Balanced, Cool, Performance, Full Speed, G-Mode), fan boosts, the current mode and the lights of an Alienware PC, through its own firmware interface (lights through AlienFX Tools). Windows wants administrator rights for it: set the helper up once and it never asks again."
+
+[[setting]]
+key = "refreshInterval"
+type = "int"
+label = "Check the mode every (seconds)"
+description = "The mode can change from the PC's own key or another app. Each check starts PowerShell for a moment"
+default = 60
+min = 5
+max = 600
+
+[[setting]]
+key = "alienfxCli"
+type = "string"
+label = "alienfx-cli.exe"
+description = "Its full path, from T-Troll's AlienFX Tools, for the lighting part (colours and effects, no administrator rights)"
+default = ""
+
+[[setting]]
+key = "showMode"
+type = "bool"
+label = "Show the mode beside the icon"
+default = false
+
+[[setting]]
+key = "confirmToast"
+type = "bool"
+label = "Tell me when a mode changes"
+default = true
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 400
+height = 520
+placement = "attached"

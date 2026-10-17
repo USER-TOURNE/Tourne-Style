@@ -1,0 +1,13 @@
+{
+  "id": "amber-terminal",
+  "name": "Amber terminal",
+  "author": "Tourne",
+  "licence": "MIT",
+  "kind": "Shader",
+  "version": "1.0",
+  "description": "An example to copy: a warm duotone over every screen, like an amber monitor. Add it from Studio > Extensions > Add an extension.",
+  "settings": {
+    "shader.screen": "duotone",
+    "shader.amount": 85
+  }
+}

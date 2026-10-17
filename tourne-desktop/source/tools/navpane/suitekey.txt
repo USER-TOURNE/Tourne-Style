@@ -1,0 +1,5 @@
+
+HKEY_CURRENT_USER\Software\Tourne\Suite
+    ExplorerFirstStart    REG_QWORD    0x320ce37d3
+    ExplorerStarts    REG_DWORD    0x0
+

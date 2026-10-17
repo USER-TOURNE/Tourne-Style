@@ -1,0 +1,82 @@
+id = "tourne/ocr"
+name = "OCR Scanner"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's OCR Scanner)"
+license = "MIT"
+dependencies = ["tesseract"]
+tags = ["text", "screenshot", "clipboard"]
+icon = "text-recognition"
+description = "Turn text in a picture into text you can paste: snip part of the screen, or read the picture on the clipboard or a file, with Tesseract. Keeps a history."
+
+[[setting]]
+key = "tesseract"
+type = "string"
+label = "Tesseract"
+description = "Its name on the PATH or its full path (winget install UB-Mannheim.TesseractOCR). Empty finds C:\\Program Files\\Tesseract-OCR"
+default = ""
+
+[[setting]]
+key = "language"
+type = "string"
+label = "Languages"
+description = "Tesseract's language codes, joined with + (eng, deu, fra, jpn, eng+deu...)"
+default = "eng"
+
+[[setting]]
+key = "layout"
+type = "select"
+label = "Text layout"
+default = "3"
+
+  [[setting.options]]
+  value = "3"
+  label = "Find it (pages, columns)"
+
+  [[setting.options]]
+  value = "6"
+  label = "One block of text"
+
+  [[setting.options]]
+  value = "7"
+  label = "One line"
+
+  [[setting.options]]
+  value = "11"
+  label = "Scattered words"
+
+[[setting]]
+key = "autoCopy"
+type = "bool"
+label = "Copy the text when it's read"
+default = true
+
+[[setting]]
+key = "notify"
+type = "bool"
+label = "Say when it's done"
+default = true
+
+[[setting]]
+key = "keepHistory"
+type = "bool"
+label = "Keep a history"
+default = true
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 440
+height = 560
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the scanner. Empty: none"
+  default = ""

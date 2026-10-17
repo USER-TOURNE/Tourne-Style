@@ -1,0 +1,45 @@
+# Tourne Desktop's own Caffeine, after the DMS Caffeine plugins (ideas only; fresh code).
+
+id = "tourne/caffeine"
+name = "Caffeine"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (after the DMS Caffeine plugins)"
+license = "MIT"
+dependencies = []
+tags = ["power", "utility"]
+icon = "coffee"
+description = "Keeps the PC (and the screen) awake for 5 minutes up to as long as you like. Click the cup to start or stop; right-click to pick how long."
+
+[[setting]]
+key = "screen"
+type = "bool"
+label = "Keep the screen on too"
+description = "Off: only the PC stays awake, the screen may still turn off"
+default = true
+
+[[setting]]
+key = "minutes"
+type = "int"
+label = "A click keeps it awake for (minutes)"
+description = "0: until you click again"
+default = 0
+min = 0
+max = 720
+
+[[setting]]
+key = "notify"
+type = "bool"
+label = "Tell me when it ends"
+default = true
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 300
+height = 300
+placement = "attached"

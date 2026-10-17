@@ -1,0 +1,1 @@
+{ "id": "bad", "name": "Refused", "settings": { "switcher.binds.lines[0]": "bind = WIN, X, exec, calc.exe" } }

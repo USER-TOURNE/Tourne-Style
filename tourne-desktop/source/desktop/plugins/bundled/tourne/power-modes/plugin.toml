@@ -1,0 +1,42 @@
+id = "tourne/power-modes"
+name = "Power Modes"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from psyreactor's Alienware Command Center)"
+license = "MIT"
+dependencies = []
+tags = ["system", "power", "laptop"]
+icon = "bolt"
+description = "Windows' power mode, power plan and CPU turbo from the bar, the way AWCC switches thermal modes."
+
+[[setting]]
+key = "confirmToast"
+type = "bool"
+label = "Say when it changes"
+description = "A notification after a mode, plan or turbo change"
+default = true
+
+[[setting]]
+key = "refreshInterval"
+type = "int"
+label = "Check every (seconds)"
+default = 10
+min = 1
+max = 60
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "showText"
+  type = "bool"
+  label = "Mode name on the bar"
+  default = true
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 460
+placement = "attached"

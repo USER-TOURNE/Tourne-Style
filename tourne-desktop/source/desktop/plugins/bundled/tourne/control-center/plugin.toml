@@ -1,0 +1,38 @@
+# Tourne Desktop's Control Center: every plugin's bar button as a tile in one panel, like Screen Toolkit's.
+
+id = "tourne/control-center"
+name = "Control Center"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne"
+license = "MIT"
+dependencies = []
+tags = ["utility", "bar"]
+icon = "layout-grid"
+description = "Every plugin's bar button as a tile in one panel: click a tile as you'd click its button, right-click for its own menu. Hide the plugins' own tray icons and keep just this one."
+
+[[setting]]
+key = "columns"
+type = "int"
+label = "Tiles in a row"
+default = 4
+min = 2
+max = 6
+
+[[setting]]
+key = "hotkey"
+type = "string"
+label = "Hotkey"
+description = "Opens the panel from anywhere (for example Ctrl+Alt+C). Empty: none"
+default = ""
+
+[[widget]]
+id = "tray"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 420
+placement = "attached"

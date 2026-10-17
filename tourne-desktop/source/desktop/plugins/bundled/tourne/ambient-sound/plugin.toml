@@ -1,0 +1,116 @@
+id = "tourne/ambient-sound"
+name = "Ambient Sounds"
+version = "1.0.0"
+plugin_api = 9
+author = "Tourne (idea from hthienloc's Ambient Sounds)"
+license = "MIT"
+tags = ["focus", "sound", "noise"]
+icon = "headphones"
+description = "Mix background sounds for focus or sleep: white, pink and brown noise built in, plus your own sound files, each with its own volume, saved mixes and a sleep timer."
+
+[[setting]]
+key = "folder"
+type = "folder"
+label = "Your sounds"
+description = "MP3, WAV, WMA or M4A files here each get a row and play on a loop (OGG and FLAC need a codec installed)"
+default = "~/Music/Ambient"
+
+[[setting]]
+key = "noise"
+type = "bool"
+label = "White, pink and brown noise"
+description = "Made by the plugin the first time, so nothing is downloaded"
+default = true
+
+[[setting]]
+key = "defaultVolume"
+type = "int"
+label = "A new sound's volume"
+default = 50
+
+[[setting]]
+key = "timer"
+type = "select"
+label = "Sleep timer"
+description = "Stops the sounds after this long"
+default = "0"
+
+  [[setting.options]]
+  value = "0"
+  label = "Off"
+
+  [[setting.options]]
+  value = "15"
+  label = "15 minutes"
+
+  [[setting.options]]
+  value = "30"
+  label = "30 minutes"
+
+  [[setting.options]]
+  value = "60"
+  label = "1 hour"
+
+  [[setting.options]]
+  value = "90"
+  label = "1.5 hours"
+
+  [[setting.options]]
+  value = "120"
+  label = "2 hours"
+
+[[setting]]
+key = "whenTimerEnds"
+type = "select"
+label = "When the timer ends"
+default = "stop"
+
+  [[setting.options]]
+  value = "stop"
+  label = "Stop the sounds"
+
+  [[setting.options]]
+  value = "lock"
+  label = "Stop and lock"
+
+  [[setting.options]]
+  value = "sleep"
+  label = "Stop and sleep"
+
+[[setting]]
+key = "middleClick"
+type = "select"
+label = "Middle click"
+default = "play"
+
+  [[setting.options]]
+  value = "play"
+  label = "Play or pause"
+
+  [[setting.options]]
+  value = "mute"
+  label = "Mute"
+
+[[setting]]
+key = "playOnStart"
+type = "bool"
+label = "Play the last mix when Tourne Desktop starts"
+default = false
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 420
+height = 560
+placement = "attached"
+
+  [[panel.setting]]
+  key = "hotkey"
+  type = "string"
+  label = "Hotkey"
+  description = "Opens the mixer. Empty: none"
+  default = ""
