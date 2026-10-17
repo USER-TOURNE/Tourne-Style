@@ -10,6 +10,12 @@ Linux-level customizing for Windows, with no phoning home. Everything Tourne has
 | **Community styles** | Tourne'Table styles people share, with a gallery and a bot that takes them in. | [`community/`](community/) |
 | **Devlogs** | The story of how it was built, from the first build to now. | [`devlogs/`](devlogs/) |
 
+## Status
+
+Everything here is a **work in progress**, shared as it runs on Tourne's own PC. Tourne'Table 2.1 is waiting to be passed into the official Windhawk catalog; Tourne Desktop and the suite are tested on very few PCs. Read [what Tourne Desktop needs and what can go wrong](tourne-desktop/README.md#before-you-install) before installing it, and back up first.
+
+**What the pieces need:** Windows 11, 64-bit (24H2 or later is what it's built on). [Windhawk](https://windhawk.net) 1.7.3 or newer for every mod. StartAllBack is optional: the suite's Clock and Classic Tray Folders parts style its taskbar and do nothing without it. No Node.js anywhere; Python only for two optional plugins. Developer Mode only for Tourne Desktop's phone calls.
+
 ## Start here
 
 1. **Want the whole look?** Download `tourne-desktop/release/TourneDesktop-<commit>.zip`, unzip it anywhere, run `TourneDesktop.exe`. Its tray icon opens Tourne Studio, where every part is a switch. Then add the Windhawk mods in the "Use together" list below for the parts that have to live inside Explorer.
