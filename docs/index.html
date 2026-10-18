@@ -7,70 +7,112 @@
 <meta name="description" content="Community styles for Tourne'Table, the Windows desktop audio visualizer. Copy a code, paste it in the Style Editor, keep it or not.">
 <style>
   :root {
-    --ground: #121c21; --panel: #172429; --raised: #1e3036; --edge: #2c444b;
-    --text: #d3d6d8; --dim: #8d989c; --coral: #e57474; --green: #64aa89; --teal: #5f9993; --peach: #f7cca1;
-    --mono: ui-monospace, "Cascadia Mono", "Consolas", monospace;
+    --ground: #121c21; --panel: #152025; --raised: #1b2a30; --edge: #24393f; --line: rgba(100,170,137,.28);
+    --text: #d3d6d8; --dim: #6ba6a0; --neon: #15ffa2; --green: #64aa89; --red: #ff8f8f; --brick: #a95d5d;
+    --mono: ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--ground); color: var(--text); font: 15px/1.55 system-ui, "Segoe UI", sans-serif; }
-  a { color: var(--green); }
-  header, main, footer { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-  header { padding-top: 40px; padding-bottom: 8px; }
-  .mark { font-family: var(--mono); color: var(--coral); letter-spacing: .08em; font-size: 13px; }
-  h1 { font-size: 30px; margin: 6px 0 8px; font-weight: 650; }
-  h1 span { color: var(--green); }
-  .lede { color: var(--dim); max-width: 720px; margin: 0 0 18px; }
-  .steps { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px; padding: 0; list-style: none; }
-  .steps li { background: var(--panel); border: 1px solid var(--edge); padding: 8px 12px; font-size: 13.5px; }
-  .steps b { color: var(--peach); font-family: var(--mono); margin-right: 6px; }
-  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
-  input[type=search] { flex: 1 1 240px; background: var(--panel); border: 1px solid var(--edge); color: var(--text); padding: 9px 12px; font: inherit; }
-  .btn { background: var(--raised); color: var(--text); border: 1px solid var(--edge); padding: 8px 12px; font: inherit; font-size: 13.5px; cursor: pointer; text-decoration: none; display: inline-block; }
-  .btn:hover { border-color: var(--green); }
-  .btn.primary { background: var(--green); color: #0d1518; border-color: var(--green); font-weight: 600; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .card { background: var(--panel); border: 1px solid var(--edge); display: flex; flex-direction: column; min-width: 0; }
+  html { background: var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--text); font: 14px/1.6 var(--mono);
+    background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px); }
+  ::selection { background: var(--neon); color: var(--ground); }
+  a { color: var(--neon); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  header, main, footer { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 34px; }
+  .frame { border: 1px solid var(--line); padding: 26px 26px 22px; position: relative; background: rgba(18,28,33,.85); }
+  .frame::before { content: "TOURNE'STYLE // COMMUNITY"; position: absolute; top: -9px; left: 18px; background: var(--ground); padding: 0 8px; font-size: 11px; letter-spacing: 3px; color: var(--dim); }
+  .top { display: flex; flex-wrap: wrap; gap: 26px 40px; align-items: flex-start; justify-content: space-between; }
+  #word { display: block; width: min(100%, 520px); height: auto; image-rendering: pixelated; }
+  .tag { font-size: 12px; letter-spacing: 3px; color: var(--dim); margin: 14px 0 0; }
+  .tag b { color: var(--neon); }
+  .term { flex: 1 1 320px; max-width: 470px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
+  .term li { display: flex; gap: 12px; align-items: baseline; padding: 4px 0; border-bottom: 1px dashed rgba(100,170,137,.14); }
+  .term .k { color: var(--neon); font-weight: 700; min-width: 72px; }
+  .term .v { color: var(--green); flex: 1; }
+  .term .s { color: var(--red); font-size: 12.5px; white-space: nowrap; }
+  .lede { color: var(--dim); max-width: 760px; margin: 22px 0 0; font-size: 13.5px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 22px 0 26px; }
+  .prompt { flex: 1 1 260px; display: flex; align-items: center; background: var(--panel); border: 1px solid var(--edge); padding: 0 12px; }
+  .prompt span { color: var(--neon); font-weight: 700; margin-right: 8px; }
+  .prompt:focus-within { border-color: var(--neon); }
+  input[type=search] { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); padding: 10px 0; font: inherit; }
+  input::placeholder { color: #4f6e6c; }
+  .btn { background: var(--raised); color: var(--text); border: 1px solid var(--edge); padding: 8px 12px; font: inherit; font-size: 12.5px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-block; }
+  .btn::before { content: "[ "; color: var(--dim); } .btn::after { content: " ]"; color: var(--dim); }
+  .btn:hover { border-color: var(--neon); color: var(--neon); text-decoration: none; }
+  .btn.primary { background: var(--neon); color: var(--ground); border-color: var(--neon); font-weight: 700; box-shadow: 3px 3px 0 var(--brick); }
+  .btn.primary::before, .btn.primary::after { color: rgba(18,28,33,.55); }
+  .btn.primary:hover { color: var(--ground); box-shadow: 1px 1px 0 var(--brick); transform: translate(2px, 2px); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 18px; }
+  .card { background: var(--panel); border: 1px solid var(--edge); display: flex; flex-direction: column; min-width: 0; transition: border-color .15s, box-shadow .15s; }
+  .card:hover { border-color: var(--green); box-shadow: 4px 4px 0 rgba(21,255,162,.12); }
+  .head { display: flex; justify-content: space-between; gap: 10px; padding: 6px 12px; border-bottom: 1px solid var(--edge); font-size: 11px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; }
+  .head .live { color: var(--red); }
   canvas { width: 100%; height: 150px; display: block; background: #0c1417; border-bottom: 1px solid var(--edge); }
   .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .name { font-weight: 650; font-size: 16px; }
-  .by { color: var(--dim); font-size: 13px; }
-  .about { font-size: 13.5px; flex: 1; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--mono); font-size: 11.5px; color: var(--dim); }
-  .tags span { border: 1px solid var(--edge); padding: 1px 6px; }
-  .swatches { display: flex; gap: 4px; }
-  .swatches i { width: 14px; height: 14px; border: 1px solid var(--edge); display: inline-block; }
-  .actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-  .note { color: var(--dim); font-size: 13px; margin: 18px 0; }
-  .empty { padding: 40px; text-align: center; color: var(--dim); border: 1px dashed var(--edge); }
-  footer { color: var(--dim); font-size: 13px; padding-top: 30px; padding-bottom: 40px; }
-  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--green); color: #0d1518; padding: 8px 14px; font-weight: 600; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .name { font-weight: 700; font-size: 15px; color: var(--neon); }
+  .name::before { content: "> "; color: var(--dim); }
+  .by { color: var(--dim); font-size: 12.5px; }
+  .about { font-size: 13px; flex: 1; font-family: system-ui, "Segoe UI", sans-serif; line-height: 1.55; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: 1px; }
+  .tags span::before { content: "["; color: var(--dim); margin-right: 3px; } .tags span::after { content: "]"; color: var(--dim); margin-left: 3px; }
+  .swatches { display: flex; gap: 3px; }
+  .swatches i { width: 13px; height: 13px; display: inline-block; outline: 1px solid rgba(0,0,0,.4); }
+  .actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .note { color: var(--dim); font-size: 12.5px; margin: 22px 0; padding-left: 12px; border-left: 2px solid var(--brick); }
+  .empty { padding: 40px; text-align: center; color: var(--dim); border: 1px dashed var(--edge); grid-column: 1 / -1; }
+  footer { color: var(--dim); font-size: 12px; padding-top: 22px; padding-bottom: 40px; letter-spacing: 1px; }
+  footer .blk { color: var(--neon); letter-spacing: 0; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--neon); color: var(--ground); padding: 8px 14px; font-weight: 700; box-shadow: 3px 3px 0 var(--brick); opacity: 0; transition: opacity .2s; pointer-events: none; }
   .toast.on { opacity: 1; }
-  @media (prefers-reduced-motion: reduce) { canvas { animation: none; } }
+  @media (max-width: 560px) { .frame { padding: 22px 14px 18px; } .term .k { min-width: 60px; } }
 </style>
 </head>
 <body>
 <header>
-  <div class="mark">// TOURNE'TABLE</div>
-  <h1>Community <span>styles</span></h1>
-  <p class="lede">Styles people made in Tourne'Table, the desktop audio visualizer. Try one in seconds: it plays at once, and you choose Keep or No. Your audio device, hotkeys, paths and hardware are never part of a style.</p>
-  <ol class="steps">
-    <li><b>1</b>Copy a style's code</li>
-    <li><b>2</b>Right-click the visualizer, My Styles, Style Editor</li>
-    <li><b>3</b>Paste code, then Keep or No</li>
-  </ol>
+  <div class="frame">
+    <div class="top">
+      <div>
+        <svg id="word" role="img" aria-label="Styles"></svg>
+        <p class="tag">TOURNE'TABLE <b>//</b> COMMUNITY STYLES</p>
+      </div>
+      <ul class="term">
+        <li><span class="k">&gt; COPY</span><span class="v">a style's code</span><span class="s">[ 01 ]</span></li>
+        <li><span class="k">&gt; OPEN</span><span class="v">right-click, My Styles, Style Editor</span><span class="s">[ 02 ]</span></li>
+        <li><span class="k">&gt; PASTE</span><span class="v">Paste code, then Keep or No</span><span class="s">[ 03 ]</span></li>
+        <li><span class="k">&gt; LIST</span><span class="v" id="count">reading the list</span><span class="s" id="state">[ LOADING ]</span></li>
+      </ul>
+    </div>
+    <p class="lede">Styles people made in Tourne'Table, the desktop audio visualizer. Try one in seconds: it plays at once, and you choose Keep or No. Your audio device, hotkeys, paths and hardware are never part of a style.</p>
+  </div>
   <div class="bar">
-    <input type="search" id="q" placeholder="Search by name, author or shape" aria-label="Search styles">
+    <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search by name, author or shape" aria-label="Search styles"></label>
     <a class="btn primary" id="share" href="#">Share yours</a>
     <a class="btn" id="get" href="#">Get Tourne'Table</a>
   </div>
 </header>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. The same list is in Tourne'Table's own Community button.</p>
+  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. Tourne'Table's own Community button opens this page.</p>
 </main>
-<footer>Part of <a id="repo" href="#">Tourne'Style</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares.</footer>
+<footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
 <div class="toast" id="toast">Copied. Paste it in the Style Editor.</div>
 <script>
+// The STYLES wordmark: 5x7 pixel letters, drawn like the blocks in Tourne'Table's header.
+(function () {
+  const F = { S: ['01111','10000','10000','01110','00001','00001','11110'], T: ['11111','00100','00100','00100','00100','00100','00100'],
+    Y: ['10001','10001','01010','00100','00100','00100','00100'], L: ['10000','10000','10000','10000','10000','10000','11111'],
+    E: ['11111','10000','10000','11110','10000','10000','11111'] };
+  const word = 'STYLES', P = 16, Q = 13, W = word.length * 6 * P - P;
+  let r = '';
+  [...word].forEach((ch, n) => F[ch].forEach((row, y) => [...row].forEach((bit, x) => {
+    if (bit === '1') r += `<rect x="${n * 6 * P + x * P}" y="${y * P}" width="${Q}" height="${Q}" fill="#15ffa2"/>`;
+  })));
+  const svg = document.getElementById('word');
+  svg.setAttribute('viewBox', `0 0 ${W} ${7 * P + 6}`);
+  svg.innerHTML = r + `<rect x="0" y="${7 * P + 2}" width="${W - (P - Q)}" height="4" fill="#a95d5d"/>`;
+})();
 const REPO = 'USER-TOURNE/Tourne-Style';
 // (?local reads the styles beside this page in a checkout, for previewing before a push.)
 const RAW = new URLSearchParams(location.search).has('local') ? '../community/setups/'
@@ -305,6 +347,11 @@ function card(entry, text) {
   const L = look(s);
   const el = document.createElement('article'); el.className = 'card';
   el.dataset.search = `${entry.name} ${entry.author} ${entry.about} ${L.shape}`.toLowerCase();
+  const head = document.createElement('div'); head.className = 'head';
+  const h1 = document.createElement('span'), h2 = document.createElement('span');
+  h1.textContent = `\u25A3 ${String(cards.length + 1).padStart(2, '0')} // ${L.shape}`; h2.className = 'live'; h2.textContent = '[ PLAYING ]';
+  head.append(h1, h2);
+  el.appendChild(head);
   const cv = document.createElement('canvas'); el.appendChild(cv);
   const body = document.createElement('div'); body.className = 'body';
   const add = (tag, cls, txt) => { const e = document.createElement(tag); e.className = cls; if (txt != null) e.textContent = txt; body.appendChild(e); return e; };
@@ -327,16 +374,19 @@ function card(entry, text) {
   return el;
 }
 
+function setState(count, state) { document.getElementById('count').textContent = count; document.getElementById('state').textContent = state; }
+
 async function load() {
   const grid = document.getElementById('grid');
   let index;
   try { index = await (await fetch(RAW + 'index.txt', { cache: 'no-store' })).text(); }
-  catch { grid.innerHTML = '<div class="empty">Couldn\'t reach the style list. Try again in a moment.</div>'; return; }
+  catch { setState('none', '[ OFFLINE ]'); grid.innerHTML = '<div class="empty">Couldn\'t reach the style list. Try again in a moment.</div>'; return; }
   const entries = index.split(/\r?\n/).filter(l => l && !l.startsWith('#')).map(l => { const f = l.split('|'); return { file: f[0], name: f[1], author: f[2], about: f.slice(3).join('|') }; })
     .filter(e => /^[A-Za-z0-9_.-]+\.ttstyle$/.test(e.file));
-  if (!entries.length) { grid.innerHTML = '<div class="empty">No styles yet: be the first to share one.</div>'; return; }
+  if (!entries.length) { setState('0 styles', '[ EMPTY ]'); grid.innerHTML = '<div class="empty">No styles yet: be the first to share one.</div>'; return; }
   const texts = await Promise.all(entries.map(e => fetch(RAW + e.file).then(r => r.ok ? r.text() : '').catch(() => '')));
   entries.forEach((e, i) => { const c = card(e, texts[i]); if (c) grid.appendChild(c); });
+  setState(`${cards.length} style${cards.length === 1 ? '' : 's'}, live from the repo`, '[ LIVE ]');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const frame = ts => { cards.forEach(c => { if (c.el.style.display !== 'none') draw(c, still ? 1.7 : ts / 1000); }); if (!still) requestAnimationFrame(frame); };
   requestAnimationFrame(frame);
