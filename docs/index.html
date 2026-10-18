@@ -66,7 +66,7 @@
 </header>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">Previews are drawn from each style's shape and colours with made-up audio, so they're a hint, not a recording. The same list is in Tourne'Table's own Community button.</p>
+  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. The same list is in Tourne'Table's own Community button.</p>
 </main>
 <footer>Part of <a id="repo" href="#">Tourne'Style</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares.</footer>
 <div class="toast" id="toast">Copied. Paste it in the Style Editor.</div>
@@ -96,42 +96,129 @@ function parse(text) {
   return started ? s : null;
 }
 
-// Tourne's colours: #RRGGBB, #AARRGGBB (alpha first), rgba(r, g, b, a).
-function colour(v, fallback) {
+// Tourne's colours: #RRGGBB, #AARRGGBB (alpha first), rgba(r, g, b, a). Kept as [r, g, b, a], a in 0..1.
+function rgba(v, fallback) {
   if (!v) return fallback;
   v = v.trim();
   let m = v.match(/^#([0-9a-f]{8})$/i);
-  if (m) { const n = m[1]; return `rgba(${parseInt(n.slice(2,4),16)},${parseInt(n.slice(4,6),16)},${parseInt(n.slice(6,8),16)},${(parseInt(n.slice(0,2),16)/255).toFixed(2)})`; }
-  if (/^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(v)) return v;
-  if (/^rgba?\(/i.test(v)) return v;
+  if (m) { const n = m[1]; return [parseInt(n.slice(2,4),16), parseInt(n.slice(4,6),16), parseInt(n.slice(6,8),16), parseInt(n.slice(0,2),16) / 255]; }
+  m = v.match(/^#([0-9a-f]{6})$/i);
+  if (m) { const n = m[1]; return [parseInt(n.slice(0,2),16), parseInt(n.slice(2,4),16), parseInt(n.slice(4,6),16), 1]; }
+  m = v.match(/^rgba?\(([^)]+)\)$/i);
+  if (m) { const p = m[1].split(',').map(x => parseFloat(x)); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1]; }
   return fallback;
 }
-const opaque = c => c.replace(/rgba\(([^,]+),([^,]+),([^,]+),[^)]+\)/, 'rgb($1,$2,$3)');
+const css = (c, k = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${(c[3] * k).toFixed(3)})`;
+const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t];
+function hsv(h, s, v, a) {
+  const c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+  const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255, a];
+}
 
+// Tourne'Table's ballistics presets (attack ms; release as a time constant or dB per second).
+const BALLISTICS = {
+  snappy: { a: 10, r: 70 }, smooth: { a: 25, r: 180 }, analyzer: { a: 10, db: 20 },
+  vu: { a: 65, r: 65 }, ppm_ebu: { a: 10, db: 24 / 2.8 }, ppm_din: { a: 5, db: 20 / 1.5 },
+};
+
+// Everything the preview needs from a style, with Tourne'Table's own defaults.
 function look(s) {
-  const V = s.values, q = k => V['quick.' + k];
+  const V = s.values, q = k => V['quick.' + k], num = (v, d) => { const n = parseFloat(v); return isFinite(n) ? n : d; };
   const mode = q('colorMode') || V['appearance.colorMode'] || 'solid';
-  let c1 = colour(q('color') || V['appearance.color'], '#ffffff');
-  let g1 = colour(q('grad1') || V['appearance.gradientColor1'], '#1ed760');
-  let g2 = colour(q('grad2') || V['appearance.gradientColor2'], '#00b4ff');
-  if (mode === 'tourne') { g1 = '#5f9993'; g2 = '#e57474'; }
-  if (mode === 'rainbow') { g1 = 'hsl(0,80%,60%)'; g2 = 'hsl(220,80%,60%)'; }
-  const grad = ['gradient', 'reactive_gradient', 'dynamic_album', 'tourne', 'rainbow'].includes(mode);
+  let c1 = rgba(q('color') || V['appearance.color'], [255, 255, 255, 1]);
+  let g1 = rgba(q('grad1') || V['appearance.gradientColor1'], [30, 215, 96, 1]);
+  let g2 = rgba(q('grad2') || V['appearance.gradientColor2'], [0, 180, 255, 1]);
+  if (mode === 'tourne') { g1 = [95, 153, 147, 1]; g2 = [229, 116, 116, 1]; }     // the Tourne palette's ends
+  if (mode === 'accent') c1 = [0, 120, 212, c1[3]];                                // Windows' default accent
+  const preset = V['analysis.ballistics'] || 'snappy';
+  const b = preset === 'custom'
+    ? { a: num(V['analysis.attackMs'], 10), db: num(V['analysis.releaseDbPerSecond'], 20) }
+    : BALLISTICS[preset] || BALLISTICS.snappy;
+  const floor = num(V['analysis.dbFloor'], -72), ceil = num(V['analysis.dbCeiling'], -12);
+  const panelOn = V['background.enabled'] === '1';
   return {
-    shape: q('shape') || V['appearance.shape'] || 'stereo',
-    grad, c1, g1, g2, mode,
-    bars: Math.max(8, Math.min(96, parseInt(V['appearance.barCount'] || '64', 10) || 64)),
-    gap: parseFloat(q('barGap') || V['appearance.barGap'] || '2') || 2,
-    reflect: (parseFloat(q('reflection') || V['appearance.reflection'] || '0') || 0) / 100,
-    glow: (parseFloat(q('fxGlow') || V['appearance.fxGlow'] || '0') || 0) / 100,
+    shape: q('shape') || V['appearance.shape'] || 'stereo', mode, c1, g1, g2,
+    bars: Math.max(4, Math.min(128, parseInt(V['appearance.barCount'] || '32', 10) || 32)),
+    barW: Math.max(1, num(q('barWidth') || V['appearance.barWidth'], 6)),
+    gap: Math.max(0, num(q('barGap') || V['appearance.barGap'], 4)),
+    maxSize: Math.max(8, num(q('barMaxSize') || V['appearance.barMaxSize'], 140)),
+    idle: Math.max(0, num(V['appearance.barIdleSize'], 4)),
+    radius: Math.max(0, num(q('barRadius') || (V['appearance.barCornerRadius'] || '3').split(',')[0], 3)),
+    ballistics: b, range: Math.max(10, ceil - floor),
     peak: (q('peakHold') || V['appearance.peakHoldEnabled']) === '1',
-    peakColour: colour(V['appearance.peakHoldColor'], '#ffffff'),
-    panel: V['background.enabled'] === '1' ? colour(V['background.color'], null) : null,
-    edge: V['background.enabled'] === '1' && V['background.borderSize'] !== '0' ? colour(V['background.borderColor'], null) : null,
+    peakColour: rgba(V['appearance.peakHoldColor'], [0, 180, 255, 1]),
+    holdMs: num(V['analysis.peakHoldMs'], 500), gravity: V['analysis.peakFall'] !== 'linear',
+    beat: (q('beatFlash') || V['appearance.beatFlashEnabled']) === '1',
+    beatColour: rgba(V['appearance.beatFlashColor'], [255, 255, 255, 1]),
+    beatIntensity: num(V['appearance.beatFlashIntensity'], 80) / 100,
+    rainbowSpeed: num(V['appearance.rainbowSpeed'], 40),
+    reflect: num(q('reflection') || V['appearance.reflection'], 0) / 100,
+    glow: (q('fxGlow') || V['appearance.fxGlow']) === '1' ? 1 : num(q('fxGlow') || V['appearance.fxGlow'], 0) / 100,
+    panel: panelOn ? rgba(V['background.color'], null) : null,
+    edge: panelOn && V['background.borderSize'] !== '0' ? rgba(V['background.borderColor'], null) : null,
   };
 }
 
-function swatchesOf(L) { return L.grad ? [L.g1, L.g2] : [L.c1]; }
+function swatchesOf(L) {
+  return (L.mode === 'solid' || L.mode === 'accent' || L.mode === 'acrylic' ? [L.c1] : [L.g1, L.g2]).map(c => css(c));
+}
+
+// A colour per bar, the way Tourne'Table's StyleBarColor does it: fac is the bar's level (0..1).
+function barColour(L, i, n, fac, t) {
+  const x = n > 1 ? i / (n - 1) : 0;
+  let c = L.c1;
+  switch (L.mode) {
+    case 'gradient': case 'tourne': c = lerp(L.g1, L.g2, x); break;
+    case 'reactive_gradient': c = lerp(L.g1, L.g2, fac); break;
+    case 'dynamic_album': c = lerp(L.g1, L.g2, Math.min(1, x * 0.6 + fac * 0.4)); break;
+    case 'album': c = lerp(L.g1, L.g2, x); break;
+    case 'rainbow': c = hsv(((t * L.rainbowSpeed) % 360 + x * 360) % 360, 0.85, 1, L.c1[3]); break;
+    case 'acrylic': c = [L.c1[0], L.c1[1], L.c1[2], Math.min(180, 180 * fac) / 255]; break;
+  }
+  return c;
+}
+function flash(L, c, pulse) {
+  if (!L.beat || pulse < 0.001) return c;
+  const k = Math.min(1, pulse * L.beatIntensity * L.beatColour[3]);
+  return [c[0] + (L.beatColour[0] - c[0]) * k, c[1] + (L.beatColour[1] - c[1]) * k, c[2] + (L.beatColour[2] - c[2]) * k, c[3]];
+}
+
+// A test track: a kick every half second (120 BPM), a snare on two and four, hats, and a moving melody.
+// Each band gets a target level, which then goes through the style's own ballistics and peak hold.
+function makeSim(L) {
+  const n = L.bars;
+  return { y: new Float32Array(n), pk: new Float32Array(n), pt: new Float32Array(n), pv: new Float32Array(n), pulse: 0, last: -1, beatAt: -1 };
+}
+function target(i, n, t) {
+  const x = i / Math.max(1, n - 1), beat = t % 0.5, bar = Math.floor(t / 0.5) % 4;
+  const kick = Math.exp(-beat * 9) * Math.exp(-x * 7) * 0.95;
+  const snare = (bar === 1 || bar === 3) ? Math.exp(-beat * 7) * Math.exp(-Math.pow((x - 0.45) * 3.2, 2)) * 0.7 : 0;
+  const hat = Math.exp(-((t * 4) % 0.25) * 30) * Math.max(0, x - 0.55) * 0.9;
+  const mel = 0.45 * Math.exp(-Math.pow((x - (0.35 + 0.2 * Math.sin(t * 0.7))) * 6, 2)) * (0.75 + 0.25 * Math.sin(t * 5.3));
+  const bed = 0.28 * (1 - x * 0.6) * (0.85 + 0.15 * Math.sin(t * 1.7 + i * 1.3));
+  return Math.min(1, kick + snare + hat + mel + bed);
+}
+function stepSim(L, S, t) {
+  const dt = S.last < 0 ? 1 / 60 : Math.min(0.1, Math.max(0, t - S.last)); S.last = t;
+  const b = L.ballistics, att = 1 - Math.exp(-dt * 1000 / Math.max(0.1, b.a));
+  const rel = b.db ? 0 : 1 - Math.exp(-dt * 1000 / Math.max(0.1, b.r)), fall = b.db ? b.db * dt / L.range : 0;
+  for (let i = 0; i < L.bars; i++) {
+    const x = target(i, L.bars, t), y = S.y[i];
+    S.y[i] = x > y ? y + (x - y) * att : b.db ? Math.max(x, y - fall) : y + (x - y) * rel;
+    // Peak hold: hang for holdMs, then fall with gravity (2 per s²) or linearly (0.72 per s), as the mod does.
+    if (S.y[i] >= S.pk[i]) { S.pk[i] = S.y[i]; S.pt[i] = 0; S.pv[i] = 0; }
+    else { S.pt[i] += dt; if (S.pt[i] * 1000 >= L.holdMs) { if (L.gravity) { S.pv[i] += 2 * dt; S.pk[i] -= S.pv[i] * dt; } else S.pk[i] -= 0.72 * dt; } if (S.pk[i] < S.y[i]) { S.pk[i] = S.y[i]; S.pv[i] = 0; } }
+  }
+  const beatNow = Math.floor(t / 0.5);
+  if (beatNow !== S.beatAt) { S.beatAt = beatNow; S.pulse = 1; } else S.pulse = Math.max(0, S.pulse - 4.8 * dt);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  if (!r) { ctx.fillRect(x, y, w, h); return; }
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); ctx.fill();
+}
 
 const cards = [];
 function draw(card, t) {
@@ -140,52 +227,65 @@ function draw(card, t) {
   if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
-  const pad = 14;
-  if (L.panel) { ctx.fillStyle = L.panel; ctx.fillRect(pad - 6, pad - 6, W - 2 * pad + 12, H - 2 * pad + 12); }
-  if (L.edge) { ctx.strokeStyle = L.edge; ctx.lineWidth = 1; ctx.strokeRect(pad - 5.5, pad - 5.5, W - 2 * pad + 11, H - 2 * pad + 11); }
-  const n = L.bars, base = L.reflect > 0 ? H * 0.68 : H - pad, top = pad;
-  const amp = i => { const x = i / n; return Math.max(0.04, (0.55 + 0.45 * Math.sin(t * 2.1 + x * 9) * Math.sin(t * 1.3 + x * 3.7)) * (1 - x * 0.55) * (0.6 + 0.4 * Math.abs(Math.sin(t * 3 + i)))); };
-  const fill = (y0, y1) => { if (!L.grad) return L.c1; const g = ctx.createLinearGradient(0, y1, 0, y0); g.addColorStop(0, L.g1); g.addColorStop(1, L.g2); return g; };
-  ctx.shadowBlur = L.glow * 18; ctx.shadowColor = L.grad ? opaque(L.g2) : opaque(L.c1);
-  const shape = L.shape, w = (W - 2 * pad) / n;
-  if (['oscilloscope', 'wave', 'line', 'goniometer', 'mountain', 'bloom'].includes(shape)) {
-    ctx.beginPath();
-    for (let i = 0; i <= 160; i++) {
-      const x = pad + (W - 2 * pad) * i / 160;
-      const y = shape === 'oscilloscope' || shape === 'goniometer'
-        ? (top + base) / 2 + Math.sin(i * 0.31 + t * 6) * Math.sin(i * 0.05 + t) * (base - top) * 0.42
-        : base - amp(Math.floor(i * n / 161)) * (base - top);
-      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
-    }
-    if (shape === 'line' || shape === 'mountain' || shape === 'bloom') { ctx.lineTo(W - pad, base); ctx.lineTo(pad, base); ctx.closePath(); ctx.globalAlpha = .55; ctx.fillStyle = fill(top, base); ctx.fill(); ctx.globalAlpha = 1; }
-    ctx.lineWidth = 2; ctx.strokeStyle = L.grad ? L.g2 : L.c1; ctx.stroke();
-  } else if (shape === 'radial') {
-    const cx = W / 2, cy = H / 2, r0 = H * 0.18;
+  if (!card.sim) card.sim = makeSim(L);
+  const S = card.sim; stepSim(L, S, t);
+  const pad = 14, n = L.bars, areaH = (L.reflect > 0 ? H * 0.68 : H - pad) - pad;
+  // The style's real proportions (bar width, gap, height in pixels), scaled to fit the card.
+  const fullW = n * L.barW + (n - 1) * L.gap;
+  const k = Math.min((W - 2 * pad) / fullW, areaH / L.maxSize, 2);
+  const bw = L.barW * k, gp = L.gap * k, mh = L.maxSize * k, left = (W - fullW * k) / 2, base = pad + areaH;
+  if (L.panel) { ctx.fillStyle = css(L.panel); ctx.fillRect(left - 8, base - mh - 8, fullW * k + 16, mh + 16); }
+  if (L.edge) { ctx.strokeStyle = css(L.edge); ctx.lineWidth = 1; ctx.strokeRect(left - 7.5, base - mh - 7.5, fullW * k + 15, mh + 15); }
+  const colOf = i => flash(L, barColour(L, i, n, S.y[i], t), S.pulse);
+  const sizeOf = i => (L.idle + S.y[i] * Math.max(0, L.maxSize - L.idle)) * k;
+  ctx.shadowBlur = L.glow * 14; ctx.shadowColor = css(colOf(Math.floor(n / 2)), 1);
+  const shape = L.shape, xOf = i => left + i * (bw + gp);
+  if (shape === 'led') {
+    // LED Meter: segments half a bar wide; lit ones in the bar colour, the rest at 10%.
+    // Solid mode uses the meter's own green, amber and red.
+    const segH = Math.max(2, Math.round(L.barW * 0.5)), step = segH + 1.5, segs = Math.max(1, Math.floor((L.maxSize + step - segH) / step));
     for (let i = 0; i < n; i++) {
-      const a = i / n * Math.PI * 2, r1 = r0 + amp(i) * H * 0.3;
-      ctx.strokeStyle = L.grad ? (i % 2 ? L.g1 : L.g2) : L.c1; ctx.lineWidth = Math.max(1, w * 0.6);
-      ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); ctx.stroke();
+      const lit = S.y[i] * L.maxSize / step, hold = L.peak ? Math.min(segs - 1, Math.floor(S.pk[i] * L.maxSize / step)) : -1;
+      for (let sg = 0; sg < segs; sg++) {
+        const tt = (sg + 0.5) / segs, on = sg + 0.5 <= lit || sg === hold;
+        const c = L.mode === 'solid' ? (tt >= 0.85 ? [255, 59, 48, 1] : tt >= 0.6 ? [255, 176, 0, 1] : [56, 227, 107, 1]) : colOf(i);
+        ctx.fillStyle = css(c, on ? 1 : 0.1);
+        ctx.fillRect(xOf(i), base - (sg * step + segH) * k, bw, segH * k);
+      }
     }
-  } else if (shape === 'terminal' || shape === 'led' || shape === 'dots') {
-    const rows = 10;
-    for (let i = 0; i < n; i += 1) {
-      const lit = Math.round(amp(i) * rows);
+  } else if (['oscilloscope', 'wave', 'line', 'goniometer', 'mountain', 'bloom'].includes(shape)) {
+    const scope = shape === 'oscilloscope' || shape === 'goniometer', mid = base - mh / 2, energy = S.y.reduce((a, v) => a + v, 0) / n;
+    const pts = [];
+    for (let i = 0; i <= 160; i++) {
+      const x = left + fullW * k * i / 160, bi = Math.min(n - 1, Math.floor(i * n / 161));
+      pts.push([x, scope ? mid + Math.sin(i * 0.31 + t * 6) * Math.sin(i * 0.05 + t) * mh * 0.45 * Math.min(1, energy * 1.6) : base - sizeOf(bi), bi]);
+    }
+    if (!scope) { ctx.beginPath(); pts.forEach(([x, y], j) => j ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.lineTo(pts[pts.length - 1][0], base); ctx.lineTo(pts[0][0], base); ctx.closePath(); const g = ctx.createLinearGradient(left, 0, left + fullW * k, 0); g.addColorStop(0, css(colOf(0), 0.5)); g.addColorStop(1, css(colOf(n - 1), 0.5)); ctx.fillStyle = g; ctx.fill(); }
+    ctx.lineWidth = Math.max(1.5, bw * 0.5);
+    for (let j = 1; j < pts.length; j++) { ctx.strokeStyle = css(colOf(pts[j][2])); ctx.beginPath(); ctx.moveTo(pts[j - 1][0], pts[j - 1][1]); ctx.lineTo(pts[j][0], pts[j][1]); ctx.stroke(); }
+  } else if (shape === 'radial') {
+    const cx = W / 2, cy = (pad + base) / 2, r0 = areaH * 0.2;
+    ctx.lineWidth = Math.max(1, bw);
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2 - Math.PI / 2, r1 = r0 + S.y[i] * areaH * 0.3;
+      ctx.strokeStyle = css(colOf(i)); ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); ctx.stroke();
+    }
+  } else if (shape === 'terminal' || shape === 'dots') {
+    const step = Math.max(3, bw + gp * 0.5);
+    for (let i = 0; i < n; i++) {
+      ctx.fillStyle = css(colOf(i)); const lit = Math.max(1, Math.floor(sizeOf(i) / step));
       for (let r = 0; r < lit; r++) {
-        ctx.fillStyle = shape === 'led' ? (r > rows * 0.8 ? '#e5484d' : r > rows * 0.6 ? '#f2b84b' : '#4cc38a') : (L.grad ? (r > rows / 2 ? L.g2 : L.g1) : L.c1);
-        const y = base - (r + 1) * (base - top) / rows;
-        if (shape === 'dots') { ctx.beginPath(); ctx.arc(pad + i * w + w / 2, y + 4, Math.max(1, w / 2 - 1), 0, 7); ctx.fill(); }
-        else ctx.fillRect(pad + i * w, y + 1, Math.max(1, w - Math.min(L.gap, w / 2)), (base - top) / rows - 2);
+        const y = base - (r + 0.5) * step;
+        if (shape === 'dots') { ctx.beginPath(); ctx.arc(xOf(i) + bw / 2, y, Math.max(1, bw / 2), 0, 7); ctx.fill(); }
+        else ctx.fillRect(xOf(i), y - step * 0.35, bw, step * 0.7);
       }
     }
   } else {
-    const mirror = shape === 'mirror' || shape === 'stereo_field' || shape === 'breathe';
-    const mid = mirror ? (top + base) / 2 : base;
+    const mirror = shape === 'mirror' || shape === 'stereo_field' || shape === 'breathe', mid = mirror ? base - mh / 2 : base;
     for (let i = 0; i < n; i++) {
-      const h = amp(i) * (mirror ? (base - top) / 2 : (base - top));
-      const x = pad + i * w, bw = Math.max(1, w - Math.min(L.gap, w * 0.6));
-      ctx.fillStyle = fill(mid - h, mid);
-      ctx.fillRect(x, mid - h, bw, mirror ? h * 2 : h);
-      if (L.peak) { ctx.fillStyle = L.peakColour; ctx.fillRect(x, mid - h - 4 - 3 * Math.abs(Math.sin(t + i)), bw, 2); }
+      const h = mirror ? sizeOf(i) / 2 : sizeOf(i);
+      ctx.fillStyle = css(colOf(i)); roundRect(ctx, xOf(i), mid - h, bw, mirror ? h * 2 : h, L.radius * k);
+      if (L.peak) { const ph = (L.idle + S.pk[i] * (L.maxSize - L.idle)) * k * (mirror ? 0.5 : 1); ctx.fillStyle = css(L.peakColour); ctx.fillRect(xOf(i), mid - ph - 3, bw, 2); }
     }
   }
   ctx.shadowBlur = 0;
