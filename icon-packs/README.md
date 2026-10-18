@@ -1,5 +1,7 @@
 # Icon packs
 
+See every icon in every pack on the [icon packs page](https://user-tourne.github.io/Tourne-Style/icons.html). After changing a pack, run `python icon-packs/make-previews.py` to rebuild its previews.
+
 | Pack | What's in it | How to use it |
 |---|---|---|
 | [Tourne ink pack](tourne-ink-pack/) | The complete ink set: 1,060 entries (programs, Store apps, Windows' own icons, file types, and Tourne Desktop's taskbar buttons), filled in my dark green. Pack 5 with add-ons 1, 2 and 3 and the Taskbar buttons set folded in, so there's nothing extra to apply. | Tourne'Icons 2.7+: **Apply a pack**, open `pack.tsv`. Say yes when it asks about icons you set yourself to keep them. |

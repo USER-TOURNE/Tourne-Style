@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tourne Icon Packs</title>
+<meta name="description" content="Every icon in Tourne's icon packs: the ink pack, the red and green pack, the pixel tray icons, Start orbs and button icons.">
+<link rel="stylesheet" href="tourne.css">
+<script src="tourne.js"></script>
+<style>
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--panel); color: var(--dim); border: 1px solid var(--edge); padding: 6px 10px; font: inherit; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+  .chip:hover { color: var(--neon); border-color: var(--green); }
+  .chip[aria-pressed=true] { color: var(--ground); background: var(--neon); border-color: var(--neon); font-weight: 700; }
+  .pack { background: var(--panel); border: 1px solid var(--edge); margin-bottom: 22px; }
+  .pack .body { gap: 10px; }
+  .pack .about { font-size: 13px; max-width: 820px; flex: none; }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 4px; padding: 14px; border-top: 1px solid var(--edge); background: #0c1417; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px 8px; border: 1px solid transparent; min-width: 0; cursor: default; }
+  .tile:hover { border-color: var(--edge); background: var(--panel); }
+  .tile i { display: block; background-repeat: no-repeat; flex: none; }
+  .pixel .tile i { image-rendering: pixelated; }
+  .tile span { font-size: 10.5px; color: var(--dim); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tile:hover span { color: var(--text); }
+  .more { margin: 0 14px 14px; }
+</style>
+</head>
+<body>
+<header>
+  <nav><a href="./">STYLES</a><a href="icons.html" aria-current="page">ICON PACKS</a></nav>
+  <div class="frame" data-label="TOURNE'STYLE // ICON PACKS">
+    <div class="top">
+      <div>
+        <svg id="word" role="img" aria-label="Icons"></svg>
+        <p class="tag">TOURNE'STYLE <b>//</b> EVERY ICON IN EVERY PACK</p>
+      </div>
+      <ul class="term">
+        <li><span class="k">&gt; PACKS</span><span class="v" id="packs">reading the packs</span><span class="s" id="state">[ LOADING ]</span></li>
+        <li><span class="k">&gt; ICONS</span><span class="v" id="total">counting</span><span class="s">[ 1:1 ]</span></li>
+        <li><span class="k">&gt; APPLY</span><span class="v">Tourne'Icons 2.7+, Apply a pack, pack.tsv</span><span class="s">[ 01 ]</span></li>
+        <li><span class="k">&gt; KEEP</span><span class="v">say yes to keep icons you set yourself</span><span class="s">[ 02 ]</span></li>
+      </ul>
+    </div>
+    <p class="lede">Every picture in my icon packs, drawn from the pack files themselves at their real pixel size. Hover an icon for what it replaces. Get a pack from the repo and apply it with Tourne'Icons; the tray icons are drawn live by Tourne'Tray and the suite.</p>
+  </div>
+  <div class="bar">
+    <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search icons: discord, folder, txt, wifi" aria-label="Search icons"></label>
+    <div class="chips" id="chips"></div>
+  </div>
+</header>
+<main id="main"></main>
+<footer><span class="blk">&#9635;</span> Part of <a href="https://github.com/USER-TOURNE/Tourne-Style">Tourne'Style</a>. <a href="https://github.com/USER-TOURNE/Tourne-Style/tree/main/icon-packs">All packs on GitHub</a>. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
+<script>
+pixelWord(document.getElementById('word'), 'ICONS');
+const REPO = 'https://github.com/USER-TOURNE/Tourne-Style/tree/main/icon-packs/';
+const KINDS = { program: 'program', package: 'Store app', icon: 'Windows icon', filetype: 'file type', button: 'taskbar button', tray: 'tray icon', orb: 'Start orb' };
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+let packs = [], pick = 'all';
+
+function render() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  packs.forEach(p => {
+    let shown = 0;
+    p.tiles.forEach(t => { const on = !q || t.key.includes(q); t.el.style.display = on ? '' : 'none'; if (on) shown++; });
+    p.el.style.display = (pick === 'all' || pick === p.id) && shown ? '' : 'none';
+    p.count.textContent = q ? `[ ${shown} OF ${p.icons.length} ]` : `[ ${p.icons.length} ICONS ]`;
+  });
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.id === pick));
+}
+
+async function load() {
+  try { packs = await (await fetch('icons/packs.json', { cache: 'no-cache' })).json(); }
+  catch { document.getElementById('state').textContent = '[ OFFLINE ]'; document.getElementById('main').innerHTML = '<div class="empty">Couldn\'t load the packs. Try again in a moment.</div>'; return; }
+  const main = document.getElementById('main'), chips = document.getElementById('chips');
+  const chip = (id, label) => { const c = el('button', 'chip', label); c.dataset.id = id; c.onclick = () => { pick = id; render(); }; chips.appendChild(c); };
+  chip('all', 'All');
+  packs.forEach((p, n) => {
+    chip(p.id, p.name.replace(/^Tourne /, ''));
+    const sec = el('section', 'pack' + (p.pixel ? ' pixel' : ''));
+    const head = el('div', 'head'); head.append(el('span', null, `▣ ${String(n + 1).padStart(2, '0')} // ${p.id}`));
+    p.count = el('span', 'live'); head.append(p.count); sec.append(head);
+    const body = el('div', 'body');
+    body.append(el('div', 'name', p.name), el('div', 'about', p.about));
+    const act = el('div', 'actions'); const get = el('a', 'btn', 'Get the pack'); get.href = REPO + p.folder; act.append(get); body.append(act);
+    sec.append(body);
+    const grid = el('div', 'icons'); const s = p.show, scale = s / p.cell;
+    p.tiles = p.icons.map((ic, i) => {
+      const t = el('div', 'tile'), pic = el('i');
+      pic.style.cssText = `width:${s}px;height:${s}px;background-image:url(icons/${p.id}.png);background-size:${p.cols * s}px auto;background-position:-${(i % p.cols) * s}px -${Math.floor(i / p.cols) * s}px`;
+      const kind = KINDS[ic.k] || ic.k;
+      t.title = `${ic.n}\n${kind}${ic.w ? ' · ' + ic.w.toLowerCase() : ''}`;
+      t.append(pic, el('span', null, ic.n)); grid.append(t);
+      return { el: t, key: `${ic.n} ${kind}`.toLowerCase() };
+    });
+    sec.append(grid); main.append(sec); p.el = sec;
+  });
+  const total = packs.reduce((a, p) => a + p.icons.length, 0);
+  document.getElementById('packs').textContent = `${packs.length} packs`;
+  document.getElementById('total').textContent = `${total.toLocaleString('en')} pictures`;
+  document.getElementById('state').textContent = '[ LIVE ]';
+  render();
+}
+document.getElementById('q').addEventListener('input', render);
+load();
+</script>
+</body>
+</html>
