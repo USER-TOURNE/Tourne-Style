@@ -13,7 +13,7 @@ Around the parts, it grew everything a desktop needs:
 - **The Tourne theme:** colours made from the wallpaper (k-means in OKLab, every text colour pushed until it meets the contrast asked for), written to one record that the taskbar, switcher and icons all follow. Nothing runs while nothing changes.
 - **Tourne Studio:** every setting in one window, pages built from each part's own settings schema, live while you edit, kept when you save, with undo and redo. It writes only its own file, so a hand-written config stays yours.
 - **Glass:** a Direct3D shader for liquid glass (refraction at the edge, fringe, blur, lens, fresnel, oil film) behind the Studio, around the window in front, or inside chosen apps.
-- **824 presets:** I asked for every palette and look that could be found. 1,322 turned up (base16, terminal themes, Omarchy, HyDE, end-4, YASB, niivu...), and 824 had a full set of colours. One click makes one the theme.
+- **824 presets:** I went looking for every palette and look I could find. 1,322 turned up (base16, terminal themes, Omarchy, HyDE, end-4, YASB, niivu...), and 824 had a full set of colours. One click makes one the theme.
 - **Identities:** one switch for shape, frame, material and motion across every piece (Wise Wolf, Everforest, Ghost Shell).
 - **A CSS injector** for apps made of web pages, behind a warning, because it needs the app started with a debugging port.
 

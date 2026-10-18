@@ -1,6 +1,8 @@
 # Tourne Hooks: the classic look without Windhawk
 
-Status: not going ahead (2026-10-07). The hook parts stay in Windhawk (the suite with only them on, `tools/windhawk/Set-SuiteParts.ps1`). Kept for the record.
+*October 7, 2026.*
+
+I'm not going ahead with this one. The hook parts stay in Windhawk (the suite with only them on, `tools/windhawk/Set-SuiteParts.ps1`). I'm keeping the plan here for the record.
 
 ## The problem
 
@@ -49,8 +51,8 @@ Each step is swapped in and checked on its own. After step 3, Windhawk isn't nee
 
 b53 can run again with only the hook parts on (its taskbar, switcher, system icons, tray, clock and Start off), so the Explorer look is back today while Tourne Desktop does the rest. Each step above then turns its parts off in b53.
 
-## Decisions for Tourne
+## What I had to decide
 
-1. Go on Tourne Hooks, in the order above?
+1. Go ahead with Tourne Hooks, in the order above? (I didn't, see the top.)
 2. Programs run as administrator: leave them out for now, or plan the elevated helper too?
 3. Turn b53 back on with only the hook parts for now?

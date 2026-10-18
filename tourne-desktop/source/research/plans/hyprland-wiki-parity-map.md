@@ -1,10 +1,12 @@
 # TourneSuite Hyprland wiki parity map
 
-Written 2026-10-04. My ask: "reference the entire wiki for a full ecosystem of what I'd like part wise ... it should have every functionality we can, just made to be used with windows instead of for linux".
+*October 4, 2026.*
 
-**Sources.** wiki.hypr.land is blocked from the server, so every Hyprland claim here comes from the wiki's own source files, at github.com/hyprwm/hyprland-wiki (branch main, the "latest git" wiki). Each section names its source file. The site address is the same path (for example `content/configuring/core/dispatchers.md` is wiki.hypr.land/configuring/core/dispatchers/; that mapping is inferred from the site's structure). A copy of every page used is in `tourne-research/hyprland-wiki-cache/`. Plugins come from github.com/hyprwm/hyprland-plugins and Pyprland from github.com/hyprland-community/pyprland. Anything not read from a source is marked "inferred".
+I went through the entire Hyprland wiki to map out the full ecosystem of parts I want. The goal: every function Hyprland has, just made for Windows instead of Linux.
 
-**Grounding.** The repo (tiling.cpp, tiling-layouts.cpp, borders.cpp, switcher-host.cpp, taskbar-host.cpp, desktops-pager.cpp, desktop/, DEVLOG.md) and the 2026-10-04 handoff. The older reports (window manager and workspaces, auto theming, 12 themes, native taskbar off, shell core) were not in this project's files, so their content is used only as far as the handoff summarises it. The workspace model follows Tourne's earlier pick: **hybrid**, Windows' own virtual desktops stay and the suite builds on top.
+**Sources.** I couldn't load wiki.hypr.land while writing this, so every Hyprland claim here comes from the wiki's own source files, at github.com/hyprwm/hyprland-wiki (branch main, the "latest git" wiki). Each section names its source file. The site address is the same path (for example `content/configuring/core/dispatchers.md` is wiki.hypr.land/configuring/core/dispatchers/; that mapping is inferred from the site's structure). A copy of every page used is in `tourne-research/hyprland-wiki-cache/`. Plugins come from github.com/hyprwm/hyprland-plugins and Pyprland from github.com/hyprland-community/pyprland. Anything not read from a source is marked "inferred".
+
+**Grounding.** The repo (tiling.cpp, tiling-layouts.cpp, borders.cpp, switcher-host.cpp, taskbar-host.cpp, desktops-pager.cpp, desktop/, DEVLOG.md) and my 2026-10-04 notes. My older write-ups (window manager and workspaces, auto theming, 12 themes, native taskbar off, shell core) weren't on hand, so I only use what those notes summarise from them. The workspace model follows my earlier pick: **hybrid**, Windows' own virtual desktops stay and the suite builds on top.
 
 **Note on the wiki itself.** Hyprland now configures in Lua (`hl.config`, `hl.dsp.*`, `hl.animation`) instead of `hyprland.conf`. Source: [configuring/core/config-options](https://github.com/hyprwm/hyprland-wiki/blob/main/content/configuring/core/config-options.md). Tourne keeps its Hyprland-style `tourne.conf`.
 
@@ -42,7 +44,7 @@ Top 5 gaps (most value for my goal, all possible):
 2. **Workspace tools on top of Windows desktops** (P2): scratchpads, pin to all desktops, rename, persistent desktops, back and forth, send to screen.
 3. **Layouts**: dwindle and master messages, and the scrolling layout (P2).
 4. **IPC and `tournectl`** with Hyprland-like events (P1), so bars, scripts and the settings window share one control path.
-5. **Ecosystem parts**: wallpaper manager with recolourer (first, as I asked), idle, colour picker, screenshot, launcher, OSD, clipboard (P5).
+5. **Ecosystem parts**: wallpaper manager with recolourer (first, it's the one I want most), idle, colour picker, screenshot, launcher, OSD, clipboard (P5).
 
 ## 1. Config language
 
@@ -55,7 +57,7 @@ Source: [configuring/core/_index](https://github.com/hyprwm/hyprland-wiki/blob/m
 | `Auto reload on save` | Apply on save | Exists | Folder watch, only changed modules told | Yes | Done |
 | `Sourcing other files (source = ...)` | Split config across files | Missing | `source = path` in tourne.conf; sets use it | Yes | P1 |
 | `Variables ($var)` | Reusable values | Missing | Variables in tourne.conf | Yes | P1 |
-| `Lua scripting, lambdas, conditional binds` | Programmable config | Missing | Not planned: I asked for no terminal. Rules, binds and events cover the uses; a plugin API later (inferred decision, still mine to confirm) | Approximate | P7 |
+| `Lua scripting, lambdas, conditional binds` | Programmable config | Missing | Not planned: I want no terminal. Rules, binds and events cover the uses; a plugin API later (inferred decision, still mine to confirm) | Approximate | P7 |
 | `Expressions in rules (monitor_w * 0.5)` | Math in sizes | Missing | Small expression evaluator for rule values | Yes | P1 |
 | `Data types: color (rgba, gradients with angle)` | Colour syntax | Exists (borders: "#64aa89 #121c21 0,1 1,0" gradient form) | Accept Hyprland's rgba() and 0xAARRGGBB too | Yes | P1 |
 | `Config errors shown on screen` | Error bar | Partial (logged, skipped; desktop.log) | Tourne toast with the line number | Yes | P1 |
@@ -1203,7 +1205,7 @@ Sources: [ipc/_index](https://github.com/hyprwm/hyprland-wiki/blob/main/content/
 
 ## 13. Plugins and Pyprland
 
-Sources: [hyprland-plugins README](https://github.com/hyprwm/hyprland-plugins) (its plugin list now names borders-plus-plus, csgo-vulkan-fix, hyprbars and hyprfocus; the others below are from memory of earlier versions and marked inferred), [Pyprland README](https://github.com/hyprland-community/pyprland) (plugin names from its change history; list inferred as not complete).
+Sources: [hyprland-plugins README](https://github.com/hyprwm/hyprland-plugins) (its plugin list now names borders-plus-plus, csgo-vulkan-fix, hyprbars and hyprfocus; the others below are from earlier versions I'd seen and marked inferred), [Pyprland README](https://github.com/hyprland-community/pyprland) (plugin names from its change history; list inferred as not complete).
 
 | Hyprland feature | What it does | Tourne today | Windows route | Possible? | Phase |
 | --- | --- | --- | --- | --- | --- |
@@ -1310,9 +1312,9 @@ Each is a Tourne Desktop module (hook-free) unless it says Windhawk. Each covers
 
 Starting from what exists: taskbar, switcher with tiling and borders, pager, theme engine, CSS injector, Tourne Desktop host.
 
-| Phase | What gets built | How the user's day changes |
+| Phase | What gets built | How your day changes |
 | --- | --- | --- |
-| **P1 Control** | Binds engine with submaps and flags; window rules engine (matchers, static effects, tags); simple dispatchers; IPC pipe and `tournectl`; events; config sourcing, variables, expressions, autostart; error toasts; first-run page | One place to bind any action; apps open where and how the user wants; bars and scripts can follow Tourne. Nothing changes until the user sets it |
+| **P1 Control** | Binds engine with submaps and flags; window rules engine (matchers, static effects, tags); simple dispatchers; IPC pipe and `tournectl`; events; config sourcing, variables, expressions, autostart; error toasts; first-run page | One place to bind any action; apps open where and how you want; bars and scripts can follow Tourne. Nothing changes until the user sets it |
 | **P2 Workspaces and layouts** | Scratchpads; pin, rename, persistent desktops; dwindle and master messages; scrolling layout; mouse move and resize binds; snapping; off-screen rescue; focus and warp options; swallow | Feels like Hyprland's window handling on top of Windows desktops |
 | **P3 Look and motion** | Animations engine with bezier and spring; dim inactive and around; opacity; per-window border rules; shadow and glow options; corner preference; Tourne surface blur variants; hyprfocus flash | The look of a riced Hyprland setup, within DWM's limits |
 | **P4 Groups and overview** | Tab groups with a tab strip; overview of all desktops; title bars (hyprbars) | Tabbed windows and an expo view |

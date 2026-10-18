@@ -6,7 +6,7 @@ What a month of beating Windows into shape taught me. If you're building Windhaw
 
 - **Idle means no work.** No polling. Wait on a file change, a registry change, a window event or a timer that's only set while something's happening. Measure it: wakes per second per thread, not "feels fine".
 - **New features ship off. Hotkeys default to none.** Installing a build should change nothing you can see.
-- **Your settings are the defaults.** Read what the user already set (in StartAllBack, Winaero, Simple Window Switcher, Windows itself) and start from there.
+- **Your settings are the defaults.** Read what you've already set (in StartAllBack, Winaero, Simple Window Switcher, Windows itself) and start from there.
 - **Never put a low-level hook on a thread that draws.** Windows times the hook out and passes the key or click on. A hook gets its own thread and only posts.
 - **Never do anything slow inside a hook.** No file writes, no sends. Defer it.
 - **Post, don't send, between your own threads.** A send to a busy thread stalls the sender, and same-process `WM_COPYDATA` with a timeout can leave you reading freed memory.
