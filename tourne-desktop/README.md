@@ -74,6 +74,15 @@ Most bundled plugins need nothing. These call a free tool you install yourself, 
 - **Back up first.** `source/tester-kit` records your Windows settings before you start and puts them back afterwards, and offers a restore point.
 - **Remove it completely:** `TourneDesktop.exe --restore`, then `--uninstall` (stops it starting with Windows), then `--stop`, then delete the folder, `%APPDATA%\Tourne\Desktop` and `%LOCALAPPDATA%\Tourne\Desktop`.
 
+## What it looks like
+
+| | |
+|---|---|
+| ![Tourne Studio](source/images/40-tourne-studio.png) | ![Glass in the Studio](source/images/42-studio-glass.png) |
+| ![Presets](source/images/43-studio-presets.png) | ![Glass looks](source/images/41-glass-looks.jpg) |
+
+More screenshots are in [`source/images/`](source/images/).
+
 ## What works, and what isn't finished
 
 **Working, in daily use on my PC:** the taskbar, the Start menu, Alt+Tab with its list, Flip 3D and Cover Flow views, tiling and borders, the system icons and their flyouts, the tray (with folders), Tourne Studio, presets, the Tourne theme, identities, glass, shell mode with startup apps, keys and rules, Tourne Menu (the LiteMenu replacement, with its editor), UI sounds, Luau plugins with the bar and panels, and the built-in Tourne'Table.

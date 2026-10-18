@@ -2,6 +2,8 @@
 
 Linux-level customizing for Windows, with no phoning home. Everything I've made, in one place: **Tourne Desktop**, every **Windhawk mod** (latest versions only), the **icon packs**, the **Tourne'Table community styles**, and the devlogs that explain how it all got here.
 
+![Tourne'Table on my desktop](windhawk-mods/tourne-table/media/showcase/tourne-hero.gif)
+
 | | What it is | Where |
 |---|---|---|
 | **Tourne Desktop** | The taskbar, Start menu, switcher with tiling, system icons and flyouts, Studio, plugins and the built-in Tourne'Table, as one program. On my PC it runs as the Windows shell. | [`tourne-desktop/`](tourne-desktop/) |

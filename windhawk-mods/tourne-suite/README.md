@@ -31,6 +31,20 @@ on or off on its own.
 | Icon Redirect | Icon themes and single-app icon swaps | Every program, while it has a theme or a row |
 | Tweaks | Winaero Tweaker's options, 312 of them | Windhawk's own process; every program for the live font swap |
 
+## What it looks like
+
+![My desktop with the suite on](images/01-desktop.png)
+
+| | |
+|---|---|
+| ![Start menu](images/03-start-menu.png) | ![Volume mixer](images/04-volume-mixer.png) |
+| ![Network flyout](images/05-network-flyout.png) | ![Hidden icons](images/06-hidden-icons.png) |
+| ![Device batteries and power plan](images/07-device-batteries.png) | ![Jump list](images/11-jump-list.png) |
+| ![Window preview](images/13-window-preview.png) | ![Switcher](images/14-switcher.png) |
+| ![Switcher grid](images/15-switcher-grid.png) | ![Switcher thumbnails](images/16-switcher-thumbnails.png) |
+
+More in [`images/`](images/): the taskbar, the orb with Tourne'Table, the StartAllBack theme reader, the light switcher. There's also a [tour of the settings](images/tourne-suite-settings-tour.mp4) (video).
+
 **Taskbar (test)** runs beside StartAllBack's taskbar while it's tested: pinned
 apps, grouping in the same order as StartAllBack, jump lists (right-click; the
 app's own Windows menu on right-clicking it there), live window previews, the
