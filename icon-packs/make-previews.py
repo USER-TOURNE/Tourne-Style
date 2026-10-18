@@ -59,9 +59,5 @@ def orb(it):
 add('orbs', 'tourne-start-orbs', "Tourne Start orbs", "Start buttons in the Start Mark designs for StartAllBack or Tourne Desktop's taskbar.",
     [{'n': os.path.basename(p)[:-7].replace('Tourne ', '').replace('tourne-', '').replace('-', ' '), 'k': 'orb', 'w': '', 'f': p} for p in orbs], 48, 48, orb, pixel=True)
 
-btn = sorted(glob.glob(os.path.join(ROOT, 'tourne-button-icons', '*.ico')))
-add('buttons', 'tourne-button-icons', "Tourne button icons", "Taskbar button icons in the Bouquet taskbar set's style.",
-    [{'n': os.path.basename(p)[:-4], 'k': 'button', 'w': '', 'f': p} for p in btn], 64, 48, lambda it: ico(it['f'], 64), pixel=True)
-
 json.dump(packs, open(os.path.join(OUT, 'packs.json'), 'w'), separators=(',', ':'))
 print('\n'.join(f"{p['name']}: {len(p['icons'])}" for p in packs))
