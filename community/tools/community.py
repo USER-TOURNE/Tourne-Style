@@ -95,6 +95,9 @@ def clean(s, keys, quick):
         if PATHISH.search(v) or "\n" in v:
             notes.append(f"`{k}` looks like a file path, left out")
             continue
+        if len(v) > 128:  # Tourne'Table skips longer values on import too
+            notes.append(f"`{k}` is longer than any real setting, left out")
+            continue
         if k in seen:
             continue
         seen.add(k)
