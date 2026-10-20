@@ -11,7 +11,7 @@ Every Windhawk mod I've made, newest version only. Each folder holds the mod's `
 | [Tourne'Suite](tourne-suite/) | b55 | Every Tourne part that hooks Windows, in one mod, each part a switch: System Icons and the Explorer relay, Change Tray Icons, Tray Folders, Clock, System Text Color, Menu No Icons and No Duplicates, Classic Menus, Icon Redirect, Explorer Style and Colors, Theme Gaps, Dark Magic, Tweaks, plus the older test Taskbar and Switcher (Tourne Desktop has the current ones). |
 | [Tourne Menus](tourne-menus/) | 1.0.6 | Explorer's, the file dialogs' and Windows' menus in Tourne Desktop's look. |
 | [Tourne'Icons](tourne-icons/) | 2.7.1 | Change any icon everywhere from a picker in the tray; applies icon packs. Comes with **Tourne'Icons Lasting** 1.7.1 (no hooks, changes stay with the mod off) and **Tourne'Icons Kit** (the same as a plain program, no Windhawk). |
-| [Tourne'Table](tourne-table/) | 2.1.0 (in the catalog) | The desktop audio visualizer, ported out of Tourne Desktop as a mod of its own, with community styles. The same file as in the Windhawk Explore catalog. Screenshots and GIFs are in [`media/`](tourne-table/media/). |
+| [Tourne'Table](tourne-table/) | 2.1.1 (2.1.0 in the catalog, 2.1.1 in review) | The desktop audio visualizer, ported out of Tourne Desktop as a mod of its own, with community styles. The catalog has 2.1.0; 2.1.1 is in review. Screenshots and GIFs are in [`media/`](tourne-table/media/). |
 
 ## Standalones that are also suite parts
 

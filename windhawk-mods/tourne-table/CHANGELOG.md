@@ -6,6 +6,30 @@
 
 ---
 
+## ❀ v2.1.1: A Styles Page, and Imports That Can't Hurt
+
+**Status:** submitted to the Windhawk Explore catalog ([ramensoftware/windhawk-mods#6351](https://github.com/ramensoftware/windhawk-mods/pull/6351)), in review.
+
+### ✦ Community styles page
+- **Browse Community Styles** opens the [Tourne'Style styles page](https://user-tourne.github.io/Tourne-Style/) in your default browser, with a live preview of every shared style and a Copy code button, instead of a folder of files.
+- The menu item reads "Browse Community Styles (opens in your browser)", and the readme's "Share your style" section links to the page.
+- The mod still never goes online. Styles come in only through **Paste code** or **Open file**.
+
+### ✦ Shared setups
+- Shared setups no longer carry Click to Seek, Keyboard Move, drag or the right-click mode, so someone else's style can't change how your mouse and keyboard behave.
+- Imported values longer than 128 characters are skipped (512 for Waterfall Ramp), and quick settings are no longer duplicated, so an imported setup can't get lost on the next restart.
+- Very long setup codes are trimmed in one step, so a crafted code can't freeze the visualizer.
+
+### ✦ Fixes
+- Keyboard Move with Alt or Win in the shortcut no longer opens Start, activates a menu bar or switches the input language when you let go.
+- A Media Card volume drag ends if the mouse is taken away mid-drag (a UAC prompt, Ctrl+Alt+Del), so hovering the card afterwards no longer changes the volume.
+- Album art, album colours and Now Playing text no longer lag a track behind when a player sends several updates per track.
+- If the GPU can't be rebuilt after a driver update or device change, the visualizer retries every two seconds and comes back on its own instead of staying blank or crashing.
+
+No settings or defaults were changed.
+
+---
+
 ## ❀ v2.1.0: In the Windhawk Explore Catalog
 
 **Status:** passed review and merged into the official Windhawk Explore catalog on October 17, 2026 ([ramensoftware/windhawk-mods#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)), replacing 1.x there. Same version number and id as the 2.1.0 entry below; this is that build after two rounds of the catalog's review.

@@ -9,7 +9,7 @@ Pull a commit, build Tourne Desktop and swap it into the copy running as the she
 The running exe in %LOCALAPPDATA%\Tourne\Desktop\bin is renamed (Windows allows that), the build
 copied in, and only the --shell-child ended, with exit code 3 (kPlannedRestart): the --shell
 watchdog starts the new exe from the same path and counts no crash. Never quit it cleanly (exit 0
-hands the session to Explorer). Every write goes through Invoke-Real: Claude's shell has its
+hands the session to Explorer). Every write goes through Invoke-Real: this shell has its
 AppData writes redirected.
 
 A watchdog from before kPlannedRestart (it marks itself in HKCU\Software\Tourne\Desktop\Watchdog)

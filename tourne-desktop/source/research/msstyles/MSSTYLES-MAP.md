@@ -4,7 +4,7 @@ Research for b24 (2026-09-29). Every class, part, state and property of eleven s
 
 ## How it was done
 
-- **Reading the styles.** `tools/msstyles/Dump-Msstyles.ps1` drives `libmsstyle`, the library inside msstyleEditor 2.1.2 (`.theme files\Claude Files to View for reference\msstyleEditor.exe`), from Windows PowerShell. It writes one row per property (`research/msstyles/<style>.tsv`) and exports every image (`<style>/img/`, kept out of git).
+- **Reading the styles.** `tools/msstyles/Dump-Msstyles.ps1` drives `libmsstyle`, the library inside msstyleEditor 2.1.2 (its `msstyleEditor.exe`), from Windows PowerShell. It writes one row per property (`research/msstyles/<style>.tsv`) and exports every image (`<style>/img/`, kept out of git).
 - **Comparing.** `tools/msstyles/Compare-Msstyles.ps1` compares a style with a base. Values are compared as text. Images are compared by their decoded pixels, since a PNG that was saved again has different bytes. Each class is tagged with the part of Windows it paints (`Msstyles-Surfaces.ps1`). Results are in `research/msstyles/compare/` and `compare-summary.txt`.
 - **Asking Windows.** `tools/msstyles/resolve.cpp` loads a style file the way the suite does and asks uxtheme for the value it really gives and where it came from (`GetThemePropertyOrigin`).
 

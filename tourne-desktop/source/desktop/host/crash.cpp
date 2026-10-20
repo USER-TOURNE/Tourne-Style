@@ -162,7 +162,7 @@ void Report(EXCEPTION_POINTERS* info) {
     static std::wstring message;
     message = L"Tourne Desktop crashed";
     if (!g_now.empty()) message += L" while starting " + g_nowTitle + L". Next time it starts without it, until you save a setting";
-    message += L".\n\nWhat happened is in\n" + path + L"\nSend that file to Claude. Open it now?";
+    message += L".\n\nWhat happened is in\n" + path + L"\nKeep that file for a bug report. Open it now?";
     static std::wstring opened;
     opened = path;
     // Asked from a thread of its own while this one waits: a message box here would run this thread's
