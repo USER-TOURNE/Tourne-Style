@@ -2,7 +2,7 @@
 // @id              tourne-icons
 // @name            Tourne'Icons
 // @description     Change any icon once, by picking it from your taskbar, tray, desktop or Start, and it changes everywhere. No system file is changed
-// @version         2.7.1
+// @version         2.7.2
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
@@ -81,7 +81,7 @@ were.
   windows (and their taskbar buttons) once it's opened again. **Refresh
   icons** (in the picker, or on the tray icon's right-click menu) asks
   Windows again if one stays old.
-- **Store apps** (Settings, Calculator, Photos, Claude and the like) change
+- **Store apps** (Settings, Calculator, Photos and the like) change
   too: their logos are pictures in their packages, so every one of them
   (each size and variant the app ships) gets a picture made from your icon,
   and any program that opens the logo gets yours. That's the taskbar, Start,
@@ -1669,6 +1669,12 @@ std::vector<std::wstring> ThemeInis(RuleSettings const& settings) {
 RuleSet* BuildRuleSet(RuleSettings const& settings) {
     auto* set = new RuleSet;
     AcquireSRWLockExclusive(&g_buildLock);
+    // The lock is let go even if a row throws, so the next reload doesn't wait forever.
+    struct Unlock {
+        ~Unlock() { ReleaseSRWLockExclusive(&g_buildLock); }
+    };
+    std::unique_ptr<Unlock> unlock(new Unlock);
+    std::unique_ptr<RuleSet> owned(set);
 
     for (auto const& ini : ThemeInis(settings)) {
         AddThemeIni(*set, ini);
@@ -1712,17 +1718,22 @@ RuleSet* BuildRuleSet(RuleSettings const& settings) {
         }
     }
 
-    ReleaseSRWLockExclusive(&g_buildLock);
+    unlock.reset();
     set->signature = settings.Signature();
     set->generation = ++g_generation;
-    return set;
+    return owned.release();
 }
 
 INIT_ONCE g_rulesOnce = INIT_ONCE_STATIC_INIT;
 
 BOOL CALLBACK BuildFirstRules(PINIT_ONCE, PVOID, PVOID*) {
     t_busy++;
-    RuleSet* set = BuildRuleSet(ReadRuleSettings());
+    RuleSet* set = nullptr;
+    try {
+        set = BuildRuleSet(ReadRuleSettings());
+    } catch (...) {
+        set = new RuleSet;  // No changes rather than a crash in the program that asked.
+    }
     t_busy--;
     Wh_Log(L"%zu rules", set->rules.size());
     g_ruleSet.store(set, std::memory_order_release);
@@ -2714,11 +2725,29 @@ void OnRulesChanged() {
     EnumWindows(TellBarIcons, 0);
 }
 
+// Runs on a thread pool thread inside every program the mod is in, so it must
+// never let anything escape: one save fires it twice (the new file, then the
+// swap), and the two used to run at once. Now one runs at a time and a change
+// that lands meanwhile makes it go round once more.
+SRWLOCK g_listChangeLock = SRWLOCK_INIT;
+std::atomic<bool> g_listChangeAgain{false};
+
 void CALLBACK ListChanged(PVOID, BOOLEAN) {
     FindNextChangeNotification(g_listChange);
-    if (RebuildRules()) {
-        OnRulesChanged();
+    g_listChangeAgain = true;
+    if (!TryAcquireSRWLockExclusive(&g_listChangeLock)) {
+        return;  // The one running sees the flag.
     }
+    while (g_listChangeAgain.exchange(false)) {
+        try {
+            if (RebuildRules()) {
+                OnRulesChanged();
+            }
+        } catch (...) {
+            Wh_Log(L"Couldn't read the changed list; keeping the icons as they were");
+        }
+    }
+    ReleaseSRWLockExclusive(&g_listChangeLock);
 }
 
 void WatchList() {
@@ -5084,7 +5113,7 @@ int TakeInEarlierChanges() {
         }
     };
     sink.theme = [&](std::wstring const& theme) { add({L"theme", theme, L"", ParseTheme(theme).name}); };
-    // A Store app goes by its app id (Claude_pzs8sxrjxfjjc!Claude). A row with
+    // A Store app goes by its app id (Microsoft.WindowsCalculator_8wekyb3d8bbwe!App). A row with
     // a command line (Chrome.exe --app=...) stands for one web app's buttons,
     // which no file holds.
     sink.buttonIcon = [&](std::wstring match, std::wstring const& iconValue) {

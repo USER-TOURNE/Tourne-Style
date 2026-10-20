@@ -75,7 +75,7 @@ Right-click the visualizer, then **My Styles > Style Editor > Community > Share 
 
 ## What was left out on purpose
 
-- **Older builds.** Only the newest version of each mod is here: suite b55, Tourne'Table 2.1, Tourne'Icons 2.7.1, and so on.
+- **Older builds.** Only the newest version of each mod is here: suite b55, Tourne'Table 2.1, Tourne'Icons 2.7.2, and so on.
 - **Personal settings.** The suite and Tweaks bake my settings in as defaults; paths into my own folders and e-mail addresses were blanked, and the `.reg` exports of my own settings aren't included. Icon pack rows that only pointed at files on my PC were dropped (85 in the ink pack, 34 in the red and green pack).
 - **Third-party theme files** (Bouquet, Everforest and others) aren't redistributed; the research notes that describe them are.
 
