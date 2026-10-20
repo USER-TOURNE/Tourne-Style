@@ -30,6 +30,7 @@
     <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search by name, author or shape" aria-label="Search styles"></label>
     <a class="btn primary" id="share" href="#">Share yours</a>
     <a class="btn" id="get" href="#">Get Tourne'Table</a>
+    <a class="btn" id="motion" href="#" hidden>Play previews</a>
   </div>
 </header>
 <main>
@@ -314,8 +315,23 @@ async function load() {
   const texts = await Promise.all(entries.map(e => fetch(RAW + e.file).then(r => r.ok ? r.text() : '').catch(() => '')));
   entries.forEach((e, i) => { const c = card(e, texts[i]); if (c) grid.appendChild(c); });
   setState(`${cards.length} style${cards.length === 1 ? '' : 's'}, live from the repo`, '[ LIVE ]');
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const frame = ts => { cards.forEach(c => { if (c.el.style.display !== 'none') draw(c, still ? 1.7 : ts / 1000); }); if (!still) requestAnimationFrame(frame); };
+  // Windows with animation effects off asks for reduced motion, so previews start still there, with a button to play
+  // them (remembered on this browser).
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches, motion = document.getElementById('motion');
+  let play = !reduced;
+  try { if (reduced && localStorage.getItem('tt-play-previews') === '1') play = true; } catch {}
+  const frame = ts => { cards.forEach(c => { if (c.el.style.display !== 'none') draw(c, play ? ts / 1000 : 1.7); }); if (play) requestAnimationFrame(frame); };
+  if (reduced) {
+    motion.hidden = false;
+    motion.textContent = play ? 'Pause previews' : 'Play previews';
+    motion.addEventListener('click', e => {
+      e.preventDefault();
+      play = !play;
+      motion.textContent = play ? 'Pause previews' : 'Play previews';
+      try { localStorage.setItem('tt-play-previews', play ? '1' : '0'); } catch {}
+      if (play) requestAnimationFrame(frame);
+    });
+  }
   requestAnimationFrame(frame);
 }
 document.getElementById('q').addEventListener('input', e => {

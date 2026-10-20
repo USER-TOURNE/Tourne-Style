@@ -31,6 +31,7 @@
   input[type=search] { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); padding: 10px 0; font: inherit; }
   input::placeholder { color: #4f6e6c; }
   .btn { background: var(--raised); color: var(--text); border: 1px solid var(--edge); padding: 8px 12px; font: inherit; font-size: 12.5px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-block; }
+  .btn[hidden] { display: none; }
   .btn::before { content: "[ "; color: var(--dim); } .btn::after { content: " ]"; color: var(--dim); }
   .btn:hover { border-color: var(--neon); color: var(--neon); text-decoration: none; }
   .btn.primary { background: var(--neon); color: var(--ground); border-color: var(--neon); font-weight: 700; box-shadow: 3px 3px 0 var(--brick); }
