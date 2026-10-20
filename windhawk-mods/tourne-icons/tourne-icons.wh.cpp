@@ -2,7 +2,7 @@
 // @id              tourne-icons
 // @name            Tourne'Icons
 // @description     Change any icon once, by picking it from your taskbar, tray, desktop or Start, and it changes everywhere. No system file is changed
-// @version         2.7.2
+// @version         2.7.3
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
@@ -2675,7 +2675,71 @@ BOOL WINAPI Shell_NotifyIconW_Hook(DWORD message, PNOTIFYICONDATAW data) {
     NOTIFYICONDATAW copy{};
     memcpy(&copy, data, std::min<size_t>(data->cbSize, sizeof(copy)));
     copy.hIcon = swap;
-    return Shell_NotifyIconW_Original(message, &copy);
+    BOOL result = Shell_NotifyIconW_Original(message, &copy);
+    if (!result && message == NIM_ADD) {
+        // Already shown (it was put back after TaskbarCreated): change it in place.
+        result = Shell_NotifyIconW_Original(NIM_MODIFY, &copy);
+    }
+    return result;
+}
+
+// When the mod loads into a program that already shows a tray icon (after an
+// update, or turning the mod back on), that icon was set before the hook, so
+// it's the program's own. Once, a few seconds after loading, a program that has
+// a new icon is told the taskbar was made again, and it puts its icons back
+// through the hook. Programs without a top-level window, or without a new
+// icon, are left alone and don't read the rules for it.
+HANDLE g_trayNudgeTimer;
+
+BOOL CALLBACK NudgeOwnWindow(HWND window, LPARAM message) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(window, &pid);
+    if (pid == GetCurrentProcessId()) {
+        PostMessageW(window, (UINT)message, 0, 0);
+    }
+    return TRUE;
+}
+
+BOOL CALLBACK FindOwnWindow(HWND window, LPARAM found) {  // (a named function: 32-bit callbacks are __stdcall)
+    DWORD pid = 0;
+    GetWindowThreadProcessId(window, &pid);
+    if (pid == GetCurrentProcessId()) {
+        *(bool*)found = true;
+        return FALSE;
+    }
+    return TRUE;
+}
+
+void CALLBACK NudgeTrayIcons(PVOID, BOOLEAN) {
+    bool hasWindow = false;
+    EnumWindows(FindOwnWindow, (LPARAM)&hasWindow);
+    if (!hasWindow || !g_swapTrayIcons) {
+        return;
+    }
+    try {
+        RuleSet* set = EnsureRules();
+        if (!set || set->trayIcon.empty()) {
+            return;
+        }
+    } catch (...) {
+        return;
+    }
+    UINT message = RegisterWindowMessageW(L"TaskbarCreated");
+    EnumWindows(NudgeOwnWindow, message);
+    for (HWND w = nullptr; (w = FindWindowExW(HWND_MESSAGE, w, nullptr, nullptr));) {
+        NudgeOwnWindow(w, message);
+    }
+}
+
+void StartTrayNudge() {
+    CreateTimerQueueTimer(&g_trayNudgeTimer, nullptr, NudgeTrayIcons, nullptr, 3000, 0, WT_EXECUTEONLYONCE);
+}
+
+void StopTrayNudge() {
+    if (g_trayNudgeTimer) {
+        DeleteTimerQueueTimer(nullptr, g_trayNudgeTimer, INVALID_HANDLE_VALUE);
+        g_trayNudgeTimer = nullptr;
+    }
 }
 
 // After the rules changed: this program's tray icons shown again, with the
@@ -7706,6 +7770,9 @@ void Wh_ModAfterInit() {
     } else if (g_role == kRoleTool) {
         tool::Start();
     }
+    if (g_role != kRoleTool && !kLasting) {
+        StartTrayNudge();
+    }
 }
 
 void Wh_ModUninit() {
@@ -7717,6 +7784,7 @@ void Wh_ModUninit() {
     }
     // Tray icons back as the program set them, so turning the mod off (or
     // updating it) doesn't leave them changed.
+    StopTrayNudge();
     g_swapTrayIcons = false;
     RefreshTrayIcons();
     StopLaunching();

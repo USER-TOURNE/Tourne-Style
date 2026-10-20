@@ -2,7 +2,7 @@
 // @id              tourne-icons-lasting
 // @name            Tourne'Icons Lasting
 // @description     Change program, folder and file type icons from one picker, written into Windows' own settings so they stay with the mod off
-// @version         1.7.1
+// @version         1.7.3
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
