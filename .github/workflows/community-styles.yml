@@ -122,6 +122,7 @@ jobs:
         env:
           FILES: ${{ steps.find.outputs.files }}
         run: |
+          command -v ffmpeg >/dev/null || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg)
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --with-deps chromium
           python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 &
