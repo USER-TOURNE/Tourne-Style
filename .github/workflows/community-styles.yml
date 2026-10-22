@@ -1,6 +1,7 @@
 # Tourne'Table community styles: reads a "Setup: ..." issue and answers with what it found (and a code to
 # try it), adds it to community/setups when a maintainer labels the issue "approved", and checks the
-# folder on every push. The issue text is only ever read by community.py from the event file, never
+# folder on every push. Each style that lands in the list is also posted to the Discord table-styles forum with
+# a GIF of its live preview (needs the DISCORD_STYLES_WEBHOOK secret). The issue text is only ever read by community.py from the event file, never
 # put into a shell command.
 name: Community styles
 
@@ -12,6 +13,11 @@ on:
     paths: ["community/**", "windhawk-mods/tourne-table/**"]
   pull_request:
     paths: ["community/**"]
+  workflow_dispatch:
+    inputs:
+      files:
+        description: "Post these styles to Discord again (file names from community/setups, comma separated)"
+        required: true
 
 permissions:
   contents: write
@@ -48,18 +54,24 @@ jobs:
       github.event_name == 'issues' && github.event.action == 'labeled' &&
       github.event.label.name == 'approved' && startsWith(github.event.issue.title, 'Setup:')
     runs-on: ubuntu-latest
+    outputs:
+      before: ${{ steps.commit.outputs.before }}
+      after: ${{ steps.commit.outputs.after }}
     steps:
       - uses: actions/checkout@v4
       - name: Add the style
         run: python3 community/tools/community.py add "$RUNNER_TEMP/result.json"
       - name: Commit
+        id: commit
         run: |
           git config user.name "tourne-community-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add community
           if git diff --cached --quiet; then echo "nothing to add"; exit 0; fi
+          echo "before=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           git commit -m "Community: add a style from #${{ github.event.issue.number }}"
           git push
+          echo "after=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Answer and close
         uses: actions/github-script@v7
         with:
@@ -71,7 +83,7 @@ jobs:
             if (r.ok) await github.rest.issues.update({ ...context.repo, issue_number, state: 'closed' });
 
   check:
-    if: github.event_name != 'issues'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,3 +93,43 @@ jobs:
         run: |
           python3 community/tools/community.py gallery
           git diff --exit-code community/README.md || (echo "Run: python community/tools/community.py gallery" && exit 1)
+
+  # The bot's own commit (add-style) doesn't start a push run, so this follows add-style as well as pushes.
+  discord:
+    needs: [add-style]
+    if: >-
+      always() && (
+      (github.event_name == 'issues' && needs.add-style.outputs.after != '') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Find new styles
+        id: find
+        env:
+          BEFORE: ${{ needs.add-style.outputs.before || github.event.before }}
+          AFTER: ${{ needs.add-style.outputs.after || github.event.after }}
+          FILES: ${{ inputs.files }}
+        run: |
+          if [ -n "$FILES" ]; then python3 community/tools/discord_post.py find --files "$FILES"
+          else python3 community/tools/discord_post.py find "$BEFORE" "$AFTER"; fi
+      - name: Record the previews
+        if: steps.find.outputs.files != ''
+        env:
+          FILES: ${{ steps.find.outputs.files }}
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+          python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 &
+          sleep 1
+          node community/tools/preview_gif.mjs 8765 "$RUNNER_TEMP/gifs" $FILES
+      - name: Post to Discord
+        if: steps.find.outputs.files != ''
+        env:
+          FILES: ${{ steps.find.outputs.files }}
+          DISCORD_STYLES_WEBHOOK: ${{ secrets.DISCORD_STYLES_WEBHOOK }}
+        run: python3 community/tools/discord_post.py post "$RUNNER_TEMP/gifs" $FILES

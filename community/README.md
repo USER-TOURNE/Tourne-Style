@@ -22,7 +22,7 @@ A style only changes the parts it carries (Look, Motion, Extras, Place) and only
 3. Type a name in **Saved style**, press **Community**, then **Share Mine to the Community**.
 4. GitHub opens a new issue with your style already in it. Add a screenshot and an `about: one line` line if you like, then send it.
 
-A bot reads the issue right away: it checks the style, tells you what it kept, and replies with a code anyone can paste to try it before it's even listed. When Tourne adds the `approved` label, the bot adds it to `setups/`, the index and the gallery below, and it's in everyone's Community list from then on.
+A bot reads the issue right away: it checks the style, tells you what it kept, and replies with a code anyone can paste to try it before it's even listed. When I add the `approved` label, the bot adds it to `setups/`, the index and the gallery below, and it's in everyone's Community list from then on. It also gets its own post in the Discord's table-styles forum, with a GIF of its live preview.
 
 No GitHub? **Copy code** puts a one-line code on your clipboard for any chat, and **Save file** writes a `.ttstyle` file you can send anywhere.
 
