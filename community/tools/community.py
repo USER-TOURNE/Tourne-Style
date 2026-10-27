@@ -19,6 +19,7 @@ ROOT = os.path.dirname(COMMUNITY)
 SETUPS = os.path.join(COMMUNITY, "setups")
 INDEX = os.path.join(SETUPS, "index.txt")
 MOD = os.path.join(ROOT, "windhawk-mods", "tourne-table", "tourne-table.wh.cpp")
+NEWER = os.path.join(HERE, "newer-settings.txt")  # (shared settings of a newer Table than the public mod)
 README = os.path.join(COMMUNITY, "README.md")
 PARTS = {"look": 1, "motion": 2, "extras": 4, "place": 8}
 PART_NAMES = {v: k for k, v in PARTS.items()}
@@ -36,7 +37,38 @@ def load_keys():
     quick = {m.group(1): PART_CONST[m.group(2)] for m in re.finditer(r'\{L"([^"]+)", (kPart\w+)\}', quick_t)}
     if len(keys) < 100 or len(quick) < 10:
         sys.exit("couldn't read the setting list from the mod's source")
+    newer, _ = load_newer()
+    for k, (default, part) in newer.items():
+        if k.startswith("quick."):
+            quick.setdefault(k[6:], part)
+        else:
+            keys.setdefault(k, (default, part))
     return keys, quick
+
+
+def load_newer():
+    """The settings in newer-settings.txt, and the Table version they arrive with."""
+    out, since = {}, ""
+    if os.path.exists(NEWER):
+        for line in open(NEWER, encoding="utf-8"):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("since="):
+                since = line[6:]
+                continue
+            f = line.split("|")
+            if len(f) == 3:
+                out[f[0]] = (f[1], int(f[2]))
+            elif len(f) == 2 and f[0].startswith("quick."):
+                out[f[0]] = ("", int(f[1]))
+    return out, since
+
+
+def needs_newer(s):
+    """The version a setup needs when it uses settings the public mod doesn't have yet, else ''."""
+    newer, since = load_newer()
+    return since if any(k in newer for k, _ in s["values"]) else ""
 
 
 def parse(text):
@@ -185,10 +217,17 @@ def cmd_gallery():
         shape = vals.get("quick.shape") or vals.get("appearance.shape", keys["appearance.shape"][0])
         parts = ", ".join(PART_NAMES[b].capitalize() for b in (1, 2, 4, 8) if s["parts"] & b)
         colours = colours_of(s)
+        since = needs_newer(s)
+        extra = []
+        if vals.get("glass.enabled") == "1":
+            extra.append("glass bars")
+        if since:
+            extra.append(f"needs Tourne'Table {since} (older versions skip those settings)")
         blocks.append(
             f"### {r['name']}\n\n"
             f"by **{r['author']}** · {r['about']}\n\n"
-            f"Shape `{shape}` · Parts: {parts}" + (f" · Colours: {', '.join('`' + c + '`' for c in colours)}" if colours else "") + "\n\n"
+            f"Shape `{shape}` · Parts: {parts}" + (f" · Colours: {', '.join('`' + c + '`' for c in colours)}" if colours else "")
+            + "".join(f" · {e}" for e in extra) + "\n\n"
             f"[Open the file](setups/{r['file']}) · copy this code, then **Paste code** in the Style Editor:\n\n"
             f"```\n{code_of(open(p, encoding='utf-8').read())}\n```\n")
     body = "\n".join(blocks) if blocks else "_No setups yet: be the first._\n"
@@ -250,6 +289,10 @@ def cmd_issue(out):
             parts = ", ".join(PART_NAMES[b].capitalize() for b in (1, 2, 4, 8) if c["parts"] & b)
             result.update(ok=True, name=c["name"], author=c["author"], text=text_of(c), about=about)
             msg = [f"Thanks, @{login}! **{c['name']}** reads fine: {len(c['values'])} settings across {parts}."]
+            since = needs_newer(c)
+            if since:
+                msg.append(f"\nIt uses settings from Tourne'Table {since} (glass bars, Bass Line, Depth and the like). "
+                           "They're kept; an older Tourne'Table applies the rest and skips those.")
             if notes:
                 msg.append("\nLeft out:\n" + "\n".join(f"- {n}" for n in notes[:20]))
             msg.append("\nTry it now: copy this code and press **Paste code** in the Style Editor.\n\n```\n"

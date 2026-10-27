@@ -35,7 +35,7 @@
 </header>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. Tourne'Table's own Community button opens this page.</p>
+  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. Glass styles play over a made-up wallpaper; on your PC the glass bends your own. A style tagged "needs 2.3" uses Tourne'Table 2.3 settings (glass bars, Bass Line, Depth); an older version applies the rest and skips those. Tourne'Table's own Community button opens this page.</p>
 </main>
 <footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
 <div class="toast" id="toast">Copied. Paste it in the Style Editor.</div>
@@ -127,7 +127,54 @@ function look(s) {
     glow: (q('fxGlow') || V['appearance.fxGlow']) === '1' ? 1 : num(q('fxGlow') || V['appearance.fxGlow'], 0) / 100,
     panel: panelOn ? rgba(V['background.color'], null) : null,
     edge: panelOn && V['background.borderSize'] !== '0' ? rgba(V['background.borderColor'], null) : null,
+    // Glass Bars (2.3): each bar shows the wallpaper behind it, bent, frosted, tinted with its colour, edge-lit.
+    glass: (q('glass') || V['glass.enabled']) === '1' ? {
+      bend: num(V['glass.bend'], 8), style: V['glass.bendStyle'] || 'lens', band: num(V['glass.bendBand'], 10),
+      edge: num(V['glass.edge'], 55) / 100, tint: num(V['glass.tint'], 30) / 100, frost: num(V['glass.frost'], 0) / 100,
+    } : null,
+    // Settings from Tourne'Table 2.3 (older versions skip them on import).
+    needs: Object.keys(V).some(k => /^(glass|bass|bassLine|depth)\./.test(k) || /^quick\.(glass|bassLine|depth)/.test(k)) ? '2.3' : '',
   };
+}
+
+// A made-up wallpaper for glass previews (dusk sky, clouds, a ridge, a few lights), drawn once per size.
+const walls = new Map();
+function wallpaper(W, H, dpr) {
+  const key = `${W}x${H}x${dpr}`;
+  if (walls.has(key)) return walls.get(key);
+  const c = document.createElement('canvas'); c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+  const x = c.getContext('2d'); x.scale(dpr, dpr);
+  const sky = x.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#1d3a52'); sky.addColorStop(.4, '#4d6f8a'); sky.addColorStop(.7, '#d99590'); sky.addColorStop(.88, '#f2b38a'); sky.addColorStop(1, '#5a3a48');
+  x.fillStyle = sky; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 7; i++) { x.fillStyle = `rgba(255,255,255,${.08 + .05 * (i % 3)})`; x.beginPath(); x.ellipse((i * 97) % W, 14 + (i * 23) % (H * .35), 60, 10, 0, 0, 7); x.fill(); }
+  x.fillStyle = '#2a3340'; x.beginPath(); x.moveTo(0, H * .6);
+  for (let i = 0; i <= 12; i++) x.lineTo(W * i / 12, H * (.56 + .07 * Math.sin(i * 1.7)));
+  x.lineTo(W, H * .7); x.lineTo(0, H * .7); x.fill();
+  for (let i = 0; i < 18; i++) { x.fillStyle = i % 3 ? '#ffd27a' : '#ff6f9a'; x.beginPath(); x.arc((i * 53) % W, H * (.74 + (i * 7 % 22) / 100), 2 + i % 3, 0, 7); x.fill(); }
+  walls.set(key, c);
+  return c;
+}
+
+// One glass bar: the wallpaper behind it magnified (Lens) or only pulled in at the rim (Edge), frosted, tinted
+// with the bar's colour, with light along the edge and a streak down one side.
+function glassBar(ctx, wall, dpr, G, x, y, w, h, r, c) {
+  if (w < 1 || h < 1) return;
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  const path = (px, py, pw, ph) => { ctx.beginPath(); ctx.roundRect && r ? ctx.roundRect(px, py, pw, ph, r) : ctx.rect(px, py, pw, ph); };
+  ctx.save(); path(x, y, w, h); ctx.clip();
+  if (G.frost > 0) ctx.filter = `blur(${(G.frost * 6).toFixed(1)}px)`;
+  const s = G.style === 'edge' ? 1 + G.bend / 200 : 1 + G.bend / 60;
+  const sw = w / s, sh = h / s, sx = x + (w - sw) / 2, sy = y + (h - sh) / 2;
+  ctx.drawImage(wall, sx * dpr, sy * dpr, sw * dpr, sh * dpr, x, y, w, h);
+  ctx.filter = 'none';
+  ctx.fillStyle = css(c, G.tint); ctx.fillRect(x, y, w, h);
+  const streak = ctx.createLinearGradient(x, 0, x + w, 0);
+  streak.addColorStop(0, `rgba(255,255,255,${(G.edge * .35).toFixed(2)})`); streak.addColorStop(.35, 'rgba(255,255,255,0)');
+  ctx.fillStyle = streak; ctx.fillRect(x, y, w, h);
+  ctx.restore();
+  path(x + .5, y + .5, w - 1, h - 1);
+  ctx.strokeStyle = `rgba(255,255,255,${(G.edge * .8).toFixed(2)})`; ctx.lineWidth = 1; ctx.stroke();
 }
 
 function swatchesOf(L) {
@@ -200,14 +247,19 @@ function draw(card, t) {
   if (!card.sim) card.sim = makeSim(L);
   const S = card.sim; stepSim(L, S, t);
   const pad = 14, n = L.bars, areaH = (L.reflect > 0 ? H * 0.68 : H - pad) - pad;
+  const wall = L.glass ? wallpaper(W, H, dpr) : null;
+  if (wall) ctx.drawImage(wall, 0, 0, W, H);
   // The style's real proportions (bar width, gap, height in pixels), scaled to fit the card.
   const fullW = n * L.barW + (n - 1) * L.gap;
   const k = Math.min((W - 2 * pad) / fullW, areaH / L.maxSize, 2);
-  const bw = L.barW * k, gp = L.gap * k, mh = L.maxSize * k, left = (W - fullW * k) / 2, base = pad + areaH;
+  // (Glass styles are often a screen-wide row of short bars, which at true proportions is a sliver in a
+  // card: their heights get at least half the card so the glass shows.)
+  const kh = L.glass ? Math.max(k, Math.min(areaH * 0.5 / L.maxSize, 2)) : k;
+  const bw = L.barW * k, gp = L.gap * k, mh = L.maxSize * kh, left = (W - fullW * k) / 2, base = pad + areaH;
   if (L.panel) { ctx.fillStyle = css(L.panel); ctx.fillRect(left - 8, base - mh - 8, fullW * k + 16, mh + 16); }
   if (L.edge) { ctx.strokeStyle = css(L.edge); ctx.lineWidth = 1; ctx.strokeRect(left - 7.5, base - mh - 7.5, fullW * k + 15, mh + 15); }
   const colOf = i => flash(L, barColour(L, i, n, S.y[i], t), S.pulse);
-  const sizeOf = i => (L.idle + S.y[i] * Math.max(0, L.maxSize - L.idle)) * k;
+  const sizeOf = i => (L.idle + S.y[i] * Math.max(0, L.maxSize - L.idle)) * kh;
   ctx.shadowBlur = L.glow * 14; ctx.shadowColor = css(colOf(Math.floor(n / 2)), 1);
   const shape = L.shape, xOf = i => left + i * (bw + gp);
   if (shape === 'led') {
@@ -254,8 +306,9 @@ function draw(card, t) {
     const mirror = shape === 'mirror' || shape === 'stereo_field' || shape === 'breathe', mid = mirror ? base - mh / 2 : base;
     for (let i = 0; i < n; i++) {
       const h = mirror ? sizeOf(i) / 2 : sizeOf(i);
-      ctx.fillStyle = css(colOf(i)); roundRect(ctx, xOf(i), mid - h, bw, mirror ? h * 2 : h, L.radius * k);
-      if (L.peak) { const ph = (L.idle + S.pk[i] * (L.maxSize - L.idle)) * k * (mirror ? 0.5 : 1); ctx.fillStyle = css(L.peakColour); ctx.fillRect(xOf(i), mid - ph - 3, bw, 2); }
+      if (wall) { ctx.shadowBlur = 0; glassBar(ctx, wall, dpr, L.glass, xOf(i), mid - h, bw, mirror ? h * 2 : h, L.radius * k, colOf(i)); }
+      else { ctx.fillStyle = css(colOf(i)); roundRect(ctx, xOf(i), mid - h, bw, mirror ? h * 2 : h, L.radius * k); }
+      if (L.peak) { const ph = (L.idle + S.pk[i] * (L.maxSize - L.idle)) * kh * (mirror ? 0.5 : 1); ctx.fillStyle = css(L.peakColour); ctx.fillRect(xOf(i), mid - ph - 3, bw, 2); }
     }
   }
   ctx.shadowBlur = 0;
@@ -287,7 +340,7 @@ function card(entry, text) {
   add('div', 'by', 'by ' + entry.author);
   add('div', 'about', entry.about);
   const tags = add('div', 'tags');
-  [L.shape, ...(s.parts.length ? s.parts : ['look'])].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
+  [L.shape, ...(s.parts.length ? s.parts : ['look']), ...(L.glass ? ['glass'] : []), ...(L.needs ? ['needs ' + L.needs] : [])].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
   const sw = add('div', 'swatches');
   swatchesOf(L).forEach(c => { const i = document.createElement('i'); i.style.background = c; sw.appendChild(i); });
   const actions = add('div', 'actions');
