@@ -133,7 +133,7 @@ function look(s) {
       edge: num(V['glass.edge'], 55) / 100, tint: num(V['glass.tint'], 30) / 100, frost: num(V['glass.frost'], 0) / 100,
     } : null,
     // Settings from Tourne'Table 2.3 (older versions skip them on import).
-    needs: Object.keys(V).some(k => /^(glass|bass|bassLine|depth)\./.test(k) || /^quick\.(glass|bassLine|depth)/.test(k)) ? '2.3' : '',
+    needs: Object.keys(V).some(k => /^(glass|bass|bassLine|depth)\./.test(k) || /^media_controls\.(cardTitle|cardTitleScroll|cardClickOpens|backdrop)$/.test(k) || /^quick\.(glass|bassLine|depth)/.test(k)) ? '2.3' : '',
   };
 }
 
