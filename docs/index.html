@@ -35,7 +35,7 @@
 </header>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. Glass styles play over a made-up wallpaper; on your PC the glass bends your own. A style tagged "needs 2.3" uses Tourne'Table 2.3 settings (glass bars, Bass Line, Depth); an older version applies the rest and skips those. Tourne'Table's own Community button opens this page.</p>
+  <p class="note">Previews follow Tourne'Table's own rules: each style's colour mode, bar sizes, LED segments, beat flash, peak hold and rise and fall, played with a test beat (120 BPM). Album and accent colours stand in for your own, and the media card isn't shown. Glass styles play over a made-up wallpaper; on your PC the glass bends your own. A Bass Line follows the same test beat. A style tagged "needs 2.3" uses Tourne'Table 2.3 settings (glass bars, Bass Line, Depth); an older version applies the rest and skips those. Tourne'Table's own Community button opens this page.</p>
 </main>
 <footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Styles are shared by their authors; the bot keeps only the settings Tourne'Table itself shares. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
 <div class="toast" id="toast">Copied. Paste it in the Style Editor.</div>
@@ -131,6 +131,13 @@ function look(s) {
     glass: (q('glass') || V['glass.enabled']) === '1' ? {
       bend: num(V['glass.bend'], 8), style: V['glass.bendStyle'] || 'lens', band: num(V['glass.bendBand'], 10),
       edge: num(V['glass.edge'], 55) / 100, tint: num(V['glass.tint'], 30) / 100, frost: num(V['glass.frost'], 0) / 100,
+    } : null,
+    // Bass Line (2.3): a small lane that follows only the bass, kicks and snares popping in their own colours.
+    bassLine: (q('bassLine') || V['bassLine.enabled']) === '1' ? {
+      style: V['bassLine.style'] || 'line', place: V['bassLine.placement'] || 'below',
+      height: Math.max(6, num(V['bassLine.height'], 28)), gap: num(V['bassLine.gap'], 6), thick: Math.max(0.5, num(V['bassLine.thickness'], 1.5)),
+      body: rgba(V['bassLine.bodyColor'], [255, 255, 255, 1]), kick: rgba(V['bassLine.kickColor'], [255, 59, 59, 1]),
+      snare: rgba(V['bassLine.snareColor'], [255, 210, 59, 1]), window: Math.max(0.25, num(V['bassLine.window'], 2)),
     } : null,
     // Settings from Tourne'Table 2.3 (older versions skip them on import).
     needs: Object.keys(V).some(k => /^(glass|bass|bassLine|depth)\./.test(k) || /^media_controls\.(cardTitle|cardTitleScroll|cardClickOpens|backdrop|cardArtHeight|cardArtShows)$/.test(k) || /^quick\.(glass|bassLine|depth)/.test(k)) ? '2.3' : '',
@@ -231,6 +238,40 @@ function stepSim(L, S, t) {
   if (beatNow !== S.beatAt) { S.beatAt = beatNow; S.pulse = 1; } else S.pulse = Math.max(0, S.pulse - 4.8 * dt);
 }
 
+// The test beat's low end at any moment, on its own range as the mod's lane auto-ranges: a kick on every
+// beat (0.5 s), a snare on two and four. Worked out from the time alone, so it looks the same at any frame rate.
+function bassAt(at) {
+  const beat = Math.floor(at / 0.5), since = at - beat * 0.5, snare = beat % 4 === 1 || beat % 4 === 3;
+  return [Math.min(1, 0.22 + 0.1 * Math.sin(at * 2.1) + Math.exp(-since * 14) * (snare ? 0.6 : 0.75)), since < 0.09 ? (snare ? 2 : 1) : 0];
+}
+
+// The Bass Line lane: Line (a scrolling trace), Fill (scrolling columns) or Bar (a live meter), the body in its
+// colour and each kick or snare popping up in its own, newest at the right.
+function bassLane(ctx, BL, t, x, y, w, h, lw) {
+  const hist = [], steps = Math.max(24, Math.round(w / 2));
+  for (let j = 0; j <= steps; j++) { const at = t - BL.window * (1 - j / steps); hist.push([at, ...bassAt(at)]); }
+  const xs = ([at]) => x + w * (1 - (t - at) / BL.window), ys = ([, v]) => y + h - v * h;
+  const hitCol = (k, a) => css(k === 2 ? BL.snare : BL.kick, a);
+  if (BL.style === 'bar') {
+    const [, v, hit] = bassAt(t);
+    ctx.fillStyle = css(BL.body, 0.15); ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = hit ? hitCol(hit) : css(BL.body); ctx.fillRect(x, y, w * v, h);
+    return;
+  }
+  if (BL.style === 'fill') {
+    const cw = Math.max(1, w / 90);
+    for (const p of hist) { ctx.fillStyle = p[2] ? hitCol(p[2]) : css(BL.body, 0.85); ctx.fillRect(xs(p) - cw, ys(p), cw, y + h - ys(p)); }
+    return;
+  }
+  ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.strokeStyle = css(BL.body); ctx.beginPath();
+  hist.forEach((p, j) => j ? ctx.lineTo(xs(p), ys(p)) : ctx.moveTo(xs(p), ys(p))); ctx.stroke();
+  // Each hit drawn again in its own colour.
+  for (let j = 1; j < hist.length; j++) {
+    const a = hist[j - 1], p = hist[j]; if (!p[2]) continue;
+    ctx.strokeStyle = hitCol(p[2]); ctx.beginPath(); ctx.moveTo(xs(a), ys(a)); ctx.lineTo(xs(p), ys(p)); ctx.stroke();
+  }
+}
+
 function roundRect(ctx, x, y, w, h, r) {
   r = Math.max(0, Math.min(r, w / 2, h / 2));
   if (!r) { ctx.fillRect(x, y, w, h); return; }
@@ -246,16 +287,19 @@ function draw(card, t) {
   ctx.clearRect(0, 0, W, H);
   if (!card.sim) card.sim = makeSim(L);
   const S = card.sim; stepSim(L, S, t);
-  const pad = 14, n = L.bars, areaH = (L.reflect > 0 ? H * 0.68 : H - pad) - pad;
+  // A Bass Line below or above the bars gets its own height and gap in the fit, at the same scale as the bars.
+  const BL = L.bassLine, laneOut = BL && (BL.place === 'below' || BL.place === 'above') ? BL.height + BL.gap : 0;
+  const pad = 14, n = L.bars, fitH = (L.reflect > 0 ? H * 0.68 : H - pad) - pad;
   const wall = L.glass ? wallpaper(W, H, dpr) : null;
   if (wall) ctx.drawImage(wall, 0, 0, W, H);
   // The style's real proportions (bar width, gap, height in pixels), scaled to fit the card.
   const fullW = n * L.barW + (n - 1) * L.gap;
-  const k = Math.min((W - 2 * pad) / fullW, areaH / L.maxSize, 2);
+  const k = Math.min((W - 2 * pad) / fullW, fitH / (L.maxSize + laneOut), 2);
+  const laneRoom = laneOut * k, areaH = fitH - laneRoom, top = pad + (BL && BL.place === 'above' ? laneRoom : 0);
   // (Glass styles are often a screen-wide row of short bars, which at true proportions is a sliver in a
   // card: their heights get at least half the card so the glass shows.)
   const kh = L.glass ? Math.max(k, Math.min(areaH * 0.5 / L.maxSize, 2)) : k;
-  const bw = L.barW * k, gp = L.gap * k, mh = L.maxSize * kh, left = (W - fullW * k) / 2, base = pad + areaH;
+  const bw = L.barW * k, gp = L.gap * k, mh = L.maxSize * kh, left = (W - fullW * k) / 2, base = top + areaH;
   if (L.panel) { ctx.fillStyle = css(L.panel); ctx.fillRect(left - 8, base - mh - 8, fullW * k + 16, mh + 16); }
   if (L.edge) { ctx.strokeStyle = css(L.edge); ctx.lineWidth = 1; ctx.strokeRect(left - 7.5, base - mh - 7.5, fullW * k + 15, mh + 15); }
   const colOf = i => flash(L, barColour(L, i, n, S.y[i], t), S.pulse);
@@ -312,6 +356,12 @@ function draw(card, t) {
     }
   }
   ctx.shadowBlur = 0;
+  if (BL) {
+    // Where the lane goes: below or above the bars (in the room kept for it), along their bottom, or over all of them.
+    const lw = fullW * k, gap = BL.gap * k, lh = BL.place === 'cover' ? mh : Math.max(10, BL.height * k);
+    const ly = BL.place === 'below' ? base + gap : BL.place === 'above' ? top - gap - lh : base - lh;
+    bassLane(ctx, BL, t, left, ly, lw, lh, Math.max(1, BL.thick * k));
+  }
   if (L.reflect > 0) {
     ctx.save(); ctx.globalAlpha = L.reflect * 0.45; ctx.translate(0, base * 2); ctx.scale(1, -1);
     ctx.drawImage(cv, 0, 0, cv.width, base * dpr, 0, 0, W, base); ctx.restore();
