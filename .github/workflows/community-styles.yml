@@ -1,4 +1,4 @@
-# Tourne'Table community styles: reads a "Setup: ..." issue and answers with what it found (and a code to
+# Tourne'Table community styles: reads a "Setup: ..." issue (or any issue with a setup in it) and answers with what it found (and a code to
 # try it), adds it to community/setups when a maintainer labels the issue "approved", and checks the
 # folder on every push. Each style that lands in the list is also posted to the Discord table-styles forum with
 # a GIF of its live preview (needs the DISCORD_STYLES_WEBHOOK secret). The issue text is only ever read by community.py from the event file, never
@@ -31,7 +31,8 @@ jobs:
   read-issue:
     if: >-
       github.event_name == 'issues' && github.event.action != 'labeled' &&
-      startsWith(github.event.issue.title, 'Setup:')
+      (startsWith(github.event.issue.title, 'Setup:') || contains(github.event.issue.body, 'Tourne''Table setup') ||
+       contains(github.event.issue.body, 'TT2T:'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +53,9 @@ jobs:
   add-style:
     if: >-
       github.event_name == 'issues' && github.event.action == 'labeled' &&
-      github.event.label.name == 'approved' && startsWith(github.event.issue.title, 'Setup:')
+      github.event.label.name == 'approved' &&
+      (startsWith(github.event.issue.title, 'Setup:') || contains(github.event.issue.body, 'Tourne''Table setup') ||
+       contains(github.event.issue.body, 'TT2T:'))
     runs-on: ubuntu-latest
     outputs:
       before: ${{ steps.commit.outputs.before }}
