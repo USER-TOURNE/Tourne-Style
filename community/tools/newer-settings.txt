@@ -59,6 +59,8 @@ media_controls.cardTitle|both|4
 media_controls.cardTitleScroll|hover|4
 media_controls.cardClickOpens|1|4
 media_controls.backdrop|solid|4
+media_controls.cardArtHeight|0|4
+media_controls.cardArtShows|art|4
 progress.clickToSeek|0|4
 progress.seekAppsMode|except|4
 progress.seekApps||4
