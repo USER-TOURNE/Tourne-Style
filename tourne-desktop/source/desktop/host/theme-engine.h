@@ -19,6 +19,8 @@
 
 #include <windows.h>
 
+#include <cstdint>
+
 #include "config.h"
 
 namespace td {
@@ -33,5 +35,16 @@ void ThemeEngineStop();
 // The host window's messages the engine wants (Windows' setting changes, its
 // own timer and results). True if handled.
 bool ThemeEngineMessage(HWND wnd, UINT msg, WPARAM wp, LPARAM lp);
+
+// Windows' accent set to one colour (0xRRGGBB) as theme.windows sets it, and every window told (Designer Mode).
+void WriteWindowsAccent(uint32_t rgb);
+// Windows' colours (its accent, and its dark or light mode) as they were before Tourne first changed them, kept in
+// HKCU\Software\Tourne\AccentBefore the first time Designer Mode or theme.windows writes them: whether there is
+// a copy, and putting it back (the copy is then dropped; wait: until every window has been told, for an exit).
+// Also put back on its own when theme.windows goes from on to off, and by --uninstall.
+bool WindowsAccentSaved();
+bool RestoreWindowsAccent(bool wait = false);
+bool WindowsColoursOn();      // theme.windows is accent or both
+void KeepWindowsColoursOnce();  // the next switch-off of theme.windows doesn't put them back (Designer's own accent)
 
 }  // namespace td

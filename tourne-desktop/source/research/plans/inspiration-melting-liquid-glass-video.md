@@ -1,8 +1,6 @@
-# Inspiration: melting liquid glass video
+# Inspiration: melting liquid glass video (shared by Tourne, 2026-10-05)
 
-*October 5, 2026.*
-
-Same with this one, it's gorgeous. It's a 107 second compositor shader demo (a terminal in it shows a branch named feat/custom-blur-shader). The author and licence aren't shown, so I'm only taking ideas from it.
+Tourne's words: "Same with this" (gorgeous). A 107 second compositor shader demo (a terminal in it shows a branch named feat/custom-blur-shader). The author and licence aren't shown, so it is ideas only.
 
 Frame: screens/inspiration-melting-glass.png.
 
@@ -13,10 +11,10 @@ Frame: screens/inspiration-melting-glass.png.
 - Everything refracts live content (a video playing behind glass), not just the wallpaper.
 
 ## Where it lands in Tourne
-- My glass engine (desktop/host/glass-engine.cpp) already does edge bend (refraction), colour fringe, edge glow, highlight, bevel and lens on signed-distance rounded shapes.
+- Tourne's glass engine (desktop/host/glass-engine.cpp) already does edge bend (refraction), colour fringe, edge glow, highlight, bevel and lens on signed-distance rounded shapes.
 - New:
   - shapes that melt together: a smooth union of distance fields, which is cheap;
   - spheres and free shapes as desktop decorations;
   - glass over live windows rather than only the wallpaper (this was already an open question);
   - an audio visualizer layer.
-- Where it goes in the plan: section 5 (effects and shaders), with the visualizer as an extra or an extension.
+- Plan home: section 5 (effects and shaders), with the visualizer as an extra or an extension.

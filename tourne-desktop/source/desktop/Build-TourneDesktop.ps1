@@ -316,6 +316,8 @@ $cxx = Find-Compiler
 $flags = @('-std=c++23', '-DUNICODE', '-D_UNICODE', '-DWINVER=0x0A00', '-D_WIN32_WINNT=0x0A00', '-municode',
            "-I$hostDir", "-I$gen", "-I$repo", '-Wno-attributes', '-Wno-unknown-pragmas')
 $flags += if ($Debug) { @('-O0', '-g') } else { @('-O2') }
+# Source paths (asserts, __FILE__) are written from the repo's root, so the build folder isn't in the program.
+$flags += "-ffile-prefix-map=$repo\="
 # Windhawk's clang++ makes 32-bit programs unless told otherwise; Tourne Desktop is 64-bit.
 $target = @()
 if ([IO.Path]::GetFileNameWithoutExtension($cxx) -match 'clang') { $target = @('--target=x86_64-w64-mingw32') }
@@ -327,7 +329,7 @@ $luauObjects = & (Join-Path $PSScriptRoot 'Build-Luau.ps1') -Compiler $cxx -Out 
 # MinHook, for hooks.cpp: C, compiled as C by the same compiler, and kept while newer than its source.
 $minhook = Join-Path $PSScriptRoot 'third_party\minhook'
 $flags += "-I$minhook\include"
-$cFlags = @('-x', 'c', '-std=c11', '-w') + $target + $(if ($Debug) { @('-O0', '-g') } else { @('-O2') })
+$cFlags = @('-x', 'c', '-std=c11', '-w', "-ffile-prefix-map=$repo\=") + $target + $(if ($Debug) { @('-O0', '-g') } else { @('-O2') })
 $minhookObjects = foreach ($c in Get-ChildItem -Recurse -Filter *.c -Path (Join-Path $minhook 'src')) {
     $obj = Join-Path $gen "minhook-$($c.BaseName).o"
     if (-not (Test-Path $obj) -or (Get-Item $obj).LastWriteTime -lt $c.LastWriteTime) {
@@ -336,16 +338,26 @@ $minhookObjects = foreach ($c in Get-ChildItem -Recurse -Filter *.c -Path (Join-
     }
     $obj
 }
+# miniz (MIT, one C file), for dots.cpp's look packs: zips read and written, nothing else. Built the same way.
+$miniz = Join-Path $PSScriptRoot 'third_party\miniz'
+$flags += "-I$miniz"
+$minizObject = Join-Path $gen 'miniz.o'
+$minizSource = Get-Item (Join-Path $miniz 'miniz.c')
+if (-not (Test-Path $minizObject) -or (Get-Item $minizObject).LastWriteTime -lt $minizSource.LastWriteTime) {
+    & $cxx @cFlags -DMINIZ_NO_TIME -c $minizSource.FullName -o $minizObject
+    if ($LASTEXITCODE) { throw 'Compiling miniz.c failed' }
+}
 
 $objects = New-Object System.Collections.Generic.List[string]
 foreach ($o in $luauObjects) { $objects.Add($o) }
 foreach ($o in $minhookObjects) { $objects.Add($o) }
+$objects.Add($minizObject)
 $sources = @($units) + @($modulesPath, (Join-Path $hostDir 'host.cpp'), (Join-Path $hostDir 'config.cpp'),
                                (Join-Path $hostDir 'plugin-runtime.cpp'), (Join-Path $hostDir 'plugin-panel.cpp'), (Join-Path $hostDir 'toml-lite.cpp'),
                                (Join-Path $hostDir 'theme-engine.cpp'), (Join-Path $hostDir 'palette-gen.cpp'),
                                (Join-Path $hostDir 'css-injector.cpp'), (Join-Path $hostDir 'css-gen.cpp'), (Join-Path $hostDir 'json-lite.cpp'),
                                (Join-Path $hostDir 'studio.cpp'), (Join-Path $hostDir 'menu-editor.cpp'), (Join-Path $hostDir 'binds-editor.cpp'), (Join-Path $hostDir 'glass.cpp'), (Join-Path $hostDir 'glass-engine.cpp'), (Join-Path $hostDir 'presets.cpp'),
-                               (Join-Path $hostDir 'crash.cpp'), (Join-Path $hostDir 'identity.cpp'), (Join-Path $hostDir 'killswitch.cpp'), (Join-Path $hostDir 'keystrokes.cpp'), (Join-Path $hostDir 'screen-shader.cpp'), (Join-Path $hostDir 'capture.cpp'), (Join-Path $hostDir 'launcher.cpp'), (Join-Path $hostDir 'ui-sounds.cpp'), (Join-Path $hostDir 'extensions.cpp'), (Join-Path $hostDir 'dots.cpp'), (Join-Path $hostDir 'shell-mode.cpp'), (Join-Path $hostDir 'tray-host.cpp'), (Join-Path $hostDir 'app-bars.cpp'), (Join-Path $hostDir 'desktop-host.cpp'), (Join-Path $hostDir 'motion-settings.cpp'), (Join-Path $hostDir 'plugins.cpp'), (Join-Path $hostDir 'exclusions.cpp'), (Join-Path $hostDir 'notifications.cpp'), (Join-Path $hostDir 'hooks.cpp'))
+                               (Join-Path $hostDir 'crash.cpp'), (Join-Path $hostDir 'identity.cpp'), (Join-Path $hostDir 'killswitch.cpp'), (Join-Path $hostDir 'keystrokes.cpp'), (Join-Path $hostDir 'screen-shader.cpp'), (Join-Path $hostDir 'capture.cpp'), (Join-Path $hostDir 'launcher.cpp'), (Join-Path $hostDir 'launcher-math.cpp'), (Join-Path $hostDir 'flyouts.cpp'), (Join-Path $hostDir 'app-styler.cpp'), (Join-Path $hostDir 'designer.cpp'), (Join-Path $hostDir 'ui-sounds.cpp'), (Join-Path $hostDir 'extensions.cpp'), (Join-Path $hostDir 'dots.cpp'), (Join-Path $hostDir 'shell-mode.cpp'), (Join-Path $hostDir 'tray-host.cpp'), (Join-Path $hostDir 'app-bars.cpp'), (Join-Path $hostDir 'desktop-host.cpp'), (Join-Path $hostDir 'motion-settings.cpp'), (Join-Path $hostDir 'plugins.cpp'), (Join-Path $hostDir 'exclusions.cpp'), (Join-Path $hostDir 'notifications.cpp'), (Join-Path $hostDir 'hooks.cpp'), (Join-Path $hostDir 'dialog-look.cpp'), (Join-Path $hostDir 'layout-scripts.cpp'))
 foreach ($src in $sources) {
     $obj = Join-Path $gen ([IO.Path]::GetFileNameWithoutExtension($src) + '.o')
     "Compiling $([IO.Path]::GetFileName($src))"
@@ -406,4 +418,10 @@ else { Copy-Item -LiteralPath (Join-Path $hostDir 'tourne-desktop.manifest') -De
 $ctl = Join-Path $Out 'tournectl.exe'
 & $cxx -std=c++20 -O2 -s -municode -DUNICODE -D_UNICODE -static @target (Join-Path $PSScriptRoot 'tools\tournectl.cpp') -o $ctl
 if ($LASTEXITCODE) { Write-Warning 'tournectl.exe did not build (Tourne Desktop itself did)' }
+# The app styler (tools\appstyler): the DLL that goes into an app, and the small program that puts it there.
+$styler = Join-Path $PSScriptRoot '..\tools\appstyler'
+& $cxx -std=c++20 -O2 -s -shared -DUNICODE -D_UNICODE -DWINVER=0x0A00 -D_WIN32_WINNT=0x0A00 -static-libgcc -static-libstdc++ @target (Join-Path $styler 'tap.cpp') -o (Join-Path $Out 'TourneAppStyler.dll') -lole32 -loleaut32 -lruntimeobject -luuid
+if ($LASTEXITCODE) { Write-Warning 'TourneAppStyler.dll did not build (Tourne Desktop itself did)' }
+& $cxx -std=c++20 -O2 -s -municode -DUNICODE -D_UNICODE -static @target (Join-Path $styler 'attach.cpp') -o (Join-Path $Out 'tourne-appstyler-attach.exe')
+if ($LASTEXITCODE) { Write-Warning 'tourne-appstyler-attach.exe did not build (Tourne Desktop itself did)' }
 "Built $exe ($([Math]::Round((Get-Item $exe).Length / 1MB, 1)) MB) with: $($Modules -join ', ')"

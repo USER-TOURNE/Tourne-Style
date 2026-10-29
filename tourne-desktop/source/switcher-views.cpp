@@ -173,7 +173,7 @@ struct ViewState {
     RECT mon{};
     std::vector<std::unique_ptr<ViewTile>> tiles;
     bool shown = false;
-    int kind = 0;  // 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf
+    int kind = 0;  // 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf, 7 Canvas (switcher-canvas.cpp)
     double pos = 0, from = 0, to = 0;
     ULONGLONG moveStart = 0, openStart = 0;
     int lastSel = 0;
@@ -876,8 +876,16 @@ void ViewDrawQuad(Mat const& m, float w, float h, float radius, int mode, float 
     g_view.ctx->Draw(4, 0);
 }
 
+bool CanvasShown();
+void CanvasOpen(bool overview);
+void CanvasClose();
+void CanvasRender();
+void CanvasRefit();
+bool CanvasMouse(UINT msg, WPARAM wParam, LPARAM lParam);
+
 void ViewRender() {
     if (!g_view.shown || !g_view.rtv) return;
+    if (g_view.kind == 7) return CanvasRender();
     float W = (float)g_view.chainW, H = (float)g_view.chainH, D = H * 1.15f;
     for (auto& t : g_view.tiles) ViewTakeFrame(*t);
 
@@ -1069,6 +1077,7 @@ int ViewItemAt(POINT pt) {
 }
 
 LRESULT CALLBACK ViewProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (g_view.kind == 7 && g_view.shown && CanvasMouse(msg, wParam, lParam)) return 0;
     switch (msg) {
         case WM_MOUSEACTIVATE:
             return MA_NOACTIVATE;
@@ -1129,7 +1138,7 @@ bool ViewOpen() {
     motion::Forget();
     g_view.anim = motion::Get(L"switcher");
     ViewFreeScene();
-    ViewTakeBackdrop();
+    if (g_view.kind != 7) ViewTakeBackdrop();  // (the canvas has its own ground)
     ViewSync();
     g_view.pos = g_view.from = g_view.to = g_sel;
     g_view.lastSel = g_view.selFrom = g_sel;
@@ -1137,6 +1146,7 @@ bool ViewOpen() {
     g_view.focusSet = g_view.pointer = false;
     g_view.pointerAt = {};
     g_view.shown = true;
+    if (g_view.kind == 7) CanvasOpen(g_viewFor == 7);  // (the overview shows them all; Alt+Tab starts at the window in front)
     SetWindowPos(g_view.wnd, HWND_TOPMOST, g_view.mon.left, g_view.mon.top, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
     ViewRender();
     SetTimer(g_view.wnd, kViewTimerFrame, 15, nullptr);
@@ -1153,6 +1163,15 @@ void ViewPrepare() {
 // The selection or the list changed (Tab, a closed window, Ctrl into an app).
 void ViewRefit() {
     if (!g_view.shown) return;
+    if (g_view.kind == 7) {
+        bool sameTiles = g_view.tiles.size() == g_entries.size();
+        for (size_t i = 0; sameTiles && i < g_entries.size(); i++)
+            sameTiles = !g_entries[i].windows.empty() && g_view.tiles[i]->wnd == g_entries[i].windows[0];
+        if (!sameTiles) ViewSync();
+        CanvasRefit();
+        g_view.lastSel = g_sel;
+        return;
+    }
     bool same = g_view.tiles.size() == g_entries.size();
     for (size_t i = 0; same && i < g_entries.size(); i++)
         same = !g_entries[i].windows.empty() && g_view.tiles[i]->wnd == g_entries[i].windows[0];
@@ -1182,6 +1201,7 @@ void ViewClose() {
     if (!g_view.wnd) return;
     KillTimer(g_view.wnd, kViewTimerFrame);
     ShowWindow(g_view.wnd, SW_HIDE);
+    if (g_view.kind == 7) CanvasClose();
     g_view.shown = false;
     ViewFreeScene();
 }

@@ -12,6 +12,7 @@
 
 #include <windows.h>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -49,6 +50,16 @@ void LauncherSetListener(HWND wnd, UINT msg);
 // Its glyph font's character for a glyph name ("device-gamepad-2"), empty if there's none; the font is
 // "tabler-icons", loaded for this process.
 std::wstring LauncherGlyph(const std::wstring& name);
+
+// The PC's sound for Capture's own recordings (as tourne.systemSound gives a plugin): what an output plays,
+// read by ffmpeg from a pipe it opens within 30 seconds (-f format -ar rate -ac channels -i input). device:
+// "default" or an output's id. stop() ends it once ffmpeg is done; false and why when it can't.
+struct RecorderSoundTap {
+    std::wstring input, format, why;
+    int rate = 0, channels = 0;
+    std::function<void()> stop;
+};
+bool RecorderSound(const std::wstring& device, RecorderSoundTap* out);
 
 // For tools/plugins/pluginrun.cpp: what each running entry last showed or
 // logged, as one line each.

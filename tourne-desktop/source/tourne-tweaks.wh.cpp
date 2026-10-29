@@ -4,7 +4,6 @@
 // @description     Winaero Tweaker's options as settings (a part of Tourne'Suite)
 // @version         1.0.0
 // @author          USER-TOURNE
-// @donateUrl       https://ko-fi.com/tourne
 // @include         windhawk.exe
 // @license         MIT
 // ==/WindhawkMod==
@@ -438,7 +437,7 @@
     $name: 'This PC: Videos folder'
     $description: 'Shows after Explorer restarts. Asks for admin.'
     #! $showIf: {use: true}
-  - thisPcFolders: ''
+  - thisPcFolders: 'Downloads > %USERPROFILE%\Downloads > %USERPROFILE%\Downloads\Bouquet\Folder Icons\1615555226_bouquet_icon_theme_by_niivu_dc3uqnw\bouquet Icon Theme\Extra Icons\Folder Downloads_16x16-32.ico,0'
     $name: 'This PC: your own folders'
     $description: 'Folders added to This PC, as Name > Path > Icon, with | between them. The icon is optional, e.g. Downloads > X:\Downloads > C:\Icons\dl.ico Shows after Explorer restarts.'
     #! $showIf: {use: true}
@@ -934,7 +933,7 @@
     $name: 'Skip the lock screen'
     $description: 'Waking or starting the PC goes straight to the sign-in screen. Asks for admin.'
     #! $showIf: {use: true}
-  - lockScreenImage: ''
+  - lockScreenImage: '%USERPROFILE%\Downloads\Images\Tourne Moss 3840x2160.png'
     $name: 'Lock screen picture for everyone'
     $description: 'A picture shown on the lock and sign-in screens for every account. While it''s set, Settings can''t change the lock screen picture. Empty: off. Takes effect after you sign out and back in. Asks for admin.'
     #! $format: filePath

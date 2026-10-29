@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "app-bars.h"
+#include "flyouts.h"
 #include "shell-mode.h"
 #include "td.h"
 
@@ -67,6 +68,8 @@ struct Icon {
     UINT version = 0;
     UINT state = 0;
     HICON icon = nullptr;  // (our copy)
+    DWORD sent = 0;        // the app's own icon handle, as sent (kept, to copy it again after a restart)
+    bool restored = false; // put back from the store: the app's own NIM_ADD, if it comes, refreshes it
     std::wstring tip;
 };
 
@@ -145,6 +148,7 @@ void Apply(Icon& i, const NotifyData& n) {
     if (n.uFlags & NIF_MESSAGE) i.callback = n.uCallbackMessage;
     if (n.uFlags & NIF_ICON) {
         if (i.icon) DestroyIcon(i.icon);
+        i.sent = n.hIcon;
         i.icon = n.hIcon ? CopyIcon((HICON)(ULONG_PTR)n.hIcon) : nullptr;
         if (n.hIcon && !i.icon) i.icon = ProgramIcon(i.owner);
     }
@@ -152,7 +156,19 @@ void Apply(Icon& i, const NotifyData& n) {
     if (n.uFlags & NIF_STATE) i.state = (i.state & ~n.dwStateMask) | (n.dwState & n.dwStateMask);
     if (n.uFlags & NIF_INFO) {
         std::wstring title = Text(n.szInfoTitle, 64), info = Text(n.szInfo, 256);
-        if (!info.empty()) Log(L"balloon from %s: %s %s", i.tip.c_str(), title.c_str(), info.c_str());  // (shown by Tourne later)
+        if (!info.empty()) {
+            // Shown as Tourne's (flyouts.cpp): the balloon's own picture when it has one (NIIF_USER), else the icon's.
+            Balloon b;
+            b.owner = i.owner, b.id = i.id, b.callback = i.callback, b.version = i.version;
+            DWORD kind = n.dwInfoFlags & NIIF_ICON_MASK;
+            HICON own = kind == NIIF_USER && n.hBalloonIcon ? (HICON)(ULONG_PTR)n.hBalloonIcon : nullptr;
+            b.icon = own ? own : i.icon;
+            b.app = i.tip.substr(0, i.tip.find(L'\n'));
+            b.title = title, b.body = info;
+            b.quiet = (n.dwInfoFlags & NIIF_NOSOUND) != 0;
+            FlyoutsBalloon(b);
+            Log(L"balloon from %s: %s", b.app.c_str(), title.c_str());
+        }
     }
 }
 
@@ -167,6 +183,13 @@ LRESULT OnNotify(const TrayData& d) {
     Icon* i = Find(n, byGuid);
     switch (d.message) {
         case NIM_ADD: {
+            if (i && i->restored) {  // (put back from the store: the app's own, now)
+                i->restored = false;
+                i->owner = byGuid && !n.hWnd ? i->owner : (HWND)(ULONG_PTR)n.hWnd;
+                Apply(*i, n);
+                Changed();
+                return TRUE;
+            }
             if (i) return FALSE;  // (as Explorer: already there)
             Icon fresh;
             fresh.owner = (HWND)(ULONG_PTR)n.hWnd;
@@ -196,6 +219,77 @@ LRESULT OnNotify(const TrayData& d) {
         case NIM_SETFOCUS: return i ? TRUE : FALSE;
     }
     return FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The icons kept for this sign-in (a volatile key: window handles end with it), so a tray made again (a new
+// build, a crash) or the watchdog's collector before it hands them on. Apps running elevated never hear our
+// TaskbarCreated (UIPI) unless they let it through: MSI Afterburner, whose icon went into the hidden
+// Explorer's tray in the second before ours was up, and never came back (2026-10-16).
+
+constexpr wchar_t kStoreKey[] = L"Software\\Tourne\\Desktop\\TrayIcons";
+constexpr wchar_t kCollectorTitle[] = L"TourneTrayCollector";
+
+#pragma pack(push, 1)
+struct StoredIcon {
+    DWORD pid;
+    uint64_t owner;
+    UINT id;
+    GUID guid;
+    DWORD byGuid, callback, version, state, sent, tipChars;
+};
+#pragma pack(pop)
+
+void SaveStore() {
+    std::vector<BYTE> data;
+    for (auto const& i : g_icons) {
+        if (!IsWindow(i.owner)) continue;
+        StoredIcon s{};
+        GetWindowThreadProcessId(i.owner, &s.pid);
+        s.owner = (uint64_t)(ULONG_PTR)i.owner, s.id = i.id, s.guid = i.guid, s.byGuid = i.byGuid;
+        s.callback = i.callback, s.version = i.version, s.state = i.state, s.sent = i.sent;
+        s.tipChars = (DWORD)std::min<size_t>(i.tip.size(), 127);
+        data.insert(data.end(), (const BYTE*)&s, (const BYTE*)&s + sizeof(s));
+        data.insert(data.end(), (const BYTE*)i.tip.data(), (const BYTE*)i.tip.data() + s.tipChars * sizeof(wchar_t));
+    }
+    HKEY key;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kStoreKey, 0, nullptr, REG_OPTION_VOLATILE, KEY_SET_VALUE, nullptr, &key, nullptr) !=
+        ERROR_SUCCESS)
+        return;
+    RegSetValueExW(key, L"Icons", 0, REG_BINARY, data.data(), (DWORD)data.size());
+    RegCloseKey(key);
+}
+
+// The kept icons whose windows are still there (and still the same program's), put back.
+int LoadStore() {
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kStoreKey, L"Icons", RRF_RT_REG_BINARY, nullptr, nullptr, &size) != ERROR_SUCCESS || !size)
+        return 0;
+    std::vector<BYTE> data(size);
+    if (RegGetValueW(HKEY_CURRENT_USER, kStoreKey, L"Icons", RRF_RT_REG_BINARY, nullptr, data.data(), &size) != ERROR_SUCCESS) return 0;
+    int restored = 0;
+    for (size_t at = 0; at + sizeof(StoredIcon) <= size;) {
+        StoredIcon s;
+        memcpy(&s, data.data() + at, sizeof(s));
+        at += sizeof(s);
+        if (s.tipChars > 127 || at + s.tipChars * sizeof(wchar_t) > size) break;
+        std::wstring tip((const wchar_t*)(data.data() + at), s.tipChars);
+        at += s.tipChars * sizeof(wchar_t);
+        HWND owner = (HWND)(ULONG_PTR)s.owner;
+        DWORD pid = 0;
+        if (!IsWindow(owner) || (GetWindowThreadProcessId(owner, &pid), pid != s.pid)) continue;
+        NotifyData n{};
+        n.hWnd = (DWORD)s.owner, n.uID = s.id, n.guidItem = s.guid;
+        if (Find(n, s.byGuid != 0)) continue;
+        Icon i;
+        i.owner = owner, i.id = s.id, i.guid = s.guid, i.byGuid = s.byGuid != 0, i.callback = s.callback;
+        i.version = s.version, i.state = s.state, i.sent = s.sent, i.tip = tip, i.restored = true;
+        i.icon = s.sent ? CopyIcon((HICON)(ULONG_PTR)s.sent) : nullptr;
+        if (!i.icon) i.icon = ProgramIcon(owner);
+        g_icons.push_back(std::move(i));
+        restored++;
+    }
+    return restored;
 }
 
 // The icon as premultiplied pixels: drawn on black and on white, so icons
@@ -343,6 +437,7 @@ LRESULT CALLBACK TrayProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
     }
     if (msg == WM_TIMER && wp == kTimerChanged) {
         KillTimer(wnd, kTimerChanged);
+        SaveStore();
         EnumWindows(
             [](HWND w, LPARAM) -> BOOL {
                 if (IsTourneBar(w)) PostMessageW(w, g_msgTrayChanged, 0, 0);
@@ -354,12 +449,82 @@ LRESULT CALLBACK TrayProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
     return DefWindowProcW(wnd, msg, wp, lp);
 }
 
+// The watchdog's stand-in tray, from sign-in until Tourne Desktop's own is up: first in line (above Explorer's
+// underneath, raised as that comes up), it keeps what apps send in the store and answers as a tray would.
+constexpr UINT kMsgHandOff = WM_APP + 41;
+constexpr UINT_PTR kTimerRaise = 2, kTimerGiveUp = 3;
+
+LRESULT CALLBACK CollectorProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    if (msg == WM_COPYDATA) {
+        auto* cds = (const COPYDATASTRUCT*)lp;
+        if (!cds || !cds->lpData) return FALSE;
+        if (cds->dwData == kTrayCopyId && cds->cbData >= sizeof(DWORD) * 2 + offsetof(NotifyData, szTip)) {
+            TrayData d{};
+            memcpy(&d, cds->lpData, std::min<size_t>(cds->cbData, sizeof(d)));
+            if (d.nid.cbSize < offsetof(NotifyData, guidItem) + sizeof(GUID)) d.nid.uFlags &= ~NIF_GUID;
+            LRESULT r = OnNotify(d);
+            SaveStore();
+            return r;
+        }
+        if (cds->dwData == kIconRectCopyId) return IconRect(cds);
+        return FALSE;
+    }
+    if (msg == WM_TIMER && wp == kTimerRaise) {
+        SetWindowPos(wnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+        return 0;
+    }
+    if (msg == kMsgHandOff || (msg == WM_TIMER && wp == kTimerGiveUp)) {  // (Tourne's tray is up, or never came)
+        SaveStore();
+        DestroyWindow(wnd);
+        return 0;
+    }
+    if (msg == WM_DESTROY) {
+        PostQuitMessage(0);
+        return 0;
+    }
+    return DefWindowProcW(wnd, msg, wp, lp);
+}
+
+DWORD WINAPI CollectorThread(LPVOID) {
+    HINSTANCE instance = GetModuleHandleW(nullptr);
+    WNDCLASSW wc{};
+    wc.lpfnWndProc = CollectorProc;
+    wc.hInstance = instance;
+    wc.lpszClassName = L"Shell_TrayWnd";
+    RegisterClassW(&wc);
+    HWND wnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST, L"Shell_TrayWnd", kCollectorTitle, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
+                               instance, nullptr);
+    if (!wnd) return 0;
+    ChangeWindowMessageFilterEx(wnd, WM_COPYDATA, MSGFLT_ALLOW, nullptr);
+    ChangeWindowMessageFilterEx(wnd, kMsgHandOff, MSGFLT_ALLOW, nullptr);
+    SetTimer(wnd, kTimerRaise, 100, nullptr);
+    SetTimer(wnd, kTimerGiveUp, 120000, nullptr);
+    MSG m;
+    while (GetMessageW(&m, nullptr, 0, 0) > 0) DispatchMessageW(&m);
+    return 0;
+}
+
+// A "Shell_TrayWnd" that isn't the collector (Explorer's, or a test desktop's).
+HWND OtherTray() {
+    for (HWND w = nullptr; (w = FindWindowExW(nullptr, w, L"Shell_TrayWnd", nullptr));) {
+        wchar_t title[32] = L"";
+        GetWindowTextW(w, title, 32);
+        if (wcscmp(title, kCollectorTitle)) return w;
+    }
+    return nullptr;
+}
+
 }  // namespace
+
+void TrayCollectorStart() {
+    RegDeleteKeyW(HKEY_CURRENT_USER, kStoreKey);  // (a sign-in: nothing kept is anyone's now)
+    if (HANDLE t = CreateThread(nullptr, 0, CollectorThread, nullptr, 0, nullptr)) CloseHandle(t);
+}
 
 void TrayHostStart() {
     if (g_tray) return;
     // (TOURNE_TEST_TRAY: hosted beside another, for testing under Wine, whose desktop always has one)
-    if (FindWindowW(L"Shell_TrayWnd", nullptr) && !ShellExplorerExpected() && !GetEnvironmentVariableW(L"TOURNE_TEST_TRAY", nullptr, 0)) {
+    if (OtherTray() && !ShellExplorerExpected() && !GetEnvironmentVariableW(L"TOURNE_TEST_TRAY", nullptr, 0)) {
         Log(L"there's a tray already (Explorer's?): not hosting one");
         return;
     }
@@ -387,6 +552,14 @@ void TrayHostStart() {
     ChangeWindowMessageFilterEx(g_tray, WM_COPYDATA, MSGFLT_ALLOW, nullptr);
     g_msgTaskbarCreated = RegisterWindowMessageW(L"TaskbarCreated");
     ChangeWindowMessageFilterEx(g_tray, g_msgTaskbarCreated, MSGFLT_ALLOW, nullptr);
+    // The watchdog's collector (at sign-in) hands on what it kept; then the icons kept, this tray's own before
+    // a restart among them, are put back: an app that never hears TaskbarCreated keeps its icon.
+    if (HWND collector = FindWindowW(L"Shell_TrayWnd", kCollectorTitle))
+        SendMessageTimeoutW(collector, kMsgHandOff, 0, 0, SMTO_ABORTIFHUNG, 2000, nullptr);
+    if (int restored = LoadStore()) {
+        Log(L"%d icons put back as they were", restored);
+        Changed();
+    }
     // Apps already running put their icons in again.
     TrayHostRetake();
     AppBarsStart();

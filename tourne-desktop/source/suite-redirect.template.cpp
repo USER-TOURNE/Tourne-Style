@@ -144,6 +144,7 @@ Resource Redirect while this build is on.
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <cfloat>
 #include <cmath>
 #include <cstdint>
 #include <cwchar>
@@ -1643,6 +1644,7 @@ enum SuitePart : int {
     kPartDarkMagic,
     kPartExplorerColors,
     kPartClassicMenus,
+    kPartSquareCorners,
     kPartCount
 };
 
@@ -1652,7 +1654,7 @@ constexpr PCWSTR kPartKeys[kPartCount] = {
     L"menuNoIcons", L"menuNoDuplicates", L"systemIcons", L"clock",
     L"iconRedirect", L"tweaks", L"taskbar", L"switcher",
     L"explorerStyle", L"themeGaps", L"darkMagic", L"explorerColors",
-    L"classicMenus",
+    L"classicMenus", L"squareCorners",
 };
 
 bool g_partEnabled[kPartCount];
@@ -1742,6 +1744,8 @@ void SuiteEvaluate() {
         g_partEnabled[kPartDarkMagic] && part_dark_magic::ShouldLoadInThisProcess();
     g_partWanted[kPartClassicMenus] =
         g_partEnabled[kPartClassicMenus] && part_classic_menus::ShouldLoadInThisProcess();
+    g_partWanted[kPartSquareCorners] =
+        g_partEnabled[kPartSquareCorners] && part_square_corners::ShouldLoadInThisProcess();
     g_partWanted[kPartMenuNoIcons] =
         g_partEnabled[kPartMenuNoIcons] && part_menu_no_icons::ShouldLoadInThisProcess();
     g_partWanted[kPartMenuNoDuplicates] =
@@ -2059,6 +2063,7 @@ BOOL Wh_ModInit() {
     g_partActive[kPartThemeGaps] = SuiteStartPart(kPartThemeGaps, part_theme_gaps::PartInit);
     g_partActive[kPartDarkMagic] = SuiteStartPart(kPartDarkMagic, part_dark_magic::PartInit);
     g_partActive[kPartClassicMenus] = SuiteStartPart(kPartClassicMenus, part_classic_menus::PartInit);
+    g_partActive[kPartSquareCorners] = SuiteStartPart(kPartSquareCorners, part_square_corners::PartInit);
     g_partActive[kPartMenuNoIcons] =
         SuiteStartPart(kPartMenuNoIcons, part_menu_no_icons::PartInit);
     g_partActive[kPartMenuNoDuplicates] =
@@ -2176,6 +2181,9 @@ void Wh_ModUninit() {
     if (g_partActive[kPartDarkMagic]) {
         part_dark_magic::PartUninit();
     }
+    if (g_partActive[kPartSquareCorners]) {
+        part_square_corners::PartUninit();
+    }
     // Stops a theme download and a tweaks pass, which only the launcher starts.
     part_icon_redirect::StopFetch();
     part_tweaks::Stop();
@@ -2210,6 +2218,7 @@ BOOL Wh_ModSettingsChanged(BOOL* bReload) {
         (g_partActive[kPartIconRedirect] && part_icon_redirect::NeedsReload()) ||
         (g_partActive[kPartThemeGaps] && part_theme_gaps::NeedsReload()) ||
         (g_partActive[kPartClassicMenus] && part_classic_menus::NeedsReload()) ||
+        (g_partActive[kPartSquareCorners] && part_square_corners::NeedsReload()) ||
 #ifdef _WIN64
         (g_partActive[kPartExplorerColors] && part_explorer_colors::NeedsReload()) ||
 #endif

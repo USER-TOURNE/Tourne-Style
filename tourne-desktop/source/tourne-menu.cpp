@@ -21,6 +21,10 @@ struct TourneMenuItem {
 
 constexpr wchar_t kLiteMenuPackage[] = L"RedBaronDevelopment.PopEx_36fx7gy0frrbc";
 
+// An item may be a Tourne command (command.cpp's language), which the part that
+// runs commands is asked to do.
+// @inline tourne-pipe.cpp
+
 ////////////////////////////////////////////////////////////////////////////////
 // LiteMenu's config.xml: enough XML for it (elements, quoted attributes, text, the prolog, comments).
 
@@ -433,6 +437,21 @@ bool TmAction(std::wstring const& command) {
     else if (a == L"<close-litemenu>") a = L"tourne:close-litemenu";
     if (a.rfind(L"tourne:", 0) != 0) return false;
     a = a.substr(7);
+    // "tourne:do <command>": the command language, so a menu item can do what a
+    // key does, several steps and all ("tourne:do workspace 2; wait 200; exec notepad").
+    if (a.rfind(L"do ", 0) == 0 || a == L"do") {
+        std::wstring command = TmTrim(a.size() > 2 ? a.substr(3) : L"");
+        if (command.empty()) {
+            Wh_Log(L"this item says tourne:do with no command after it");
+            return true;
+        }
+        std::wstring answer = AskTourne(L"run " + command);
+        if (answer.empty())
+            Wh_Log(L"\"%s\" needs Key binds on with \"Let scripts control Tourne\"", command.c_str());
+        else if (TmTrim(answer).rfind(L"error", 0) == 0)
+            Wh_Log(L"\"%s\": %s", command.c_str(), TmTrim(answer).c_str());
+        return true;
+    }
     if (a == L"show-desktop") ToggleShowDesktop();
     else if (a == L"run") ShowRunDialog();
     else if (a == L"start") ToggleStartMenu();
@@ -501,6 +520,50 @@ HMENU TmBuild(std::vector<TourneMenuItem> const& items, TourneMenuBuild& b) {
     return menu;
 }
 
+// A click outside the open menu (the desktop's, the Tourne Menu) closes it and still reaches what's under it: a right-click elsewhere
+// opens a new menu there, a middle-click the Tourne Menu (again, where it was clicked), a left-click picks what it's on. (Windows closes a
+// menu only on the left or right button, and keeps that click.)
+struct PassedClick {
+    UINT down = 0;  // the button's down message, while one is waiting
+    POINT at{};
+};
+thread_local PassedClick t_passedClick;
+
+LRESULT CALLBACK PassClickFilter(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == MSGF_MENU && !t_passedClick.down) {
+        MSG const* m = (MSG const*)lParam;
+        UINT down = 0;
+        switch (m->message) {
+            case WM_LBUTTONDOWN: case WM_NCLBUTTONDOWN: down = WM_LBUTTONDOWN; break;
+            case WM_RBUTTONDOWN: case WM_NCRBUTTONDOWN: down = WM_RBUTTONDOWN; break;
+            case WM_MBUTTONDOWN: case WM_NCMBUTTONDOWN: down = WM_MBUTTONDOWN; break;
+        }
+        WCHAR cls[16] = L"";
+        if (down && !(GetClassNameW(WindowFromPoint(m->pt), cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768"))) {
+            t_passedClick = {down, m->pt};
+            EndMenu();
+            return TRUE;  // (taken here, and given again once the menu has gone)
+        }
+    }
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+// The click again, where it was, now nothing holds the mouse; let go too if the button is up by now.
+void PassClickOn() {
+    PassedClick c = t_passedClick;
+    t_passedClick = {};
+    if (!c.down) return;
+    // (input and the keys' state are the physical buttons; the messages, after a left-handed swap)
+    bool physicalLeft = (c.down == WM_LBUTTONDOWN) != (c.down != WM_MBUTTONDOWN && GetSystemMetrics(SM_SWAPBUTTON));
+    DWORD press = c.down == WM_MBUTTONDOWN ? MOUSEEVENTF_MIDDLEDOWN : physicalLeft ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_RIGHTDOWN;
+    int key = c.down == WM_MBUTTONDOWN ? VK_MBUTTON : physicalLeft ? VK_LBUTTON : VK_RBUTTON;
+    INPUT in[2] = {};
+    in[0].type = in[1].type = INPUT_MOUSE;
+    in[0].mi.dwFlags = press;
+    in[1].mi.dwFlags = press << 1;  // (each button's UP flag is its DOWN flag's next bit)
+    SendInput(GetAsyncKeyState(key) & 0x8000 ? 1 : 2, in, sizeof(INPUT));
+}
+
 // The menu at the pointer, from the bar (any of them: it only owns the menu).
 void ShowTourneMenu(HWND wnd) {
     if (!g_settings.menuEnabled) return;
@@ -509,7 +572,11 @@ void ShowTourneMenu(HWND wnd) {
     TourneMenuBuild b;
     HMENU menu = TmBuild(items, b);
     g_menuFromButton = false;
+    t_passedClick = {};
+    HHOOK pass = SetWindowsHookExW(WH_MSGFILTER, PassClickFilter, nullptr, GetCurrentThreadId());
     int cmd = RunMenu(wnd, menu);
+    if (pass) UnhookWindowsHookEx(pass);
     DestroyMenu(menu);
     if (cmd > 0 && cmd <= (int)b.actions.size()) b.actions[cmd - 1]();
+    PassClickOn();
 }

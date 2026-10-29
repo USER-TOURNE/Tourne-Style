@@ -1,10 +1,10 @@
 # TourneSuite plan: shell mode, views, shaders, motion, extensions and dots
 
-*October 5, 2026.*
+Written 2026-10-05. Proposal only: no code until Tourne says go.
 
-A proposal, no code yet. Here's what I want next:
+Tourne's asks (2026-10-05):
 
-- **Shell mode** for the killswitch: Windows' taskbar and Start gone for real (I picked this over the outside-only route).
+- **Shell mode** for the killswitch: Windows' taskbar and Start gone for real (chosen on the card over the outside-only route).
 - **Many switcher views** like CKFlip3D's Flip 3D and Cover Flow, next to PrinceWM's infinite canvas. "So varied and expressive."
 - **Glass shaders** like ShaderGlass (RetroArch's 1,200+ shaders): a curated set built in, each tunable, with an easy way to fetch more later.
 - **Better shadows, glows, blurs, blooms and bleeds**, and animation like Hyprland (`animation = NAME, ONOFF, SPEED, CURVE`), Cinnamon (physics: mass, stiffness, friction), Picom and Compiz.
@@ -13,7 +13,7 @@ A proposal, no code yet. Here's what I want next:
 
 ## 1. What the references are (checked)
 
-| Reference | What it is | Licence | How I may use it |
+| Reference | What it is | Licence | How Tourne may use it |
 | --- | --- | --- | --- |
 | [CKFlip3D](https://github.com/CYMERKAROL/CKFlip3D) | Flip 3D and Cover Flow for Windows 11: live window tiles in a 3D stack, Tab or wheel to cycle, hover lifts a tile, close animation reflows the stack. C++20, Direct3D 11. | PolyForm Noncommercial 1.0.0 (checked in its README) | Ideas only |
 | [PrinceWM](https://github.com/Ravestars/PrinceWM) | Infinite-canvas Alt+Tab. | MIT | Ideas (already planned as a Switcher style) |
@@ -47,9 +47,9 @@ A proposal, no code yet. Here's what I want next:
 - **Turning it on** is a Studio switch with a clear warning. It applies at the next sign-in, and `--restore` or the Studio switches back.
 - **If Tourne Desktop crashes or doesn't start** within a few seconds of sign-in, a tiny watchdog in the same exe starts Explorer as the shell for that session. Two crashes in a row switch shell mode off until you turn it back on.
 - **Escape hatch:** hold Shift while signing in and you get Explorer. Ctrl+Alt+Del, then Task Manager, then running `explorer.exe` always works too.
-- The outside killswitch I already built stays as a lighter option, off by default. I might drop it later.
+- The outside killswitch already built stays as a lighter option, off by default. Say if you'd rather it went.
 
-**Build order:** (a) the shell switch, the watchdog and autostart; (b) the tray host, with icons in the bar, overflow and balloon tips; (c) app bars and work area; (d) wallpaper and desktop from the wallpaper manager; (e) Tourne quick toggles. Each step gets tested under Wine first, then on my PC.
+**Build order:** (a) the shell switch, the watchdog and autostart; (b) the tray host, with icons in the bar, overflow and balloon tips; (c) app bars and work area; (d) wallpaper and desktop from the wallpaper manager; (e) Tourne quick toggles. Each step is tested under Wine first, then on your PC.
 
 ## 3. Motion: a Hyprland-style animation engine
 
@@ -112,13 +112,13 @@ Window trails (Hyprtrails), focus flash (Hyprfocus), extra borders (Borders++, i
 - **From Hyprland:** import a Hyprland dots folder or `hyprland.conf` (old or Lua). Its animations, Béziers, gaps, borders and gradients, rounding, blur and shadow settings, and colours map onto Tourne's. A Linux rice can then be copied onto Windows in one click (as far as Windows allows).
 - Same rule as extensions: a dots file never runs anything.
 
-## 9. The order I'm going in
+## 9. Recommended order
 
-1. **Shell mode** (section 2): the killswitch I picked. The tray host is its core.
+1. **Shell mode** (section 2): the killswitch you chose. The tray host is its core.
 2. **Motion engine** (section 3): everything after it animates with it.
 3. **Switcher views** (section 4): Flip 3D and Cover Flow first, then the rest.
 4. **Effects quality pass and shader slots** (section 5), with the first built-in shaders.
 5. **Extensions grid and dots** (sections 7 and 8), then the Hyprland dots import.
 6. **Extras** (section 6) as extension cards, and the RetroArch shader importer.
 
-Each step gets built and tested under Wine, then on my PC, and stays off by default until it's switched on.
+Each step: built and tested under Wine here, then on your PC; off by default until you turn it on.

@@ -125,6 +125,23 @@
   $description: >-
     Program file names, separated by commas, whose Open and Save dialogs get
     the same selections and drive bars, like notepad.exe. 64-bit programs only.
+- taskManager: false
+  $name: Task Manager too
+  $description: >-
+    Task Manager's usage cells (CPU, memory, disk, network: shaded more as use
+    goes up) in the drive bars' colours, from the empty part through the
+    filled part to nearly full, and its rows' selections in yours. Task
+    Manager needs reopening after a change.
+- taskManagerBackground: "121C21"
+  $name: Task Manager's lists, background
+  $description: >-
+    The Details and Services tabs' lists, which are white whatever the style.
+    RRGGBB; empty leaves them as they are.
+  #! $showIf: {taskManager: true}
+- taskManagerText: ""
+  $name: Task Manager's lists, text
+  $description: RRGGBB. Empty for a light grey on a dark background, a dark one on a light background.
+  #! $showIf: {taskManager: true}
 */
 // ==/WindhawkModSettings==
 
@@ -142,6 +159,7 @@
 // cheapest first: a part and state number, then the class.
 
 #include <windows.h>
+#include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
 
@@ -225,6 +243,8 @@ struct Config {
 
     bool preview = false;
     COLORREF previewColor = 0, previewText = 0;
+
+    bool taskManager = false;
 };
 
 Config ReadConfig() {
@@ -256,6 +276,7 @@ Config ReadConfig() {
                     GetBValue(c.previewColor) * 114) / 1000;
         c.previewText = luma <= 128 ? RGB(0xDC, 0xDC, 0xDC) : RGB(0x20, 0x20, 0x20);
     }
+    c.taskManager = Wh_GetIntSetting(L"taskManager") != 0;
     return c;
 }
 
@@ -266,6 +287,7 @@ Config g_config;
 // What's on, checked before anything else so other drawing pays one load.
 std::atomic<bool> g_barsOn;
 std::atomic<int> g_selectionOn;
+bool g_inTaskManager;  // fixed when the part starts
 
 void SetConfig(Config const& c) {
     AcquireSRWLockExclusive(&g_lock);
@@ -288,10 +310,14 @@ struct Needs {
     bool themeBackground = false;  // Drive bars, navigation pane
     bool themeBackgroundEx = false;  // File list
     bool preview = false;
+    bool heat = false;  // Task Manager's usage cells
     bool operator==(Needs const&) const = default;
 };
 
 Needs NeedsFor(Config const& c) {
+    // Task Manager: its Processes rows come through the plain call, Details' and Services' lists through either.
+    if (g_inTaskManager)
+        return {c.bars != BarMode::Style || c.selection != 0, c.selection != 0, c.preview, c.taskManager};
     return {c.bars != BarMode::Style || (c.selection & kSelectNavigation), (c.selection & kSelectFiles) != 0,
             c.preview};
 }
@@ -743,6 +769,16 @@ HRESULT WINAPI DrawThemeBackground_Hook(HTHEME theme, HDC dc, int part, int stat
                     break;
             }
         }
+    } else if (g_inTaskManager && part == LVP_LISTITEM && rect && state >= LISS_HOT && state <= LISS_HOTSELECTED &&
+               state != LISS_DISABLED && (g_selectionOn.load(std::memory_order_relaxed) & kSelectFiles) &&
+               ClassIs(theme, L"ListView")) {
+        // Task Manager's rows, which it draws without the Ex call Explorer's file list uses.
+        Config c = CurrentConfig();
+        Look const& look = state == LISS_SELECTED ? c.selected : state == LISS_SELECTEDNOTFOCUS ? c.unfocused : c.hover;
+        if (look.set) {
+            DrawSelection(dc, *rect, look, c.borderWidth, c.selectionRadius, false, 0, 0);
+            return S_OK;
+        }
     }
     return DrawThemeBackground_Original(theme, dc, part, state, rect, clip);
 }
@@ -848,6 +884,98 @@ DWORD WINAPI GetSysColor_Hook(int index) {
 using AllowDarkModeForWindow_t = BOOL(WINAPI*)(HWND, BOOL);
 AllowDarkModeForWindow_t g_allowDarkModeForWindow;  // uxtheme's ordinal 133
 
+// Task Manager's Details and Services tabs are plain list controls, white whatever the style: their background,
+// text and column headers in the Task Manager colours. Their dialog makes them inside user32 (no CreateWindowExW
+// call to catch) and Task Manager sets their colours again itself, so each list is caught as it's made (an
+// in-process window event, as Dark Magic does it), and subclassed so the colours it's given become these.
+COLORREF g_listGround, g_listText;
+bool g_listColours;
+HWINEVENTHOOK g_listHook;
+
+using SetWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR, DWORD_PTR);
+using DefSubclassProc_t = LRESULT(WINAPI*)(HWND, UINT, WPARAM, LPARAM);
+SetWindowSubclass_t g_setWindowSubclass;
+DefSubclassProc_t g_defSubclassProc;
+
+constexpr UINT_PTR kListSubclassId = 0x544D4C53;
+UINT g_removeMessage = RegisterWindowMessageW(L"TourneExplorerColours_Unsubclass");
+SRWLOCK g_listsLock = SRWLOCK_INIT;
+std::vector<HWND> g_lists;  // subclassed, so they're let go when the part stops
+
+LRESULT CALLBACK ListSubclass(HWND list, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    if (message == g_removeMessage && g_removeMessage) {
+        using RemoveWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR);
+        ((RemoveWindowSubclass_t)wParam)(list, ListSubclass, kListSubclassId);
+        return 0;
+    }
+    if (message == LVM_SETBKCOLOR || message == LVM_SETTEXTBKCOLOR) lParam = g_listGround;
+    else if (message == LVM_SETTEXTCOLOR) lParam = g_listText;
+    return g_defSubclassProc(list, message, wParam, lParam);
+}
+
+void ColourList(HWND list) {
+    if (GetPropW(list, L"TourneTaskManagerList")) return;
+    SetPropW(list, L"TourneTaskManagerList", (HANDLE)1);
+    if (g_setWindowSubclass && g_defSubclassProc && g_setWindowSubclass(list, ListSubclass, kListSubclassId, 0)) {
+        AcquireSRWLockExclusive(&g_listsLock);
+        g_lists.push_back(list);
+        ReleaseSRWLockExclusive(&g_listsLock);
+    }
+    SendMessageW(list, LVM_SETBKCOLOR, 0, g_listGround);
+    SendMessageW(list, LVM_SETTEXTBKCOLOR, 0, g_listGround);
+    SendMessageW(list, LVM_SETTEXTCOLOR, 0, g_listText);
+    if (HWND header = (HWND)SendMessageW(list, LVM_GETHEADER, 0, 0))
+        if (Luma(g_listGround) <= 128) SetWindowTheme(header, L"DarkMode_ItemsView", nullptr);
+    InvalidateRect(list, nullptr, TRUE);
+}
+
+bool IsList(HWND wnd) {
+    WCHAR cls[32];
+    return GetClassNameW(wnd, cls, ARRAYSIZE(cls)) && _wcsicmp(cls, WC_LISTVIEWW) == 0;
+}
+
+void CALLBACK ListEvent(HWINEVENTHOOK, DWORD, HWND wnd, LONG object, LONG child, DWORD, DWORD) {
+    if (wnd && object == OBJID_WINDOW && child == CHILDID_SELF && IsList(wnd)) ColourList(wnd);
+}
+
+HMODULE ThisModule() {
+    HMODULE module = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&ThisModule, &module);
+    return module;
+}
+
+void StartListColours() {
+    HMODULE comctl = GetModuleHandleW(L"comctl32.dll");
+    if (!comctl) comctl = LoadLibraryExW(L"comctl32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (comctl) {
+        g_setWindowSubclass = (SetWindowSubclass_t)GetProcAddress(comctl, "SetWindowSubclass");
+        g_defSubclassProc = (DefSubclassProc_t)GetProcAddress(comctl, "DefSubclassProc");
+    }
+    // (its creation and its showing, on the thread that owns it, which subclassing needs; the lists are made
+    // when their tab is first opened, long after this)
+    g_listHook = SetWinEventHook(EVENT_OBJECT_CREATE, EVENT_OBJECT_SHOW, ThisModule(), ListEvent, GetCurrentProcessId(),
+                                 0, WINEVENT_INCONTEXT);
+}
+
+// Before this part's code goes: the lists let go of it.
+void StopListColours() {
+    if (g_listHook) UnhookWinEvent(g_listHook);
+    g_listHook = nullptr;
+    HMODULE comctl = GetModuleHandleW(L"comctl32.dll");
+    using RemoveWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR);
+    auto remove = comctl ? (RemoveWindowSubclass_t)GetProcAddress(comctl, "RemoveWindowSubclass") : nullptr;
+    AcquireSRWLockExclusive(&g_listsLock);
+    std::vector<HWND> lists = std::move(g_lists);
+    ReleaseSRWLockExclusive(&g_listsLock);
+    for (HWND list : lists) {
+        if (!IsWindow(list)) continue;
+        // (on the list's own thread, as subclassing must be)
+        if (remove) SendMessageTimeoutW(list, g_removeMessage, (WPARAM)remove, 0, SMTO_ABORTIFHUNG, 1000, nullptr);
+        RemovePropW(list, L"TourneTaskManagerList");
+    }
+}
+
 using CreateWindowExW_t = decltype(&CreateWindowExW);
 CreateWindowExW_t CreateWindowExW_Original;
 HWND WINAPI CreateWindowExW_Hook(DWORD exStyle, LPCWSTR className, LPCWSTR title, DWORD style, int x, int y,
@@ -860,6 +988,127 @@ HWND WINAPI CreateWindowExW_Hook(DWORD exStyle, LPCWSTR className, LPCWSTR title
         SetWindowTheme(wnd, L"Explorer", nullptr);
     }
     return wnd;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Task Manager
+
+// Task Manager's usage cells are brushes DirectUI makes in six fixed shades,
+// lightest for the least use (read off with a probe of its GDI calls). Each
+// becomes a step along the drive bar's colours: the empty part, then the
+// filled part fading to its end, then the nearly full colour at the top.
+constexpr COLORREF kHeatShades[] = {
+    RGB(0xFF, 0xF4, 0xC4), RGB(0xF9, 0xEC, 0xA8), RGB(0xFF, 0xE4, 0x87),
+    RGB(0xFF, 0xD2, 0x64), RGB(0xFC, 0xA7, 0x1D), RGB(0xFC, 0x68, 0x2A),
+};
+COLORREF g_heat[ARRAYSIZE(kHeatShades)];
+bool g_heatSet[ARRAYSIZE(kHeatShades)];
+HMODULE g_dui;
+
+void SetHeat(Config const& c) {
+    COLORREF from = c.fill.from, to = c.fill.to;
+    g_heatSet[0] = c.empty.set, g_heat[0] = c.empty.from;
+    constexpr float kSteps[] = {0.0f, 0.35f, 0.7f, 1.0f};
+    for (int i = 0; i < 4; i++) g_heatSet[i + 1] = c.fill.set, g_heat[i + 1] = Mix(from, to, kSteps[i]);
+    g_heatSet[5] = c.full.set || c.fill.set, g_heat[5] = c.full.set ? c.full.from : to;
+}
+
+// Grouped by type, a group's heading row ("Apps (5)") fills its usage cells with one more shade, a cream; it
+// takes the list's own ground (the cells read as part of the heading), else the drive bar's empty colour.
+constexpr COLORREF kHeatGroupShade = RGB(0xF3, 0xED, 0xD9);
+
+bool HeatShade(COLORREF color, void* returnAddress, COLORREF* out) {
+    color &= 0xFFFFFF;
+    // (from whichever part of Task Manager asks: it isn't DirectUI's own brush, and the shade is used for nothing else)
+    if (color == kHeatGroupShade && (g_listColours || g_heatSet[0])) {
+        *out = g_listColours ? g_listGround : g_heat[0];
+        return true;
+    }
+    for (int i = 0; i < (int)ARRAYSIZE(kHeatShades); i++) {
+        if (color != kHeatShades[i]) continue;
+        if (!g_heatSet[i]) return false;
+        HMODULE caller = nullptr;
+        if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                (LPCWSTR)returnAddress, &caller) ||
+            !caller || caller != g_dui)
+            return false;
+        *out = g_heat[i];
+        return true;
+    }
+    return false;
+}
+
+using CreateSolidBrush_t = decltype(&CreateSolidBrush);
+using SetDCBrushColor_t = decltype(&SetDCBrushColor);
+CreateSolidBrush_t CreateSolidBrush_Original;
+SetDCBrushColor_t SetDCBrushColor_Original;
+
+HBRUSH WINAPI CreateSolidBrush_Hook(COLORREF color) {
+    COLORREF mine;
+    if (HeatShade(color, __builtin_return_address(0), &mine)) color = mine;
+    return CreateSolidBrush_Original(color);
+}
+
+using CreateBrushIndirect_t = decltype(&CreateBrushIndirect);
+using SetBkColor_t = decltype(&SetBkColor);
+CreateBrushIndirect_t CreateBrushIndirect_Original;
+SetBkColor_t SetBkColor_Original;
+
+HBRUSH WINAPI CreateBrushIndirect_Hook(const LOGBRUSH* brush) {
+    COLORREF mine;
+    if (brush && brush->lbStyle == BS_SOLID && HeatShade(brush->lbColor, __builtin_return_address(0), &mine)) {
+        LOGBRUSH b = *brush;
+        b.lbColor = mine;
+        return CreateBrushIndirect_Original(&b);
+    }
+    return CreateBrushIndirect_Original(brush);
+}
+
+// A fill made as text's background (SetBkColor, then ExtTextOut with ETO_OPAQUE): the group rows' cream only.
+COLORREF WINAPI SetBkColor_Hook(HDC dc, COLORREF color) {
+    if ((color & 0xFFFFFF) == kHeatGroupShade && (g_listColours || g_heatSet[0])) color = g_listColours ? g_listGround : g_heat[0];
+    return SetBkColor_Original(dc, color);
+}
+
+// A fill made as a gradient (DirectUI's fills go through GradientFill): each corner in the group rows' cream
+// takes the same colour as the other paths give it. A vertex's channels are 16 bits, the colour in the top 8.
+using GdiGradientFill_t = BOOL(WINAPI*)(HDC, PTRIVERTEX, ULONG, PVOID, ULONG, ULONG);
+GdiGradientFill_t GdiGradientFill_Original;
+
+BOOL WINAPI GdiGradientFill_Hook(HDC dc, PTRIVERTEX vertices, ULONG count, PVOID mesh, ULONG meshCount, ULONG mode) {
+    if (vertices && count && count <= 64 && (g_listColours || g_heatSet[0])) {
+        TRIVERTEX copy[64];
+        bool changed = false;
+        COLORREF to = g_listColours ? g_listGround : g_heat[0];
+        for (ULONG i = 0; i < count; i++) {
+            copy[i] = vertices[i];
+            COLORREF c = RGB(vertices[i].Red >> 8, vertices[i].Green >> 8, vertices[i].Blue >> 8);
+            if (c != kHeatGroupShade) continue;
+            copy[i].Red = (COLOR16)(GetRValue(to) << 8), copy[i].Green = (COLOR16)(GetGValue(to) << 8), copy[i].Blue = (COLOR16)(GetBValue(to) << 8);
+            changed = true;
+        }
+        if (changed) return GdiGradientFill_Original(dc, copy, count, mesh, meshCount, mode);
+    }
+    return GdiGradientFill_Original(dc, vertices, count, mesh, meshCount, mode);
+}
+
+// A see-through fill (DirectUI makes those with GDI+, its colour as ARGB): the group rows' cream band, its alpha kept.
+using GdipCreateSolidFill_t = int(WINAPI*)(DWORD argb, void** brush);
+GdipCreateSolidFill_t GdipCreateSolidFill_Original;
+
+int WINAPI GdipCreateSolidFill_Hook(DWORD argb, void** brush) {
+    COLORREF rgb = RGB((argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF);
+    if (rgb == kHeatGroupShade && (g_listColours || g_heatSet[0])) {
+        COLORREF to = g_listColours ? g_listGround : g_heat[0];
+        argb = (argb & 0xFF000000) | ((DWORD)GetRValue(to) << 16) | ((DWORD)GetGValue(to) << 8) | GetBValue(to);
+    }
+    return GdipCreateSolidFill_Original(argb, brush);
+}
+
+COLORREF WINAPI SetDCBrushColor_Hook(HDC dc, COLORREF color) {
+    COLORREF mine;
+    if (HeatShade(color, __builtin_return_address(0), &mine)) color = mine;
+    return SetDCBrushColor_Original(dc, color);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -899,6 +1148,9 @@ bool ShouldLoadInThisProcess() {
     if (_wcsicmp(name.c_str(), L"explorer.exe") == 0 || _wcsicmp(name.c_str(), L"prevhost.exe") == 0) {
         return true;
     }
+    if (_wcsicmp(name.c_str(), L"taskmgr.exe") == 0 && Wh_GetIntSetting(L"taskManager")) {
+        return true;
+    }
     return !name.empty() && ListedProgram(name);
 }
 
@@ -916,6 +1168,7 @@ BOOL Wh_ModInit() {
     g_host = _wcsicmp(name.c_str(), L"prevhost.exe") == 0   ? Host::Previewer
              : _wcsicmp(name.c_str(), L"explorer.exe") == 0 ? Host::Explorer
                                                             : Host::Dialog;
+    g_inTaskManager = _wcsicmp(name.c_str(), L"taskmgr.exe") == 0;
     HMODULE uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (!uxtheme) {
         return FALSE;
@@ -932,6 +1185,34 @@ BOOL Wh_ModInit() {
     g_previewColor = g_config.previewColor;
     g_previewText = g_config.previewText;
 
+    if (g_needs.heat) {
+        g_listColours = ParseColor(TextSetting(L"taskManagerBackground"), &g_listGround);
+        if (g_listColours && !ParseColor(TextSetting(L"taskManagerText"), &g_listText))
+            g_listText = Luma(g_listGround) <= 128 ? RGB(0xDC, 0xDC, 0xDC) : RGB(0x20, 0x20, 0x20);
+        if (g_listColours) StartListColours();
+        g_dui = LoadLibraryExW(L"dui70.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+        HMODULE gdi = GetModuleHandleW(L"gdi32full.dll");
+        if (!gdi) gdi = GetModuleHandleW(L"gdi32.dll");
+        if (g_dui && gdi) {
+            SetHeat(g_config);
+            Wh_SetFunctionHook((void*)GetProcAddress(gdi, "CreateSolidBrush"), (void*)CreateSolidBrush_Hook,
+                               (void**)&CreateSolidBrush_Original);
+            Wh_SetFunctionHook((void*)GetProcAddress(gdi, "SetDCBrushColor"), (void*)SetDCBrushColor_Hook,
+                               (void**)&SetDCBrushColor_Original);
+            Wh_SetFunctionHook((void*)GetProcAddress(gdi, "CreateBrushIndirect"), (void*)CreateBrushIndirect_Hook,
+                               (void**)&CreateBrushIndirect_Original);
+            Wh_SetFunctionHook((void*)GetProcAddress(gdi, "SetBkColor"), (void*)SetBkColor_Hook, (void**)&SetBkColor_Original);
+            if (void* gradient = (void*)GetProcAddress(gdi, "GdiGradientFill"))
+                Wh_SetFunctionHook(gradient, (void*)GdiGradientFill_Hook, (void**)&GdiGradientFill_Original);
+            // (the GDI+ DirectUI binds to: loaded with it, else loaded now as it would load it, by name)
+            HMODULE gdiplus = GetModuleHandleW(L"gdiplus.dll");
+            if (!gdiplus) gdiplus = LoadLibraryW(L"gdiplus.dll");
+            if (gdiplus)
+                if (void* fill = (void*)GetProcAddress(gdiplus, "GdipCreateSolidFill"))
+                    Wh_SetFunctionHook(fill, (void*)GdipCreateSolidFill_Hook, (void**)&GdipCreateSolidFill_Original);
+        }
+    }
+
     if (g_needs.themeBackground || g_needs.themeBackgroundEx) {
         if (!g_getThemeClass) {
             Wh_Log(L"uxtheme's GetThemeClass wasn't found");
@@ -941,8 +1222,9 @@ BOOL Wh_ModInit() {
                            (void**)&DrawThemeBackground_Original);
     }
     if (g_needs.themeBackgroundEx) {
-        // Without DirectUI's help, a click's stale selection just shows for a moment.
-        HookDirectUi();
+        // Without DirectUI's help, a click's stale selection just shows for a moment. (Not in Task Manager, whose
+        // DirectUI isn't a file list: its clicks would be misread.)
+        if (!g_inTaskManager) HookDirectUi();
         Wh_SetFunctionHook((void*)GetProcAddress(uxtheme, "DrawThemeBackgroundEx"),
                            (void*)DrawThemeBackgroundEx_Hook, (void**)&DrawThemeBackgroundEx_Original);
     }
@@ -967,6 +1249,7 @@ BOOL Wh_ModInit() {
 }
 
 void Wh_ModUninit() {
+    StopListColours();
     AcquireSRWLockExclusive(&g_drawLock);
     g_scratch.Free();
     g_overBlack = {};
@@ -975,4 +1258,5 @@ void Wh_ModUninit() {
 
 void Wh_ModSettingsChanged() {
     SetConfig(ReadConfig());
+    if (g_inTaskManager) SetHeat(CurrentConfig());
 }

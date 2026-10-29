@@ -1,20 +1,20 @@
 # TourneSuite one-click setups, glass and Studio proposal
 
-*October 4, 2026.*
+Written 2026-10-04. Proposal only: no code until Tourne says go.
 
-A proposal, no code yet. What I'm after:
+Tourne's ask (2026-10-04):
 
-- Make the looks in the clips I saved and the "12 themes one shell" video into **one-click setups**.
+- Make the looks in the uploaded clips and the "12 themes one shell" video into **one-click setups**.
 - Auto palettes like omarchy-auto-theme (YouTube HBVhvTdfqvY) and pywal.
 - Settings like **hyprmod**: "its whole feature set if we can get it all to work in windows".
 - Window manager presets: a **PrinceWM** style option, plus **komorebi** and **AltSnap** presets.
 - Above all, "a super clean glass effect like that first video has", applied system wide from a GUI like hyprmod.
 
-I put stills from every clip in `tourne-research/reference-visuals/one-click-setups/` (contact sheets).
+Stills from every clip are in `tourne-research/reference-visuals/one-click-setups/` (contact sheets).
 
 ## 1. What the references are (checked)
 
-| Reference | What it is | Licence | How I may use it |
+| Reference | What it is | Licence | How Tourne may use it |
 | --- | --- | --- | --- |
 | Clip 1 (Omarchy "Glass Tuner") | A liquid glass look on every window: thick glass rim with edge bend, rainbow fringe, edge glow and top highlight; an animated "oil film" option; a "click glow". A tuner panel has saved looks, live sliders, "hold to compare: glass off", "Load Apple-ish starting point", a test window and next wallpaper. | Unknown (a Hyprland shader setup) | Ideas only |
 | Clip 2 | A Caelestia-style shell: big clock, a glass lock screen, kitty terminals with rainbow glass edges, and a notification sidebar with quick toggles. | Caelestia is GPL | Ideas only (standing rule) |
@@ -30,8 +30,6 @@ I put stills from every clip in `tourne-research/reference-visuals/one-click-set
 | [AltSnap](https://github.com/RamonUnch/AltSnap) | Alt+drag to move, Alt+right-drag to resize, and more on mouse buttons and the wheel, with snapping. Injects nothing. | GPL | Ideas only, plus importing a user's own `AltSnap.ini` |
 
 ## 2. The glass effect, honestly
-
-This is the part I care about most.
 
 Clip 1 is a compositor shader: Hyprland draws every window through it. On Windows, DWM draws other apps' windows and nobody else can run a shader on them. So the glass comes in three layers, each switched on separately:
 
@@ -94,7 +92,7 @@ A **set** is one folder, shared as one file (zip), applied with one click and un
 
 Applying a set keeps a backup of everything it changes, so "Undo set" puts the desktop back exactly. The format grows out of the v1 Theme Contract (handoff) and section 12 of the 12 themes breakdown, once those reports are in this project.
 
-**Starter sets, from the references:** Liquid Glass (clip 1), Forest Terminal (clip 3), Caelestia-style Night (clip 2; my own design, ideas only), Mochi Desk (clip 4, with the pet shelf), and up to 12 more from the 12 themes video. Each needs pieces that don't exist yet, so sets arrive as their pieces do.
+**Starter sets, from the references:** Liquid Glass (clip 1), Forest Terminal (clip 3), Caelestia-style Night (clip 2; Tourne's own design, ideas only), Mochi Desk (clip 4, with the pet shelf), and up to 12 more from the 12 themes video. Each needs pieces that don't exist yet, so sets arrive as their pieces do.
 
 ## 5. Auto palettes (omarchy-auto-theme and pywal, made for Windows)
 
@@ -119,7 +117,7 @@ Off by default, as now (`theme.source = off`).
 
 ## 6. Window manager presets
 
-| Preset | What you get | Built from | Exists |
+| Preset | What the user gets | Built from | Exists |
 | --- | --- | --- | --- |
 | **Tourne tiling** | Today's tiling: columns, rows, stacks, grid, bsp, monocle, per screen and desktop | tiling.cpp | Yes |
 | **komorebi-style** | The same layouts komorebi has (Tourne's list already matches: bsp, columns, rows, vertical stack, horizontal stack, ultrawide, grid, monocle), with komorebi-like gaps and borders, plus "import my komorebi.json" (workspace names, layouts, float rules, border colours) | Tiling plus the rules engine | Mostly; import is new |
@@ -139,9 +137,9 @@ Presets are options in the Studio's Window manager page; picking one changes onl
 
 The wallpaper manager (its own proposal) sits beside steps 3 and 4.
 
-## 8. Still to decide
+## 8. Decisions for Tourne
 
-1. Build order as above, starting with the Studio core (my lean), or start with glass so the look shows first?
-2. Layer C "frosted" mode for apps that don't support transparency: allow it as an opt-in per app (my lean), or leave such apps alone?
-3. The default palette generator: Tourne's OKLab (current) or Material You (my lean, since omarchy-auto-theme uses it)?
-4. The PrinceWM-style canvas: a Switcher style beside the current list (my lean), or its own part?
+1. Build order as above, starting with the Studio core (recommended), or start with glass so the look shows first?
+2. Layer C "frosted" mode for apps that don't support transparency: allow it as an opt-in per app (recommended), or leave such apps alone?
+3. The default palette generator: Tourne's OKLab (current) or Material You (recommended, as omarchy-auto-theme uses it)?
+4. The PrinceWM-style canvas: a Switcher style beside the current list (recommended), or its own part?

@@ -233,6 +233,111 @@ DWORD WINAPI WallpaperJob(LPVOID param) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Windows' own colours from the theme (theme.windows): its accent (title bars, Start, the Settings app, every
+// app that asks Windows for it), and with "both" its dark or light mode too, unless the theme follows Windows'
+// mode (that would go round in a circle). Off unless set: it changes how every app looks.
+
+DWORD Abgr(uint32_t rgb) { return 0xFF000000u | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF); }
+
+// The values Tourne writes for the accent, where they live.
+struct AccentValue {
+    const wchar_t* key;
+    const wchar_t* name;
+};
+constexpr AccentValue kAccentValues[] = {
+    {L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent", L"AccentPalette"},
+    {L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent", L"AccentColorMenu"},
+    {L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent", L"StartColorMenu"},
+    {L"Software\\Microsoft\\Windows\\DWM", L"AccentColor"},
+    {L"Software\\Microsoft\\Windows\\DWM", L"ColorizationColor"},
+    {L"Software\\Microsoft\\Windows\\DWM", L"ColorizationAfterglow"},
+    {L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme"},
+    {L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"SystemUsesLightTheme"},
+};
+bool g_keepWindowsColours = false;
+constexpr wchar_t kAccentBefore[] = L"Software\\Tourne\\AccentBefore";
+
+// The accent as it is, copied once, before the first time Tourne writes it: each value as it was (type and
+// bytes), or noted as not there ("<name>.missing"), so putting it back is exact.
+void SaveAccentOnce() {
+    HKEY saved;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, kAccentBefore, 0, KEY_READ, &saved) == ERROR_SUCCESS) return RegCloseKey(saved), void();
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kAccentBefore, 0, nullptr, 0, KEY_WRITE, nullptr, &saved, nullptr) != ERROR_SUCCESS) return;
+    for (auto const& v : kAccentValues) {
+        BYTE data[256];
+        DWORD type = 0, size = sizeof(data);
+        if (RegGetValueW(HKEY_CURRENT_USER, v.key, v.name, RRF_RT_ANY, &type, data, &size) == ERROR_SUCCESS) {
+            RegSetValueExW(saved, v.name, 0, type, data, size);
+        } else {
+            DWORD one = 1;
+            RegSetValueExW(saved, (std::wstring(v.name) + L".missing").c_str(), 0, REG_DWORD, (const BYTE*)&one, sizeof(one));
+        }
+    }
+    RegCloseKey(saved);
+    Log(L"Windows' colours as they were kept (Restore my Windows colours puts them back)");
+}
+
+// The accent's registry values, as Settings writes them.
+void WriteAccentKeys(uint32_t accentRgb) {
+    SaveAccentOnce();
+    Roles r;
+    r.accent = accentRgb;
+    HKEY key;
+    // The accent and its shades, as Settings writes them: eight RGBA entries from lightest to darkest, the
+    // accent itself fourth.
+    BYTE palette[32] = {};
+    const int steps[8] = {3, 2, 1, 0, -1, -2, -3, -4};
+    for (int i = 0; i < 8; i++) {
+        uint32_t c = i == 3 ? r.accent : Stepped(r.accent, steps[i]);
+        palette[i * 4] = c >> 16 & 0xFF, palette[i * 4 + 1] = c >> 8 & 0xFF, palette[i * 4 + 2] = c & 0xFF, palette[i * 4 + 3] = 0xFF;
+    }
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent", 0, nullptr, 0,
+                        KEY_WRITE, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+        DWORD menu = Abgr(r.accent), start = Abgr(Stepped(r.accent, -2));
+        RegSetValueExW(key, L"AccentPalette", 0, REG_BINARY, palette, sizeof(palette));
+        RegSetValueExW(key, L"AccentColorMenu", 0, REG_DWORD, (const BYTE*)&menu, sizeof(menu));
+        RegSetValueExW(key, L"StartColorMenu", 0, REG_DWORD, (const BYTE*)&start, sizeof(start));
+        RegCloseKey(key);
+    }
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\DWM", 0, nullptr, 0, KEY_WRITE, nullptr, &key, nullptr) ==
+        ERROR_SUCCESS) {
+        DWORD accent = Abgr(r.accent), colorization = 0xC4000000u | (r.accent & 0xFFFFFF);
+        RegSetValueExW(key, L"AccentColor", 0, REG_DWORD, (const BYTE*)&accent, sizeof(accent));
+        RegSetValueExW(key, L"ColorizationColor", 0, REG_DWORD, (const BYTE*)&colorization, sizeof(colorization));
+        RegSetValueExW(key, L"ColorizationAfterglow", 0, REG_DWORD, (const BYTE*)&colorization, sizeof(colorization));
+        RegCloseKey(key);
+    }
+}
+
+// Every window told, from a thread of its own (a window that doesn't answer mustn't hold this one up).
+void TellWindowsColours(bool wait = false) {
+    HANDLE t = CreateThread(nullptr, 0, [](LPVOID) -> DWORD {
+        DWORD_PTR result;
+        SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)L"ImmersiveColorSet", SMTO_ABORTIFHUNG, 2000, &result);
+        return 0;
+    }, nullptr, 0, nullptr);
+    if (t && wait) WaitForSingleObject(t, 5000);
+    if (t) CloseHandle(t);
+}
+
+void WriteWindowsColours(Roles const& r, bool light, std::wstring const& mode) {
+    std::wstring what = Setting(L"windows");
+    if (what != L"accent" && what != L"both") return;
+    HKEY key;
+    WriteAccentKeys(r.accent);
+    bool modeToo = what == L"both" && (mode == L"dark" || mode == L"light");
+    if (modeToo && RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", 0,
+                                   nullptr, 0, KEY_WRITE, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+        DWORD v = light ? 1 : 0;
+        RegSetValueExW(key, L"AppsUseLightTheme", 0, REG_DWORD, (const BYTE*)&v, sizeof(v));
+        RegSetValueExW(key, L"SystemUsesLightTheme", 0, REG_DWORD, (const BYTE*)&v, sizeof(v));
+        RegCloseKey(key);
+    }
+    TellWindowsColours();
+    Log(L"Windows' accent set to #%06X%s", r.accent, modeToo ? (light ? L", light mode" : L", dark mode") : L"");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // The record
 
 bool SameRecord(HKEY key, Roles const& r, std::wstring const& made) {
@@ -258,6 +363,7 @@ void WriteRecord(Made const& made, Wanted const& w) {
     Roles const& r = made.roles;
     if (SameRecord(key, r, made.key)) {
         RegCloseKey(key);
+        if (g_madeKey.empty()) WriteWindowsColours(r, w.request.light, w.mode);  // (made again for theme.windows)
         g_madeKey = made.key;
         return;
     }
@@ -282,6 +388,7 @@ void WriteRecord(Made const& made, Wanted const& w) {
         w.profileName.c_str(), w.request.light ? L"light" : L"dark", r.ground, r.text, r.accent);
     PostMessageW(HWND_BROADCAST, RegisterWindowMessageW(L"TourneThemeChanged"), revision + 1, 0);
     InjectorThemeChanged(r);  // the apps' palette CSS
+    WriteWindowsColours(r, w.request.light, w.mode);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -354,6 +461,46 @@ void Soon(UINT ms) { SetTimer(g_wnd, kTimerTheme, ms, nullptr); }
 
 }  // namespace
 
+bool WindowsAccentSaved() {
+    HKEY saved;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, kAccentBefore, 0, KEY_READ, &saved) != ERROR_SUCCESS) return false;
+    RegCloseKey(saved);
+    return true;
+}
+
+bool WindowsColoursOn() {
+    std::wstring w = Setting(L"windows");
+    return w == L"accent" || w == L"both";
+}
+
+void KeepWindowsColoursOnce() { g_keepWindowsColours = true; }
+
+bool RestoreWindowsAccent(bool wait) {
+    HKEY saved;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, kAccentBefore, 0, KEY_READ, &saved) != ERROR_SUCCESS) return false;
+    for (auto const& v : kAccentValues) {
+        HKEY key;
+        if (RegCreateKeyExW(HKEY_CURRENT_USER, v.key, 0, nullptr, 0, KEY_WRITE, nullptr, &key, nullptr) != ERROR_SUCCESS) continue;
+        BYTE data[256];
+        DWORD type = 0, size = sizeof(data);
+        if (RegQueryValueExW(saved, v.name, nullptr, &type, data, &size) == ERROR_SUCCESS) RegSetValueExW(key, v.name, 0, type, data, size);
+        else if (RegQueryValueExW(saved, (std::wstring(v.name) + L".missing").c_str(), nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS)
+            RegDeleteValueW(key, v.name);
+        RegCloseKey(key);
+    }
+    RegCloseKey(saved);
+    RegDeleteKeyW(HKEY_CURRENT_USER, kAccentBefore);
+    TellWindowsColours(wait);
+    Log(L"Windows' colours put back as they were");
+    return true;
+}
+
+void WriteWindowsAccent(uint32_t rgb) {
+    WriteAccentKeys(rgb & 0xFFFFFF);
+    TellWindowsColours();
+    Log(L"Windows' accent set to #%06X (Designer Mode)", rgb & 0xFFFFFF);
+}
+
 void ThemeDefaults(Settings& out) {
     out[L"theme.source"] = L"off";
     out[L"theme.profile"] = L"adaptive";
@@ -361,6 +508,7 @@ void ThemeDefaults(Settings& out) {
     out[L"theme.seed"] = L"#64AA89";
     out[L"theme.preset"] = L"";
     out[L"theme.contrast"] = L"4.5";
+    out[L"theme.windows"] = L"off";
 }
 
 void ThemeEngineStart(HWND host) {
@@ -370,6 +518,16 @@ void ThemeEngineStart(HWND host) {
 
 void ThemeEngineApply() {
     g_wanted = ReadWanted();
+    // Windows' own colours just turned on (or changed): the theme made again, so they're written now.
+    static std::wstring windows = L"off";
+    if (std::wstring now = Setting(L"windows"); now != windows) {
+        // Switched off: Windows' colours as they were before (unless Designer Mode just set its own accent).
+        bool wasOn = windows == L"accent" || windows == L"both", isOn = now == L"accent" || now == L"both";
+        if (wasOn && !isOn && !g_keepWindowsColours) RestoreWindowsAccent();
+        if (!isOn) g_keepWindowsColours = false;
+        windows = now;
+        g_madeKey.clear();
+    }
     if (g_wanted.source != L"off" && g_wanted.source != L"wallpaper" && g_wanted.source != L"seed" && g_wanted.source != L"preset") {
         Log(L"theme.source: \"%s\" isn't one (off, wallpaper, seed, preset)", g_wanted.source.c_str());
         g_wanted.source = L"off";

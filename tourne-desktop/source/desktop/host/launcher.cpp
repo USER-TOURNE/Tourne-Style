@@ -23,6 +23,7 @@
 #include <thread>
 #include <vector>
 
+#include "launcher-math.h"
 #include "plugin-runtime.h"
 #include "ui-sounds.h"
 #include "studio.h"
@@ -45,6 +46,7 @@ constexpr int kMaxRows = 8;
 struct Config {
     bool on = true;
     std::wstring hotkey = L"alt+space";
+    std::wstring web = L"https://duckduckgo.com/?q=%s";  // "? " searches here (%s: the words); its bangs work as typed
 };
 
 Config ReadConfig() {
@@ -52,6 +54,10 @@ Config ReadConfig() {
     c.on = GetInt(L"launcher", L"enabled") != 0;
     if (const wchar_t* v = GetString(L"launcher", L"hotkey")) {
         if (*v) c.hotkey = v;
+        FreeString(v);
+    }
+    if (const wchar_t* v = GetString(L"launcher", L"webSearch")) {
+        if (wcsstr(v, L"%s")) c.web = v;
         FreeString(v);
     }
     return c;
@@ -242,11 +248,157 @@ void Layout() {
     InvalidateRect(g_wnd, nullptr, FALSE);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Tourne's own answers (no plugin): a sum or a unit conversion on any line, and three prefixes, each with or
+// without a space after it: "? " the web, "@ " the open windows, "$ " snippets. Their rows' provider starts
+// with '#'; Activate does what each says.
+
+std::wstring Trimmed(const std::wstring& s) {
+    size_t a = s.find_first_not_of(L" \t"), b = s.find_last_not_of(L" \t");
+    return a == std::wstring::npos ? L"" : s.substr(a, b - a + 1);
+}
+
+std::wstring SnippetsPath() {
+    PWSTR roaming = nullptr;
+    std::wstring path;
+    if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &roaming))) path = std::wstring(roaming) + L"\\Tourne\\Desktop\\snippets.txt";
+    CoTaskMemFree(roaming);
+    return path;
+}
+
+// snippets.txt: "name = text" a line (\n in the text for a new line, # for a note).
+std::vector<std::pair<std::wstring, std::wstring>> ReadSnippets() {
+    std::vector<std::pair<std::wstring, std::wstring>> out;
+    HANDLE f = CreateFileW(SnippetsPath().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return out;
+    std::string bytes;
+    char buf[4096];
+    DWORD got;
+    while (ReadFile(f, buf, sizeof(buf), &got, nullptr) && got) bytes.append(buf, got);
+    CloseHandle(f);
+    if (bytes.size() >= 3 && (unsigned char)bytes[0] == 0xEF) bytes.erase(0, 3);  // (a BOM)
+    int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+    std::wstring all(n, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), all.data(), n);
+    size_t at = 0;
+    while (at < all.size()) {
+        size_t end = all.find(L'\n', at);
+        std::wstring line = all.substr(at, end == std::wstring::npos ? std::wstring::npos : end - at);
+        at = end == std::wstring::npos ? all.size() : end + 1;
+        if (!line.empty() && line.back() == L'\r') line.pop_back();
+        line = Trimmed(line);
+        size_t eq = line.find(L'=');
+        if (line.empty() || line[0] == L'#' || eq == std::wstring::npos) continue;
+        std::wstring name = Trimmed(line.substr(0, eq)), text = Trimmed(line.substr(eq + 1));
+        for (size_t i; (i = text.find(L"\\n")) != std::wstring::npos;) text.replace(i, 2, L"\r\n");
+        if (!name.empty()) out.push_back({name, text});
+    }
+    return out;
+}
+
+// The windows that can be switched to: shown, with a title, not tool windows or hidden (cloaked) ones.
+std::vector<std::pair<HWND, std::wstring>> OpenWindows() {
+    std::vector<std::pair<HWND, std::wstring>> out;
+    EnumWindows(
+        [](HWND w, LPARAM l) -> BOOL {
+            auto* list = (std::vector<std::pair<HWND, std::wstring>>*)l;
+            if (!IsWindowVisible(w) || w == g_wnd || GetWindow(w, GW_OWNER) || (GetWindowLongW(w, GWL_EXSTYLE) & WS_EX_TOOLWINDOW)) return TRUE;
+            DWORD cloaked = 0;
+            if (SUCCEEDED(DwmGetWindowAttribute(w, DWMWA_CLOAKED, &cloaked, sizeof(cloaked))) && cloaked) return TRUE;
+            wchar_t title[256];
+            if (GetWindowTextW(w, title, 256) <= 0) return TRUE;
+            list->push_back({w, title});
+            return TRUE;
+        },
+        (LPARAM)&out);
+    return out;
+}
+
+std::wstring ProgramOf(HWND w) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(w, &pid);
+    std::wstring name;
+    if (HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
+        wchar_t path[MAX_PATH];
+        DWORD len = MAX_PATH;
+        if (QueryFullProcessImageNameW(p, 0, path, &len)) name = wcsrchr(path, L'\\') ? wcsrchr(path, L'\\') + 1 : path;
+        CloseHandle(p);
+    }
+    return name;
+}
+
+// A prefix's line ("?", "@", "$"): its rows (true), or false when the line isn't one.
+bool PrefixRows(const std::wstring& text, std::vector<Row>* rows) {
+    if (text.empty() || (text[0] != L'?' && text[0] != L'@' && text[0] != L'$')) return false;
+    std::wstring rest = Trimmed(text.substr(1));
+    if (text[0] == L'?') {
+        if (rest.empty()) rows->push_back({L"Search the web", L"Type what to look for (!g, !w and other bangs work)", L"world-search", L"#hint", L"", nullptr, 0, 0});
+        else rows->push_back({L"Search the web for \"" + rest + L"\"", L"Opens in your browser", L"world-search", L"#web", rest, nullptr, 0, 1});
+        return true;
+    }
+    if (text[0] == L'@') {
+        for (auto const& [w, title] : OpenWindows()) {
+            std::wstring program = ProgramOf(w);
+            double score = rest.empty() ? 0 : std::max(Fuzzy(rest, title), Fuzzy(rest, program));
+            if (score < 0) continue;
+            rows->push_back({title, program, L"app-window", L"#window", std::to_wstring((ULONG_PTR)w), nullptr, 0, score});
+        }
+        std::stable_sort(rows->begin(), rows->end(), [](Row const& a, Row const& b) { return a.score > b.score; });
+        if (rows->empty()) rows->push_back({L"No open window by that name", L"", L"app-window", L"#hint", L"", nullptr, 0, 0});
+        return true;
+    }
+    auto snippets = ReadSnippets();
+    for (auto const& [name, body] : snippets) {
+        double score = rest.empty() ? 0 : std::max(Fuzzy(rest, name), Fuzzy(rest, body) - 5);
+        if (score < 0) continue;
+        std::wstring one = body;
+        for (auto& c : one)
+            if (c == L'\r' || c == L'\n') c = L' ';
+        rows->push_back({name, one, L"clipboard-text", L"#snippet", body, nullptr, 0, score});
+    }
+    std::stable_sort(rows->begin(), rows->end(), [](Row const& a, Row const& b) { return a.score > b.score; });
+    rows->push_back({snippets.empty() ? L"No snippets yet: make some" : L"Edit snippets", L"snippets.txt, a line each: name = text",
+                     L"note", L"#snippets", L"", nullptr, 0, -1});
+    return true;
+}
+
+// A sum or a conversion: its row, to go first (true), or false.
+bool AnswerRow(const std::wstring& text, Row* row) {
+    std::wstring answer;
+    double v;
+    if (launchermath::Convert(text, &answer)) {
+        *row = {answer, L"Enter copies it", L"ruler-2", L"#copy", answer.substr(0, answer.find(L' ')), nullptr, 0, 100};
+        return true;
+    }
+    if (launchermath::Evaluate(text, &v)) {
+        std::wstring n = launchermath::Number(v);
+        *row = {L"= " + n, L"Enter copies it", L"calculator", L"#copy", n, nullptr, 0, 100};
+        return true;
+    }
+    return false;
+}
+
+void CopyText(const std::wstring& text) {
+    if (!OpenClipboard(g_wnd)) return;
+    EmptyClipboard();
+    if (HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, (text.size() + 1) * sizeof(wchar_t))) {
+        memcpy(GlobalLock(mem), text.c_str(), (text.size() + 1) * sizeof(wchar_t));
+        GlobalUnlock(mem);
+        if (!SetClipboardData(CF_UNICODETEXT, mem)) GlobalFree(mem);
+    }
+    CloseClipboard();
+}
+
 // The list again, from the apps and every answer that's in for the line as it is now.
 void Rebuild() {
     std::wstring text = g_query;
     auto providers = LauncherProviders();
     std::vector<Row> rows;
+    if (PrefixRows(text, &rows)) {
+        g_rows = std::move(rows);
+        g_sel = std::clamp(g_sel, 0, std::max(0, (int)g_rows.size() - 1));
+        return Layout();
+    }
     // Typed after a provider's prefix (and a space): only that one.
     for (auto const& p : providers) {
         if (p.prefix.empty() || text.size() < p.prefix.size() + 1 || _wcsnicmp(text.c_str(), p.prefix.c_str(), p.prefix.size()) ||
@@ -264,6 +416,10 @@ void Rebuild() {
         // Nothing typed: what each provider's prefix finds.
         for (auto const& p : providers)
             if (!p.prefix.empty()) rows.push_back({p.name, L"Type \"" + p.prefix + L" \" and a name", p.glyph, L"@" + p.prefix, L"", nullptr, 0, 0});
+        rows.push_back({L"Web search", L"Type \"? \" and what to look for", L"world-search", L"@?", L"", nullptr, 0, 0});
+        rows.push_back({L"Switch to a window", L"Type \"@ \" and its name", L"app-window", L"@@", L"", nullptr, 0, 0});
+        rows.push_back({L"Snippets", L"Type \"$ \" and a snippet's name", L"clipboard-text", L"@$", L"", nullptr, 0, 0});
+        rows.push_back({L"Sums and units", L"Just type them: 2+2, 10 km to mi", L"calculator", L"#hint", L"", nullptr, 0, 0});
     } else {
         {
             std::lock_guard lock(g_appsLock);
@@ -288,6 +444,8 @@ void Rebuild() {
         }
         std::stable_sort(more.begin(), more.end(), [](Row const& a, Row const& b) { return a.score > b.score; });
         for (auto& r : more) rows.push_back(std::move(r));
+        Row answer;
+        if (AnswerRow(text, &answer)) rows.insert(rows.begin(), answer);
     }
     g_rows = std::move(rows);
     g_sel = std::clamp(g_sel, 0, std::max(0, (int)g_rows.size() - 1));
@@ -359,6 +517,62 @@ void Activate(int i) {
         std::wstring line = r.provider.substr(1) + L" ";
         SetWindowTextW(g_edit, line.c_str());
         SendMessageW(g_edit, EM_SETSEL, line.size(), line.size());
+        return;
+    }
+    if (r.provider == L"#hint") return;
+    if (r.provider.size() > 1 && r.provider[0] == L'#') {
+        Hide();
+        if (r.provider == L"#copy") {
+            CopyText(r.id);
+            Log(L"copied %ls", r.id.c_str());
+        } else if (r.provider == L"#web") {
+            std::wstring words;
+            for (wchar_t c : r.id) {  // (the words for a URL: UTF-8, escaped)
+                char u[8];
+                int n = WideCharToMultiByte(CP_UTF8, 0, &c, 1, u, sizeof(u), nullptr, nullptr);
+                for (int i = 0; i < n; i++) {
+                    unsigned char b = (unsigned char)u[i];
+                    wchar_t hex[4];
+                    if (isalnum(b) || b == '-' || b == '_' || b == '.' || b == '~') words += (wchar_t)b;
+                    else if (b == ' ') words += L'+';
+                    else swprintf(hex, 4, L"%%%02X", b), words += hex;
+                }
+            }
+            std::wstring url = g_cfg.web;
+            url.replace(url.find(L"%s"), 2, words);
+            ShellExecuteW(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+        } else if (r.provider == L"#window") {
+            HWND w = (HWND)(ULONG_PTR)_wcstoui64(r.id.c_str(), nullptr, 10);
+            if (IsWindow(w)) {
+                if (IsIconic(w)) ShowWindowAsync(w, SW_RESTORE);
+                if (!SetForegroundWindow(w)) SwitchToThisWindow(w, TRUE);
+            }
+        } else if (r.provider == L"#snippet") {
+            // Copied, then pasted into whatever had the keyboard before the launcher opened.
+            CopyText(r.id);
+            Sleep(60);
+            INPUT in[4] = {};
+            for (auto& i : in) i.type = INPUT_KEYBOARD;
+            in[0].ki.wVk = in[3].ki.wVk = VK_CONTROL;
+            in[1].ki.wVk = in[2].ki.wVk = 'V';
+            in[2].ki.dwFlags = in[3].ki.dwFlags = KEYEVENTF_KEYUP;
+            SendInput(4, in, sizeof(INPUT));
+        } else if (r.provider == L"#snippets") {
+            std::wstring path = SnippetsPath();
+            if (GetFileAttributesW(path.c_str()) == INVALID_FILE_ATTRIBUTES) {
+                HANDLE f = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, 0, nullptr);
+                if (f != INVALID_HANDLE_VALUE) {
+                    const char start[] =
+                        "# Snippets for the launcher: type $ and a name, Enter pastes it.\r\n"
+                        "# A line each: name = text (\\n for a new line).\r\n"
+                        "shrug = \xC2\xAF\\_(\xE3\x83\x84)_/\xC2\xAF\r\n";
+                    DWORD wrote;
+                    WriteFile(f, start, sizeof(start) - 1, &wrote, nullptr);
+                    CloseHandle(f);
+                }
+            }
+            ShellExecuteW(nullptr, L"open", L"notepad.exe", (L"\"" + path + L"\"").c_str(), nullptr, SW_SHOWNORMAL);
+        }
         return;
     }
     Hide();
@@ -571,7 +785,7 @@ void Thread() {
                             nullptr);
     g_edit = CreateWindowExW(0, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL, 0, 0, 10, 10, g_wnd, nullptr, inst, nullptr);
     g_editProc = (WNDPROC)SetWindowLongPtrW(g_edit, GWLP_WNDPROC, (LONG_PTR)EditProc);
-    SendMessageW(g_edit, EM_SETCUEBANNER, TRUE, (LPARAM)L"Search apps, or a prefix (g for games)");
+    SendMessageW(g_edit, EM_SETCUEBANNER, TRUE, (LPARAM)L"Search apps, sums, ? web, @ windows, $ snippets");
     LauncherSetListener(g_wnd, kMsgResults);
     SendMessageW(g_wnd, kMsgApply, 0, 0);
     RefreshApps(g_wnd, 32);  // (read ahead, so the first opening has them)
@@ -596,6 +810,7 @@ void Thread() {
 void LauncherDefaults(Settings& out) {
     out[L"launcher.enabled"] = L"1";
     out[L"launcher.hotkey"] = L"alt+space";
+    out[L"launcher.webSearch"] = L"https://duckduckgo.com/?q=%s";
 }
 
 void LauncherDescribe(SchemaInfo& info) {
@@ -608,11 +823,15 @@ void LauncherDescribe(SchemaInfo& info) {
     };
     add(L"launcher", L"Launcher",
         L"A search box on a hotkey: your apps (everything Start lists), and the plugins' launchers by their prefix: "
-        L"Game Launcher's \"g\" and a name, Display Profiles, Syncthing. Arrows pick, Enter starts, Esc closes.");
+        L"Game Launcher's \"g\" and a name, Display Profiles, Syncthing. Its own: sums and units on any line (2+2, "
+        L"10 km to mi, 72 f in c; Enter copies), \"? \" searches the web, \"@ \" switches to an open window, \"$ \" pastes a "
+        L"snippet. Arrows pick, Enter starts, Esc closes.");
     add(L"launcher.enabled", L"Launcher", L"Off: the hotkey is left alone.").isSwitch = true;
     add(L"launcher.hotkey", L"Hotkey",
         L"Keys joined with +, for example alt+space, ctrl+shift+space, win+f1. Alt+Space usually opens a window's "
         L"system menu; the launcher takes it over while it's on.");
+    add(L"launcher.webSearch", L"Web search",
+        L"Where \"? \" searches, with %s for the words. DuckDuckGo unless set, so its bangs (!g, !w, !yt) work as typed.");
 }
 
 void LauncherStart(HWND host) {

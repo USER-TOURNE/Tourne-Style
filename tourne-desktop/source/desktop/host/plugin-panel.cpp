@@ -4,6 +4,8 @@
 #include <d2d1_3.h>
 #include <dwmapi.h>
 #include <shellapi.h>
+#include <shlobj.h>
+#include <shobjidl.h>
 #include <uxtheme.h>
 #include <wincodec.h>
 #include <shlwapi.h>
@@ -462,6 +464,47 @@ struct Depth {
 std::mutex g_depthLock;
 std::vector<Depth> g_depths;
 std::set<HWND> g_desktopWindows;  // desktop widgets now (repainted when a mask changes)
+bool g_editingDesktop = false;      // Edit desktop mode: widgets drag from anywhere, framed
+
+// Desktop widgets under a window that fills their screen (the one in front, maximized or fullscreen) aren't
+// drawn: nobody sees them. When it goes (another in front, minimized, made smaller) they're drawn again.
+// Watched with window events while there's a desktop widget, on the panels' thread.
+HWINEVENTHOOK g_coverHooks[3]{};
+std::set<HMONITOR> g_covered;  // screens whose desktop widgets went undrawn
+
+bool ScreenCovered(HMONITOR m) {
+    HWND front = GetForegroundWindow();
+    if (!front || !IsWindowVisible(front) || IsIconic(front) || MonitorFromWindow(front, MONITOR_DEFAULTTONULL) != m) return false;
+    wchar_t cls[64] = L"";
+    GetClassNameW(front, cls, 64);
+    if (!wcscmp(cls, L"Progman") || !wcscmp(cls, L"WorkerW") || !wcscmp(cls, L"Shell_TrayWnd")) return false;
+    MONITORINFO mi{sizeof(mi)};
+    RECT r;
+    if (!GetMonitorInfoW(m, &mi) || !GetWindowRect(front, &r)) return false;
+    return r.left <= mi.rcWork.left && r.top <= mi.rcWork.top && r.right >= mi.rcWork.right && r.bottom >= mi.rcWork.bottom;
+}
+
+void CALLBACK CoverChanged(HWINEVENTHOOK, DWORD event, HWND w, LONG object, LONG, DWORD, DWORD) {
+    if (event == EVENT_OBJECT_LOCATIONCHANGE && (object != OBJID_WINDOW || w != GetForegroundWindow())) return;
+    for (auto it = g_covered.begin(); it != g_covered.end();) {
+        if (ScreenCovered(*it)) {
+            ++it;
+            continue;
+        }
+        HMONITOR m = *it;
+        it = g_covered.erase(it);
+        std::lock_guard lock(g_depthLock);
+        for (HWND d : g_desktopWindows)
+            if (MonitorFromWindow(d, MONITOR_DEFAULTTONEAREST) == m) InvalidateRect(d, nullptr, FALSE);
+    }
+}
+
+void WatchCovering() {
+    if (g_coverHooks[0]) return;
+    g_coverHooks[0] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, CoverChanged, 0, 0, WINEVENT_OUTOFCONTEXT);
+    g_coverHooks[1] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZEEND, nullptr, CoverChanged, 0, 0, WINEVENT_OUTOFCONTEXT);
+    g_coverHooks[2] = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, CoverChanged, 0, 0, WINEVENT_OUTOFCONTEXT);
+}
 
 // Where a screen's pixel (x, y from its corner) is in the wallpaper (0..1 across and down); false off it.
 bool WallpaperAt(const Depth& d, double x, double y, double* u, double* v) {
@@ -520,6 +563,53 @@ struct Laid {
 };
 
 std::wstring GlyphText(const std::string& name);  // (below: the runtime's map, through a hook)
+
+// Dragging a file out of a panel into any program (Explorer, a chat, an editor): the shell's own data object for
+// it, so the drop is what dropping it from Explorer would be. A node says which file with `file` (an image node's
+// `path` counts too).
+struct DropSource : IDropSource {
+    LONG refs = 1;
+    ULONG STDMETHODCALLTYPE AddRef() override { return InterlockedIncrement(&refs); }
+    ULONG STDMETHODCALLTYPE Release() override {
+        LONG n = InterlockedDecrement(&refs);
+        if (!n) delete this;
+        return n;
+    }
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID id, void** out) override {
+        if (id == IID_IUnknown || id == IID_IDropSource) return AddRef(), *out = this, S_OK;
+        return *out = nullptr, E_NOINTERFACE;
+    }
+    HRESULT STDMETHODCALLTYPE QueryContinueDrag(BOOL escape, DWORD keys) override {
+        if (escape) return DRAGDROP_S_CANCEL;
+        return keys & MK_LBUTTON ? S_OK : DRAGDROP_S_DROP;
+    }
+    HRESULT STDMETHODCALLTYPE GiveFeedback(DWORD) override { return DRAGDROP_S_USEDEFAULTCURSORS; }
+};
+
+bool DragFileOut(const std::wstring& path) {
+    IShellItem* item = nullptr;
+    if (FAILED(SHCreateItemFromParsingName(path.c_str(), nullptr, IID_PPV_ARGS(&item)))) return false;
+    IDataObject* data = nullptr;
+    HRESULT hr = item->BindToHandler(nullptr, BHID_DataObject, IID_PPV_ARGS(&data));
+    item->Release();
+    if (FAILED(hr) || !data) return false;
+    // The picture Explorer shows under the pointer while dragging (its icon or thumbnail).
+    IDragSourceHelper* helper = nullptr;
+    if (SUCCEEDED(CoCreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&helper)))) {
+        POINT pt;
+        GetCursorPos(&pt);
+        helper->InitializeFromWindow(nullptr, &pt, data);
+        helper->Release();
+    }
+    static thread_local bool ole = SUCCEEDED(OleInitialize(nullptr));  // (drag and drop needs OLE on this thread)
+    if (!ole) return false;
+    auto* source = new DropSource;
+    DWORD effect = 0;
+    DoDragDrop(data, source, DROPEFFECT_COPY | DROPEFFECT_LINK | DROPEFFECT_MOVE, &effect);
+    source->Release();
+    data->Release();
+    return true;
+}
 
 struct InputState {
     HWND edit = nullptr;
@@ -705,6 +795,8 @@ private:
     std::vector<std::string> captureKeys_;  // (Placement::captureKeys)
     // A fullscreen panel's: over a blurred, dimmed copy of the screen (backdrop_).
     bool fullscreen_ = false;
+    std::wstring dragFile_;  // the file under the press (a node's `file`), dragged out when pulled
+    POINT dragFrom_{};
     HWND backdrop_ = nullptr;
     bool swallowChar_ = false;
 
@@ -855,6 +947,7 @@ private:
         SetWindowPos(hwnd_, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
         std::lock_guard lock(g_depthLock);
         g_desktopWindows.insert(hwnd_);
+        WatchCovering();
     }
 
     // Fullscreen: the screen under the pointer, as it is now, blurred and dimmed behind it; the panel in the middle.
@@ -1621,6 +1714,14 @@ private:
         }
     }
     void OnPaint() {
+        if (desktop_) {
+            HMONITOR m = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
+            if (ScreenCovered(m)) {  // (drawn again when uncovered: CoverChanged)
+                ValidateRect(hwnd_, nullptr);
+                g_covered.insert(m);
+                return;
+            }
+        }
         PAINTSTRUCT ps;
         HDC screen = BeginPaint(hwnd_, &ps);
         RECT client;
@@ -1643,6 +1744,14 @@ private:
             GetWindowRect(hwnd_, &onScreen);
             ApplyDepth((uint32_t*)bits, client.right, client.bottom, onScreen);
         }
+        if (desktop_ && g_editingDesktop) {  // (Edit desktop mode: framed, as it can be moved)
+            HBRUSH frame = CreateSolidBrush(Accent());
+            for (int i = 0; i < std::max(1, s_); i++) {
+                RECT r{i, i, client.right - i, client.bottom - i};
+                FrameRect(dc, &r, frame);
+            }
+            DeleteObject(frame);
+        }
         BitBlt(screen, 0, 0, client.right, client.bottom, dc, 0, 0, SRCCOPY);
         SelectObject(dc, old);
         DeleteObject(bmp);
@@ -1658,6 +1767,7 @@ private:
     void SetPinned(bool on) {
         pinned_ = on;
         Keep(L"panelPinned", on ? 1 : 0);
+        if (!on) Keep(L"panelDetached", 0);  // (unpinned: no longer a panel of its own off the bar)
         InvalidateRect(hwnd_, nullptr, FALSE);
     }
     // After a move or resize by the user: keep the new size (96-dpi pixels) and, if it moved, its place.
@@ -1670,6 +1780,12 @@ private:
         }
         if (now.left != sizing_.left || now.top != sizing_.top) {
             Keep(L"panelX", now.left), Keep(L"panelY", now.top), Keep(L"panelPlaced", 1);
+            // Dragged off the bar (Vitreus' detachable panels): it stays where it was put, pinned, and comes back
+            // there after Tourne starts again (plugin-runtime.cpp), until it's unpinned or closed.
+            if (!desktop_ && !fullscreen_) {
+                if (!pinned_) SetPinned(true);
+                Keep(L"panelDetached", 1);
+            }
         }
     }
     // Right-click on the pin: back to the manifest's size and place (from the next time it opens).
@@ -1692,6 +1808,16 @@ private:
         if (t == "scroll") IntersectRect(&inner, &clip, &l.rc);
         for (auto const& k : l.kids) HitTest(k, pt, inner, click, hover);
     }
+    void FileAt(const Laid& l, POINT pt, RECT clip, std::wstring* file) const {
+        RECT r;
+        if (!IntersectRect(&r, &l.rc, &clip) || !PtInRect(&r, pt)) return;
+        std::string f = Str(*l.node, "file");
+        if (f.empty() && l.node->type == "image") f = Str(*l.node, "path");
+        if (!f.empty()) *file = W(f);
+        RECT inner = clip;
+        if (l.node->type == "scroll") IntersectRect(&inner, &clip, &l.rc);
+        for (auto const& k : l.kids) FileAt(k, pt, inner, file);
+    }
     const Laid* ScrollAt(const Laid& l, POINT pt) const {
         if (!PtInRect(&l.rc, pt)) return nullptr;
         for (auto const& k : l.kids)
@@ -1708,6 +1834,16 @@ private:
             tracking_ = TrackMouseEvent(&t);
         }
         if (!dragging_.empty()) return SliderTo(dragging_, pt, false);
+        // A file pressed and pulled far enough (Windows' drag distance): dragged out as Explorer would drag it.
+        if (!dragFile_.empty() && (GetKeyState(VK_LBUTTON) & 0x8000) &&
+            (abs(pt.x - dragFrom_.x) > GetSystemMetrics(SM_CXDRAG) || abs(pt.y - dragFrom_.y) > GetSystemMetrics(SM_CYDRAG))) {
+            std::wstring file = dragFile_;
+            dragFile_.clear();
+            pressed_.clear();  // (not a click after all)
+            ReleaseCapture();
+            DragFileOut(file);
+            return;
+        }
         RECT pin = PinRect();
         if (bool on = PtInRect(&pin, pt) != 0; on != pinHover_) pinHover_ = on, InvalidateRect(hwnd_, &pin, FALSE);
         const Laid *click = nullptr, *hover = nullptr;
@@ -1778,6 +1914,7 @@ private:
     }
     void Dismiss() {
         g_lastDismissed = GetTickCount64();
+        if (!desktop_) Keep(L"panelDetached", 0);  // (closed by you: not opened again at the next start)
         host_.closed();
     }
 
@@ -1802,6 +1939,9 @@ private:
                 RECT all{-100000, -100000, 100000, 100000};
                 if (self->root_.node) self->HitTest(self->root_, pt, all, &click, &hover);
                 self->pressed_ = click ? click->id : "";
+                self->dragFile_.clear();
+                if (self->root_.node) self->FileAt(self->root_, pt, all, &self->dragFile_);
+                self->dragFrom_ = pt;
                 if (click && click->node->type == "slider") {
                     self->dragging_ = click->id;
                     self->SliderTo(click->id, pt, false);
@@ -1823,6 +1963,7 @@ private:
                 }
                 std::string pressed = self->pressed_;
                 self->pressed_.clear();
+                self->dragFile_.clear();
                 if (!self->dragging_.empty()) {
                     std::string id = self->dragging_;
                     self->dragging_.clear();
@@ -1850,7 +1991,8 @@ private:
             case WM_NCHITTEST: {
                 POINT pt{GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
                 ScreenToClient(wnd, &pt);
-                if (self->desktop_) {  // (any part that isn't a control drags it)
+                if (self->desktop_) {  // (any part that isn't a control drags it; in Edit desktop mode any part at all)
+                    if (g_editingDesktop) return HTCAPTION;
                     const Laid *click = nullptr, *hover = nullptr;
                     RECT all{-100000, -100000, 100000, 100000};
                     if (self->root_.node) self->HitTest(self->root_, pt, all, &click, &hover);
@@ -1992,6 +2134,16 @@ std::unique_ptr<Window> Window::Open(const Placement& where, Host host) {
     auto w = std::make_unique<PanelWindow>(where, std::move(host));
     if (!w->Hwnd()) return nullptr;
     return w;
+}
+
+void SetEditingDesktop(bool on) {
+    std::vector<HWND> all;
+    {
+        std::lock_guard lock(g_depthLock);
+        g_editingDesktop = on;
+        all.assign(g_desktopWindows.begin(), g_desktopWindows.end());
+    }
+    for (HWND w : all) RedrawWindow(w, nullptr, nullptr, RDW_INVALIDATE | RDW_FRAME);
 }
 
 ULONGLONG LastDismissed() { return g_lastDismissed; }

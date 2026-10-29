@@ -711,7 +711,24 @@ class IconDropTarget : public IDropTarget {
     ULONG refs_ = 1;
 };
 
+LRESULT CALLBACK IconsProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp, UINT_PTR, DWORD_PTR);
+
+// The icons' list gets our handling (the selection box's fade, the clicks) whenever the view has a new one: the
+// view can make its list after it's shown (some starts) or make it again (a refresh, a new view), and the new
+// one would otherwise go without, the box then showing with no fade. Seen from the list's first notification.
+void HookIconsList(HWND list) {
+    static HWND hooked;
+    if (list == hooked || !list) return;
+    wchar_t cls[32] = L"";
+    GetClassNameW(list, cls, ARRAYSIZE(cls));
+    if (wcscmp(cls, L"SysListView32")) return;
+    DWORD_PTR data;
+    if (!GetWindowSubclass(list, IconsProc, 0, &data)) SetWindowSubclass(list, IconsProc, 0, 0);
+    hooked = list;
+}
+
 LRESULT CALLBACK ViewProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp, UINT_PTR, DWORD_PTR) {
+    if (msg == WM_NOTIFY) HookIconsList(((NMHDR*)lp)->hwndFrom);
     // The view starts its drag (and runs it to the drop) inside its handling of the icons' LVN_BEGINDRAG.
     if (msg == WM_NOTIFY && (((NMHDR*)lp)->code == LVN_BEGINDRAG || ((NMHDR*)lp)->code == LVN_BEGINRDRAG)) {
         GetCursorPos(&g_iconDragFrom);

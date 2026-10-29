@@ -1,8 +1,8 @@
 // ==WindhawkMod==
-// @id              tourne-suite-b55
-// @name            Tourne'Suite b55
+// @id              tourne-suite-b65
+// @name            Tourne'Suite b65
 // @description     Test build of Tourne'Suite with Icon Redirect, which themes icons in place of the Resource Redirect mod
-// @version         1.0.0-b55
+// @version         1.0.0-b65
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @include         *
@@ -93,8 +93,8 @@ Resource Redirect while this build is on.
         $name: Application name or path
       - icon: ''
         $name: ICO file path
-    - - path: 'G:\Applications\EqualizerAPO + PEACE GUI\config\Peace.exe'
-      - icon: '%USERPROFILE%\AppData\Local\Tourne\Icons\tray-app-audio.ico'
+    - - path: 'Steam.exe'
+      - icon: ''
     $name: Icons
     #! $showIf: {enabled: true}
   $name: Change Tray Icons
@@ -109,7 +109,7 @@ Resource Redirect while this build is on.
         $description: >-
           Optional. A Segoe Fluent Icons code point such as U+E8B7, or any short
           text. Leave empty to show a preview of the first four icons inside.
-      - icons: ['Bluetooth Devices', 'Microsoft Defender', '*Epson*', 'Windows Command Palette', 'Riot Vanguard', '*PowerToys*', 'Samsung*Magician', 'GCC', '*Battery', 'BT Battery Monitor*', '*Windows Security*']
+      - icons: ['Bluetooth Devices', '*Battery', 'BT Battery Monitor*', '*Windows Security*']
         $name: Icons
         $description: >-
           Patterns matched against each icon's app name, executable name and
@@ -117,16 +117,16 @@ Resource Redirect while this build is on.
           e.g. Discord or *NVIDIA*.
     - - name: './/SYS [ TOOL ]'
       - glyph: ''
-      - icons: ['*RustDesk*', 'Razer', '*UniGetUI', 'LocalSend', 'Sizer 4.0', 'HWiNFO® 64', '*NVIDIA*', 'Nvidia Settings*', 'Claude', 'Windhawk']
+      - icons: ['*RustDesk*', 'Razer', '*UniGetUI', 'LocalSend', 'Sizer 4.0', 'HWiNFO® 64', 'Claude', 'Windhawk']
     - - name: './/SYS [ RENDER ]'
       - glyph: ''
-      - icons: ['Intel*', 'Intel*']
+      - icons: ['Intel*', 'Nvidia Settings*', '*NVIDIA*']
+    - - name: 'W I N D . u x | 95'
+      - glyph: ''
+      - icons: ['*Windows Security*', 'Tourne Desktop', 'Tourne Icons', '', '', '', '', '', '']
     - - name: '{.GAME | .SOCIAL | .AUDIO}'
       - glyph: ''
-      - icons: ['*Docker*', 'Razer', '*UniGetUI', 'LocalSend', 'Sizer 4.0', 'HWiNFO® 64', '*NVIDIA*', 'Nvidia Settings*', 'Claude']
-    - - name: '{.GAME | .SOCIAL | .AUDIO}'
-      - glyph: ''
-      - icons: ['*Docker*', 'Discord']
+      - icons: ['Discord']
     $name: Folders
     #! $showIf: {enabled: true}
   - showEmptyFolders: false
@@ -489,7 +489,7 @@ Resource Redirect while this build is on.
     $name: Text color
     $description: 'Replacement color. Format is #RRGGBB or #AARRGGBB, with or without the hash. Alpha is accepted for consistency with the other Tourne mods but GDI text has no alpha channel, so it is ignored.'
     #! $showIf: {enabled: true}
-  - threshold: 50
+  - threshold: 45
     $name: White threshold
     $description: A color counts as white when red, green and blue are all at or above this. 255 matches pure white only.
     #! $showIf: {enabled: true}
@@ -568,7 +568,7 @@ Resource Redirect while this build is on.
     #! $showIf: {enabled: true}
   $name: Menu No Icons
 - menuNoDuplicates:
-  - enabled: true
+  - enabled: false
     $name: Enabled
   - names: 'Convertify'
     $name: Items
@@ -712,7 +712,7 @@ Resource Redirect while this build is on.
     #! $showIf: {enabled: true}
   $name: Clock
 - iconRedirect:
-  - enabled: true
+  - enabled: false
     $name: Enabled
   - iconTheme: 'Bouquet|themes/icons/niivu/bouquet.zip'
     $name: Icon theme
@@ -925,6 +925,8 @@ Resource Redirect while this build is on.
           A theme DLL or EXE with the same resource ids, an .ico file to
           replace the program's main icon, or a folder of pictures named by
           resource id (123.png, 124.svg, 131.bmp).
+    - - original: '*C:\Windows\System32\Taskmgr.exe'
+      - redirect: ''
     $name: Redirects
     $description: Later rows win over earlier rows and over themes.
     #! $showIf: {enabled: true}
@@ -968,6 +970,13 @@ Resource Redirect while this build is on.
       Its tray keeps working behind the scenes, and turning this or the
       Taskbar part off (or this bar closing for any reason) brings it back as
       it was.
+    #! $showIf: {enabled: true}
+  - squareCorners: false
+    $name: Square window corners
+    $description: >-
+      Windows 11's rounded window corners made square, in every program the
+      suite runs in (the suite's Square Corners part, on from b64). Windows'
+      own menus and tooltips keep theirs. Off puts every window back.
     #! $showIf: {enabled: true}
   - noSystemTaskbarContent: true
     $name: Don't load Windows' taskbar (test)
@@ -1159,9 +1168,81 @@ Resource Redirect while this build is on.
     - three: Up to three segments
     - central: Just central segment
     #! $showIf: {enabled: true}
-  - autoHide: true
+  - autoHide: false
     $name: Automatic hiding
     $description: The bar slides away and comes back when the pointer reaches its edge of the screen.
+    #! $showIf: {enabled: true}
+  - dragRoom: 240
+    $name: Room made for drops (pixels)
+    $description: >-
+      A file held still for half a second at a screen's edge, or in the gap between
+      two windows, slides the windows beside it back this far so it can be dropped on
+      the desktop; they grow back after the drop. 0: off.
+    #! $showIf: {enabled: true}
+  - emptyDoubleClick: 'show-desktop'
+    $name: Double-click on the bar's empty space
+    $description: What a double-click on the bar where there's nothing (or between its segments) does. The same actions as the Tourne Menu's.
+    $options:
+    - show-desktop: Show the desktop (or bring the windows back)
+    - start: Open Start
+    - run: Run...
+    - task-manager: Task Manager
+    - studio: Tourne Studio
+    - menu-settings: The Tourne Menu's settings
+    - settings: Windows Settings
+    - launcher: Open the launcher
+    - desktop-next: Next desktop
+    - desktop-previous: Previous desktop
+    - desktop-new: New desktop
+    - lock: Lock
+    - sleep: Sleep
+    - none: Nothing
+    #! $showIf: {enabled: true}
+  - emptyMiddleClick: 'none'
+    $name: Middle click on the bar's empty space
+    $description: The same actions as the double-click. A middle click on a task button still closes it. With a double middle click set too, a single one waits a moment to be sure it isn't one.
+    $options:
+    - none: Nothing
+    - show-desktop: Show the desktop (or bring the windows back)
+    - start: Open Start
+    - run: Run...
+    - task-manager: Task Manager
+    - studio: Tourne Studio
+    - menu-settings: The Tourne Menu's settings
+    - settings: Windows Settings
+    - launcher: Open the launcher
+    - desktop-next: Next desktop
+    - desktop-previous: Previous desktop
+    - desktop-new: New desktop
+    - lock: Lock
+    - sleep: Sleep
+    #! $showIf: {enabled: true}
+  - emptyMiddleDoubleClick: 'none'
+    $name: Double middle click on the bar's empty space
+    $description: The same actions again, for two middle clicks in quick succession.
+    $options:
+    - none: Nothing
+    - show-desktop: Show the desktop (or bring the windows back)
+    - start: Open Start
+    - run: Run...
+    - task-manager: Task Manager
+    - studio: Tourne Studio
+    - menu-settings: The Tourne Menu's settings
+    - settings: Windows Settings
+    - launcher: Open the launcher
+    - desktop-next: Next desktop
+    - desktop-previous: Previous desktop
+    - desktop-new: New desktop
+    - lock: Lock
+    - sleep: Sleep
+    #! $showIf: {enabled: true}
+  - dragHold: 250
+    $name: Drop room wait (ms)
+    $description: How long a drag has to rest in a gap or at a screen's edge before the windows make room. Passing through faster doesn't count.
+    #! $showIf: {enabled: true}
+  - dragGapPad: 4
+    $name: Drop room gap padding (pixels)
+    $description: How far off a gap between two windows the pointer can be and still count as in it.
     #! $showIf: {enabled: true}
   - dynamicShyness: true
     $name: Dynamic shyness
@@ -1416,6 +1497,70 @@ Resource Redirect while this build is on.
     $options:
     - theme: The visual style and colour scheme (as set for each)
     - windows: Same as Windows' menus
+    #! $showIf: {enabled: true}
+  - menuFrameGap: 6
+    $name: Menu frame gap
+    $description: >-
+      With StartAllBack's menu look (a line round each menu, a band, a second
+      line), the band's width in pixels, 1 to 16. StartAllBack's own is 6.
+    #! $showIf: {enabled: true}
+  - menuFrameColors: ''
+    $name: Menu frame colours
+    $description: 'The two lines'' colour, or two or three colours for a gradient from the top left to the bottom right, for example #1e3632 #152026 #121c21. Empty: the style''s own.'
+    #! $showIf: {enabled: true}
+  - menuFrameGlow: 0
+    $name: Menu frame glow
+    $description: A soft light round the lines, 0 (none) to 100.
+    #! $showIf: {enabled: true}
+  - menuFlyoutClick: false
+    $name: Submenus open on a click
+    $description: >-
+      Right-click menus: submenus (Send to, 7-Zip, View...) open when clicked
+      (or with Right or Enter), not as the pointer passes over them, so
+      sweeping across a menu never stops to open one. Here and, with Tourne
+      Menus, in Explorer. The Start menu keeps its own setting ("Open submenus
+      when I pause on them").
+    #! $showIf: {enabled: true}
+  - menuAnimation: 'none'
+    $name: Menus open
+    $description: >-
+      How every menu here opens. At once is the quickest. The others take their
+      curve and length from the motion engine's "popups" line (motion.popups,
+      or its parents), else 0.15 s easing out. Tourne Menus uses the same in
+      Explorer.
+    $options:
+    - none: At once (no animation)
+    - fade: Fade in
+    - slide: Slide in and fade
+    - unfold: Unfold
+    #! $showIf: {enabled: true}
+  - menuHide: ''
+    $name: Leave out of right-click menus
+    $description: >-
+      Labels or verbs, separated by commas, taken out of the shell's menus for
+      files, folders and the desktop (here and, with Tourne Menus, in
+      Explorer), for example: Cast to device, Give access to, Add to Favorites.
+      Case and a trailing "..." don't matter; "Paste (greyed)" takes an item
+      out only while it's greyed out.
+    #! $showIf: {enabled: true}
+  - menuMore: ''
+    $name: Move into More options
+    $description: >-
+      Labels or verbs, separated by commas, moved from those menus into a
+      submenu at their end, for example: Pin to Start, Restore previous
+      versions, Open in Terminal.
+    #! $showIf: {enabled: true}
+  - menuMoreLabel: 'More options'
+    $name: The More options submenu's name
+    #! $showIf: {enabled: true}
+  - desktopMenuReady: false
+    $name: Desktop menu ready ahead
+    $description: >-
+      Tourne Desktop's desktop menu (Tourne's look): the empty space's menu is
+      kept built between right-clicks, a file's menu starts building as the
+      button goes down, and a few seconds after starting, one menu for each
+      kind of file on the desktop is built and thrown away in the background,
+      so their extensions are loaded before the first right-click.
     #! $showIf: {enabled: true}
   - jumpListPlace: 'centre'
     $name: Jump lists and window menus open
@@ -1865,6 +2010,12 @@ Resource Redirect while this build is on.
     - follow: false
       $name: Go along with a window sent
       $description: Switch to the desktop a window was sent to, the window still in front.
+    - dropOnPager: false
+      $name: Send a window by dropping it on the pager
+      $description: >-
+        Drag a window by its title bar onto a desktop's mark in the pager and
+        let go: it goes back where it was and is sent to that desktop. The mark
+        under the pointer lights while you drag.
     $name: Desktop keys
     $description: >-
       Your own keys for switching Windows' desktops and sending windows to
@@ -2254,6 +2405,7 @@ Resource Redirect while this build is on.
       - auto: Automatic, from the Start menu's look
       - visualStyle: 'startallback'
       - scheme: The colour scheme
+      - tourne: Tourne Menus, as the bar's own menus look
     - textColor: ''
       $name: Text colour
       $description: >-
@@ -2292,14 +2444,14 @@ Resource Redirect while this build is on.
         them: while Phone Link runs it has them. An iPhone shares only texts
         that come while it's connected. 0: Phone Link's Messages link
         instead.
-    - phoneCallOutput: default
+    - phoneCallOutput: 'default'
       $name: "Calls: sound out"
       $description: >-
         Our own addition, with Tourne Calls (desktop\calls). Where a call
         answered on this PC plays: Windows' default for calls, or one of your
         speakers or headsets. Changed during a call, it moves at once.
       #! $dynamicSelect: true
-    - phoneCallMic: default
+    - phoneCallMic: 'default'
       $name: "Calls: microphone"
       $description: >-
         Our own addition, with Tourne Calls. The mic the caller hears on a
@@ -2332,11 +2484,12 @@ Resource Redirect while this build is on.
         as a flyout above it, instead of Phone Link's window. Moving it or
         pinning it keeps it open as a window of its own.
     - phoneAppIcons: true
-      $name: Notifications with their apps' icons
+      $name: Notifications with their apps' logos
       $description: >-
-        Our own addition. Each notification with its phone app's own icon
-        (Discord, Messages...), as Phone Link keeps them. Off: the
-        Notifications icon above, in the theme's colours.
+        Our own addition. Each notification with its phone app's own logo
+        (Gmail, Reddit...), as Phone Link keeps them. Off: the design the
+        notification centre gives it (mail, reddit, chat, video, shop...), in
+        the theme's colours.
     $name: Start Menu
     $description: Configure Start menu items and behavior
     #! $showIf: {enabled: true}
@@ -2357,7 +2510,7 @@ Resource Redirect while this build is on.
           and its name, like tourne:screenshot (also capture, chat, cloud, game,
           audio, claude, spotify, wallpaper, fan, tiling, gpu, sensor, bell,
           clipboard, bin, phone, printer, usb, keyboard, power, mic, vpn,
-          update).
+          update, mail, reddit, video, shop).
       - everywhere: true
         $name: Use everywhere
         $description: >-
@@ -2427,7 +2580,7 @@ Resource Redirect while this build is on.
     #! $showIf: {enabled: true}
   $name: Taskbar (test)
 - switcher:
-  - enabled: true
+  - enabled: false
     $name: Enabled
   - theme:
     - style: 'tourneStyle'
@@ -2603,6 +2756,17 @@ Resource Redirect while this build is on.
       - mission: Mission Control
       - ring: Ring
       - shelf: Shelf
+      - canvas: Canvas (PrinceWM's infinite canvas)
+    - overview: 'canvas'
+      $name: Overview (Win+Tab and the overview command)
+      $description: >-
+        The canvas (PrinceWM's): every window live on a canvas you pan, flick and
+        zoom, tiles kept where you put them, an app's windows in one stack
+        (middle click opens it), a tile dropped on another puts the two side by
+        side, notes and pasted pictures pinned, and paint. Or Mission Control.
+      $options:
+      - canvas: Canvas
+      - mission: Mission Control
     - live: true
       $name: Live windows
       $description: >-
@@ -2758,6 +2922,12 @@ Resource Redirect while this build is on.
         Windows' Alt+Tab never shows while this runs; an Alt+Tab that reaches it
         opens this instead. Needs the suite's Explorer relay. Win+Tab is
         untouched.
+    - winTab: false
+      $name: Win+Tab opens Mission Control
+      $description: >-
+        Win+Tab opens this as Mission Control (every window laid out where it
+        sits) instead of Windows' Task view, and it stays open until you pick a
+        window, click away or press Esc.
     - peek: true
       $name: Peek at the selected window
       $description: >-
@@ -2857,7 +3027,13 @@ Resource Redirect while this build is on.
       - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
       - grid: Grid
       - bsp: BSP (each window halves the space left)
+      - spiral: Spiral (each window takes a side of what's left, winding inwards)
+      - threeColumn: Three columns (main in the middle, a column each side)
+      - slice: Slice (one window keeps a strip along an edge, the rest laid out in what's left)
+      - screenSplit: Split screen (named regions, each with its own layout and its own windows)
+      - script: ''
       - monocle: Monocle (every window fills the screen)
+      - layers: Layers of three (one fills, two halves, three main and two; the 4th to 6th lie over them the same way)
     - otherLayout: 'columns'
       $name: Layout on other screens
       $options:
@@ -2871,7 +3047,21 @@ Resource Redirect while this build is on.
       - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
       - grid: Grid
       - bsp: BSP (each window halves the space left)
+      - spiral: Spiral (each window takes a side of what's left, winding inwards)
+      - threeColumn: Three columns (main in the middle, a column each side)
+      - slice: Slice (one window keeps a strip along an edge, the rest laid out in what's left)
+      - screenSplit: Split screen (named regions, each with its own layout and its own windows)
+      - script: ''
       - monocle: Monocle (every window fills the screen)
+      - layers: Layers of three (one fills, two halves, three main and two; the 4th to 6th lie over them the same way)
+    - layoutRules: ''
+      $name: Layout by window count
+      $description: >-
+        From so many windows on a screen, another layout, as komorebi's
+        layout_rules: 1: bsp, 4: grid is BSP from one window and Grid from
+        four. Layout names as above (columns, rows, verticalStack, grid, bsp,
+        monocle...). Empty: the layout above whatever the count. A layout you
+        pick with the Tiling key's N stays put on that screen.
     - mainRatio: 50
       $name: Main window's share (%)
       $description: For the stacks and BSP.
@@ -2931,6 +3121,80 @@ Resource Redirect while this build is on.
       - force: Force it to fit
       - overlap: Let it overlap its neighbours
       - float: Leave it floating
+    - newWindow: 'end'
+      $name: Where a window that opens goes
+      $description: >-
+        A new window joins the screen's order at the end, which is the last tile
+        in the layout. First makes it the main window instead; the other two put
+        it either side of the window you were in, as qtile's
+        new_client_position does.
+      $options:
+      - end: At the end
+      - first: First (the main window, in layouts that have one)
+      - afterFocused: After the window you were in
+      - beforeFocused: Before the window you were in
+    - sliceWindow: ''
+      $name: 'Slice: the window with the strip'
+      $description: >-
+        For the Slice layout. The program, class or title of the window that
+        keeps the strip along the edge, with * and ? matching any text
+        (Spotify.exe, or Discord). Empty: whichever window is first on the
+        screen. Several, separated by commas: the first one found takes it.
+    - sliceEdge: 'left'
+      $name: 'Slice: which edge'
+      $options:
+      - left: Left
+      - right: Right
+      - top: Top
+      - bottom: Bottom
+    - sliceSize: 0
+      $name: 'Slice: how much of the screen the strip takes (%)'
+      $description: 0 uses the main window's share above.
+    - sliceLayout: 'verticalStack'
+      $name: 'Slice: the rest of the windows'
+      $description: The layout for everything that isn't in the strip.
+      $options:
+      - columns: Columns
+      - rows: Rows
+      - verticalStack: Vertical stack (main on the left)
+      - rightMainVerticalStack: Vertical stack (main on the right)
+      - horizontalStack: Horizontal stack (main on top)
+      - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
+      - threeColumn: Three columns (main in the middle, a column each side)
+      - grid: Grid
+      - bsp: BSP (each window halves the space left)
+      - spiral: Spiral (each window takes a side of what's left, winding inwards)
+      - monocle: Monocle (every window fills what's left)
+      - layers: Layers of three
+    - split: ['']
+      $name: 'Split screen: the regions'
+      $description: >-
+        For the Split screen layout, one region a line, as qtile's ScreenSplit
+        does it: a name, the region's share of the screen as four numbers
+        (left top width height, in percent), its own layout, then the programs,
+        classes or titles whose windows go in it (* and ? match any text).
+  
+        region = sidebar, 0 0 25 100, verticalStack, Spotify.exe, Discord.exe
+  
+        region = main, 25 0 75 100, grid
+  
+        The "region =" in front is optional. A region that names no windows
+        takes everything left over; with every region naming something, the last
+        one does. The gap between tiles is the gap between regions too, so the
+        shares can add up to 100 without the tiles touching.
+    - script: ''
+      $name: 'Your own layout: which file'
+      $description: >-
+        For the Your own layout choice. The name of a .luau file in
+        %LOCALAPPDATA%\Tourne\Layouts (without the .luau), and after a comma
+        anything you want the layout itself to read: spread, 3. The folder is
+        made with three commented examples in it the first time Tourne looks for
+        it, and saving a file is all it takes: the next window that moves uses
+        the new one. A layout is handed the screen, the gap, the ratio and the
+        windows (with each one's program, class and title) and answers with where
+        each window goes; it can't reach anything else, and a layout that stops
+        or answers with the wrong thing lays out in columns and says so in the
+        log. Tourne Desktop only: in the Windhawk suite this lays out in columns.
     - keepResized: true
       $name: Leave a window you resize where you put it
       $description: >-
@@ -3045,6 +3309,15 @@ Resource Redirect while this build is on.
       - reverseSpiral: Anticlockwise
     - spinDuration: 2500
       $name: Time for one turn (ms)
+    - spinRepeat: 'once'
+      $name: How long it spins
+      $description: >-
+        Once: one turn each time a window comes to the front or leaves it, then
+        it stands still and nothing is drawn. Always: it keeps turning, and the
+        borders that spin are redrawn every frame while they show.
+      $options:
+      - once: One turn, then still
+      - always: Always
     - fade: true
       $name: Fade between the two colours
       $description: >-
@@ -3055,8 +3328,19 @@ Resource Redirect while this build is on.
     - fps: 60
       $name: Frames per second
       $description: >-
-        For the spin and the fade. Nothing is drawn while nothing moves; with
-        a spin on, the borders that spin are redrawn this often.
+        For the spin and the fade. Nothing is drawn while nothing moves; while
+        a border spins or fades, it is redrawn this often.
+    - followMoves: 'front'
+      $name: Follow window moves
+      $description: >-
+        Window in front: borders follow the window in front as it moves, a
+        window dragged anywhere, and the windows the tiling moves; a window
+        behind that moves itself is caught up when the windows' order or the
+        front changes. Every window: every move on the PC is followed, which
+        costs a little work all the time, even while you only move the mouse.
+      $options:
+      - front: Window in front (lighter)
+      - all: Every window
     - glow: 'all'
       $name: Glow
       $description: The border's colours, blurred outward.
@@ -3095,6 +3379,103 @@ Resource Redirect while this build is on.
     - skipTitles: 'komorebi-bar, keyviz, Picture-in-Picture'
       $name: Window titles without borders
     $name: Window borders
+    #! $showIf: {enabled: true}
+  - binds:
+    - enabled: false
+      $name: Key binds
+      $description: >-
+        Hyprland's binds and commands, on Windows. Off until turned on, and
+        nothing is bound until you write a line. A bound key is taken by
+        Tourne while it runs: the program in front never hears it, so any
+        shortcut it had on the same keys silently stops working. Pick
+        combinations with Win, or two modifiers (like Ctrl+Alt), that nothing
+        else you use takes; with just Ctrl, Ctrl+S could stop saving without
+        any sign. Win+L still locks the PC, as nothing can take that. Binds are
+        left alone in fullscreen programs unless written bindl.
+    - lines: ['']
+      $name: Binds
+      $description: >-
+        One a line, written as in Hyprland's config: bind = MODS, key, command,
+        argument. MODS are WIN (or SUPER), CTRL, ALT and SHIFT, with spaces
+        between, or none. Keys are letters, digits, F1 to F24 and Hyprland's
+        names (space, return, escape, tab, left, right, up, down, minus, equal,
+        bracketleft, XF86AudioRaiseVolume...), or code:NN for a Windows key
+        code. binde repeats while held, bindr runs on release, bindl works in
+        fullscreen programs too, bindn lets the program hear the key as well,
+        bindd takes what it does in words after the key (bindd = WIN, Q, Close
+        the window, killactive), which the Keybind Guide shows.
+        bindm = WIN, mouse:272, movewindow drags the window under the pointer
+        with the left button (273 right, 274 middle; resizewindow resizes from
+        the nearest corner), floating it; it needs a modifier.
+        bindk runs on a double press (the key twice within the double press
+        time below) and bindo when held (for the hold time below, or bindo800
+        for its own); a key can have a bind, a bindk and a bindo at once, and
+        then a single press waits out the double press time before it runs.
+        "$mod = WIN" lines name a value for later lines; "submap = resize" puts
+        the lines after it in a mode of their own (submap = reset ends it), and
+        "submap, resize" as a bind's command enters it; catchall as the key
+        takes every other key in a mode. Commands: run (several steps in one,
+        separated by semicolons, with wait between them: run, workspace 2;
+        wait 200; exec notepad. A wait takes 200, 200ms or 0.2s; write \; for
+        a semicolon of your own. The same line is a menu item's command when
+        written tourne:do workspace 2; wait 200; exec notepad, and tournectl
+        run does it from a script, while tournectl check prints what it would
+        do without doing any of it), exec, killactive,
+        forcekillactive, closewindow, killwindow, togglefloating, setfloating,
+        settiled, tileall (every window on the screen tiled, an even split),
+        monocle (one window given the screen, again puts it back; tileothers
+        after it tiles the rest behind it), fullscreen, minimize, pin, movefocus, movewindow, swapwindow,
+        resizeactive, moveactive, resizewindowpixel, movewindowpixel,
+        centerwindow, cyclenext, focuswindow, focusmonitor, focuscurrentorlast,
+        workspace, movetoworkspace, movetoworkspacesilent, renameworkspace
+        (Windows' desktops, made when a number has none yet, up to 20; movetoworkspace, special or special:name puts a
+        window away in a scratchpad, and togglespecialworkspace [name] brings
+        it back floating over any desktop, or puts it away again), layoutmsg (cycle, tile, auto, layouts, apply N,
+        mfact N), splitratio, submap, sendshortcut, alterzorder,
+        bringactivetotop, movecursor, movecursortocorner, dpms, lockscreen,
+        flyout NAME (a system icons flyout: mixer, notifications, network, power,
+        bluetooth, devices, brightness, vpn, security; again closes it),
+        explorerbar (Explorer's own taskbar in place of Tourne's bar, and
+        back: explorer, tourne, or nothing to swap; shell mode only),
+        overview (every window on every screen, as the switcher's Mission
+        Control; again closes it), pickcolor (the colour under the pointer
+        copied as #rrggbb),
+        and groups (windows stacked in one tile with a bar of tabs):
+        togglegroup, changegroupactive (f, b or N), moveintogroup (l, r, u,
+        d), moveoutofgroup.
+        Windows are named class:, title:, exe: or pid:, with * and ? matching
+        any text.
+        "idle = 300, dpms, off" runs a command once you've been away that
+        long (as hypridle; any command, like lockscreen; not while a
+        fullscreen program is in front). Window rules go here too, as in Hyprland: windowrule = float,
+        class:Calculator (rules: float, tile, center, size W H, move X Y,
+        workspace N [silent], monitor N, pin, maximize, minimize, opacity A,
+        noborder, keep [S]; each for a window as it opens). exec takes rules for the
+        window it opens: exec, [float; size 50% 50%] notepad.
+    - file: ''
+      $name: Binds file
+      $description: >-
+        A file of more lines written the same way (like a hyprland.conf's
+        binds), read with the settings, for example
+        %APPDATA%\Tourne\binds.conf. Empty for none.
+    - doubleMs: 300
+      $name: Double press time (ms)
+      $description: >-
+        How quickly the second press must follow the first for a bindk. A
+        single press on a key that also has one waits this long before it runs.
+    - holdMs: 500
+      $name: Hold time (ms)
+      $description: How long a key is held before its bindo runs (bindo800 sets its own).
+    - control: false
+      $name: Let scripts control Tourne (tournectl)
+      $description: >-
+        Programs you run (tournectl, a bar, a script) can run these commands
+        and hear events (activewindow, openwindow, closewindow, workspace,
+        submap), as Hyprland's hyprctl and event socket do. Only programs of
+        yours on this PC can reach it. Nothing runs while nothing calls. The
+        Tourne Menu's own items ask through this as well, so an item whose
+        command starts with tourne:do needs it on.
+    $name: Key binds and control
     #! $showIf: {enabled: true}
   - customHeaders:
     - - program: ''
@@ -3174,7 +3555,7 @@ Resource Redirect while this build is on.
     - always: Always
     - off: Off
     #! $showIf: {enabled: true}
-  - navHideLines: false
+  - navHideLines: true
     $name: Hide the navigation pane's separator lines
     $description: >-
       The lines Windows draws between the navigation pane's groups (Home and
@@ -3310,6 +3691,24 @@ Resource Redirect while this build is on.
       Program file names, separated by commas, whose Open and Save dialogs get
       the same selections and drive bars, like notepad.exe. 64-bit programs only.
     #! $showIf: {enabled: true}
+  - taskManager: true
+    $name: Task Manager too
+    $description: >-
+      Task Manager's usage cells (CPU, memory, disk, network: shaded more as use
+      goes up) in the drive bars' colours, from the empty part through the
+      filled part to nearly full, and its rows' selections in yours. Task
+      Manager needs reopening after a change.
+    #! $showIf: {enabled: true}
+  - taskManagerBackground: '121C21'
+    $name: Task Manager's lists, background
+    $description: >-
+      The Details and Services tabs' lists, which are white whatever the style.
+      RRGGBB; empty leaves them as they are.
+    #! $showIf: {enabled: true, taskManager: true}
+  - taskManagerText: ''
+    $name: Task Manager's lists, text
+    $description: RRGGBB. Empty for a light grey on a dark background, a dark one on a light background.
+    #! $showIf: {enabled: true, taskManager: true}
   $name: Explorer Colours
 - themeGaps:
   - enabled: true
@@ -3424,7 +3823,7 @@ Resource Redirect while this build is on.
     #! $showIf: {enabled: true}
   $name: Dark Magic
 - classicMenus:
-  - enabled: true
+  - enabled: false
     $name: Enabled
   - explorer: true
     $name: Explorer and file dialogs
@@ -3456,6 +3855,14 @@ Resource Redirect while this build is on.
     $description: Program file names, separated by commas, like game.exe.
     #! $showIf: {enabled: true}
   $name: Classic Menus
+- squareCorners:
+  - enabled: true
+    $name: Enabled
+  - excludeApps: ''
+    $name: Leave these programs rounded
+    $description: Program file names, separated by commas, like game.exe.
+    #! $showIf: {enabled: true}
+  $name: Square Corners
 - tweaks:
   - enabled: true
     $name: Enabled
@@ -3979,7 +4386,7 @@ Resource Redirect while this build is on.
       #! $min: 5
       #! $max: 200
       #! $showIf: {use: true}
-    - editImageApp: 'X:\Program Files\Krita (x64)\bin\krita.exe "%1"'
+    - editImageApp: ''
       $name: 'Program for Edit on pictures'
       $description: 'What right-click > Edit opens pictures with, as a command line with "%1" for the file. Empty: Paint. Asks for admin.'
       #! $showIf: {use: true}
@@ -4853,6 +5260,7 @@ Resource Redirect while this build is on.
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <cfloat>
 #include <cmath>
 #include <cstdint>
 #include <cwchar>
@@ -7178,6 +7586,8 @@ constexpr UINT_PTR kTimerPeriodic = 1;
 constexpr UINT_PTR kTimerFindTray = 2;
 constexpr UINT_PTR kTimerNotifications = 4;
 constexpr UINT_PTR kTimerNotifyCounter = 8;  // the notification database's change counter, compared each second
+constexpr UINT_PTR kTimerStackWait = 9;      // a dragged hidden icon held over another: then they'd make a folder
+constexpr UINT_PTR kTimerMotion = 10;        // a flyout, pop-up or the event window opening (the motion lines)
 constexpr UINT kPeriodicMs = 30000;
 
 // Volume changes per wheel notch, in percent.
@@ -7798,6 +8208,75 @@ bool ProgramIconMatches(std::wstring const& row, std::wstring const& appId, std:
     return (!path.empty() && row == path) || (!name.empty() && row == name) || (!appId.empty() && row == appId);
 }
 
+// Tourne'Icons' Taskbar buttons rows, which it hands over as "program<tab>icon" lines (newest first) in
+// HKCU\Software\Tourne\Icons: Buttons from its Windhawk mod while that runs, Buttons Kit and Buttons Lasting
+// from the other two. They come before these settings' rows. While the Windhawk mod runs it holds the button
+// icons (it took these settings' rows in), so these settings' rows step aside. Read again whenever the key
+// was written since the last look, so a change shows on the next look at once.
+struct TourneIconsButtons {
+    std::vector<ProgramIcon> rows;
+    bool holds = false;
+};
+
+SRWLOCK g_tourneIconsLock = SRWLOCK_INIT;
+TourneIconsButtons g_tourneIconsButtons;
+FILETIME g_tourneIconsWritten;
+bool g_tourneIconsRead;
+
+void ForgetTourneIconsButtons() {
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    g_tourneIconsRead = false;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+}
+
+TourneIconsButtons ReadTourneIconsButtons() {
+    HKEY key = nullptr;
+    FILETIME written{};
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Icons", 0, KEY_READ, &key) == ERROR_SUCCESS) {
+        RegQueryInfoKeyW(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                         &written);
+    }
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    if (!g_tourneIconsRead || CompareFileTime(&written, &g_tourneIconsWritten) != 0) {
+        g_tourneIconsRead = true;
+        g_tourneIconsWritten = written;
+        TourneIconsButtons fresh;
+        for (PCWSTR value : {L"Buttons", L"Buttons Kit", L"Buttons Lasting"}) {
+            DWORD size = 0;
+            if (!key || RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS) {
+                continue;
+            }
+            std::vector<WCHAR> text(size / sizeof(WCHAR) + 2, L'\0');
+            DWORD got = (DWORD)(text.size() * sizeof(WCHAR));
+            if (RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, text.data(), &got) != ERROR_SUCCESS) {
+                continue;
+            }
+            if (value[7] == L'\0') fresh.holds = true;  // (Buttons: the Windhawk mod's)
+            for (PCWSTR line = text.data(); *line; line += wcslen(line) + 1) {
+                std::wstring_view row = line;
+                size_t tab = row.find(L'\t');
+                if (tab == std::wstring_view::npos) continue;
+                std::wstring program(row.substr(0, tab));
+                CharLowerBuffW(program.data(), (DWORD)program.size());
+                std::wstring icon = ProgramIconPath(std::wstring(row.substr(tab + 1)));
+                if (!program.empty() && !icon.empty()) fresh.rows.push_back({program, icon});
+            }
+        }
+        g_tourneIconsButtons = std::move(fresh);
+    }
+    TourneIconsButtons result = g_tourneIconsButtons;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+    if (key) RegCloseKey(key);
+    return result;
+}
+
+// These settings' rows (own) with Tourne'Icons' ahead of them, or in their place while it holds them.
+std::vector<ProgramIcon> WithTourneIcons(std::vector<ProgramIcon> const& own) {
+    TourneIconsButtons published = ReadTourneIconsButtons();
+    if (!published.holds) published.rows.insert(published.rows.end(), own.begin(), own.end());
+    return std::move(published.rows);
+}
+
 struct Settings {
     std::wstring scheme = L"tourne";
     std::string tone = "sage";
@@ -8012,6 +8491,17 @@ const Grid kArtAccess = P({".....##.....", ".....##.....", "", ".##########.", "
                            ".....##.....", ".....##.....", "....#..#....", "...#....#...", "..#......#.."});
 const Grid kArtKeyboard = P({"", "", "", "############", "#..........#", "#.#.#.#.#..#",
                              "#..........#", "#.#......#.#", "#..........#", "############"});
+// The media keys, for Tourne Desktop's flyouts (the same pixel look as the tray's).
+const Grid kArtMediaPlay = P({"", "", "...#........", "...##.......", "...###......", "...####.....", "...#####....",
+                              "...####.....", "...###......", "...##.......", "...#........"});
+const Grid kArtMediaPlayPause = P({"", "", "", ".#.....##.##", ".##....##.##", ".###...##.##", ".####..##.##",
+                                   ".###...##.##", ".##....##.##", ".#.....##.##"});
+const Grid kArtMediaNext = P({"", "", "", "#....#....##", "##...##...##", "###..###..##", "####.####.##",
+                              "###..###..##", "##...##...##", "#....#....##"});
+const Grid kArtMediaPrev = P({"", "", "", "##....#....#", "##...##...##", "##..###..###", "##.####.####",
+                              "##..###..###", "##...##...##", "##....#....#"});
+const Grid kArtMediaStop = P({"", "", "..########..", "..########..", "..########..", "..########..",
+                              "..########..", "..########..", "..########..", "..########.."});
 const Grid kArtPower = P({".....##.....", ".....##.....", "..#..##..#..", ".#...##...#.", "#....##....#",
                           "#..........#", "#..........#", "#..........#", ".#........#.", "..########.."});
 const Grid kArtMic = P({"....####....", "....#..#....", "....#..#....", "....#..#....", "..#.#..#.#..",
@@ -8069,6 +8559,16 @@ const Grid kArtSpark = P({".....##.....", ".#...##...#.", "..#..##..#..", "...#.
 const Grid kArtSpotify = P({"...######...", ".##......##.", ".#.######.#.", "#.#......#.#",
                             "#...####...#", "#..#....#..#", "#....##....#", "#...#..#...#",
                             "#..........#", ".#........#.", ".##......##.", "...######..."});
+// Phone apps' (the Start menu's phone pane and the notification centre): mail, Reddit, video, shopping.
+const Grid kArtMail = P({"", "", "############", "##........##", "#.#......#.#", "#..#....#..#", "#...#..#...#",
+                         "#....##....#", "#..........#", "############"});
+const Grid kArtReddit = P({"........###.", "........#.#.", ".......####.", "......#.....", "..########..",
+                           ".#........#.", "#..oo..oo..#", "#..oo..oo..#", "#..........#", "#..#....#..#",
+                           ".#..####..#.", "..########.."});
+const Grid kArtPlay = P({"", "############", "#..........#", "#...#......#", "#...##.....#", "#...###....#",
+                         "#...####...#", "#...###....#", "#...##.....#", "#...#......#", "#..........#", "############"});
+const Grid kArtBag = P({"", "....####....", "...#....#...", "...#....#...", "############", "#..........#",
+                        "#..#....#..#", "#..........#", "#..........#", "#..........#", "#..........#", "############"});
 const Grid kArtTiles = P({"", "############", "#....#.....#", "#....#.....#", "#....#.....#",
                           "#....#######", "#....#.....#", "#....#.....#", "#....#.....#",
                           "############"});
@@ -8277,6 +8777,11 @@ Art ArtFor(std::string_view id) {
     if (id == "accessibility") return {kArtAccess};
     if (id == "power") return {kArtPower};
     if (id == "keyboard") return {kArtKeyboard};
+    if (id == "media-play") return {kArtMediaPlay};
+    if (id == "media-playpause") return {kArtMediaPlayPause};
+    if (id == "media-next") return {kArtMediaNext};
+    if (id == "media-prev") return {kArtMediaPrev};
+    if (id == "media-stop") return {kArtMediaStop};
     if (id == "app-bin") return {kArtTrash};
     if (id == "app-clipboard") return {kArtClipboard};
     if (id == "app-capture") return {kArtCamera};
@@ -8321,6 +8826,10 @@ Art ArtFor(std::string_view id) {
     if (id == "sensor") return {kArtThermometer};
     if (id.starts_with("readout:")) return Readout(id);
     if (id == "app-game") return {kArtPad, nullptr, "coral"};
+    if (id == "app-mail") return {kArtMail};
+    if (id == "app-reddit") return {kArtReddit, nullptr, "coral"};
+    if (id == "app-video") return {kArtPlay};
+    if (id == "app-shop") return {kArtBag};
     return {P({})};
 }
 
@@ -12555,6 +13064,7 @@ struct HiddenIcon {
     std::wstring tip;
     int size = 0;
     std::vector<uint32_t> pixels;  // Premultiplied BGRA, size x size.
+    std::wstring plugin;  // A Tourne Desktop plugin item standing in as an icon (its key; no owner then).
 };
 
 std::wstring LowerFileName(std::wstring_view path) {
@@ -12767,6 +13277,9 @@ bool OpensOnDoubleClickIn(HWND owner, std::wstring list) {
 
 // An icon by program and icon id, which stays the same across restarts.
 std::wstring HiddenIconKey(HiddenIcon const& icon) {
+    if (!icon.plugin.empty()) {
+        return L"plugin:" + icon.plugin;
+    }
     return OwnerFileName(icon.owner) + L"|" + std::to_wstring(icon.id);
 }
 
@@ -12848,13 +13361,42 @@ struct TrayPlaces {
         return kPlaceDefault;
     }
 
-    // Where an icon goes: its own place, else where Explorer's tray has it.
+    // A place its program's icons were given under other ids, when they all agree. Some programs take a new
+    // icon id each run (MSI Afterburner: 66130, 66354, 66544; HWiNFO), so an icon put in the overflow (or a
+    // folder there) came back in the tray as a stranger, gone from where it was put (2026-10-16).
+    int OfProgram(std::wstring const& key) const {
+        size_t bar = key.rfind(L'|');
+        if (key.starts_with(L"plugin:") || bar == std::wstring::npos || bar == 0) {
+            return kPlaceDefault;
+        }
+        std::wstring program = key.substr(0, bar + 1);
+        int found = kPlaceDefault;
+        for (auto const& [k, place] : places) {
+            if (!k.starts_with(program) || k.find(L'|', program.size()) != std::wstring::npos) {
+                continue;
+            }
+            if (found != kPlaceDefault && found != place) {
+                return kPlaceDefault;
+            }
+            found = place;
+        }
+        return found;
+    }
+
+    // Where an icon goes: its own place, else its program's, else where Explorer's tray has it.
     int For(HiddenIcon const& icon, std::wstring const& key) const {
         int place = Of(key);
+        if (place == kPlaceDefault) {
+            place = OfProgram(key);
+        }
         return place != kPlaceDefault ? place : icon.overflow ? kPlaceOverflow : kPlaceTray;
     }
 
     void Set(std::wstring const& key, int place) {
+        // A plugin item's own place is the tray: back there, it keeps no place.
+        if (place == kPlaceTray && key.starts_with(L"plugin:")) {
+            place = kPlaceDefault;
+        }
         std::erase_if(places, [&](auto const& entry) { return entry.first == key; });
         if (place != kPlaceDefault) {
             places.push_back({key, place});
@@ -12989,6 +13531,206 @@ void ApplyTrayOrder(std::vector<T>& items, std::vector<std::wstring> const& orde
         sorted.push_back(std::move(items[i]));
     }
     items = std::move(sorted);
+}
+// Plugin items on the bar, shared by the taskbar ("// @inline plugin-bar-shared.cpp")
+// and Tourne Desktop's plugin runtime (desktop/host/plugin-runtime.cpp includes it).
+//
+// The runtime keeps a message-only window of class kPluginHostClass. Bars only
+// ever post to it, so a bar never waits on a plugin that is busy:
+// - kPluginBarAskMessage (wParam: the bar) asks for the items. The runtime
+//   answers by sending the bar WM_COPYDATA kPluginBarItemsId with them packed,
+//   behind the list's version.
+// - kPluginBarEventMessage (wParam: that version, lParam: MakePluginBarEvent)
+//   is a click, scroll or hover on one; one from an older list is dropped.
+// When the items change, the runtime posts kPluginBarChangedMessage to every
+// bar, which asks again. Outside Tourne Desktop (the Windhawk suite) there is
+// no such window, so no items.
+// System Icons asks the same way (with SendMessageTimeout, so the answer comes
+// while it waits), to show the items the user moved into the overflow flyout
+// among its hidden icons, and posts their clicks back as a bar does.
+//
+// Plugin items are placed like tray icons, by the key "plugin:<key>" in the
+// tray's places and order (tray-shared.cpp): in the tray (the default), in the
+// overflow, or hidden. Each can have an icon of the user's own in place of its
+// glyph or picture (kPluginIconsValue); the runtime draws it into the item's
+// picture, so every bar and the flyout show it alike.
+
+[[maybe_unused]] constexpr wchar_t kPluginHostClass[] = L"TourneDesktopPlugins";
+[[maybe_unused]] constexpr wchar_t kPluginBarChangedMessage[] = L"TourneSuite_PluginBarChanged";
+[[maybe_unused]] constexpr wchar_t kPluginBarAskMessage[] = L"TourneSuite_PluginBarAsk";
+[[maybe_unused]] constexpr wchar_t kPluginBarEventMessage[] = L"TourneSuite_PluginBarEvent";
+[[maybe_unused]] constexpr ULONG_PTR kPluginBarItemsId = 0x54504C49;  // "TPLI"
+[[maybe_unused]] constexpr wchar_t kPluginGlyphFont[] = L"tabler-icons";
+[[maybe_unused]] constexpr LPARAM kPluginAskIconsChanged = 1;  // an ask's lParam: the user's icons changed, read them again
+[[maybe_unused]] constexpr wchar_t kPluginIconsKey[] = L"Software\\TourneTray";  // (beside the tray's places)
+[[maybe_unused]] constexpr wchar_t kPluginIconsValue[] = L"PluginIcons";       // "plugin:<key><tab>file" (or "file,index")
+
+enum PluginBarEvent : int { kPluginClick, kPluginRightClick, kPluginMiddleClick, kPluginScrollUp, kPluginScrollDown, kPluginEnter, kPluginLeave };
+[[maybe_unused]] static LPARAM MakePluginBarEvent(int index, PluginBarEvent event) { return (LPARAM)((index & 0xFFFF) | (event << 16)); }
+
+struct PluginBarItem {
+    std::wstring key;    // "<plugin id>:<entry id>"
+    std::wstring glyph;  // the glyph's character in kPluginGlyphFont, or empty
+    std::wstring text;
+    std::wstring tip;
+    COLORREF color = CLR_INVALID;  // the text's colour when the plugin set one, else the bar's
+    std::wstring image;            // a picture in place of the glyph: a file of its pixels ("TBI1", width, height,
+                                   // premultiplied BGRA rows top-down, at the screen's scale), or empty
+    COLORREF glyphColor = CLR_INVALID;  // the glyph's own colour, when the plugin set one
+};
+
+// Packed: the version, \x1D, then items split by \x1E and their fields by \x1F.
+[[maybe_unused]] static std::wstring PackPluginBarItems(std::vector<PluginBarItem> const& items, unsigned version) {
+    std::wstring out = std::to_wstring(version) + L'\x1D';
+    for (size_t i = 0; i < items.size(); i++) {
+        auto const& item = items[i];
+        if (i) out += L'\x1E';
+        out += item.key + L'\x1F' + item.glyph + L'\x1F' + item.text + L'\x1F' + item.tip + L'\x1F' +
+               (item.color == CLR_INVALID ? L"" : std::to_wstring(item.color)) + L'\x1F' + item.image + L'\x1F' +
+               (item.glyphColor == CLR_INVALID ? L"" : std::to_wstring(item.glyphColor));
+    }
+    return out;
+}
+
+[[maybe_unused]] static std::vector<PluginBarItem> UnpackPluginBarItems(std::wstring_view packed, unsigned* version) {
+    std::vector<PluginBarItem> items;
+    size_t head = packed.find(L'\x1D');
+    if (head == std::wstring_view::npos) return items;
+    *version = (unsigned)wcstoul(std::wstring(packed.substr(0, head)).c_str(), nullptr, 10);
+    packed = packed.substr(head + 1);
+    while (!packed.empty()) {
+        size_t end = packed.find(L'\x1E');
+        std::wstring_view one = packed.substr(0, end);
+        packed = end == std::wstring_view::npos ? std::wstring_view() : packed.substr(end + 1);
+        std::wstring fields[7];
+        for (int i = 0; i < 7; i++) {
+            size_t cut = one.find(L'\x1F');
+            fields[i] = std::wstring(one.substr(0, cut));
+            one = cut == std::wstring_view::npos ? std::wstring_view() : one.substr(cut + 1);
+        }
+        PluginBarItem item{fields[0], fields[1], fields[2], fields[3]};
+        if (!fields[4].empty()) item.color = (COLORREF)wcstoul(fields[4].c_str(), nullptr, 10);
+        item.image = fields[5];
+        if (!fields[6].empty()) item.glyphColor = (COLORREF)wcstoul(fields[6].c_str(), nullptr, 10);
+        items.push_back(std::move(item));  // (kept even if empty, so indexes match the runtime's)
+    }
+    return items;
+}
+
+// The user's own icons for plugin items: (item's place key "plugin:<key>", its file).
+[[maybe_unused]] static std::vector<std::pair<std::wstring, std::wstring>> LoadPluginIcons() {
+    std::vector<std::pair<std::wstring, std::wstring>> rows;
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPluginIconsKey, kPluginIconsValue, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS ||
+        size < sizeof(wchar_t))
+        return rows;
+    std::wstring buffer(size / sizeof(wchar_t) + 2, L'\0');
+    size = (DWORD)(buffer.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPluginIconsKey, kPluginIconsValue, RRF_RT_REG_MULTI_SZ, nullptr, buffer.data(), &size) != ERROR_SUCCESS)
+        return rows;
+    for (const wchar_t* p = buffer.data(); p < buffer.data() + buffer.size() && *p; p += wcslen(p) + 1) {
+        std::wstring row = p;
+        size_t tab = row.find(L'\t');
+        if (tab != std::wstring::npos && tab + 1 < row.size()) rows.push_back({row.substr(0, tab), row.substr(tab + 1)});
+    }
+    return rows;
+}
+
+// An item's own icon set (an empty file puts its own back).
+[[maybe_unused]] static void SavePluginIcon(std::wstring const& key, std::wstring const& file) {
+    auto rows = LoadPluginIcons();
+    std::erase_if(rows, [&](auto const& row) { return row.first == key; });
+    if (!file.empty()) rows.push_back({key, file});
+    std::wstring data;
+    for (auto const& [k, f] : rows) data += k + L'\t' + f + L'\0';
+    data += L'\0';
+    HKEY reg;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kPluginIconsKey, 0, nullptr, 0, KEY_SET_VALUE, nullptr, &reg, nullptr) != ERROR_SUCCESS) return;
+    if (rows.empty()) RegDeleteValueW(reg, kPluginIconsValue);
+    else RegSetValueExW(reg, kPluginIconsValue, 0, REG_MULTI_SZ, (const BYTE*)data.data(), (DWORD)(data.size() * sizeof(wchar_t)));
+    RegCloseKey(reg);
+}
+
+// An item's picture, from the file of its pixels the runtime made (see PluginBarItem::image).
+[[maybe_unused]] static bool ReadPluginImageFile(std::wstring const& path, int* w, int* h, std::vector<uint32_t>* pixels) {
+    if (path.empty()) return false;
+    HANDLE f = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return false;
+    char head[12] = {};
+    DWORD got = 0;
+    bool ok = false;
+    if (ReadFile(f, head, 12, &got, nullptr) && got == 12 && !memcmp(head, "TBI1", 4)) {
+        uint32_t pw = 0, ph = 0;
+        memcpy(&pw, head + 4, 4), memcpy(&ph, head + 8, 4);
+        if (pw && ph && pw <= 1024 && ph <= 256) {
+            pixels->resize((size_t)pw * ph);
+            DWORD bytes = (DWORD)(pixels->size() * 4);
+            ok = ReadFile(f, pixels->data(), bytes, &got, nullptr) && got == bytes;
+            if (ok) *w = (int)pw, *h = (int)ph;
+            else pixels->clear();
+        }
+    }
+    CloseHandle(f);
+    return ok;
+}
+
+// An item as a tray icon's pixels (premultiplied BGRA, size by size): its picture fitted in, else its glyph,
+// else the first letter of its text; in `color` unless the plugin chose its glyph's colour.
+[[maybe_unused]] static std::vector<uint32_t> PluginItemPixels(PluginBarItem const& item, int size, COLORREF color) {
+    std::vector<uint32_t> out((size_t)size * size, 0);
+    if (size <= 0) return out;
+    int pw = 0, ph = 0;
+    std::vector<uint32_t> picture;
+    if (ReadPluginImageFile(item.image, &pw, &ph, &picture)) {
+        // Fitted in, its shape kept (an area average when it's smaller), centred.
+        double k = std::min((double)size / pw, (double)size / ph);
+        int ow = std::max(1, (int)(pw * k + 0.5)), oh = std::max(1, (int)(ph * k + 0.5));
+        int left = (size - ow) / 2, top = (size - oh) / 2;
+        for (int y = 0; y < oh; y++)
+            for (int x = 0; x < ow; x++) {
+                int x0 = x * pw / ow, x1 = std::max(x0 + 1, (x + 1) * pw / ow), y0 = y * ph / oh, y1 = std::max(y0 + 1, (y + 1) * ph / oh);
+                uint32_t sum[4] = {}, n = 0;
+                for (int sy = y0; sy < y1 && sy < ph; sy++)
+                    for (int sx = x0; sx < x1 && sx < pw; sx++, n++)
+                        for (int c = 0; c < 4; c++) sum[c] += picture[(size_t)sy * pw + sx] >> (c * 8) & 0xFF;
+                uint32_t v = 0;
+                for (int c = 0; c < 4; c++) v |= (n ? sum[c] / n : 0) << (c * 8);
+                out[(size_t)(top + y) * size + left + x] = v;
+            }
+        return out;
+    }
+    bool glyph = !item.glyph.empty();
+    std::wstring text = glyph ? item.glyph : item.text.substr(0, 1);
+    if (text.empty()) return out;
+    if (glyph && item.glyphColor != CLR_INVALID) color = item.glyphColor;
+    else if (item.color != CLR_INVALID) color = item.color;
+    // Drawn white on black; how bright each pixel came out is how much of the colour it takes.
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HDC dc = CreateCompatibleDC(nullptr);
+    HBITMAP bitmap = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (!bitmap) return DeleteDC(dc), out;
+    HGDIOBJ oldBitmap = SelectObject(dc, bitmap);
+    HFONT font = CreateFontW(-(glyph ? size : size * 3 / 4), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+                             CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, glyph ? kPluginGlyphFont : L"Segoe UI");
+    HGDIOBJ oldFont = SelectObject(dc, font);
+    SetBkMode(dc, TRANSPARENT);
+    SetTextColor(dc, RGB(255, 255, 255));
+    RECT rc{0, 0, size, size};
+    DrawTextW(dc, text.c_str(), (int)text.size(), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
+    GdiFlush();
+    auto const* drawn = (uint32_t const*)bits;
+    for (size_t i = 0; i < out.size(); i++) {
+        uint32_t p = drawn[i], a = std::max({p & 0xFF, p >> 8 & 0xFF, p >> 16 & 0xFF});
+        if (a) out[i] = a << 24 | (GetRValue(color) * a / 255) << 16 | (GetGValue(color) * a / 255) << 8 | GetBValue(color) * a / 255;
+    }
+    SelectObject(dc, oldFont);
+    SelectObject(dc, oldBitmap);
+    DeleteObject(font);
+    DeleteObject(bitmap);
+    DeleteDC(dc);
+    return out;
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Shell core ("// @inline shell-core.cpp", in the taskbar and System Icons,
@@ -13165,10 +13907,12 @@ RECT ShellRoomBesideBar(ShellBar const& bar) {
     HWND root = GetAncestor(w, GA_ROOTOWNER);
     HWND popup = GetLastActivePopup(root ? root : w);
     HWND target = popup && IsWindowVisible(popup) && IsWindowEnabled(popup) ? popup : w;
-    if (IsIconic(w)) PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0);
+    // (a minimised admin window never gets the restore message: Windows keeps it from us; SwitchToThisWindow
+    // restores it itself)
+    if (IsIconic(w) && !PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0)) SwitchToThisWindow(w, TRUE);
     auto inFront = [&] {
         HWND fg = GetForegroundWindow();
-        return fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w));
+        return !IsIconic(w) && (fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w)));
     };
     if (SetForegroundWindow(target) && inFront()) return true;
     // Windows lets the process that had the last input event take the front:
@@ -13300,6 +14044,19 @@ bool ShellLaunchAppsFolder(std::wstring const& parsing, PCWSTR args = nullptr) {
 // MenuMeasureItem and MenuDrawItem. AppendMenuHeader adds a section's title
 // (a jump list's "Tasks"), AppendMenuIcon an item with an icon; the caller
 // keeps the icon until the menu closes.
+//
+// Also here, for every menu that goes through TrackStyledMenu: the mouse wheel
+// scrolls a menu taller than its screen (MenuWheel*), menus can open with a
+// short animation (g_menuMotion, none by default), and labels or verbs can be
+// taken out of a shell menu or moved into a "More options" submenu
+// (ApplyMenuRules, UndoMenuRules).
+//
+// A program with menus on several threads (Tourne Menus, in Explorer) defines
+// MENU_STYLE_STORAGE as thread_local before this file, so each thread has its own.
+
+#ifndef MENU_STYLE_STORAGE
+#define MENU_STYLE_STORAGE
+#endif
 
 struct MenuLook {
     uint32_t ground = 0x121C21, line = 0x1E2F36, edge = 0x4F8F6A, text = 0x66EA97, accent = 0x15FFA2,
@@ -13318,13 +14075,48 @@ struct MenuLook {
     bool frame = false;
     bool caps = false;  // item text in capitals, as its icon title font is used
     uint32_t frameLine = 0xADA69E, band = 0x151F24;
+    // The frame as set (taskbar.menuFrame*): the band between the lines, the lines' colours (none: frameLine;
+    // two or three: a gradient from the top left to the bottom right), and a glow round them, 0 to 100.
+    int frameGap = 6;
+    uint32_t frameStops[3]{};
+    int frameStopCount = 0;
+    int frameGlow = 0;
     // Windows' own classic menus, as other programs show them here (LookLikeWindowsMenus): flat rows,
     // Windows' row sizes and insets, and the arrow and the chosen item's text in their own colours.
     bool windows = false;
     uint32_t hoverText = 0xFFFFFFFF, arrow = 0xFFFFFFFF;  // all ones: the text colour
 };
 
-MenuLook g_menuLook;
+MENU_STYLE_STORAGE MenuLook g_menuLook;
+// A foreign menu's items Windows' shell has made owner-drawn for its own look (its immersive menu helper, as
+// in a file dialog with no hook to stop it) taken over too: those with text, and separators. Set for one menu.
+MENU_STYLE_STORAGE bool g_menuTakeOwnerDrawn = false;
+
+// How menus open (taskbar.menuAnimation): at once (none, the default), or with a short animation timed by
+// the motion engine (its popups line), set by whoever opens the menu.
+struct MenuMotion {
+    int style = 0;  // 0 none, 1 fade, 2 slide (and fade), 3 unfold
+    double ms = 150;
+    double (*ease)(double t) = nullptr;  // the motion engine's curve (may pass 1 on the way); null: an ease-out
+};
+MENU_STYLE_STORAGE MenuMotion g_menuMotion;
+// Submenus open on a click (or Right / Enter), not as the pointer passes over them (taskbar.menuFlyoutClick here;
+// FlyoutClick in Tourne Menus' published look).
+MENU_STYLE_STORAGE bool g_menuFlyoutClick = false;
+
+// The motion styles by the names the settings use.
+int MenuMotionStyle(std::wstring const& name) {
+    return name == L"fade" ? 1 : name == L"slide" ? 2 : name == L"unfold" ? 3 : 0;
+}
+
+// A motion line's style word for menus (motion.popups = 1, 3, default, popin 80%): popin and gnomed unfold, slide
+// and slidefade slide, fade fades; any other word (or none) keeps the menuAnimation setting's.
+int MenuMotionStyleWord(std::wstring const& word, int fallback) {
+    if (word == L"popin" || word == L"gnomed" || word == L"unfold") return 3;
+    if (word == L"slide" || word == L"slidefade" || word == L"slidevert" || word == L"slidefadevert") return 2;
+    if (word == L"fade") return 1;
+    return fallback;
+}
 
 constexpr COLORREF MenuRgb(uint32_t rgb) {
     return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
@@ -13354,7 +14146,7 @@ bool MenuBitmapDrawable(HBITMAP bitmap) {
 
 // The items styled now, so another owner's owner-drawn items (a shell
 // context menu's) are never taken for ours.
-std::vector<StyledMenuItem*> g_styledItems;
+MENU_STYLE_STORAGE std::vector<StyledMenuItem*> g_styledItems;
 
 StyledMenuItem* StyledItemOf(ULONG_PTR data) {
     auto* item = (StyledMenuItem*)data;
@@ -13385,7 +14177,7 @@ void AppendMenuIcon(HMENU menu, UINT flags, UINT_PTR id, LPCWSTR text, HICON ico
 
 // An icon as a menu item's bitmap (32 bpp, alpha premultiplied, as menus
 // draw them), for native menus.
-std::vector<HBITMAP> g_nativeMenuBitmaps;  // made for menus open now
+MENU_STYLE_STORAGE std::vector<HBITMAP> g_nativeMenuBitmaps;  // made for menus open now
 
 HBITMAP MenuIconBitmap(HICON icon) {
     int size = 16 * g_menuLook.scale;
@@ -13448,7 +14240,11 @@ void StyleMenuItems(HMENU menu, bool foreign = false) {
         info.cch = ARRAYSIZE(text);
         if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
         if (info.hSubMenu) StyleMenuItems(info.hSubMenu, foreign);
-        if (info.fType & MFT_OWNERDRAW) continue;  // styled already, or drawn by its owner
+        if (info.fType & MFT_OWNERDRAW) {  // styled already, or drawn by its owner
+            bool shellDrawn = foreign && g_menuTakeOwnerDrawn && !StyledItemOf(info.dwItemData) &&
+                              (text[0] || (info.fType & MFT_SEPARATOR));
+            if (!shellDrawn) continue;
+        }
         if (g_menuLook.caps && !foreign) CharUpperBuffW(text, (DWORD)wcslen(text));
         auto* item = new StyledMenuItem{text, (info.fType & MFT_SEPARATOR) != 0, info.hSubMenu != nullptr};
         item->type = info.fType;
@@ -13482,8 +14278,8 @@ void StyleMenuItems(HMENU menu, bool foreign = false) {
     }    // The background between items, and around them.
     MENUINFO mi{sizeof(mi)};
     mi.fMask = MIM_BACKGROUND;
-    static HBRUSH brush;
-    static uint32_t brushColor = 0xFFFFFFFF;
+    static MENU_STYLE_STORAGE HBRUSH brush;
+    static MENU_STYLE_STORAGE uint32_t brushColor = 0xFFFFFFFF;
     if (brushColor != g_menuLook.ground) {
         if (brush) DeleteObject(brush);
         brush = CreateSolidBrush(MenuRgb(g_menuLook.ground));
@@ -13565,6 +14361,82 @@ bool MenuMeasureItem(MEASUREITEMSTRUCT* measure) {
     return true;
 }
 
+uint32_t MenuMix(uint32_t a, uint32_t b, float t) {
+    auto channel = [&](int shift) {
+        int x = (a >> shift) & 0xFF, y = (b >> shift) & 0xFF;
+        return (uint32_t)std::clamp((int)(x + (y - x) * t + 0.5f), 0, 255) << shift;
+    };
+    return channel(16) | channel(8) | channel(0);
+}
+
+// The frame line's colour at a point of the menu window (x, y in it; w, h its size).
+uint32_t FrameLineAt(MenuLook const& look, int x, int y, int w, int h) {
+    if (look.frameStopCount <= 0) return look.frameLine;
+    if (look.frameStopCount == 1) return look.frameStops[0];
+    float t = std::clamp((x / (float)std::max(1, w - 1) + y / (float)std::max(1, h - 1)) / 2, 0.f, 1.f);
+    float at = t * (look.frameStopCount - 1);
+    int i = std::min((int)at, look.frameStopCount - 2);
+    return MenuMix(look.frameStops[i], look.frameStops[i + 1], at - i);
+}
+
+// Where the inner frame line is, in from the menu window's edge (the outer line is at 0).
+int FrameInnerAt(int scale) { return (std::clamp(g_menuLook.frameGap, 1, 16) + 2) * scale - 1; }
+
+// A frame line one pixel across, from (x, y) for length pixels, across or down, each pixel coloured by where it
+// sits on the menu window (at: where this dc's 0,0 is in the window; size: the window's), with its glow over the
+// colours to each side (before: above or left, after: below or right). As plain as before without a colour
+// gradient or a glow set. pass: 1 the glow only, 2 the line only, 3 both (glows first for every line, then the
+// lines, so a glow never covers the line it meets at a corner).
+void FrameLine(HDC dc, int x, int y, int length, bool across, POINT at, SIZE size, uint32_t before, uint32_t after,
+               bool glowBefore = true, bool glowAfter = true, int pass = 3) {
+    auto const& look = g_menuLook;
+    if (look.frameStopCount <= 0 && look.frameGlow <= 0) {
+        if (!(pass & 2)) return;
+        RECT r = across ? RECT{x, y, x + length, y + 1} : RECT{x, y, x + 1, y + length};
+        SetDCBrushColor(dc, MenuRgb(look.frameLine));
+        FillRect(dc, &r, (HBRUSH)GetStockObject(DC_BRUSH));
+        return;
+    }
+    if (length <= 0) return;
+    float glow = std::clamp(look.frameGlow, 0, 100) / 100.f;
+    // Each strip (the line, and each glow row beside it) is worked out here and drawn in one call: pixel by pixel,
+    // a flyout's frame was thousands of trips into the kernel, which made flyouts open slowly and held up the pointer.
+    auto strip = [&](int sx, int sy, std::vector<uint32_t> const& px) {
+        BITMAPINFO bi{};
+        bi.bmiHeader = {sizeof(BITMAPINFOHEADER), across ? length : 1, -(across ? 1 : length), 1, 32, BI_RGB};
+        SetDIBitsToDevice(dc, sx, sy, across ? length : 1, across ? 1 : length, 0, 0, 0, across ? 1 : length, px.data(), &bi,
+                          DIB_RGB_COLORS);
+    };
+    auto dib = [](uint32_t rgb) {  // (0xRRGGBB, as MenuRgb takes it, to a DIB pixel)
+        COLORREF c = MenuRgb(rgb);
+        return (uint32_t)GetRValue(c) << 16 | (uint32_t)GetGValue(c) << 8 | GetBValue(c);
+    };
+    std::vector<uint32_t> line(length);
+    for (int i = 0; i < length; i++)
+        line[i] = FrameLineAt(look, (across ? x + i : x) + at.x, (across ? y : y + i) + at.y, size.cx, size.cy);
+    if (glow > 0 && (pass & 1)) {
+        // One pixel each side up to half strength, two beyond (a frame is only a few pixels across).
+        int reach = look.frameGlow > 50 ? 2 : 1;
+        std::vector<uint32_t> row(length);
+        for (int d = 1; d <= reach; d++) {
+            float a = glow * (d == 1 ? 0.55f : 0.22f);
+            if (glowBefore) {
+                for (int i = 0; i < length; i++) row[i] = dib(MenuMix(before, line[i], a));
+                strip(across ? x : x - d, across ? y - d : y, row);
+            }
+            if (glowAfter) {
+                for (int i = 0; i < length; i++) row[i] = dib(MenuMix(after, line[i], a));
+                strip(across ? x : x + d, across ? y + d : y, row);
+            }
+        }
+    }
+    if (pass & 2) {
+        std::vector<uint32_t> row(length);
+        for (int i = 0; i < length; i++) row[i] = dib(line[i]);
+        strip(x, y, row);
+    }
+}
+
 bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
     if (!draw || draw->CtlType != ODT_MENU) return false;
     StyledMenuItem* item = StyledItemOf(draw->itemData);
@@ -13586,14 +14458,23 @@ bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
 
     if (look.frame) {
         // The band and the inner line round the items; what follows draws inside them.
-        int nc = 3 * s;  // the menu window's own border, measured from the window when it can be
+        int nc = 3 * s, ncTop = 3 * s;  // the menu window's own border, measured from the window when it can be
+        SIZE windowSize{r.right - r.left + 2 * nc, 0};
         if (HWND menuWindow = WindowFromDC(dc)) {
             RECT window, client;
             POINT origin{0, 0};
-            if (GetWindowRect(menuWindow, &window) && GetClientRect(menuWindow, &client) && ClientToScreen(menuWindow, &origin))
+            if (GetWindowRect(menuWindow, &window) && GetClientRect(menuWindow, &client) && ClientToScreen(menuWindow, &origin)) {
                 nc = origin.x - window.left;
+                ncTop = origin.y - window.top;
+                windowSize = {window.right - window.left, window.bottom - window.top};
+            }
         }
-        int inset = std::max(1, 8 * s - nc);
+        // The inner line sits frameGap past the outer one (StartAllBack's: 6). Closer than the window's own border
+        // is wide, it's in that border, drawn with the outer one (StyledMenuWindowProc), and the items fill to
+        // their edges.
+        int innerAt = FrameInnerAt(s);
+        bool lineInEdge = innerAt < nc;
+        int inset = lineInEdge ? 0 : innerAt + 1 - nc;
         RECT whole = r;
         fill(whole, look.band);
         int xl = r.left + inset, xr = r.right - inset;
@@ -13602,16 +14483,29 @@ bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
         if (item->padTop) {
             inside.top = r.top + inset;
             lineTop = r.top + inset - 1;
-            fill(RECT{xl - 1, lineTop, xr + 1, lineTop + 1}, look.frameLine);
         }
         if (item->padBottom) {
             inside.bottom = r.bottom - inset;
             lineBottom = r.bottom - inset + 1;
-            fill(RECT{xl - 1, inside.bottom, xr + 1, inside.bottom + 1}, look.frameLine);
         }
         fill(inside, look.ground);
-        fill(RECT{xl - 1, lineTop, xl, lineBottom}, look.frameLine);
-        fill(RECT{xr, lineTop, xr + 1, lineBottom}, look.frameLine);
+        POINT at{nc, ncTop};
+        if (lineInEdge) {
+            // The line is in the border; only its glow reaches in here, when it sits right beside the items.
+            if (innerAt == nc - 1) {
+                if (item->padTop) FrameLine(dc, r.left - 1, r.top - 1, r.right - r.left + 2, true, at, windowSize, look.band, look.ground, false, true, 1);
+                if (item->padBottom)
+                    FrameLine(dc, r.left - 1, r.bottom, r.right - r.left + 2, true, at, windowSize, look.ground, look.band, true, false, 1);
+                FrameLine(dc, r.left - 1, r.top, r.bottom - r.top, false, at, windowSize, look.band, look.ground, false, true, 1);
+                FrameLine(dc, r.right, r.top, r.bottom - r.top, false, at, windowSize, look.ground, look.band, true, false, 1);
+            }
+        } else for (int pass : {1, 2}) {
+            if (item->padTop) FrameLine(dc, xl - 1, lineTop, xr + 1 - (xl - 1), true, at, windowSize, look.band, look.ground, true, true, pass);
+            if (item->padBottom)
+                FrameLine(dc, xl - 1, inside.bottom, xr + 1 - (xl - 1), true, at, windowSize, look.ground, look.band, true, true, pass);
+            FrameLine(dc, xl - 1, lineTop, lineBottom - lineTop, false, at, windowSize, look.band, look.ground, true, true, pass);
+            FrameLine(dc, xr, lineTop, lineBottom - lineTop, false, at, windowSize, look.ground, look.band, true, true, pass);
+        }
         r = RECT{xl, r.top + (item->padTop ? 12 * s : 0), xr, r.bottom - (item->padBottom ? 12 * s : 0) - item->extraBottom};
     }
     if (look.frame) {
@@ -13744,8 +14638,40 @@ LRESULT CALLBACK StyledMenuWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
             CombineRgn(frame, frame, inside, RGN_DIFF);
             SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.band : g_menuLook.ground));
             FillRgn(dc, frame, (HBRUSH)GetStockObject(DC_BRUSH));
-            SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge));
-            FrameRect(dc, &window, (HBRUSH)GetStockObject(DC_BRUSH));
+            if (g_menuLook.frame) {
+                // The outer line, its glow falling inwards onto the band (the frame as set: FrameLine).
+                POINT at{0, 0};
+                SIZE size{window.right, window.bottom};
+                uint32_t band = g_menuLook.band, ground = g_menuLook.ground;
+                // The inner line too when it falls in this border (a small gap), with the items' ground inside it.
+                int q = FrameInnerAt(std::max(1, g_menuLook.scale));
+                bool inner = q < client.left && q < client.top;
+                if (inner) {
+                    RECT in{q + 1, q + 1, window.right - q - 1, window.bottom - q - 1};
+                    HRGN ring = CreateRectRgnIndirect(&in);
+                    HRGN items = CreateRectRgnIndirect(&client);
+                    CombineRgn(ring, ring, items, RGN_DIFF);
+                    SetDCBrushColor(dc, MenuRgb(ground));
+                    FillRgn(dc, ring, (HBRUSH)GetStockObject(DC_BRUSH));
+                    DeleteObject(ring);
+                    DeleteObject(items);
+                }
+                for (int pass : {1, 2}) {
+                    FrameLine(dc, 0, 0, window.right, true, at, size, band, band, false, true, pass);
+                    FrameLine(dc, 0, window.bottom - 1, window.right, true, at, size, band, band, true, false, pass);
+                    FrameLine(dc, 0, 0, window.bottom, false, at, size, band, band, false, true, pass);
+                    FrameLine(dc, window.right - 1, 0, window.bottom, false, at, size, band, band, true, false, pass);
+                    if (!inner) continue;
+                    int w = window.right - 2 * q, h = window.bottom - 2 * q;
+                    FrameLine(dc, q, q, w, true, at, size, band, ground, true, true, pass);
+                    FrameLine(dc, q, window.bottom - 1 - q, w, true, at, size, ground, band, true, true, pass);
+                    FrameLine(dc, q, q, h, false, at, size, band, ground, true, true, pass);
+                    FrameLine(dc, window.right - 1 - q, q, h, false, at, size, ground, band, true, true, pass);
+                }
+            } else {
+                SetDCBrushColor(dc, MenuRgb(g_menuLook.edge));
+                FrameRect(dc, &window, (HBRUSH)GetStockObject(DC_BRUSH));
+            }
             DeleteObject(frame);
             DeleteObject(inside);
             if (msg == WM_NCPAINT) ReleaseDC(hwnd, dc);
@@ -13758,16 +14684,24 @@ LRESULT CALLBACK StyledMenuWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
     return DefSubclassProc(hwnd, msg, wParam, lParam);
 }
 
+LRESULT CALLBACK MenuMotionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR);
+
+// Whether the menu windows made now are drawn here (TrackStyledMenu), or only animated (a native menu).
+MENU_STYLE_STORAGE bool g_menuWindowsStyled = true;
+
 LRESULT CALLBACK StyledMenuHookProc(int code, WPARAM wParam, LPARAM lParam) {
     if (code == HC_ACTION) {
         auto* call = (CWPSTRUCT*)lParam;
         if (call->message == WM_CREATE) {
             WCHAR cls[16];
             if (GetClassNameW(call->hwnd, cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768")) {
+                if (g_menuMotion.style) SetWindowSubclass(call->hwnd, MenuMotionProc, 0, 0);
+                if (!g_menuWindowsStyled) return CallNextHookEx(nullptr, code, wParam, lParam);
                 SetWindowSubclass(call->hwnd, StyledMenuWindowProc, 0, 0);
                 DWORD square = 1;  // DWMWCP_DONOTROUND
                 DwmSetWindowAttribute(call->hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &square, sizeof(square));
-                COLORREF border = MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge);
+                // No border from Windows: the frame drawn here is the edge (both together made it 2 px).
+                COLORREF border = 0xFFFFFFFE;  // DWMWA_COLOR_NONE
                 DwmSetWindowAttribute(call->hwnd, 34 /* DWMWA_BORDER_COLOR */, &border, sizeof(border));
             }
         }
@@ -13823,8 +14757,8 @@ void UnNativeMenuItems(HMENU menu) {
 }
 
 // The theme's menu ground and edge, sampled once per theme (reset when the theme reloads).
-HTHEME g_menuSampled = nullptr;
-uint32_t g_menuSampledGround = 0, g_menuSampledEdge = 0;
+MENU_STYLE_STORAGE HTHEME g_menuSampled = nullptr;
+MENU_STYLE_STORAGE uint32_t g_menuSampledGround = 0, g_menuSampledEdge = 0;
 
 // A menu stays on one screen: the one "from" is on (what opened it: a flyout, the taskbar, an icon), or
 // else the one under its point. A point on or past that screen's edge is brought back inside, and with
@@ -13840,7 +14774,19 @@ UINT TrackMenuOnScreen(HMENU menu, UINT flags, int x, int y, HWND owner, RECT co
     y = std::clamp(y, (int)m.top, (int)m.bottom - 1);
     TPMPARAMS params{sizeof(params)};
     if (from) IntersectRect(&params.rcExclude, from, &m);
-    return TrackPopupMenuEx(menu, flags, x, y, owner, from && !IsRectEmpty(&params.rcExclude) ? &params : nullptr);
+    // Submenus open the moment the pointer is on them: Windows' hover delay (400 ms unless changed) is 0 while one
+    // of these menus is open, and put back after (not saved, so nothing else keeps it). Set to open on a click,
+    // the delay is a minute instead, so hovering never opens one.
+    constexpr PCWSTR kFlyoutClick = L"taskbar.menuFlyoutClick";  // (through a variable: another part's setting)
+    UINT want = g_menuFlyoutClick || Wh_GetIntSetting(kFlyoutClick) ? 60000 : 0;
+    static MENU_STYLE_STORAGE int open;
+    UINT delay = 0;
+    bool changed = !open++ && SystemParametersInfoW(SPI_GETMENUSHOWDELAY, 0, &delay, 0) && delay != want &&
+                   SystemParametersInfoW(SPI_SETMENUSHOWDELAY, want, nullptr, 0);
+    UINT result = TrackPopupMenuEx(menu, flags, x, y, owner, from && !IsRectEmpty(&params.rcExclude) ? &params : nullptr);
+    if (changed) SystemParametersInfoW(SPI_SETMENUSHOWDELAY, delay, nullptr, 0);
+    open--;
+    return result;
 }
 
 // StartAllBack's menu look, as the taskbar gives its menus with a StartAllBack style and its bar
@@ -13851,6 +14797,23 @@ void FrameLikeStartAllBack(MenuLook& look, HFONT iconTitleFont, bool caps) {
     look.frame = true;
     look.caps = caps;
     look.text = 0x5A9A7D;
+    // The frame as set in the taskbar (read by full names through variables, so the build doesn't file them
+    // under the part reading them): the gap between the lines, their colours, their glow.
+    constexpr PCWSTR kGap = L"taskbar.menuFrameGap", kColors = L"taskbar.menuFrameColors", kGlow = L"taskbar.menuFrameGlow";
+    int gap = Wh_GetIntSetting(kGap);
+    look.frameGap = gap > 0 ? std::clamp(gap, 1, 16) : 6;
+    look.frameGlow = std::clamp(Wh_GetIntSetting(kGlow), 0, 100);
+    look.frameStopCount = 0;
+    PCWSTR colors = Wh_GetStringSetting(kColors);
+    for (PCWSTR p = colors; p && *p && look.frameStopCount < 3;) {
+        while (*p && *p != L'#') p++;
+        if (!*p) break;
+        wchar_t* end = nullptr;
+        unsigned long rgb = wcstoul(p + 1, &end, 16);
+        if (end - (p + 1) == 6) look.frameStops[look.frameStopCount++] = (uint32_t)rgb;
+        p = end && end > p + 1 ? end : p + 1;
+    }
+    Wh_FreeStringSetting(colors);
 }
 
 // Whether the taskbar frames its menus so (its settings, read by their full names through variables,
@@ -14016,19 +14979,894 @@ void FitStyledMenu(HMENU menu, int x, int y, RECT const* from) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// The mouse wheel over a menu taller than its screen (Windows only scrolls one with its arrows, while
+// they're pointed at): each notch becomes Up or Down presses that select the new bottom or top item, so
+// the menu scrolls 3 items a notch, never wrapping (as Tourne Mod Tray 1.0.1 does). A low-level mouse
+// hook takes the wheel over the menu wherever Windows would send it (the menu's thread isn't always in
+// front); a message filter hook does the same for wheel messages that reach the menu, should the first
+// not be allowed. Over a menu with a submenu open, the submenu closes first.
+
+MENU_STYLE_STORAGE HHOOK g_menuWheelFilter = nullptr;
+// The low-level hook lives on a thread of its own while a menu is open: on the menu's thread every mouse move
+// anywhere waited for the menu to finish painting (the pointer hitched over items).
+MENU_STYLE_STORAGE HANDLE g_menuWheelHookThread = nullptr, g_menuWheelHookStop = nullptr;
+MENU_STYLE_STORAGE int g_menuWheelDepth = 0;  // TrackStyledMenu calls open on this thread
+MENU_STYLE_STORAGE int g_menuWheelDelta = 0;  // the part of a notch not used yet (touchpads)
+MENU_STYLE_STORAGE DWORD g_menuWheelThread = 0;
+constexpr int kMenuWheelItems = 3;
+constexpr UINT kMnGetHMenu = 0x01E1;  // MN_GETHMENU: the menu a menu window shows
+// Where the last turn left a menu, until its key presses have been taken (turns come faster than the menu
+// takes them): its first item showing and the item selected.
+struct MenuWheelPending {
+    HWND window = nullptr;
+    int top = -1, hilite = -1;
+};
+MENU_STYLE_STORAGE MenuWheelPending g_menuWheelPending;
+
+struct MenuWindowsFound {
+    std::vector<HWND> windows;  // this thread's menu windows showing, the topmost (the deepest open) first
+};
+
+BOOL CALLBACK FindMenuWindows(HWND hwnd, LPARAM lp) {
+    WCHAR cls[16];
+    if (IsWindowVisible(hwnd) && GetClassNameW(hwnd, cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768"))
+        ((MenuWindowsFound*)lp)->windows.push_back(hwnd);
+    return TRUE;
+}
+
+// The first or last item showing (between the arrows), by position; -1 if none.
+int MenuItemAtEdge(HWND menuWnd, HMENU menu, bool top) {
+    RECT rc;
+    GetWindowRect(menuWnd, &rc);
+    int x = (rc.left + rc.right) / 2;
+    for (int d = 1; d < 80; d += 2) {
+        POINT pt{x, top ? rc.top + d : rc.bottom - 1 - d};
+        int i = MenuItemFromPoint(nullptr, menu, pt);
+        if (i >= 0) return i;
+    }
+    return -1;
+}
+
+bool MenuItemSelectable(HMENU menu, int i) {
+    UINT state = GetMenuState(menu, i, MF_BYPOSITION);
+    return state != (UINT)-1 && !(state & MF_SEPARATOR);
+}
+
+// notches > 0: up (the wheel turned away), < 0: down. Over the menu window that's at the point.
+void MenuWheelScroll(POINT pt, int notches) {
+    MenuWindowsFound found;
+    EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+    size_t at = 0;
+    for (; at < found.windows.size(); at++) {
+        RECT rc;
+        if (GetWindowRect(found.windows[at], &rc) && PtInRect(&rc, pt)) break;
+    }
+    if (at == found.windows.size()) return;
+    HWND menuWnd = found.windows[at];
+    HMENU menu = (HMENU)SendMessageW(menuWnd, kMnGetHMenu, 0, 0);
+    int count = menu ? GetMenuItemCount(menu) : 0;
+    int first = MenuItemAtEdge(menuWnd, menu, true), last = MenuItemAtEdge(menuWnd, menu, false);
+    if (count <= 0 || first < 0 || last < first || (first == 0 && last == count - 1)) return;  // (all of it shows)
+    int shown = last - first + 1;
+    int top = std::clamp(first - notches * kMenuWheelItems, 0, count - shown);
+    if (top == first) return;
+    int hilite = -1;
+    for (int i = 0; i < count && hilite < 0; i++)
+        if (GetMenuState(menu, i, MF_BYPOSITION) & MF_HILITE) hilite = i;
+    // The last turn's presses not taken yet: on from where they'll leave it.
+    auto& pending = g_menuWheelPending;
+    MSG queued;
+    if (pending.window == menuWnd && pending.hilite >= 0 && PeekMessageW(&queued, menuWnd, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
+        first = pending.top;
+        hilite = pending.hilite;
+        top = std::clamp(first - notches * kMenuWheelItems, 0, count - shown);
+        if (top == first) return;
+    }
+    // The keys go to the deepest menu open: the ones over this close first (each Esc closes one).
+    for (size_t i = 0; i < at; i++) PostMessageW(menuWnd, WM_KEYDOWN, VK_ESCAPE, 0);
+    // The menu scrolls to keep the selected item showing: the new bottom item going down, the new top going up.
+    UINT key = VK_DOWN;
+    int steps = 0, to = hilite;
+    if (hilite < 0 || top > first) {
+        for (int i = hilite < 0 ? 0 : hilite + 1; i <= top + shown - 1; i++)  // (with none selected, Down picks the first)
+            if (MenuItemSelectable(menu, i)) steps++, to = i;
+    } else {
+        key = VK_UP;
+        for (int i = hilite - 1; i >= top; i--)
+            if (MenuItemSelectable(menu, i)) steps++, to = i;
+    }
+    for (int i = 0; i < steps; i++) PostMessageW(menuWnd, WM_KEYDOWN, key, 0);
+    Wh_Log(L"wheel %d: showing %d..%d of %d, selected %d, %d x %ls", notches, first, first + shown - 1, count, hilite, steps,
+           key == VK_DOWN ? L"Down" : L"Up");
+    pending = {menuWnd, top, steps ? to : -1};
+}
+
+void MenuWheelBy(POINT pt, int delta) {
+    g_menuWheelDelta += delta;
+    int notches = g_menuWheelDelta / WHEEL_DELTA;
+    g_menuWheelDelta -= notches * WHEEL_DELTA;
+    if (notches) MenuWheelScroll(pt, notches);
+}
+
+// Over a menu window of this thread.
+bool OverMenuWindow(POINT pt) {
+    MenuWindowsFound found;
+    EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+    for (HWND w : found.windows) {
+        RECT rc;
+        if (GetWindowRect(w, &rc) && PtInRect(&rc, pt)) return true;
+    }
+    return false;
+}
+
+// On the hook's own thread (g_menuWheelThread there is the menu's): a turn over a menu window goes to that
+// window as a wheel message, which MenuWheelFilterProc takes on the menu's thread. Moves pass at once.
+LRESULT CALLBACK MenuWheelLLProc(int code, WPARAM wp, LPARAM lp) {
+    if (code == HC_ACTION && wp == WM_MOUSEWHEEL) {
+        auto* ms = (MSLLHOOKSTRUCT*)lp;
+        MenuWindowsFound found;
+        EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+        for (HWND w : found.windows) {
+            RECT rc;
+            if (!GetWindowRect(w, &rc) || !PtInRect(&rc, ms->pt)) continue;
+            PostMessageW(w, WM_MOUSEWHEEL, MAKEWPARAM(0, HIWORD(ms->mouseData)), MAKELPARAM(ms->pt.x, ms->pt.y));
+            return 1;  // (taken: nothing else scrolls)
+        }
+    }
+    return CallNextHookEx(nullptr, code, wp, lp);
+}
+
+struct MenuWheelHookStart {
+    DWORD menuThread;
+    HANDLE stop;
+};
+
+DWORD WINAPI MenuWheelHookThread(void* p) {
+    auto start = *(MenuWheelHookStart*)p;
+    delete (MenuWheelHookStart*)p;
+    g_menuWheelThread = start.menuThread;  // (this thread's copy, where storage is per thread)
+    HMODULE self = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&MenuWheelLLProc, &self);
+    HHOOK hook = SetWindowsHookExW(WH_MOUSE_LL, MenuWheelLLProc, self, 0);
+    while (MsgWaitForMultipleObjects(1, &start.stop, FALSE, INFINITE, QS_ALLINPUT) != WAIT_OBJECT_0) {
+        MSG m;
+        while (PeekMessageW(&m, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&m);
+    }
+    if (hook) UnhookWindowsHookEx(hook);
+    return 0;
+}
+
+LRESULT CALLBACK MenuWheelFilterProc(int code, WPARAM wp, LPARAM lp) {
+    if (code == MSGF_MENU && g_menuWheelDepth) {
+        MSG* m = (MSG*)lp;
+        if (m->message == WM_MOUSEWHEEL) {
+            POINT pt{(short)LOWORD(m->lParam), (short)HIWORD(m->lParam)};
+            MenuWheelBy(pt, GET_WHEEL_DELTA_WPARAM(m->wParam));
+            return TRUE;
+        }
+    }
+    return CallNextHookEx(nullptr, code, wp, lp);
+}
+
+void MenuWheelStart() {
+    if (g_menuWheelDepth++) return;
+    g_menuWheelDelta = 0;
+    g_menuWheelPending = {};
+    g_menuWheelThread = GetCurrentThreadId();
+    g_menuWheelFilter = SetWindowsHookExW(WH_MSGFILTER, MenuWheelFilterProc, nullptr, GetCurrentThreadId());
+    g_menuWheelHookStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (g_menuWheelHookStop)
+        g_menuWheelHookThread = CreateThread(nullptr, 0, MenuWheelHookThread, new MenuWheelHookStart{g_menuWheelThread, g_menuWheelHookStop}, 0, nullptr);
+}
+
+void MenuWheelStop() {
+    if (--g_menuWheelDepth) return;
+    if (g_menuWheelFilter) UnhookWindowsHookEx(g_menuWheelFilter);
+    g_menuWheelFilter = nullptr;
+    if (g_menuWheelHookStop) SetEvent(g_menuWheelHookStop);
+    if (g_menuWheelHookThread) {
+        WaitForSingleObject(g_menuWheelHookThread, 500);  // (it only unhooks)
+        CloseHandle(g_menuWheelHookThread);
+    }
+    if (g_menuWheelHookStop) CloseHandle(g_menuWheelHookStop);
+    g_menuWheelHookThread = g_menuWheelHookStop = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Menus opening with a short animation (g_menuMotion): each menu window, as it's first shown, fades in,
+// slides 10 px in (and fades) from the side away from where it opens, or unfolds from that side, over
+// g_menuMotion.ms on the motion engine's curve. Windows' own menu fade stays off (TPM_NOANIMATION).
+
+constexpr UINT_PTR kMenuMotionTimer = 0x7E51;
+
+struct MenuMotionState {
+    HWND window = nullptr;
+    DWORD start = 0;
+    POINT at{};  // where it ends up
+    SIZE size{};
+    int dy = 0;  // where it starts, above (< 0) or below (> 0) that
+    bool up = false;  // it opens upwards (unfolds from the bottom)
+};
+MENU_STYLE_STORAGE std::vector<MenuMotionState>* g_menuMotions = nullptr;
+
+MenuMotionState* MenuMotionOf(HWND hwnd) {
+    if (!g_menuMotions) return nullptr;
+    for (auto& m : *g_menuMotions)
+        if (m.window == hwnd) return &m;
+    return nullptr;
+}
+
+void MenuMotionDrop(HWND hwnd) {
+    if (g_menuMotions) std::erase_if(*g_menuMotions, [&](MenuMotionState const& m) { return m.window == hwnd; });
+}
+
+// One step: t is the eased progress (may pass 1 on the way).
+void MenuMotionApply(MenuMotionState const& m, double t, bool done) {
+    int style = g_menuMotion.style;
+    if (style == 1 || style == 2) {
+        int alpha = done ? 255 : std::clamp((int)(t * 255 + 0.5), 0, 255);
+        SetLayeredWindowAttributes(m.window, 0, (BYTE)alpha, LWA_ALPHA);
+    }
+    if (style == 2) {
+        int y = m.at.y + (done ? 0 : (int)std::lround(m.dy * (1 - t)));
+        SetWindowPos(m.window, nullptr, m.at.x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    }
+    if (style == 3) {
+        if (done) {
+            SetWindowRgn(m.window, nullptr, TRUE);
+        } else {
+            int h = std::clamp((int)std::lround(m.size.cy * t), 1, (int)m.size.cy);
+            HRGN rgn = m.up ? CreateRectRgn(0, m.size.cy - h, m.size.cx, m.size.cy) : CreateRectRgn(0, 0, m.size.cx, h);
+            SetWindowRgn(m.window, rgn, TRUE);  // (the window owns the region now)
+        }
+    }
+}
+
+double MenuMotionEase(double p) {
+    if (g_menuMotion.ease) return g_menuMotion.ease(p);
+    double q = 1 - p;
+    return 1 - q * q * q;  // (an ease-out)
+}
+
+LRESULT CALLBACK MenuMotionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    switch (msg) {
+        case WM_WINDOWPOSCHANGING: {
+            auto* pos = (WINDOWPOS*)lParam;
+            if (!(pos->flags & SWP_SHOWWINDOW) || MenuMotionOf(hwnd) || !g_menuMotion.style || g_menuMotion.ms < 1) break;
+            // Only the menu itself moves in; its submenus are there at once (a submenu that eases in reads as a hang).
+            {
+                bool another = false;
+                for (HWND w = FindWindowExW(nullptr, nullptr, L"#32768", nullptr); w && !another; w = FindWindowExW(nullptr, w, L"#32768", nullptr))
+                    another = w != hwnd && IsWindowVisible(w) && GetWindowThreadProcessId(w, nullptr) == GetCurrentThreadId();
+                if (another) break;
+            }
+            RECT r;
+            GetWindowRect(hwnd, &r);
+            MenuMotionState m;
+            m.window = hwnd;
+            m.at = (pos->flags & SWP_NOMOVE) ? POINT{r.left, r.top} : POINT{pos->x, pos->y};
+            m.size = (pos->flags & SWP_NOSIZE) ? SIZE{r.right - r.left, r.bottom - r.top} : SIZE{pos->cx, pos->cy};
+            POINT cursor;
+            GetCursorPos(&cursor);
+            m.up = m.at.y + m.size.cy <= cursor.y + 2;  // (it ends above the pointer)
+            m.dy = (m.up ? 10 : -10) * std::max(1, g_menuLook.scale);
+            m.start = GetTickCount();
+            if (!g_menuMotions) g_menuMotions = new std::vector<MenuMotionState>;
+            g_menuMotions->push_back(m);
+            // Its first look, before it shows.
+            if (g_menuMotion.style == 1 || g_menuMotion.style == 2) {
+                SetWindowLongPtrW(hwnd, GWL_EXSTYLE, GetWindowLongPtrW(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+                SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
+            }
+            if (g_menuMotion.style == 2) {
+                pos->x = m.at.x;
+                pos->y = m.at.y + m.dy;
+                pos->flags &= ~SWP_NOMOVE;
+            }
+            if (g_menuMotion.style == 3) {
+                HRGN rgn = m.up ? CreateRectRgn(0, m.size.cy - 1, m.size.cx, m.size.cy) : CreateRectRgn(0, 0, m.size.cx, 1);
+                SetWindowRgn(hwnd, rgn, FALSE);
+            }
+            SetTimer(hwnd, kMenuMotionTimer, 10, nullptr);
+            break;
+        }
+        case WM_TIMER: {
+            if (wParam != kMenuMotionTimer) break;
+            MenuMotionState* m = MenuMotionOf(hwnd);
+            if (!m) {
+                KillTimer(hwnd, kMenuMotionTimer);
+                return 0;
+            }
+            double p = (GetTickCount() - m->start) / std::max(1.0, g_menuMotion.ms);
+            bool done = p >= 1;
+            MenuMotionApply(*m, done ? 1 : MenuMotionEase(p), done);
+            if (done) KillTimer(hwnd, kMenuMotionTimer);
+            return 0;
+        }
+        case WM_NCDESTROY:
+            KillTimer(hwnd, kMenuMotionTimer);
+            MenuMotionDrop(hwnd);
+            RemoveWindowSubclass(hwnd, MenuMotionProc, 0);
+            break;
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Items taken out of a shell menu, or moved into a "More options" submenu at its end, by their label
+// (without its & and what follows a tab, any case, a trailing "..." optional) or, where the caller can
+// tell, their verb ("cut", "properties", "openas"). Only the menu's own items, not its submenus'. Separators
+// left doubled, first or last go too. Items can also be renamed, and new ones added that run a command (the
+// menu file, menus.conf, below). UndoMenuRules puts everything back where it was, for a caller that keeps the
+// menu (Explorer's).
+
+struct MenuRules {
+    std::vector<std::wstring> hide, more;  // lower case
+    std::wstring moreLabel = L"More options";
+    struct Rename {
+        std::wstring from, to;  // from: lower case
+    };
+    std::vector<Rename> rename;
+    struct Add {
+        std::wstring label, command;  // label "-": a separator
+        bool top = false;             // first in the menu, else last (before "More options")
+    };
+    std::vector<Add> add;
+    bool Any() const { return !hide.empty() || !more.empty() || !rename.empty() || !add.empty(); }
+};
+
+// The ids of added items: above the shell's (1 to 0x7FFF) and the desktop menu's own (0x8000 on).
+constexpr UINT kMenuAddFirst = 0xFE00, kMenuAddLast = 0xFEFF;
+
+// "Cast to Device, Give access to" -> {"cast to device", "give access to"}.
+std::vector<std::wstring> MenuRuleList(std::wstring const& text) {
+    std::vector<std::wstring> out;
+    size_t start = 0;
+    while (start <= text.size()) {
+        size_t comma = text.find(L',', start);
+        std::wstring item = text.substr(start, comma == std::wstring::npos ? std::wstring::npos : comma - start);
+        item.erase(0, item.find_first_not_of(L" \t\""));
+        size_t end = item.find_last_not_of(L" \t\"");
+        item.erase(end == std::wstring::npos ? 0 : end + 1);
+        for (auto& c : item) c = (wchar_t)towlower(c);
+        if (!item.empty()) out.push_back(item);
+        if (comma == std::wstring::npos) break;
+        start = comma + 1;
+    }
+    return out;
+}
+
+// A label as the rules compare it.
+std::wstring MenuRuleLabel(std::wstring const& text) {
+    std::wstring out;
+    for (size_t i = 0; i < text.size() && text[i] != L'\t'; i++) {
+        if (text[i] == L'&') {
+            if (i + 1 < text.size() && text[i + 1] == L'&') out += L'&', i++;
+            continue;
+        }
+        out += (wchar_t)towlower(text[i]);
+    }
+    while (!out.empty() && (iswspace(out.back()) || out.back() == L'.' || out.back() == 0x2026)) out.pop_back();
+    out.erase(0, out.find_first_not_of(L" \t"));
+    return out;
+}
+
+struct MenuRulesUndo {
+    HMENU menu = nullptr, more = nullptr;
+    bool separator = false;  // a separator was added before the submenu
+    struct Renamed {
+        int at;  // where it was, before anything was taken out
+        std::wstring text;
+    };
+    std::vector<Renamed> renamed;
+    bool added = false;
+    std::vector<std::wstring> commands;  // the added items', by id - kMenuAddFirst (kept after the undo: RunMenuRule)
+    struct Taken {
+        int at;  // where it was
+        MENUITEMINFOW info;
+        std::wstring text;
+    };
+    std::vector<Taken> taken;  // in the order they were
+};
+
+// verbOf (may be null) gives an item's verb from its command id.
+template <class VerbOf>
+MenuRulesUndo ApplyMenuRules(HMENU menu, MenuRules const& rules, VerbOf&& verbOf) {
+    MenuRulesUndo undo;
+    undo.menu = menu;
+    if (!rules.Any() || !menu) return undo;
+    // (an entry ending " (greyed)" only takes the item while it's greyed out, as Paste with nothing to paste)
+    auto listed = [](std::vector<std::wstring> const& list, std::wstring const& a, std::wstring const& b, bool greyed) {
+        constexpr std::wstring_view kGreyed = L" (greyed)";
+        for (auto const& entry : list) {
+            std::wstring_view x = entry;
+            if (x.size() > kGreyed.size() && x.substr(x.size() - kGreyed.size()) == kGreyed) {
+                if (!greyed) continue;
+                x.remove_suffix(kGreyed.size());
+            }
+            if ((!a.empty() && x == a) || (!b.empty() && x == b)) return true;
+        }
+        return false;
+    };
+    // What each item is: 0 stays, 1 goes, 2 moves.
+    int count = GetMenuItemCount(menu);
+    std::vector<int> fate(std::max(0, count), 0);
+    std::vector<bool> separator(std::max(0, count), false);
+    for (int i = 0; i < count; i++) {
+        WCHAR text[256] = L"";
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_FTYPE | MIIM_ID | MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
+        info.dwTypeData = text;
+        info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        separator[i] = info.fType & MFT_SEPARATOR;
+        bool greyed = info.fState & MFS_DISABLED;
+        if (separator[i]) continue;
+        std::wstring label = MenuRuleLabel(text), verb;
+        if (!info.hSubMenu || info.wID) verb = verbOf(info.wID);
+        for (auto& c : verb) c = (wchar_t)towlower(c);
+        if (listed(rules.hide, label, verb, greyed)) fate[i] = 1;
+        else if (listed(rules.more, label, verb, greyed)) fate[i] = 2;
+        for (auto const& r : rules.rename) {
+            if (r.from != label && (verb.empty() || r.from != verb)) continue;
+            // (what follows a tab, the shortcut shown on the right, stays)
+            std::wstring now = text, to = r.to;
+            if (size_t tab = now.find(L'\t'); tab != std::wstring::npos) to += now.substr(tab);
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)to.c_str();
+            if (SetMenuItemInfoW(menu, i, TRUE, &set)) undo.renamed.push_back({i, now});
+            break;
+        }
+    }
+    // The added ones, at the top or the end: separators round them where the menu has items.
+    auto addItems = [&] {
+        for (int pass = 0; pass < 2; pass++) {
+            std::vector<MenuRules::Add const*> list;
+            for (auto const& a : rules.add)
+                if (a.top == (pass == 0)) list.push_back(&a);
+            if (list.empty()) continue;
+            int at = pass == 0 ? 0 : GetMenuItemCount(menu);
+            auto insert = [&](MenuRules::Add const* a) {
+                UINT id = kMenuAddFirst + (UINT)undo.commands.size();
+                if (id > kMenuAddLast) return;
+                undo.commands.push_back(a ? a->command : L"");
+                MENUITEMINFOW info{sizeof(info)};
+                info.fMask = MIIM_FTYPE | MIIM_ID | (a && a->label != L"-" ? MIIM_STRING : 0);
+                info.fType = a && a->label != L"-" ? MFT_STRING : MFT_SEPARATOR;
+                info.wID = id;
+                info.dwTypeData = a ? (LPWSTR)a->label.c_str() : nullptr;
+                if (InsertMenuItemW(menu, at, TRUE, &info)) at++, undo.added = true;
+            };
+            int n = GetMenuItemCount(menu);
+            bool edge = pass == 0 ? n == 0 || (GetMenuState(menu, 0, MF_BYPOSITION) & MF_SEPARATOR)
+                                  : n == 0 || (GetMenuState(menu, n - 1, MF_BYPOSITION) & MF_SEPARATOR);
+            if (pass == 1 && !edge && list.front()->label != L"-") insert(nullptr);
+            for (auto* a : list) insert(a);
+            if (pass == 0 && !edge && list.back()->label != L"-") insert(nullptr);
+        }
+    };
+    // Separators that would be first, last or doubled once the rest is gone.
+    bool any = false;
+    for (int f : fate) any |= f != 0;
+    if (!any) {
+        addItems();
+        return undo;
+    }
+    int lastKept = -1;  // the last item staying in the menu, before i
+    for (int i = 0; i < count; i++) {
+        if (fate[i]) continue;
+        if (separator[i] && (lastKept < 0 || separator[lastKept])) fate[i] = 1;
+        else lastKept = i;
+    }
+    if (lastKept >= 0 && separator[lastKept]) fate[lastKept] = 1;
+    // Taken out from the end, so the places of the rest stay as they were.
+    std::vector<MenuRulesUndo::Taken> taken;
+    for (int i = count - 1; i >= 0; i--) {
+        if (!fate[i]) continue;
+        MenuRulesUndo::Taken t{i, {sizeof(MENUITEMINFOW)}, {}};
+        WCHAR text[256] = L"";
+        t.info.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_ID | MIIM_SUBMENU | MIIM_STRING | MIIM_DATA | MIIM_BITMAP | MIIM_CHECKMARKS;
+        t.info.dwTypeData = text;
+        t.info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &t.info)) continue;
+        t.text = text;
+        if (!RemoveMenu(menu, i, MF_BYPOSITION)) continue;
+        taken.insert(taken.begin(), t);
+    }
+    undo.taken = taken;
+    addItems();
+    // The moved ones, in their order, in a submenu at the end (after a separator).
+    for (auto& t : undo.taken) {
+        if (fate[t.at] != 2) continue;
+        if (!undo.more) undo.more = CreatePopupMenu();
+        MENUITEMINFOW info = t.info;
+        info.dwTypeData = (LPWSTR)t.text.c_str();
+        InsertMenuItemW(undo.more, GetMenuItemCount(undo.more), TRUE, &info);
+    }
+    if (undo.more) {
+        int n = GetMenuItemCount(menu);
+        if (n > 0 && !(GetMenuState(menu, n - 1, MF_BYPOSITION) & MF_SEPARATOR)) {
+            AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+            undo.separator = true;
+        }
+        AppendMenuW(menu, MF_POPUP | MF_STRING, (UINT_PTR)undo.more, rules.moreLabel.empty() ? L"More options" : rules.moreLabel.c_str());
+    }
+    return undo;
+}
+
+void UndoMenuRules(MenuRulesUndo& undo) {
+    if (!undo.menu) return;
+    if (undo.added) {
+        for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
+            UINT id = GetMenuItemID(undo.menu, i);
+            if (id >= kMenuAddFirst && id <= kMenuAddLast) RemoveMenu(undo.menu, i, MF_BYPOSITION);
+        }
+        undo.added = false;
+    }
+    auto renameBack = [&] {
+        for (auto& r : undo.renamed) {
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)r.text.c_str();
+            SetMenuItemInfoW(undo.menu, r.at, TRUE, &set);
+        }
+        undo.renamed.clear();
+    };
+    if (undo.taken.empty()) return renameBack();
+    if (undo.more) {
+        // The submenu and the separator added before it.
+        for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
+            if (GetSubMenu(undo.menu, i) != undo.more) continue;
+            RemoveMenu(undo.menu, i, MF_BYPOSITION);
+            if (undo.separator && i > 0) RemoveMenu(undo.menu, i - 1, MF_BYPOSITION);
+            break;
+        }
+        while (GetMenuItemCount(undo.more) > 0) RemoveMenu(undo.more, 0, MF_BYPOSITION);  // (theirs again: not destroyed)
+        DestroyMenu(undo.more);
+        undo.more = nullptr;
+    }
+    for (auto& t : undo.taken) {
+        MENUITEMINFOW info = t.info;
+        info.dwTypeData = (LPWSTR)t.text.c_str();
+        InsertMenuItemW(undo.menu, std::min(t.at, GetMenuItemCount(undo.menu)), TRUE, &info);
+    }
+    undo.taken.clear();
+    renameBack();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The menu file, %APPDATA%\Tourne\Desktop\menus.conf: what each menu shows, a line each, under sections
+// that say which menus they're for. Read again whenever it changes; what didn't make sense is written to
+// menus.log beside it.
+//
+//   # a note
+//   hide Cast to Device              (a label, any case, or a verb: properties, openas; "Paste (greyed)" too)
+//   more Give access to              (into the "More options" submenu at the end)
+//   more-label More...
+//   rename Copy as path -> Copy path
+//   add Open in Terminal = wt.exe -d %folder%
+//   add top Edit in Notepad = notepad.exe %file%
+//   add separator
+//   [when menu desktop, files *.txt *.md]   (every condition holds; ! before one turns it round)
+//   [all]                                   (back to every menu)
+//
+// Conditions: menu NAME... (desktop, taskbar, explorer, dialog, windows), app NAME.exe..., files PATTERN...
+// (every chosen item's name matches one), folder (every chosen item is a folder), background (nothing
+// chosen: the empty space), shift. Where a menu doesn't know what's chosen (Explorer's, through Tourne Menus),
+// files, folder and background never hold, nor their opposites. In commands: %file% (the first chosen, quoted),
+// %files% (all of them), %folder% (where the menu opened, or the first one's folder), and %VARIABLES%.
+
+struct MenuContext {
+    std::wstring menu;                // desktop, taskbar, explorer, dialog or windows
+    std::wstring app;                 // the program's file name, lower case
+    bool known = false;               // what's chosen is known
+    std::vector<std::wstring> files;  // full paths
+    std::wstring folder;
+};
+
+struct MenuFile {
+    struct Line {
+        std::wstring verb, item, value;
+        bool top = false;
+    };
+    struct Section {
+        std::vector<std::wstring> when;  // lower case, one condition each
+        std::vector<Line> lines;
+    };
+    std::vector<Section> sections;
+};
+
+// "*.txt" against "notes.TXT".
+bool MenuWild(wchar_t const* pattern, wchar_t const* text) {
+    if (!*pattern) return !*text;
+    if (*pattern == L'*') return MenuWild(pattern + 1, text) || (*text && MenuWild(pattern, text + 1));
+    if (!*text) return false;
+    if (*pattern != L'?' && towlower(*pattern) != towlower(*text)) return false;
+    return MenuWild(pattern + 1, text + 1);
+}
+
+std::wstring MenuTrim(std::wstring x) {
+    x.erase(0, x.find_first_not_of(L" \t"));
+    size_t end = x.find_last_not_of(L" \t\r");
+    x.erase(end == std::wstring::npos ? 0 : end + 1);
+    return x;
+}
+
+MenuFile ParseMenuFile(std::wstring const& text, std::wstring* errors) {
+    MenuFile file;
+    file.sections.push_back({});
+    int number = 0;
+    size_t start = 0;
+    auto error = [&](std::wstring const& why) {
+        if (errors) *errors += L"line " + std::to_wstring(number) + L": " + why + L"\r\n";
+    };
+    while (start < text.size()) {
+        size_t end = text.find(L'\n', start);
+        std::wstring line = MenuTrim(text.substr(start, end == std::wstring::npos ? std::wstring::npos : end - start));
+        start = end == std::wstring::npos ? text.size() : end + 1;
+        number++;
+        if (line.empty() || line[0] == L'#') continue;
+        if (line[0] == L'[') {
+            if (line.back() != L']') {
+                error(L"a section needs its closing ]");
+                continue;
+            }
+            std::wstring inner = MenuTrim(line.substr(1, line.size() - 2));
+            for (auto& c : inner) c = (wchar_t)towlower(c);
+            MenuFile::Section section;
+            if (inner != L"all") {
+                if (inner.compare(0, 5, L"when ")) {
+                    error(L"a section is [when ...] or [all]");
+                    continue;
+                }
+                for (auto const& c : MenuRuleList(inner.substr(5))) {
+                    std::wstring key = c[0] == L'!' ? MenuTrim(c.substr(1)) : c;
+                    key = key.substr(0, key.find(L' '));
+                    if (key != L"menu" && key != L"app" && key != L"files" && key != L"folder" && key != L"background" &&
+                        key != L"shift")
+                        error(L"no condition \"" + key + L"\" (menu, app, files, folder, background, shift)");
+                    else section.when.push_back(c);
+                }
+            }
+            file.sections.push_back(section);
+            continue;
+        }
+        size_t space = line.find_first_of(L" \t");
+        MenuFile::Line l;
+        l.verb = line.substr(0, space);
+        for (auto& c : l.verb) c = (wchar_t)towlower(c);
+        std::wstring rest = space == std::wstring::npos ? L"" : MenuTrim(line.substr(space));
+        if (l.verb == L"add") {
+            if (!_wcsnicmp(rest.c_str(), L"top ", 4)) l.top = true, rest = MenuTrim(rest.substr(4));
+            if (!_wcsicmp(rest.c_str(), L"separator") || rest == L"-") {
+                l.item = L"-";
+            } else {
+                size_t eq = rest.find(L'=');
+                if (eq == std::wstring::npos || MenuTrim(rest.substr(0, eq)).empty() || MenuTrim(rest.substr(eq + 1)).empty()) {
+                    error(L"add needs a label and a command: add LABEL = COMMAND");
+                    continue;
+                }
+                l.item = MenuTrim(rest.substr(0, eq));
+                l.value = MenuTrim(rest.substr(eq + 1));
+            }
+        } else if (l.verb == L"rename") {
+            size_t arrow = rest.find(L"->");
+            if (arrow == std::wstring::npos || MenuTrim(rest.substr(0, arrow)).empty() || MenuTrim(rest.substr(arrow + 2)).empty()) {
+                error(L"rename needs both names: rename OLD -> NEW");
+                continue;
+            }
+            l.item = MenuRuleLabel(MenuTrim(rest.substr(0, arrow)));
+            l.value = MenuTrim(rest.substr(arrow + 2));
+        } else if (l.verb == L"hide" || l.verb == L"more" || l.verb == L"more-label") {
+            if (rest.empty()) {
+                error(l.verb + L" needs an item");
+                continue;
+            }
+            l.item = rest;
+            // (as the settings' lists are compared: lower case, " (greyed)" kept)
+            if (l.verb != L"more-label")
+                for (auto& c : l.item) c = (wchar_t)towlower(c);
+        } else {
+            error(L"no verb \"" + l.verb + L"\" (hide, more, more-label, rename, add)");
+            continue;
+        }
+        file.sections.back().lines.push_back(l);
+    }
+    return file;
+}
+
+// 1 holds, 0 doesn't, -1 can't tell (what's chosen isn't known).
+int MenuConditionHolds(std::wstring const& condition, MenuContext const& c) {
+    bool flip = condition[0] == L'!';
+    std::wstring x = flip ? MenuTrim(condition.substr(1)) : condition;
+    size_t space = x.find(L' ');
+    std::wstring key = x.substr(0, space);
+    std::vector<std::wstring> words;
+    for (size_t at = space; at != std::wstring::npos && at < x.size();) {
+        size_t from = x.find_first_not_of(L' ', at);
+        if (from == std::wstring::npos) break;
+        at = x.find(L' ', from);
+        words.push_back(x.substr(from, at == std::wstring::npos ? std::wstring::npos : at - from));
+    }
+    int holds = 0;
+    if (key == L"menu" || key == L"app") {
+        std::wstring const& what = key == L"menu" ? c.menu : c.app;
+        for (auto const& w : words) holds |= MenuWild(w.c_str(), what.c_str());
+    } else if (key == L"shift") {
+        holds = GetKeyState(VK_SHIFT) < 0;
+    } else {
+        if (!c.known) return -1;
+        if (key == L"background") {
+            holds = c.files.empty();
+        } else if (key == L"folder") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                DWORD a = GetFileAttributesW(f.c_str());
+                if (a == INVALID_FILE_ATTRIBUTES || !(a & FILE_ATTRIBUTE_DIRECTORY)) holds = 0;
+            }
+        } else if (key == L"files") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                size_t slash = f.find_last_of(L"\\/");
+                std::wstring name = slash == std::wstring::npos ? f : f.substr(slash + 1);
+                bool one = false;
+                for (auto const& w : words) one |= MenuWild(w.c_str(), name.c_str());
+                if (!one) holds = 0;
+            }
+        }
+    }
+    return flip ? !holds : holds;
+}
+
+// The rules a menu gets: the settings' (base), then the file's sections that hold for it, in order.
+MenuRules MenuRulesFor(MenuFile const& file, MenuContext const& c, MenuRules rules) {
+    for (auto const& section : file.sections) {
+        bool holds = true;
+        for (auto const& w : section.when) holds &= MenuConditionHolds(w, c) == 1;
+        if (!holds) continue;
+        for (auto const& l : section.lines) {
+            if (l.verb == L"hide") rules.hide.push_back(l.item);
+            else if (l.verb == L"more") rules.more.push_back(l.item);
+            else if (l.verb == L"more-label") rules.moreLabel = l.item;
+            else if (l.verb == L"rename") rules.rename.push_back({l.item, l.value});
+            else if (l.verb == L"add") rules.add.push_back({l.item, l.value, l.top});
+        }
+    }
+    return rules;
+}
+
+std::wstring MenuFilePath() {
+    WCHAR roaming[MAX_PATH] = L"";  // (from the environment: nothing to link, in any program)
+    DWORD n = GetEnvironmentVariableW(L"APPDATA", roaming, ARRAYSIZE(roaming));
+    return n && n < ARRAYSIZE(roaming) ? std::wstring(roaming) + L"\\Tourne\\Desktop\\menus.conf" : L"";
+}
+
+// The file as it is now: parsed again only when it changed (its time and size), its errors then written down.
+MenuFile const& LoadMenuFile() {
+    static MENU_STYLE_STORAGE MenuFile* s_file;
+    static MENU_STYLE_STORAGE ULONGLONG s_seen;  // its write time, when last read
+    static MENU_STYLE_STORAGE ULONGLONG s_size;
+    static MENU_STYLE_STORAGE DWORD s_checked;
+    if (!s_file) s_file = new MenuFile;
+    if (s_checked && GetTickCount() - s_checked < 500) return *s_file;  // (several menus at once: one look)
+    s_checked = GetTickCount() | 1;
+    std::wstring path = MenuFilePath();
+    WIN32_FILE_ATTRIBUTE_DATA a{};
+    if (path.empty() || !GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &a)) {
+        if (s_seen) *s_file = {}, s_seen = 0;
+        return *s_file;
+    }
+    ULONGLONG time = ((ULONGLONG)a.ftLastWriteTime.dwHighDateTime << 32) | a.ftLastWriteTime.dwLowDateTime;
+    ULONGLONG size = ((ULONGLONG)a.nFileSizeHigh << 32) | a.nFileSizeLow;
+    if (time == s_seen && size == s_size) return *s_file;
+    s_seen = time, s_size = size;
+    std::wstring text;
+    HANDLE h = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (h != INVALID_HANDLE_VALUE) {
+        std::string bytes((size_t)std::min<ULONGLONG>(size, 1 << 20), '\0');
+        DWORD got = 0;
+        if (!bytes.empty() && ReadFile(h, bytes.data(), (DWORD)bytes.size(), &got, nullptr)) {
+            bytes.resize(got);
+            if (bytes.size() >= 3 && !bytes.compare(0, 3, "\xEF\xBB\xBF")) bytes.erase(0, 3);
+            int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+            text.resize(n);
+            MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), n);
+        }
+        CloseHandle(h);
+    }
+    std::wstring errors;
+    *s_file = ParseMenuFile(text, &errors);
+    // menus.log: what didn't make sense, or that all of it did.
+    std::wstring log = path.substr(0, path.size() - 5) + L".log";
+    std::wstring report = errors.empty() ? L"menus.conf read: every line made sense\r\n" : L"menus.conf: lines left out\r\n" + errors;
+    HANDLE out = CreateFileW(log.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if (out != INVALID_HANDLE_VALUE) {
+        int n = WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), nullptr, 0, nullptr, nullptr);
+        std::string utf8(n, '\0');
+        WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), utf8.data(), n, nullptr, nullptr);
+        DWORD wrote = 0;
+        WriteFile(out, utf8.data(), (DWORD)utf8.size(), &wrote, nullptr);
+        CloseHandle(out);
+    }
+    return *s_file;
+}
+
+// This program's file name, lower case (for "app" conditions).
+std::wstring MenuAppName(HWND owner = nullptr) {
+    DWORD pid = GetCurrentProcessId();
+    if (owner) GetWindowThreadProcessId(owner, &pid);
+    std::wstring name;
+    if (HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
+        WCHAR path[MAX_PATH];
+        DWORD n = ARRAYSIZE(path);
+        if (QueryFullProcessImageNameW(p, 0, path, &n)) {
+            name = path;
+            name = name.substr(name.find_last_of(L'\\') + 1);
+        }
+        CloseHandle(p);
+    }
+    for (auto& c : name) c = (wchar_t)towlower(c);
+    return name;
+}
+
+// The chosen command, when it's one the rules added: run, and true.
+bool RunMenuRule(MenuRulesUndo const& undo, UINT cmd, MenuContext const& c) {
+    if (cmd < kMenuAddFirst || cmd > kMenuAddLast || cmd - kMenuAddFirst >= undo.commands.size()) return false;
+    std::wstring command = undo.commands[cmd - kMenuAddFirst];
+    if (command.empty()) return true;
+    std::wstring folder = c.folder;
+    if (folder.empty() && !c.files.empty()) folder = c.files[0].substr(0, c.files[0].find_last_of(L"\\/"));
+    auto quoted = [](std::wstring const& x) { return L"\"" + x + L"\""; };
+    std::wstring all;
+    for (auto const& f : c.files) all += (all.empty() ? L"" : L" ") + quoted(f);
+    auto put = [&](std::wstring const& name, std::wstring const& value) {
+        for (size_t at = 0; (at = command.find(name, at)) != std::wstring::npos; at += value.size()) command.replace(at, name.size(), value);
+    };
+    put(L"%files%", all);
+    put(L"%file%", c.files.empty() ? L"" : quoted(c.files[0]));
+    put(L"%folder%", folder.empty() ? L"" : quoted(folder));
+    WCHAR expanded[4096];
+    if (ExpandEnvironmentStringsW(command.c_str(), expanded, ARRAYSIZE(expanded))) command = expanded;
+    // The program (quoted, or up to the first space), then its arguments.
+    std::wstring program, args;
+    command = MenuTrim(command);
+    if (!command.empty() && command[0] == L'"') {
+        size_t close = command.find(L'"', 1);
+        program = command.substr(1, close == std::wstring::npos ? std::wstring::npos : close - 1);
+        args = close == std::wstring::npos ? L"" : MenuTrim(command.substr(close + 1));
+    } else {
+        size_t space = command.find(L' ');
+        program = command.substr(0, space);
+        args = space == std::wstring::npos ? L"" : MenuTrim(command.substr(space));
+    }
+    ShellExecuteW(nullptr, nullptr, program.c_str(), args.empty() ? nullptr : args.c_str(), folder.empty() ? nullptr : folder.c_str(), SW_SHOWNORMAL);
+    return true;
+}
+
 UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool foreign = false, RECT const* from = nullptr) {
     if (MenusLikeWindows()) LookLikeWindowsMenus(g_menuLook);
+    MenuWheelStart();
     if (g_menuLook.native) {
-        static int depth;
+        static MENU_STYLE_STORAGE int depth;
         NativeMenuItems(menu, foreign);
         depth++;
+        // Windows' own menus, only animated here when set.
+        bool styled = g_menuWindowsStyled;
+        g_menuWindowsStyled = false;
+        HHOOK hook = g_menuMotion.style ? SetWindowsHookExW(WH_CALLWNDPROC, StyledMenuHookProc, nullptr, GetCurrentThreadId()) : nullptr;
         UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);  // no fade: it opens at once
+        if (hook) UnhookWindowsHookEx(hook);
+        g_menuWindowsStyled = styled;
         depth--;
         UnNativeMenuItems(menu);
         if (!depth) {
             for (HBITMAP bitmap : g_nativeMenuBitmaps) DeleteObject(bitmap);
             g_nativeMenuBitmaps.clear();
         }
+        MenuWheelStop();
         return result;
     }
     // A visual style's menu: its own ground and border around the items too.
@@ -14048,8 +15886,409 @@ UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool fore
     UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);
     if (hook) UnhookWindowsHookEx(hook);
     FreeStyledMenuItems(menu);
+    MenuWheelStop();
     return result;
 }
+// Motion: Hyprland-style animation curves and the tree of what animates.
+// Inlined into each part that animates ("// @inline motion.cpp") and into
+// Tourne Desktop's host, so a curve means the same thing everywhere.
+//
+// Settings, each one line in the form Hyprland's config uses:
+//   motion.enabled = false                         every animation off
+//   motion.<leaf> = ON, SPEED, CURVE[, STYLE]      motion.bar = 1, 4, overshoot, slide
+//   motion.bezier.<name> = X0, Y0, X1, Y1          a cubic Bezier from (0, 0) to (1, 1)
+//   motion.spring.<name> = MASS, STIFFNESS, DAMPING
+// SPEED is in tenths of a second, as in Hyprland; a spring's own physics sets
+// its length instead. A leaf left unset takes its parent's line, up to global.
+// Nothing set anywhere up the tree means the part keeps its own animation, so
+// with no motion lines at all nothing changes.
+//
+// Tourne Desktop's config also reads Hyprland's own lines unchanged
+// ("animation = windowsIn, 1, 4, overshoot, popin 80%", "bezier = ...",
+// an "animations { }" group, and the Lua form) into these settings.
+
+
+namespace motion {
+
+struct Curve {
+    bool spring = false;
+    double x1 = 0, y1 = 0.75, x2 = 0.15, y2 = 1;     // Bezier control points (Hyprland's "default")
+    double mass = 1, stiffness = 100, damping = 10;  // spring
+};
+
+struct Anim {
+    bool set = false;  // a motion line up the tree says how this animates
+    bool on = true;
+    double speed = 8;  // tenths of a second
+    std::wstring curveName = L"default";
+    Curve curve;
+    std::wstring style;  // as written: "slide", "popin 80%", "loop", ...
+    std::wstring from;   // the leaf whose line it is
+    double springSeconds = 0;  // (a spring's length, worked out once)
+};
+
+// The tree, Hyprland's leaves first, then Tourne's own (its bars, Start,
+// popups and switcher are layers, as a bar or launcher is in Hyprland, so a
+// dots file's "layers" line moves them too).
+struct Leaf {
+    const wchar_t* name;
+    const wchar_t* parent;
+    const wchar_t* about;
+};
+
+inline const std::vector<Leaf>& Tree() {
+    static const std::vector<Leaf> tree = {
+        {L"global", nullptr, L"Everything, unless a leaf below says otherwise"},
+        {L"windows", L"global", L"Windows: slide, popin, gnomed"},
+        {L"windowsIn", L"windows", L"A window opening"},
+        {L"windowsOut", L"windows", L"A window closing"},
+        {L"windowsMove", L"windows", L"Moving, dragging and resizing"},
+        {L"layers", L"global", L"Bars, menus and overlays: slide, popin, fade"},
+        {L"layersIn", L"layers", L"A layer opening"},
+        {L"layersOut", L"layers", L"A layer closing"},
+        {L"bar", L"layers", L"Tourne's bar hiding and coming back: slide, fade, slidefade"},
+        {L"start", L"layers", L"The Start menu"},
+        {L"popups", L"layers", L"Flyouts and popup menus"},
+        {L"switcher", L"layers", L"The window switcher and its views"},
+        {L"fade", L"global", L"Fades"},
+        {L"fadeIn", L"fade", L"Fading in a window that opens"},
+        {L"fadeOut", L"fade", L"Fading out a window that closes"},
+        {L"fadeSwitch", L"fade", L"The active window changing"},
+        {L"fadeShadow", L"fade", L"Shadows, as the active window changes"},
+        {L"fadeGlow", L"fade", L"Glows, as the active window changes"},
+        {L"fadeDim", L"fade", L"Dimming inactive windows"},
+        {L"fadeLayers", L"fade", L"Fades on layers"},
+        {L"fadeLayersIn", L"fadeLayers", L"A layer fading in"},
+        {L"fadeLayersOut", L"fadeLayers", L"A layer fading out"},
+        {L"fadePopups", L"fade", L"Fades on popups"},
+        {L"fadePopupsIn", L"fadePopups", L"A popup fading in"},
+        {L"fadePopupsOut", L"fadePopups", L"A popup fading out"},
+        {L"fadeDpms", L"fade", L"Screens turning off and on"},
+        {L"border", L"global", L"Border colours changing"},
+        {L"borderangle", L"global", L"A border's gradient turning: once, loop"},
+        {L"shadowangle", L"global", L"A shadow's gradient turning: once, loop"},
+        {L"glowangle", L"global", L"A glow's gradient turning: once, loop"},
+        {L"workspaces", L"global", L"Desktops changing: slide, slidevert, fade, slidefade, slidefadevert"},
+        {L"workspacesIn", L"workspaces", L"The desktop you go to"},
+        {L"workspacesOut", L"workspaces", L"The desktop you leave"},
+        {L"specialWorkspace", L"workspaces", L"The scratchpad desktop"},
+        {L"specialWorkspaceIn", L"specialWorkspace", L"The scratchpad coming in"},
+        {L"specialWorkspaceOut", L"specialWorkspace", L"The scratchpad going"},
+        {L"zoomFactor", L"global", L"Screen zoom"},
+        {L"monitorAdded", L"global", L"A screen being added"},
+    };
+    return tree;
+}
+
+inline const wchar_t* ParentOf(std::wstring const& leaf) {
+    for (auto const& l : Tree())
+        if (leaf == l.name) return l.parent;
+    return nullptr;
+}
+
+inline Curve Bezier(double x1, double y1, double x2, double y2) {
+    Curve c;
+    c.x1 = x1, c.y1 = y1, c.x2 = x2, c.y2 = y2;
+    return c;
+}
+
+inline Curve Spring(double mass, double stiffness, double damping) {
+    Curve c;
+    c.spring = true;
+    c.mass = mass, c.stiffness = stiffness, c.damping = damping;
+    return c;
+}
+
+// Curves with a name of their own: Hyprland's, CSS's, the easings.net set,
+// and a few springs.
+struct Named {
+    const wchar_t* name;
+    Curve curve;
+};
+
+inline const std::vector<Named>& BuiltIn() {
+    static const std::vector<Named> named = {
+        {L"default", Bezier(0, 0.75, 0.15, 1)},
+        {L"linear", Bezier(0, 0, 1, 1)},
+        {L"ease", Bezier(0.25, 0.1, 0.25, 1)},
+        {L"ease-in", Bezier(0.42, 0, 1, 1)},
+        {L"ease-out", Bezier(0, 0, 0.58, 1)},
+        {L"ease-in-out", Bezier(0.42, 0, 0.58, 1)},
+        {L"overshoot", Bezier(0.5, 0.9, 0.1, 1.1)},
+        {L"overshot", Bezier(0.05, 0.9, 0.1, 1.1)},
+        {L"easeInSine", Bezier(0.12, 0, 0.39, 0)},
+        {L"easeOutSine", Bezier(0.61, 1, 0.88, 1)},
+        {L"easeInOutSine", Bezier(0.37, 0, 0.63, 1)},
+        {L"easeInQuad", Bezier(0.11, 0, 0.5, 0)},
+        {L"easeOutQuad", Bezier(0.5, 1, 0.89, 1)},
+        {L"easeInOutQuad", Bezier(0.45, 0, 0.55, 1)},
+        {L"easeInCubic", Bezier(0.32, 0, 0.67, 0)},
+        {L"easeOutCubic", Bezier(0.33, 1, 0.68, 1)},
+        {L"easeInOutCubic", Bezier(0.65, 0, 0.35, 1)},
+        {L"easeInQuart", Bezier(0.5, 0, 0.75, 0)},
+        {L"easeOutQuart", Bezier(0.25, 1, 0.5, 1)},
+        {L"easeInOutQuart", Bezier(0.76, 0, 0.24, 1)},
+        {L"easeInQuint", Bezier(0.64, 0, 0.78, 0)},
+        {L"easeOutQuint", Bezier(0.22, 1, 0.36, 1)},
+        {L"easeInOutQuint", Bezier(0.83, 0, 0.17, 1)},
+        {L"easeInExpo", Bezier(0.7, 0, 0.84, 0)},
+        {L"easeOutExpo", Bezier(0.16, 1, 0.3, 1)},
+        {L"easeInOutExpo", Bezier(0.87, 0, 0.13, 1)},
+        {L"easeInCirc", Bezier(0.55, 0, 1, 0.45)},
+        {L"easeOutCirc", Bezier(0, 0.55, 0.45, 1)},
+        {L"easeInOutCirc", Bezier(0.85, 0, 0.15, 1)},
+        {L"easeInBack", Bezier(0.36, 0, 0.66, -0.56)},
+        {L"easeOutBack", Bezier(0.34, 1.56, 0.64, 1)},
+        {L"easeInOutBack", Bezier(0.68, -0.6, 0.32, 1.6)},
+        {L"rubber", Spring(1, 70, 10)},
+        {L"gentle", Spring(1, 120, 18)},
+        {L"snappy", Spring(1, 300, 30)},
+        {L"bouncy", Spring(1, 150, 8)},
+        {L"wobbly", Spring(1, 90, 5)},
+    };
+    return named;
+}
+
+inline std::wstring Trimmed(std::wstring const& s) {
+    size_t a = s.find_first_not_of(L" \t\r\n"), b = s.find_last_not_of(L" \t\r\n");
+    return a == std::wstring::npos ? L"" : s.substr(a, b - a + 1);
+}
+
+// "a, b, c": the parts, trimmed.
+inline std::vector<std::wstring> Parts(std::wstring const& s) {
+    std::vector<std::wstring> parts;
+    size_t start = 0;
+    while (start <= s.size()) {
+        size_t comma = s.find(L',', start);
+        if (comma == std::wstring::npos) comma = s.size();
+        parts.push_back(Trimmed(s.substr(start, comma - start)));
+        start = comma + 1;
+    }
+    return parts;
+}
+
+inline bool Number(std::wstring const& s, double* out) {
+    if (s.empty()) return false;
+    wchar_t* end = nullptr;
+    double v = wcstod(s.c_str(), &end);
+    if (!end || *end) return false;
+    *out = v;
+    return true;
+}
+
+inline bool Truth(std::wstring const& s, bool* out) {
+    std::wstring v;
+    for (wchar_t c : s) v += (wchar_t)towlower(c);
+    if (v == L"1" || v == L"true" || v == L"yes" || v == L"on") return *out = true, true;
+    if (v == L"0" || v == L"false" || v == L"no" || v == L"off") return *out = false, true;
+    return false;
+}
+
+// "X0, Y0, X1, Y1" (x kept between 0 and 1, as CSS and Hyprland need).
+inline bool ParseBezier(std::wstring const& value, Curve* out) {
+    auto p = Parts(value);
+    double v[4];
+    if (p.size() != 4) return false;
+    for (int i = 0; i < 4; i++)
+        if (!Number(p[i], &v[i])) return false;
+    *out = Bezier(std::clamp(v[0], 0.0, 1.0), v[1], std::clamp(v[2], 0.0, 1.0), v[3]);
+    return true;
+}
+
+// "MASS, STIFFNESS, DAMPING".
+inline bool ParseSpring(std::wstring const& value, Curve* out) {
+    auto p = Parts(value);
+    double v[3];
+    if (p.size() != 3) return false;
+    for (int i = 0; i < 3; i++)
+        if (!Number(p[i], &v[i]) || v[i] <= 0) return false;
+    *out = Spring(v[0], v[1], v[2]);
+    return true;
+}
+
+// "ON, SPEED, CURVE[, STYLE]", or just "ON".
+inline bool ParseLine(std::wstring const& value, Anim* out) {
+    auto p = Parts(value);
+    if (p.empty() || !Truth(p[0], &out->on)) return false;
+    if (p.size() >= 2 && !p[1].empty()) {
+        double speed;
+        if (!Number(p[1], &speed) || speed < 0) return false;
+        out->speed = speed;
+    }
+    if (p.size() >= 3 && !p[2].empty()) out->curveName = p[2];
+    if (p.size() >= 4) out->style = p[3];
+    return true;
+}
+
+// A Bezier's y where its x is t.
+inline double BezierAt(Curve const& c, double t) {
+    t = std::clamp(t, 0.0, 1.0);
+    auto at = [](double a, double b, double s) { return 3 * a * s * (1 - s) * (1 - s) + 3 * b * s * s * (1 - s) + s * s * s; };
+    auto slope = [](double a, double b, double s) { return 3 * a * (1 - s) * (1 - s) + 6 * (b - a) * s * (1 - s) + 3 * (1 - b) * s * s; };
+    double s = t;
+    for (int i = 0; i < 8; i++) {  // Newton, falling back to halving where the slope is flat
+        double x = at(c.x1, c.x2, s) - t, d = slope(c.x1, c.x2, s);
+        if (std::fabs(x) < 1e-7) return at(c.y1, c.y2, s);
+        if (std::fabs(d) < 1e-6) break;
+        s = std::clamp(s - x / d, 0.0, 1.0);
+    }
+    double lo = 0, hi = 1;
+    s = t;
+    for (int i = 0; i < 40; i++) {
+        double x = at(c.x1, c.x2, s);
+        if (std::fabs(x - t) < 1e-7) break;
+        (x < t ? lo : hi) = s;
+        s = (lo + hi) / 2;
+    }
+    return at(c.y1, c.y2, s);
+}
+
+// A spring let go at 0, pulled to 1: where it is after some seconds.
+inline double SpringAt(Curve const& c, double seconds) {
+    double w0 = std::sqrt(c.stiffness / c.mass), zeta = c.damping / (2 * std::sqrt(c.stiffness * c.mass)), t = seconds;
+    double y;  // how far from 1
+    if (zeta < 1) {
+        double wd = w0 * std::sqrt(1 - zeta * zeta);
+        y = -std::exp(-zeta * w0 * t) * (std::cos(wd * t) + zeta * w0 / wd * std::sin(wd * t));
+    } else if (zeta == 1) {
+        y = -(1 + w0 * t) * std::exp(-w0 * t);
+    } else {
+        double root = std::sqrt(zeta * zeta - 1), r1 = -w0 * (zeta - root), r2 = -w0 * (zeta + root);
+        double a = r2 / (r1 - r2);
+        y = a * std::exp(r1 * t) + (-1 - a) * std::exp(r2 * t);
+    }
+    return 1 + y;
+}
+
+// How long a spring takes to settle (within a thousandth), at most 5 s.
+inline double SpringSeconds(Curve const& c) {
+    double settled = 0;
+    for (double t = 0; t < 5; t += 0.004) {
+        if (std::fabs(SpringAt(c, t) - 1) > 0.001) settled = t + 0.004;
+    }
+    return std::max(settled, 0.05);
+}
+
+inline double SpringLength(Anim const& a) { return a.springSeconds > 0 ? a.springSeconds : SpringSeconds(a.curve); }
+
+// The animation's length, in milliseconds (0 when it's off).
+inline double Ms(Anim const& a) {
+    if (!a.on) return 0;
+    return a.curve.spring ? 1000 * SpringLength(a) : a.speed * 100;
+}
+
+// Progress t (0 to 1 of its length) eased; may pass 1 on the way (overshoot).
+inline double Ease(Anim const& a, double t) {
+    t = std::clamp(t, 0.0, 1.0);
+    if (t >= 1) return 1;
+    return a.curve.spring ? SpringAt(a.curve, t * SpringLength(a)) : BezierAt(a.curve, t);
+}
+
+// The curve a name stands for: one of the settings' own, else one built in.
+template <class Read>
+bool CurveNamed(std::wstring const& name, Read&& read, Curve* out) {
+    if (name.empty()) return false;
+    if (ParseBezier(read(L"motion.bezier." + name), out)) return true;
+    if (ParseSpring(read(L"motion.spring." + name), out)) return true;
+    for (auto const& n : BuiltIn()) {
+        if (name == n.name) {
+            *out = n.curve;
+            return true;
+        }
+    }
+    return false;
+}
+
+// How a leaf animates: its line, else its parent's, up to global. read(key)
+// gives a setting's text ("" when unset).
+template <class Read>
+Anim Resolve(std::wstring const& leaf, Read&& read) {
+    Anim a;
+    bool all = true;
+    if (Truth(read(L"motion.enabled"), &all) && !all) {
+        a.set = true;
+        a.on = false;
+        a.from = L"enabled";
+        return a;
+    }
+    std::wstring at = leaf;
+    while (!at.empty()) {
+        Anim line;
+        if (ParseLine(read(L"motion." + at), &line)) {
+            a = line;
+            a.set = true;
+            a.from = at;
+            break;
+        }
+        const wchar_t* parent = ParentOf(at);
+        at = parent ? parent : L"";
+    }
+    if (a.set && !CurveNamed(a.curveName, read, &a.curve)) a.curve = Curve();  // (a name not known: Hyprland's default)
+    if (a.curve.spring) a.springSeconds = SpringSeconds(a.curve);
+    return a;
+}
+
+// The style's first word, lowercase ("popin 80%" -> "popin").
+inline std::wstring StyleWord(Anim const& a) {
+    std::wstring w;
+    for (wchar_t c : a.style) {
+        if (iswspace(c)) break;
+        w += (wchar_t)towlower(c);
+    }
+    return w;
+}
+
+// The style's percentage as a fraction ("popin 80%" -> 0.8), or the fallback.
+inline double StylePercent(Anim const& a, double fallback) {
+    size_t pct = a.style.find(L'%');
+    if (pct == std::wstring::npos) return fallback;
+    size_t start = a.style.find_last_of(L" \t", pct);
+    start = start == std::wstring::npos ? 0 : start + 1;
+    double v;
+    return Number(a.style.substr(start, pct - start), &v) ? std::clamp(v / 100, 0.0, 1.0) : fallback;
+}
+
+#ifdef WH_MOD_ID
+// In a part: settings by their full name (the motion lines aren't the part's own).
+inline std::wstring Setting(std::wstring const& key) {
+    PCWSTR v = Wh_GetStringSetting(key.c_str());
+    std::wstring text = v ? v : L"";
+    if (v) Wh_FreeStringSetting(v);
+    return text;
+}
+
+// A leaf as the settings have it.
+inline Anim Get(std::wstring const& leaf) { return Resolve(leaf, Setting); }
+
+// Curves looked up by name, kept until the settings change (Forget).
+struct NamedCache {
+    std::vector<std::pair<std::wstring, Anim>> found;
+};
+inline NamedCache& Cache() {
+    static NamedCache cache;
+    return cache;
+}
+inline void Forget() { Cache().found.clear(); }
+
+// A curve by name, as an animation of it; false when there's none by that name.
+inline bool CurveByName(std::wstring const& name, Anim* out) {
+    for (auto const& [n, a] : Cache().found) {
+        if (n == name) {
+            *out = a;
+            return a.set;
+        }
+    }
+    Anim a;
+    a.set = CurveNamed(name, Setting, &a.curve);
+    a.curveName = name;
+    if (a.set && a.curve.spring) a.springSeconds = SpringSeconds(a.curve);
+    Cache().found.push_back({name, a});
+    *out = a;
+    return a.set;
+}
+#endif
+
+}  // namespace motion
 ////////////////////////////////////////////////////////////////////////////////
 // Your phone, as Phone Link knows it ("// @inline phone-link.cpp", in taskbar-host.cpp before start-menu.cpp,
 // which shows it in the Start menu's phone pane, startMenu.phone).
@@ -14062,6 +16301,9 @@ UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool fore
 //     database (wpndatabase.db, through Windows' own winsqlite3.dll, as System Icons reads it);
 //   - each phone app's name and icon: Phone Link's phoneapps.db, so a notification shows as Discord or
 //     Messages with its own icon, not as Phone Link.
+// With Tourne holding the phone instead (phone-map.cpp, phone-ancs.cpp), only Tourne's own notifications count,
+// and the phone is still known by name with Phone Link unlinked or gone (kept in HKCU\Software\Tourne\StartMenu
+// while it's still paired).
 // On a thread of its own when the Start menu opens. Idle cost: none.
 
 constexpr wchar_t kPhoneLinkPackage[] = L"Microsoft.YourPhone_8wekyb3d8bbwe";
@@ -14078,6 +16320,7 @@ std::wstring PhoneLower(std::wstring s) {
 struct PhoneNote {
     std::wstring app, package, title, body;
     long long when = 0;  // FILETIME
+    std::wstring aumid, tag, group;  // which of Windows' notifications it is (to clear it, as the centre does)
 };
 
 struct PhoneInfo {
@@ -14087,6 +16330,7 @@ struct PhoneInfo {
     bool connected = false;
     int unread = 0;
     std::vector<PhoneNote> notes;
+    bool read = false;  // (PhoneNow: it has been read at least once)
 };
 
 namespace phonedb {
@@ -14157,8 +16401,9 @@ std::wstring Wide(unsigned char const* s) {
 }
 
 // Each row of a read-only query (the file left as it is: Phone Link and Windows keep writing it).
+// bind: the text for the statement's ?1, if it has one (never put into the SQL itself).
 template <typename Row>
-bool Query(std::wstring const& file, char const* sql, Row row) {
+bool Query(std::wstring const& file, char const* sql, Row row, std::string const* bind = nullptr) {
     auto* api = Load();
     if (!api || GetFileAttributesW(file.c_str()) == INVALID_FILE_ATTRIBUTES) return false;
     std::wstring uri = L"file:" + file;
@@ -14171,10 +16416,10 @@ bool Query(std::wstring const& file, char const* sql, Row row) {
     }
     Stmt* stmt = nullptr;
     bool ok = api->prepare(db, sql, -1, &stmt, nullptr) == 0;
-    if (ok) {
+    if (ok && bind) ok = api->bindText(stmt, 1, bind->c_str(), (int)bind->size(), (void*)-1) == 0;  // (SQLITE_TRANSIENT)
+    if (ok)
         while (api->step(stmt) == kRow) row(api, stmt);
-        api->finalize(stmt);
-    }
+    if (stmt) api->finalize(stmt);
     api->close(db);
     return ok;
 }
@@ -14223,7 +16468,71 @@ std::wstring PhoneJsonText(std::wstring const& text, std::wstring const& key, si
     return out;
 }
 
-// The linked phone: the device entry that isn't this PC (Cross Device's, else Phone Link's own copy).
+// The phone's Bluetooth device (Classic or LE), by its name: whether Windows has it paired, and its battery and
+// whether it's connected, as Settings, Bluetooth & devices shows them. False: none by that name.
+bool PhoneBluetoothDevice(std::wstring const& name, int* battery, bool* connected) {
+    if (name.empty()) return false;
+    using GetListSize = CONFIGRET(WINAPI*)(PULONG, PCWSTR, ULONG);
+    using GetList = CONFIGRET(WINAPI*)(PCWSTR, PZZWSTR, ULONG, ULONG);
+    using Locate = CONFIGRET(WINAPI*)(PDEVINST, DEVINSTID_W, ULONG);
+    using GetProperty = CONFIGRET(WINAPI*)(DEVINST, const DEVPROPKEY*, DEVPROPTYPE*, PBYTE, PULONG, ULONG);
+    static HMODULE lib = LoadLibraryExW(L"cfgmgr32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (!lib) return false;
+    auto listSize = (GetListSize)(void*)GetProcAddress(lib, "CM_Get_Device_ID_List_SizeW");
+    auto list = (GetList)(void*)GetProcAddress(lib, "CM_Get_Device_ID_ListW");
+    auto locate = (Locate)(void*)GetProcAddress(lib, "CM_Locate_DevNodeW");
+    auto property = (GetProperty)(void*)GetProcAddress(lib, "CM_Get_DevNode_PropertyW");
+    if (!listSize || !list || !locate || !property) return false;
+    constexpr DEVPROPKEY kName{{0xa45c254e, 0xdf1c, 0x4efd, {0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0}}, 14};  // FriendlyName
+    constexpr DEVPROPKEY kBattery{{0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
+    constexpr DEVPROPKEY kConnected{{0x83da6326, 0x97a6, 0x4088, {0x94, 0x53, 0xa1, 0x92, 0x3f, 0x57, 0x3b, 0x29}}, 15};
+    bool found = false;
+    // Every node by that name (an iPhone has a Classic and an LE one, and only some carry the battery): the
+    // battery from whichever has it, connected if any is.
+    for (PCWSTR bus : {L"BTHLE", L"BTHENUM"}) {
+        ULONG size = 0;
+        if (listSize(&size, bus, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS || !size) continue;
+        std::vector<WCHAR> ids(size);
+        if (list(bus, ids.data(), size, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS) continue;
+        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
+            DEVINST node = 0;
+            if (locate(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) continue;
+            WCHAR friendly[256] = L"";
+            ULONG bytes = sizeof(friendly);
+            DEVPROPTYPE type = 0;
+            if (property(node, &kName, &type, (PBYTE)friendly, &bytes, 0) != CR_SUCCESS || name != friendly) continue;
+            found = true;
+            BYTE level = 0;
+            bytes = sizeof(level);
+            if (battery && *battery < 0 && property(node, &kBattery, &type, &level, &bytes, 0) == CR_SUCCESS && type == DEVPROP_TYPE_BYTE)
+                *battery = level;
+            DEVPROP_BOOLEAN on = DEVPROP_FALSE;
+            bytes = sizeof(on);
+            if (connected && property(node, &kConnected, &type, (PBYTE)&on, &bytes, 0) == CR_SUCCESS && on == DEVPROP_TRUE)
+                *connected = true;
+        }
+    }
+    return found;
+}
+
+// The phone as Tourne last saw it linked (HKCU\Software\Tourne\StartMenu: PhoneName, PhoneOs, PhoneModel).
+constexpr wchar_t kPhoneRecordKey[] = L"Software\\Tourne\\StartMenu";
+
+std::wstring PhoneRecord(PCWSTR value) {
+    WCHAR text[256] = L"";
+    DWORD size = sizeof(text);
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneRecordKey, value, RRF_RT_REG_SZ, nullptr, text, &size) != ERROR_SUCCESS) return {};
+    return text;
+}
+
+void KeepPhoneRecord(PhoneInfo const& info) {
+    for (auto [value, text] : {std::pair{L"PhoneName", &info.name}, std::pair{L"PhoneOs", &info.os}, std::pair{L"PhoneModel", &info.model}})
+        if (PhoneRecord(value) != *text)
+            RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneRecordKey, value, REG_SZ, text->c_str(), (DWORD)((text->size() + 1) * sizeof(WCHAR)));
+}
+
+// The linked phone: the device entry that isn't this PC (Cross Device's, else Phone Link's own copy). Without one
+// (Phone Link unlinked or removed), the phone Tourne last saw linked, while Windows still has it paired.
 void ReadPhoneIdentity(PhoneInfo& info) {
     std::wstring base = PhoneLocalAppData() + L"\\Packages\\";
     for (PCWSTR package : {L"MicrosoftWindows.CrossDevice_cw5n1h2txyewy", L"Microsoft.YourPhone_8wekyb3d8bbwe"}) {
@@ -14239,50 +16548,21 @@ void ReadPhoneIdentity(PhoneInfo& info) {
             info.os = os + L" " + PhoneJsonText(text, L"OsVersion", at, next);
             info.name = PhoneJsonText(text, L"DisplayName", at, next);
             info.model = PhoneJsonText(text, L"ModelName", at, next);
+            if (!info.name.empty()) KeepPhoneRecord(info);
             return;
         }
     }
+    std::wstring name = PhoneRecord(L"PhoneName");
+    if (name.empty() || !PhoneBluetoothDevice(name, nullptr, nullptr)) return;
+    info.linked = true;
+    info.name = name;
+    info.os = PhoneRecord(L"PhoneOs");
+    info.model = PhoneRecord(L"PhoneModel");
 }
 
-// Its Bluetooth device, by name: the battery and whether it's connected, as Windows keeps them.
+// Its battery and whether it's connected.
 void ReadPhoneBluetooth(PhoneInfo& info) {
-    if (info.name.empty()) return;
-    using GetListSize = CONFIGRET(WINAPI*)(PULONG, PCWSTR, ULONG);
-    using GetList = CONFIGRET(WINAPI*)(PCWSTR, PZZWSTR, ULONG, ULONG);
-    using Locate = CONFIGRET(WINAPI*)(PDEVINST, DEVINSTID_W, ULONG);
-    using GetProperty = CONFIGRET(WINAPI*)(DEVINST, const DEVPROPKEY*, DEVPROPTYPE*, PBYTE, PULONG, ULONG);
-    static HMODULE lib = LoadLibraryExW(L"cfgmgr32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (!lib) return;
-    auto listSize = (GetListSize)(void*)GetProcAddress(lib, "CM_Get_Device_ID_List_SizeW");
-    auto list = (GetList)(void*)GetProcAddress(lib, "CM_Get_Device_ID_ListW");
-    auto locate = (Locate)(void*)GetProcAddress(lib, "CM_Locate_DevNodeW");
-    auto property = (GetProperty)(void*)GetProcAddress(lib, "CM_Get_DevNode_PropertyW");
-    if (!listSize || !list || !locate || !property) return;
-    constexpr DEVPROPKEY kName{{0xa45c254e, 0xdf1c, 0x4efd, {0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0}}, 14};  // FriendlyName
-    constexpr DEVPROPKEY kBattery{{0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
-    constexpr DEVPROPKEY kConnected{{0x83da6326, 0x97a6, 0x4088, {0x94, 0x53, 0xa1, 0x92, 0x3f, 0x57, 0x3b, 0x29}}, 15};
-    for (PCWSTR bus : {L"BTHLE", L"BTHENUM"}) {
-        ULONG size = 0;
-        if (listSize(&size, bus, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS || !size) continue;
-        std::vector<WCHAR> ids(size);
-        if (list(bus, ids.data(), size, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS) continue;
-        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
-            DEVINST node = 0;
-            if (locate(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) continue;
-            WCHAR name[256] = L"";
-            ULONG bytes = sizeof(name);
-            DEVPROPTYPE type = 0;
-            if (property(node, &kName, &type, (PBYTE)name, &bytes, 0) != CR_SUCCESS || info.name != name) continue;
-            BYTE battery = 0;
-            bytes = sizeof(battery);
-            if (property(node, &kBattery, &type, &battery, &bytes, 0) != CR_SUCCESS || type != DEVPROP_TYPE_BYTE) continue;
-            info.battery = battery;
-            DEVPROP_BOOLEAN on = DEVPROP_FALSE;
-            bytes = sizeof(on);
-            info.connected = property(node, &kConnected, &type, (PBYTE)&on, &bytes, 0) == CR_SUCCESS && on == DEVPROP_TRUE;
-            return;
-        }
-    }
+    PhoneBluetoothDevice(info.name, &info.battery, &info.connected);
 }
 
 // Phone Link's data folder for the phone: the one written last.
@@ -14320,6 +16600,79 @@ std::vector<std::pair<std::wstring, std::wstring>> PhoneApps() {
     return apps;
 }
 
+// Emoji and fancy letters as the pixel fonts can draw them: a face or a heart as its plain symbol (":)", "<3"),
+// fancy letters (maths bold or script, fullwidth) as plain ones, other emoji as "*"; the joiners and colour/skin marks between them
+// dropped. Everything else as it was.
+std::wstring PlainSymbols(std::wstring const& s) {
+    struct Swap {
+        char32_t from, to;  // a range
+        PCWSTR as;
+    };
+    static Swap const swaps[] = {
+        {0x2764, 0x2764, L"<3"}, {0x2665, 0x2665, L"<3"}, {0x1F493, 0x1F49F, L"<3"}, {0x1F9E1, 0x1F9E1, L"<3"},
+        {0x1F49A, 0x1F49C, L"<3"}, {0x1F5A4, 0x1F5A4, L"<3"}, {0x1F90D, 0x1F90E, L"<3"}, {0x1FA75, 0x1FA77, L"<3"},
+        {0x1F60D, 0x1F60D, L"<3"}, {0x1F970, 0x1F970, L"<3"}, {0x1F618, 0x1F618, L":*"}, {0x1F617, 0x1F61A, L":*"},
+        {0x1F602, 0x1F602, L"xD"}, {0x1F923, 0x1F923, L"xD"}, {0x1F606, 0x1F606, L"xD"}, {0x1F605, 0x1F605, L"^^'"},
+        {0x1F600, 0x1F601, L":D"}, {0x1F603, 0x1F604, L":D"}, {0x1F60A, 0x1F60A, L":)"}, {0x1F642, 0x1F642, L":)"},
+        {0x263A, 0x263A, L":)"}, {0x1F607, 0x1F607, L":)"}, {0x1F609, 0x1F609, L";)"}, {0x1F60E, 0x1F60E, L"B)"},
+        {0x1F61B, 0x1F61D, L":P"}, {0x1F60B, 0x1F60B, L":P"}, {0x1F622, 0x1F622, L":'("}, {0x1F62D, 0x1F62D, L":'("},
+        {0x1F61E, 0x1F61F, L":("}, {0x1F641, 0x1F641, L":("}, {0x2639, 0x2639, L":("}, {0x1F614, 0x1F614, L":("},
+        {0x1F620, 0x1F621, L">:("}, {0x1F62E, 0x1F62F, L":O"}, {0x1F632, 0x1F632, L":O"}, {0x1F610, 0x1F611, L":|"},
+        {0x1F612, 0x1F612, L"-_-"}, {0x1F644, 0x1F644, L"-_-"}, {0x1F634, 0x1F634, L"zzz"}, {0x1F914, 0x1F914, L"hmm"},
+        {0x1F937, 0x1F937, L"shrug"}, {0x1F44D, 0x1F44D, L"(y)"}, {0x1F44E, 0x1F44E, L"(n)"}, {0x1F44B, 0x1F44B, L"o/"},
+        {0x1F64F, 0x1F64F, L"(pray)"}, {0x1F525, 0x1F525, L"(fire)"}, {0x1F480, 0x1F480, L"(skull)"},
+        {0x2620, 0x2620, L"(skull)"}, {0x1F440, 0x1F440, L"(eyes)"}, {0x1F389, 0x1F38A, L"(party)"},
+        {0x1F4AF, 0x1F4AF, L"100"}, {0x2705, 0x2705, L"[v]"}, {0x2714, 0x2714, L"v"}, {0x274C, 0x274C, L"x"},
+        {0x2716, 0x2716, L"x"}, {0x2B50, 0x2B50, L"*"}, {0x1F31F, 0x1F31F, L"*"}, {0x2728, 0x2728, L"*"},
+        {0x1F3B5, 0x1F3B6, L"(music)"}, {0x1F4F7, 0x1F4F8, L"(photo)"}, {0x26A0, 0x26A0, L"(!)"}, {0x2757, 0x2757, L"!"},
+        {0x2753, 0x2753, L"?"}, {0x2190, 0x2190, L"<-"}, {0x2192, 0x2192, L"->"}, {0x2191, 0x2191, L"^"}, {0x2193, 0x2193, L"v"},
+        {0x2194, 0x2194, L"<->"}, {0x21A9, 0x21AA, L"<-"}, {0x2022, 0x2022, L"\u00B7"}, {0x2023, 0x2023, L">"},
+        {0x2018, 0x2019, L"'"}, {0x201C, 0x201D, L"\""}, {0x2013, 0x2014, L"-"}, {0x00A0, 0x00A0, L" "},
+    };
+    std::wstring out;
+    out.reserve(s.size());
+    for (size_t i = 0; i < s.size(); i++) {
+        char32_t c = s[i];
+        size_t n = 1;
+        if (c >= 0xD800 && c <= 0xDBFF && i + 1 < s.size() && s[i + 1] >= 0xDC00 && s[i + 1] <= 0xDFFF) {
+            c = 0x10000 + ((c - 0xD800) << 10) + (s[i + 1] - 0xDC00);
+            n = 2;
+        }
+        i += n - 1;
+        // Marks between and after emoji: colour (FE0F), joiner (200D), skin tones, keycap, tags.
+        if (c == 0xFE0E || c == 0xFE0F || c == 0x200D || c == 0x20E3 || (c >= 0x1F3FB && c <= 0x1F3FF) || (c >= 0xE0020 && c <= 0xE007F))
+            continue;
+        PCWSTR swapped = nullptr;
+        for (auto const& w : swaps)
+            if (c >= w.from && c <= w.to) {
+                swapped = w.as;
+                break;
+            }
+        if (swapped) {
+            // (a word, not glued to the next one: "thanks<3" reads as "thanks <3")
+            if (wcslen(swapped) > 1 && !out.empty() && out.back() != L' ' && iswalnum(out.back())) out += L' ';
+            out += swapped;
+            continue;
+        }
+        if (c >= 0x1D400 && c <= 0x1D6A3) {  // fancy letters: bold, italic, script, fraktur, double-struck...
+            int k = (int)((c - 0x1D400) % 52);
+            out += (wchar_t)(k < 26 ? L'A' + k : L'a' + k - 26);
+        } else if (c >= 0x1D7CE && c <= 0x1D7FF) {  // and their digits
+            out += (wchar_t)(L'0' + (c - 0x1D7CE) % 10);
+        } else if (c >= 0xFF01 && c <= 0xFF5E) {  // fullwidth
+            out += (wchar_t)(c - 0xFEE0);
+        } else if (c >= 0x1F1E6 && c <= 0x1F1FF) {  // a flag's letters
+            continue;
+        } else if ((c >= 0x1F000 && c <= 0x1FAFF) || (c >= 0x2600 && c <= 0x27BF) || (c >= 0x2B00 && c <= 0x2BFF) ||
+                   (c >= 0x2190 && c <= 0x21FF) || (c >= 0x2300 && c <= 0x23FF) || (c >= 0xE000 && c <= 0xF8FF) || c > 0xFFFF) {
+            if (out.empty() || out.back() != L'*') out += L'*';
+        } else {
+            out += (wchar_t)c;
+        }
+    }
+    return out;
+}
+
 std::wstring PhoneXmlText(std::wstring_view xml) {
     std::wstring out;
     for (size_t i = 0; i < xml.size(); i++) {
@@ -14348,6 +16701,51 @@ std::wstring PhoneXmlText(std::wstring_view xml) {
 }
 
 // A phone app's name: as Phone Link lists it, else its package's last part ("com.google.Gmail": Gmail).
+// Where a phone app's notification opens on this PC, so it can be answered there: Apple's notification service
+// lets the PC only clear one or press its own one or two buttons, never reply. The app itself when it's installed
+// here (its link scheme is registered), else its website; empty for an app with neither (the centre opens then).
+std::wstring PhoneAppOnPc(std::wstring const& package, std::wstring const& name) {
+    struct Place {
+        std::initializer_list<PCWSTR> words;  // in its bundle id or name
+        PCWSTR app, web;                      // its own link (scheme first), its site
+    };
+    static Place const places[] = {
+        {{L"discord", L"hammerandchisel"}, L"discord://-/channels/@me", L"https://discord.com/channels/@me"},
+        {{L"slack"}, L"slack://open", L"https://app.slack.com"},
+        {{L"whatsapp"}, L"whatsapp://", L"https://web.whatsapp.com"},
+        {{L"telegram", L"ph.telegra"}, L"tg://", L"https://web.telegram.org"},
+        {{L"spotify"}, L"spotify:", L"https://open.spotify.com"},
+        {{L"teams"}, L"msteams:", L"https://teams.microsoft.com"},
+        {{L"gmail"}, nullptr, L"https://mail.google.com"},
+        {{L"outlook"}, L"outlookmail:", L"https://outlook.live.com/mail"},
+        {{L"reddit"}, nullptr, L"https://www.reddit.com/notifications"},
+        {{L"instagram"}, nullptr, L"https://www.instagram.com/direct/inbox"},
+        {{L"messenger", L"facebook"}, nullptr, L"https://www.messenger.com"},
+        {{L"twitter", L"atebits"}, nullptr, L"https://x.com/notifications"},
+        {{L"github"}, nullptr, L"https://github.com/notifications"},
+        {{L"youtube"}, nullptr, L"https://www.youtube.com/feed/subscriptions"},
+        {{L"twitch"}, nullptr, L"https://www.twitch.tv"},
+        {{L"steam", L"valvesoftware"}, L"steam://open/friends", L"https://steamcommunity.com"},
+    };
+    std::wstring text = PhoneLower(package + L" " + name);
+    for (auto const& place : places) {
+        bool match = false;
+        for (PCWSTR w : place.words) match = match || text.find(w) != std::wstring::npos;
+        if (!match) continue;
+        if (place.app) {
+            std::wstring scheme(place.app, wcschr(place.app, L':') - place.app);
+            HKEY key;
+            if (RegOpenKeyExW(HKEY_CLASSES_ROOT, scheme.c_str(), 0, KEY_READ, &key) == ERROR_SUCCESS) {
+                bool registered = RegQueryValueExW(key, L"URL Protocol", nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS;
+                RegCloseKey(key);
+                if (registered) return place.app;
+            }
+        }
+        return place.web;
+    }
+    return {};
+}
+
 std::wstring PhoneAppName(std::wstring const& package, std::vector<std::pair<std::wstring, std::wstring>> const& apps) {
     for (auto const& [p, name] : apps)
         if (p == package && !name.empty()) return name;
@@ -14365,14 +16763,16 @@ std::wstring PhoneRegisteredName(std::wstring const& aumid) {
     return name;
 }
 
-// The phone's notifications, newest first: Phone Link's toasts and its badge (the unread count), or Tourne's own
-// (phone-ancs.cpp, when Tourne holds the phone; all of them count as new while they're in the centre).
-void ReadPhoneNotes(PhoneInfo& info, int most) {
+// The phone's notifications, newest first: Phone Link's toasts and its badge (the unread count), and Tourne's own
+// (phone-ancs.cpp; all of them count as new while they're in the centre). own: Tourne holds the phone, so only
+// Tourne's (Phone Link's left over would show twice, and its old badge would stand for the count).
+void ReadPhoneNotes(PhoneInfo& info, int most, bool own) {
     std::wstring db = PhoneLocalAppData() + L"\\Microsoft\\Windows\\Notifications\\wpndatabase.db";
     auto apps = PhoneApps();
     std::string sql =
-        "SELECT n.Type, n.ArrivalTime, n.Payload, h.PrimaryId FROM Notification n JOIN NotificationHandler h ON h.RecordId = n.HandlerId"
-        " WHERE (h.PrimaryId LIKE 'Microsoft.YourPhone%' OR h.PrimaryId LIKE 'Tourne.Phone.%') AND (n.Type = 'badge' OR n.Type = 'toast')"
+        "SELECT n.Type, n.ArrivalTime, n.Payload, h.PrimaryId, n.Tag, n.[Group] FROM Notification n JOIN NotificationHandler h ON h.RecordId = n.HandlerId"
+        + std::string(own ? " WHERE h.PrimaryId LIKE 'Tourne.Phone.%' AND n.Type = 'toast'"
+                          : " WHERE (h.PrimaryId LIKE 'Microsoft.YourPhone%' OR h.PrimaryId LIKE 'Tourne.Phone.%') AND (n.Type = 'badge' OR n.Type = 'toast')") +
         " ORDER BY n.ArrivalTime DESC";
     bool badge = false;
     int ours = 0;
@@ -14393,6 +16793,9 @@ void ReadPhoneNotes(PhoneInfo& info, int most) {
         if ((int)info.notes.size() >= most) return;
         PhoneNote note;
         note.when = api->int64(stmt, 1);
+        note.aumid = handler;
+        note.tag = phonedb::Wide(api->text(stmt, 4));
+        note.group = phonedb::Wide(api->text(stmt, 5));
         std::vector<std::wstring> texts;
         for (size_t at = 0; (at = xml.find(L"<text", at)) != std::wstring::npos;) {
             size_t open = xml.find(L'>', at), close = xml.find(L"</text>", at);
@@ -14430,38 +16833,55 @@ void ReadPhoneNotes(PhoneInfo& info, int most) {
         if (note.app.empty()) note.app = L"Phone Link";
         if (!texts.empty()) note.title = texts[0];
         for (size_t i = 1; i < texts.size(); i++) note.body += (note.body.empty() ? L"" : L" ") + texts[i];
+        note.title = PlainSymbols(note.title);
+        note.body = PlainSymbols(note.body);
         if (!note.title.empty() || !note.body.empty()) info.notes.push_back(note);
     });
     if (!badge) info.unread = ours;
 }
 
-PhoneInfo ReadPhoneInfo(int notes) {
+PhoneInfo ReadPhoneInfo(int notes, bool own = false) {
     PhoneInfo info;
     ReadPhoneIdentity(info);
     if (!info.linked) return info;
     ReadPhoneBluetooth(info);
-    ReadPhoneNotes(info, notes);
+    ReadPhoneNotes(info, notes, own);
     return info;
+}
+
+// Phone apps' icons made so far, by package and size (null: Phone Link had none then, asked again in a minute).
+struct PhoneMadeIcon {
+    HICON icon = nullptr;
+    ULONGLONG when = 0;
+};
+std::map<std::wstring, PhoneMadeIcon> g_phoneAppIcons;
+
+// Let go of them all (the scale or the colours changed: they're made again as they're drawn).
+void ForgetPhoneAppIcons() {
+    for (auto& [key, made] : g_phoneAppIcons)
+        if (made.icon) DestroyIcon(made.icon);
+    g_phoneAppIcons.clear();
 }
 
 // A phone app's icon from Phone Link's copy (a PNG), at a size; kept for the next paint. Null: none.
 HICON PhoneAppIcon(std::wstring const& package, int size) {
-    static std::map<std::wstring, HICON> made;
     std::wstring key = package + L"|" + std::to_wstring(size);
-    auto it = made.find(key);
-    if (it != made.end()) return it->second;
+    auto it = g_phoneAppIcons.find(key);
+    if (it != g_phoneAppIcons.end() && (it->second.icon || GetTickCount64() - it->second.when < 60000)) return it->second.icon;
     HICON icon = nullptr;
     std::string png;
     std::wstring folder = PhoneDataFolder();
+    std::string lower = phonedb::Utf8(package);
     if (!folder.empty())
-        phonedb::Query(folder + L"phoneapps.db", ("SELECT blob FROM phone_apps WHERE lower(package_name) = '" +
-                                                  phonedb::Utf8(package) + "'").c_str(),
-                       [&](phonedb::Api const* api, phonedb::Stmt* stmt) {
-                           auto* b = (char const*)api->blob(stmt, 0);
-                           if (b && png.empty()) png.assign(b, (size_t)api->bytes(stmt, 0));
-                       });
+        phonedb::Query(
+            folder + L"phoneapps.db", "SELECT blob FROM phone_apps WHERE lower(package_name) = ?1",
+            [&](phonedb::Api const* api, phonedb::Stmt* stmt) {
+                auto* b = (char const*)api->blob(stmt, 0);
+                if (b && png.empty()) png.assign(b, (size_t)api->bytes(stmt, 0));
+            },
+            &lower);
     IWICImagingFactory* factory = nullptr;
-    if (!png.empty() && package.find(L'\'') == std::wstring::npos &&
+    if (!png.empty() &&
         SUCCEEDED(CoCreateInstance(kPhoneWicFactory, nullptr, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&factory))) {
         IStream* stream = SHCreateMemStream((BYTE const*)png.data(), (UINT)png.size());
         IWICBitmapDecoder* decoder = nullptr;
@@ -14492,7 +16912,7 @@ HICON PhoneAppIcon(std::wstring const& package, int size) {
         if (stream) stream->Release();
         factory->Release();
     }
-    made[key] = icon;
+    g_phoneAppIcons[key] = {icon, GetTickCount64()};
     return icon;
 }
 
@@ -14501,16 +16921,18 @@ std::mutex g_phoneLock;
 PhoneInfo g_phone;
 bool g_phoneRead = false;      // g_phone has been read once
 std::atomic<bool> g_phoneReading{false};
+HANDLE g_phoneThread = nullptr;  // the last read's (waited for before this code goes: PhoneReadWait)
 
 struct PhoneJob {
     HWND wnd;
     UINT done;
     int notes;
+    bool own;
 };
 
 DWORD WINAPI PhoneThread(LPVOID param) {
     std::unique_ptr<PhoneJob> job((PhoneJob*)param);
-    PhoneInfo info = ReadPhoneInfo(job->notes);
+    PhoneInfo info = ReadPhoneInfo(job->notes, job->own);
     {
         std::lock_guard<std::mutex> lock(g_phoneLock);
         g_phone = std::move(info);
@@ -14521,36 +16943,140 @@ DWORD WINAPI PhoneThread(LPVOID param) {
     return 0;
 }
 
-void ReadPhoneSoon(HWND wnd, UINT done, int notes) {
+// own: Tourne holds the phone (ReadPhoneNotes).
+void ReadPhoneSoon(HWND wnd, UINT done, int notes, bool own) {
     if (g_phoneReading.exchange(true)) return;
-    auto* job = new PhoneJob{wnd, done, notes};
-    if (HANDLE thread = CreateThread(nullptr, 0, PhoneThread, job, 0, nullptr)) {
-        SetThreadPriority(thread, THREAD_PRIORITY_BELOW_NORMAL);
-        CloseHandle(thread);
+    if (g_phoneThread) {
+        WaitForSingleObject(g_phoneThread, INFINITE);  // (it has said it's done: only its last instructions left)
+        CloseHandle(g_phoneThread);
+        g_phoneThread = nullptr;
+    }
+    auto* job = new PhoneJob{wnd, done, notes, own};
+    if ((g_phoneThread = CreateThread(nullptr, 0, PhoneThread, job, 0, nullptr))) {
+        SetThreadPriority(g_phoneThread, THREAD_PRIORITY_BELOW_NORMAL);
     } else {
         delete job;
         g_phoneReading = false;
     }
 }
 
-PhoneInfo PhoneNow() {
-    std::lock_guard<std::mutex> lock(g_phoneLock);
-    return g_phone;
+// The read under way finished before this code goes (the Start menu's end).
+void PhoneReadWait() {
+    if (!g_phoneThread) return;
+    WaitForSingleObject(g_phoneThread, 10000);
+    CloseHandle(g_phoneThread);
+    g_phoneThread = nullptr;
 }
 
-// Whether a phone is linked, for the layout before the first read is back (the small file only).
+PhoneInfo PhoneNow() {
+    std::lock_guard<std::mutex> lock(g_phoneLock);
+    PhoneInfo info = g_phone;
+    info.read = g_phoneRead;
+    return info;
+}
+
+// Whether a phone is linked: the last read's answer, else (before the first read is back) the small file's,
+// looked at again after half a minute so a phone linked since isn't missed.
 bool PhoneLinked() {
     {
         std::lock_guard<std::mutex> lock(g_phoneLock);
         if (g_phoneRead) return g_phone.linked;
     }
-    static int known = -1;
-    if (known < 0) {
+    static bool known = false;
+    static ULONGLONG lookedAt = 0;
+    if (!lookedAt || GetTickCount64() - lookedAt > 30000) {
         PhoneInfo info;
         ReadPhoneIdentity(info);
         known = info.linked;
+        lookedAt = GetTickCount64();
     }
-    return known != 0;
+    return known;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Phone notifications you cleared (middle click, Clear, Clear all): kept so they don't come back. The phone sends
+// every one it still has again each time it connects (signing in, a restart, Tourne or Explorer starting again),
+// and phone-ancs.cpp shows only those not listed here. Each is known by its content (PhoneNoteKey: the toast's
+// tag), not by the phone's number for it, which starts again with every connection. The newest 400 are kept,
+// in HKCU\Software\Tourne\Phone (ClearedNotes).
+
+constexpr wchar_t kPhoneClearedKey[] = L"Software\\Tourne\\Phone";
+constexpr size_t kPhoneClearedMost = 400;
+
+// A notification's key from what it says: the app, its words and the phone's time for it ("p" + 16 hex digits).
+std::wstring PhoneNoteKey(std::wstring const& app, std::wstring const& title, std::wstring const& subtitle,
+                          std::wstring const& message, std::wstring const& when) {
+    unsigned long long h = 1469598103934665603ull;
+    for (auto const* part : {&app, &title, &subtitle, &message, &when}) {
+        for (wchar_t c : *part) h = (h ^ (unsigned)c) * 1099511628211ull;
+        h = (h ^ 0x1F) * 1099511628211ull;  // (between parts)
+    }
+    wchar_t out[24];
+    swprintf(out, 24, L"p%016llx", h);
+    return out;
+}
+
+std::vector<std::wstring> PhoneClearedNotes() {
+    std::vector<std::wstring> out;
+    DWORD bytes = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &bytes) != ERROR_SUCCESS || !bytes)
+        return out;
+    std::vector<wchar_t> list(bytes / sizeof(wchar_t) + 2, 0);
+    bytes = (DWORD)(list.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", RRF_RT_REG_MULTI_SZ, nullptr, list.data(), &bytes) != ERROR_SUCCESS)
+        return out;
+    for (const wchar_t* p = list.data(); *p; p += wcslen(p) + 1) out.push_back(p);
+    return out;
+}
+
+bool PhoneNoteCleared(std::wstring const& key) {
+    auto list = PhoneClearedNotes();
+    return std::find(list.begin(), list.end(), key) != list.end();
+}
+
+// Cleared: noted (only Tourne's own phone notifications have such keys; anything else is left out).
+void PhoneNoteClear(std::wstring const& aumid, std::wstring const& tag) {
+    if (!aumid.starts_with(L"Tourne.Phone.") || tag.size() != 17 || tag[0] != L'p') return;
+    auto list = PhoneClearedNotes();
+    if (std::find(list.begin(), list.end(), tag) != list.end()) return;
+    list.push_back(tag);
+    if (list.size() > kPhoneClearedMost) list.erase(list.begin(), list.end() - kPhoneClearedMost);
+    std::wstring multi;
+    for (auto const& item : list) multi += item + L'\0';
+    multi += L'\0';
+    RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", REG_MULTI_SZ, multi.data(), (DWORD)(multi.size() * sizeof(wchar_t)));
+}
+
+// Conversations cleared from the phone pane: hidden until a text newer than the last one then comes
+// (HKCU\Software\Tourne\Phone, ClearedConvos: "key|time of its last text", newest 200).
+std::map<std::wstring, long long> PhoneClearedConvos() {
+    std::map<std::wstring, long long> out;
+    DWORD bytes = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &bytes) != ERROR_SUCCESS || !bytes)
+        return out;
+    std::vector<wchar_t> list(bytes / sizeof(wchar_t) + 2, 0);
+    bytes = (DWORD)(list.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", RRF_RT_REG_MULTI_SZ, nullptr, list.data(), &bytes) != ERROR_SUCCESS)
+        return out;
+    for (const wchar_t* p = list.data(); *p; p += wcslen(p) + 1) {
+        std::wstring item = p;
+        size_t bar = item.rfind(L'|');
+        if (bar != std::wstring::npos) out[item.substr(0, bar)] = _wtoi64(item.c_str() + bar + 1);
+    }
+    return out;
+}
+
+void PhoneClearConvo(std::wstring const& key, long long when) {
+    auto cleared = PhoneClearedConvos();
+    cleared[key] = when;
+    std::vector<std::pair<long long, std::wstring>> newest;
+    for (auto const& [k, w] : cleared) newest.push_back({w, k});
+    std::sort(newest.rbegin(), newest.rend());
+    if (newest.size() > 200) newest.resize(200);
+    std::wstring multi;
+    for (auto const& [w, k] : newest) multi += k + L"|" + std::to_wstring(w) + L'\0';
+    multi += L'\0';
+    RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", REG_MULTI_SZ, multi.data(), (DWORD)(multi.size() * sizeof(wchar_t)));
 }
 
 // Asks the relay to replay a tray event on the system icon this stand-in
@@ -14647,8 +17173,11 @@ bool FlyoutUnder(POINT pt, RECT* rc);
 
 // A click anywhere but the menu closes it (and goes no further, as Windows' own menus take it). Windows
 // does this itself only when the menu's window is in front, which a click on the Tourne taskbar (which
-// never takes the focus) doesn't always leave it; so a mouse hook watches, for as long as the menu is up.
+// never takes the focus) doesn't always leave it; so a mouse hook watches, for as long as the menu is up. The hook
+// runs on a thread of its own: on the menu's, every mouse move anywhere waited for the menu's painting (the pointer
+// hitched over items). It closes the menu by telling its owner to cancel (EndMenu works only on the menu's thread).
 bool g_menuEatUp = false;
+HWND g_menuOwner = nullptr;
 
 LRESULT CALLBACK MenuMouseProc(int code, WPARAM wParam, LPARAM lParam) {
     if (code == HC_ACTION) {
@@ -14662,13 +17191,33 @@ LRESULT CALLBACK MenuMouseProc(int code, WPARAM wParam, LPARAM lParam) {
             HWND at = WindowFromPoint(((MSLLHOOKSTRUCT*)lParam)->pt);
             WCHAR name[16];
             if (!at || !GetClassNameW(at, name, ARRAYSIZE(name)) || wcscmp(name, L"#32768") != 0) {
-                EndMenu();
+                PostMessageW(g_menuOwner, WM_CANCELMODE, 0, 0);
                 g_menuEatUp = true;
                 return 1;
             }
         }
     }
     return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+// The taskbar's menu animation (its settings, read by their full names through variables, so the build
+// doesn't file them under this part) and the motion engine's popups line.
+motion::Anim g_popupsMotion;
+double PopupsMotionEase(double t) { return motion::Ease(g_popupsMotion, t); }
+
+void SetMenuMotionLikeTaskbar() {
+    constexpr PCWSTR kMenuAnimation = L"taskbar.menuAnimation";
+    PCWSTR value = Wh_GetStringSetting(kMenuAnimation);
+    g_menuMotion = {};
+    g_menuMotion.style = MenuMotionStyle(value ? value : L"");
+    Wh_FreeStringSetting(value);
+    g_popupsMotion = motion::Get(L"popups");
+    if (g_popupsMotion.set)
+        g_menuMotion.style = g_popupsMotion.on ? MenuMotionStyleWord(motion::StyleWord(g_popupsMotion), g_menuMotion.style) : 0;
+    if (g_popupsMotion.set && g_popupsMotion.on) {
+        g_menuMotion.ms = std::clamp(motion::Ms(g_popupsMotion), 0.0, 1500.0);
+        g_menuMotion.ease = PopupsMotionEase;
+    }
 }
 
 void ShowMenu(std::vector<MenuItem> const& items, WPARAM anchor) {
@@ -14707,6 +17256,8 @@ void ShowMenu(std::vector<MenuItem> const& items, WPARAM anchor) {
         }
         FrameLikeStartAllBack(g_menuLook, title, StartMenuCapitals());
     }
+    // It opens as the taskbar's menus do (taskbar.menuAnimation, on the motion engine's popups line).
+    SetMenuMotionLikeTaskbar();
     // Above the icon on a bottom taskbar, below it on a top one.
     MONITORINFO monitor{sizeof(monitor)};
     GetMonitorInfoW(MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST), &monitor);
@@ -14751,11 +17302,23 @@ void ShowMenu(std::vector<MenuItem> const& items, WPARAM anchor) {
         haveFrom = true;
     }
     // (At the pointer, it stays on the pointer's screen.)
-    HHOOK mouse = SetWindowsHookExW(WH_MOUSE_LL, MenuMouseProc, GetModuleHandleW(nullptr), 0);
     g_menuEatUp = false;
+    g_menuOwner = wnd;
+    HANDLE hookStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    HANDLE hookThread = hookStop ? CreateThread(nullptr, 0, [](void* stop) -> DWORD {
+        HHOOK mouse = SetWindowsHookExW(WH_MOUSE_LL, MenuMouseProc, GetModuleHandleW(nullptr), 0);
+        while (MsgWaitForMultipleObjects(1, (HANDLE*)&stop, FALSE, INFINITE, QS_ALLINPUT) != WAIT_OBJECT_0) {
+            MSG m;
+            while (PeekMessageW(&m, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&m);
+        }
+        if (mouse) UnhookWindowsHookEx(mouse);
+        return 0;
+    }, hookStop, 0, nullptr) : nullptr;
     UINT chosen = TrackStyledMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | place, pt.x, pt.y, wnd, false,
                                   haveFrom ? &from : nullptr);
-    if (mouse) UnhookWindowsHookEx(mouse);
+    if (hookStop) SetEvent(hookStop);
+    if (hookThread) WaitForSingleObject(hookThread, 500), CloseHandle(hookThread);
+    if (hookStop) CloseHandle(hookStop);
     PostMessageW(wnd, WM_NULL, 0, 0);
     DestroyMenu(menu);
 
@@ -15326,15 +17889,16 @@ HICON ThemeIcon(std::string const& design) {
     return result;
 }
 
-// A program's icon from the taskbar's Button icons marked "Use everywhere",
-// which wins over the design: the same icon as on its buttons. Kept with the
-// designs' icons, for as long.
+// A program's icon from Tourne'Icons' Taskbar buttons and the taskbar's Button
+// icons marked "Use everywhere", which wins over the design: the same icon as
+// on its buttons. Kept with the designs' icons, for as long.
 HICON ProgramTrayIcon(HWND owner) {
-    if (g_settings.programIcons.empty() || !IsWindow(owner) || IsStandInWindow(owner)) {
+    std::vector<ProgramIcon> rows = WithTourneIcons(g_settings.programIcons);
+    if (rows.empty() || !IsWindow(owner) || IsStandInWindow(owner)) {
         return nullptr;
     }
     std::wstring path = OwnerPath(owner);
-    for (auto const& row : g_settings.programIcons) {
+    for (auto const& row : rows) {
         if (!ProgramIconMatches(row.program, L"", path)) {
             continue;
         }
@@ -16089,6 +18653,8 @@ std::vector<BYTE> BuildHiddenIconsPacket(bool all) {
 std::vector<HiddenIcon> g_receivedHidden;
 bool g_hiddenReceived;
 
+void AddPluginIcons(std::vector<HiddenIcon>* icons);
+
 bool RequestHiddenIcons(std::vector<HiddenIcon>* icons, LPARAM which = kRelayOverflowIcons) {
     HWND toolbar = RelayToolbar();
     HWND wnd = g_wnd;
@@ -16106,6 +18672,9 @@ bool RequestHiddenIcons(std::vector<HiddenIcon>* icons, LPARAM which = kRelayOve
     }
     *icons = std::move(g_receivedHidden);
     g_receivedHidden.clear();
+    if (which == kRelayAllIcons) {
+        AddPluginIcons(icons);  // (Tourne Desktop's plugin items too, placed as tray icons are)
+    }
     return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -16145,6 +18714,63 @@ void ApplyPaletteToUi() {
     ui::kSageAlt = ui::Rgb(p.dim);
     ui::kCoral = ui::Rgb(p.warn);
     ui::kHover = ui::Rgb(p.hover);
+}
+
+// Tourne Desktop's plugin items (plugin-bar-shared.cpp), as icons: the ones the user moved into the
+// overflow show in its flyout with the hidden icons, go in and out of its folders, and pass their clicks
+// to their plugin as the bar does. Asked of the plugin runtime as the icons are read (its answer comes
+// while this waits); outside Tourne Desktop there's no runtime, so none.
+std::vector<PluginBarItem> g_pluginItems;
+unsigned g_pluginVersion = 0;  // that list's version, sent back with a click
+ULONGLONG g_pluginItemsRead = 0;
+
+HWND PluginHost() {
+    return FindWindowExW(HWND_MESSAGE, nullptr, kPluginHostClass, nullptr);
+}
+
+void AddPluginIcons(std::vector<HiddenIcon>* icons) {
+    static UINT ask = RegisterWindowMessageW(kPluginBarAskMessage);
+    HWND host = PluginHost();
+    HWND wnd = g_wnd;
+    if (!host || !wnd) {
+        return;
+    }
+    // At most once a second: a menu reads the icons a few times over.
+    if (GetTickCount64() - g_pluginItemsRead > 1000) {
+        DWORD_PTR result = 0;
+        SendMessageTimeoutW(host, ask, (WPARAM)wnd, 0, SMTO_ABORTIFHUNG, 500, &result);
+        g_pluginItemsRead = GetTickCount64();
+    }
+    int size = 0;
+    for (auto const& icon : *icons) {
+        size = std::max(size, icon.size);
+    }
+    if (!size) {
+        size = GetSystemMetrics(SM_CXSMICON);
+    }
+    for (size_t i = 0; i < g_pluginItems.size(); i++) {
+        auto const& item = g_pluginItems[i];
+        HiddenIcon icon;
+        icon.plugin = item.key;
+        icon.id = (UINT)i;
+        icon.tip = !item.tip.empty() ? item.tip : !item.text.empty() ? item.text : item.key;
+        icon.size = size;
+        icon.pixels = PluginItemPixels(item, size, ui::kInk);
+        icons->push_back(std::move(icon));
+    }
+}
+
+// A click on a plugin item's icon, posted to the runtime as the bar posts one.
+void PluginIconClick(HiddenIcon const& icon, int click) {
+    static UINT event = RegisterWindowMessageW(kPluginBarEventMessage);
+    HWND host = PluginHost();
+    for (size_t i = 0; host && i < g_pluginItems.size(); i++) {
+        if (g_pluginItems[i].key == icon.plugin) {
+            PluginBarEvent what = click == kClickRight ? kPluginRightClick : click == kClickMiddle ? kPluginMiddleClick : kPluginClick;
+            PostMessageW(host, event, g_pluginVersion, MakePluginBarEvent((int)i, what));
+            return;
+        }
+    }
 }
 
 // For Tourne Desktop's plugin panels and bar items, so they look like these flyouts: the colours as
@@ -16696,7 +19322,8 @@ void ParseToast(std::wstring_view xml, NotifyItem* item) {
         if (close == std::wstring_view::npos) {
             break;
         }
-        std::wstring text = XmlUnescape(xml.substr(at, close - at));
+        // (emoji and fancy letters as the pixel font can draw them: PlainSymbols, phone-link.cpp)
+        std::wstring text = PlainSymbols(XmlUnescape(xml.substr(at, close - at)));
         at = close + 7;
         if (!text.empty() && XmlAttribute(tag, L"placement") != L"attribution") {
             texts.push_back(text);
@@ -16709,7 +19336,7 @@ void ParseToast(std::wstring_view xml, NotifyItem* item) {
         }
     }
     for (auto tag : XmlStartTags(xml, L"action")) {
-        std::wstring label = XmlAttribute(tag, L"content");
+        std::wstring label = PlainSymbols(XmlAttribute(tag, L"content"));
         if (label.empty() || XmlAttribute(tag, L"placement") == L"contextMenu") {
             continue;
         }
@@ -16782,6 +19409,22 @@ std::wstring AppNameFor(std::wstring const& aumid) {
 std::string DesignForApp(std::wstring const& aumid, std::wstring const& name) {
     std::wstring text = aumid + L" " + name;
     auto has = [&](std::initializer_list<PCWSTR> words) { return TipHas(text, words); };
+    // A phone app's (Tourne.Phone.<its bundle id>, phone-ancs.cpp): the same design the Start menu's phone pane
+    // gives it (PhoneAppDesign there), else the phone.
+    if (has({L"tourne.phone."})) {
+        if (has({L"mail", L"outlook", L"proton"})) return "app-mail";
+        if (has({L"reddit"})) return "app-reddit";
+        if (has({L"youtube", L"tiktok", L"twitch", L"netflix", L"video"})) return "app-video";
+        if (has({L"amazon", L"ebay", L"etsy", L"shop", L"walmart", L"costco", L"target"})) return "app-shop";
+        if (has({L"instagram", L"snapchat", L"camera", L"photos"})) return "app-capture";
+        if (has({L"spotify"})) return "app-spotify";
+        if (has({L"music", L"podcast", L"audible"})) return "app-audio";
+        if (has({L"mobilesms", L"messages", L"whatsapp", L"discord", L"messenger", L"telegram", L"signal", L"slack",
+                 L"teams", L"chat"})) {
+            return "app-chat";
+        }
+        return "phone";
+    }
     if (has({L"claude"})) return "app-claude";
     if (has({L"tamer"})) return "app-screenshot";
     if (has({L"wallpaper engine", L"wallpaper64"})) return "app-wallpaper";
@@ -16842,6 +19485,7 @@ std::vector<NotifyApp> LoadNotifications() {
 
 // Removing: the toast history, which is what Windows' centre uses too.
 void RemoveNotification(NotifyItem const& item) {
+    PhoneNoteClear(item.aumid, item.tag);  // (a phone's: kept cleared when the phone sends it again)
     try {
         auto history = winrt::Windows::UI::Notifications::ToastNotificationManager::History();
         history.Remove(item.tag, item.group, item.aumid);
@@ -16851,6 +19495,9 @@ void RemoveNotification(NotifyItem const& item) {
 
 void ClearAppNotifications(std::wstring const& aumid) {
     try {
+        if (aumid.starts_with(L"Tourne.Phone."))
+            for (auto const& toast : winrt::Windows::UI::Notifications::ToastNotificationManager::History().GetHistory(aumid))
+                PhoneNoteClear(aumid, std::wstring(toast.Tag()));
         winrt::Windows::UI::Notifications::ToastNotificationManager::History().Clear(aumid);
     } catch (...) {
     }
@@ -16965,6 +19612,10 @@ void ActivateNotification(NotifyItem const& item, std::wstring const& arguments,
             if (HWND start = FindWindowW(L"TourneStartMenu_" WH_MOD_ID, nullptr))
                 PostMessageW(start, RegisterWindowMessageW(L"TournePhoneAction"), uid, action);
             RemoveNotification(item);
+        } else {
+            // Its body: the app on this PC to answer it in (Discord...), when it has one here (phone-link.cpp).
+            std::wstring open = PhoneAppOnPc(item.aumid.substr(13), AppNameFor(item.aumid));
+            if (!open.empty()) ShellExecuteW(nullptr, nullptr, open.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
         }
         return;
     }
@@ -17555,6 +20206,7 @@ struct FlyoutState {
     int dragTarget = -1;
     int dragFolder = -1;    // the folder tile under the dragged icon: it goes in there
     int dragStack = -1;     // the icon under it: the two make a new folder
+    int stackWait = -1;     // the icon it's held over, until it has been there a moment (kTimerStackWait)
     bool dragBack = false;  // over the open folder's way back: it comes out of the folder
     HWND dragOver = nullptr;  // The taskbar under the pointer, once it's out of the flyout.
     DragGhost ghost;
@@ -18613,7 +21265,8 @@ void ApplyOverflowOrder() {
 struct FolderSetup {
     std::wstring name, glyph;
     std::vector<std::wstring> patterns;
-    std::vector<std::wstring> pins;  // programs (file names) put in it by dragging: they win over patterns
+    std::vector<std::wstring> pins;  // icons (program|id) put in it by dragging: they win over patterns
+                                     // (a bare program name, from before: all of its icons)
 };
 
 // The folders as they are now: the settings' until one is changed in the
@@ -18621,10 +21274,12 @@ struct FolderSetup {
 // places, where every build reads them.
 struct FolderLayout {
     std::vector<FolderSetup> folders;
-    std::vector<std::wstring> loose;  // programs dragged out of their folder: no pattern takes them back
+    std::vector<std::wstring> loose;  // icons dragged out of their folder (program|id, or a program from
+                                      // before): no pattern takes them back
 };
 
 constexpr WCHAR kTrayFoldersValue[] = L"TrayFolders";  // "v1", then "folder:name<tab>glyph", "match:", "pin:", "loose:"
+constexpr WCHAR kTrayFoldersBeforeValue[] = L"TrayFoldersBefore";  // as they were before "Folders as in the settings"
 
 std::vector<FolderSetup> LoadFolderSetups();
 
@@ -18685,9 +21340,20 @@ void SaveFolderLayout(FolderLayout const& layout) {
     SaveTrayList(kTrayFoldersValue, items);
 }
 
-// Back to the folders in the settings.
+// Back to the folders in the settings; the folders as they were are kept, so
+// that can be undone.
 void ForgetFolderLayout() {
+    auto made = LoadTrayList(kTrayFoldersValue);
+    if (!made.empty()) SaveTrayList(kTrayFoldersBeforeValue, made);
     RegDeleteKeyValueW(HKEY_CURRENT_USER, kTrayStoreKey, kTrayFoldersValue);
+}
+
+// Undoes ForgetFolderLayout.
+void BringBackFolderLayout() {
+    auto before = LoadTrayList(kTrayFoldersBeforeValue);
+    if (before.empty()) return;
+    SaveTrayList(kTrayFoldersValue, before);
+    RegDeleteKeyValueW(HKEY_CURRENT_USER, kTrayStoreKey, kTrayFoldersBeforeValue);
 }
 
 std::vector<FolderSetup> LoadFolderSetups() {
@@ -18734,13 +21400,14 @@ bool FolderPatternMatch(std::wstring_view pattern, std::wstring_view text) {
     return p == pattern.size();
 }
 
-// The program's own name for itself (its file description), else "".
-std::wstring IconProgramDescription(HWND owner) {
-    static std::unordered_map<DWORD, std::wstring> cache;
+// A line of the program's version info (FileDescription, CompanyName) as written, else "".
+std::wstring IconProgramVersionText(HWND owner, PCWSTR field) {
+    static std::unordered_map<std::wstring, std::wstring> cache;  // "pid|field"
     DWORD pid = 0;
     GetWindowThreadProcessId(owner, &pid);
-    if (auto it = cache.find(pid); it != cache.end()) return it->second;
-    std::wstring description;
+    std::wstring key = std::to_wstring(pid) + L"|" + field;
+    if (auto it = cache.find(key); it != cache.end()) return it->second;
+    std::wstring text;
     if (HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
         WCHAR path[MAX_PATH];
         DWORD size = ARRAYSIZE(path);
@@ -18752,18 +21419,63 @@ std::wstring IconProgramDescription(HWND owner) {
             if (bytes && GetFileVersionInfoW(path, 0, bytes, data.data()) &&
                 VerQueryValueW(data.data(), L"\\VarFileInfo\\Translation", (void**)&translations, &length) &&
                 length) {
-                WCHAR query[64];
-                swprintf_s(query, L"\\StringFileInfo\\%04x%04x\\FileDescription", translations[0].language,
-                           translations[0].codePage);
+                WCHAR query[96];
+                swprintf_s(query, L"\\StringFileInfo\\%04x%04x\\%ls", translations[0].language,
+                           translations[0].codePage, field);
                 WCHAR* value = nullptr;
-                if (VerQueryValueW(data.data(), query, (void**)&value, &length) && length > 1) description = value;
+                if (VerQueryValueW(data.data(), query, (void**)&value, &length) && length > 1) text = value;
             }
         }
         CloseHandle(process);
     }
+    while (!text.empty() && iswspace(text.back())) text.pop_back();
+    cache[key] = text;
+    return text;
+}
+
+// The program's own name for itself (its file description) in lower case, else "".
+std::wstring IconProgramDescription(HWND owner) {
+    std::wstring description = IconProgramVersionText(owner, L"FileDescription");
     CharLowerBuffW(description.data(), (DWORD)description.size());
-    cache[pid] = description;
     return description;
+}
+
+// The folder an icon is in (an index into the layout's folders), else -1: put somewhere by hand
+// first (in a folder, or out of them all; the icon itself, else its whole program, as folders were
+// kept before), then the first folder with a pattern matching the program's name, its file name or
+// the tooltip.
+int HomeFolder(HiddenIcon const& icon, FolderLayout const& layout) {
+    auto const& setups = layout.folders;
+    std::wstring file = OwnerFileName(icon.owner);
+    for (std::wstring const& placed : {HiddenIconKey(icon), file}) {
+        for (int i = 0; i < (int)setups.size(); i++)
+            if (std::find(setups[i].pins.begin(), setups[i].pins.end(), placed) != setups[i].pins.end()) return i;
+        if (std::find(layout.loose.begin(), layout.loose.end(), placed) != layout.loose.end()) return -1;
+    }
+    // Pinned under another id of its program (some take a new one each run: MSI Afterburner), when every such
+    // pin is in the one folder and none of them was dragged out.
+    if (!file.empty() && icon.plugin.empty()) {
+        std::wstring program = file + L"|";
+        auto ofProgram = [&](std::wstring const& k) { return k.starts_with(program) && k.find(L'|', program.size()) == std::wstring::npos; };
+        int found = -1;
+        bool split = std::any_of(layout.loose.begin(), layout.loose.end(), ofProgram);
+        for (int i = 0; i < (int)setups.size() && !split; i++)
+            if (std::any_of(setups[i].pins.begin(), setups[i].pins.end(), ofProgram)) {
+                if (found >= 0) split = true;
+                found = i;
+            }
+        if (!split && found >= 0) return found;
+    }
+    std::wstring stem = file.ends_with(L".exe") ? file.substr(0, file.size() - 4) : file;
+    std::wstring tip = icon.tip;
+    CharLowerBuffW(tip.data(), (DWORD)tip.size());
+    std::wstring description = IconProgramDescription(icon.owner);
+    for (int i = 0; i < (int)setups.size(); i++)
+        for (auto const& pattern : setups[i].patterns)
+            if (FolderPatternMatch(pattern, tip) || FolderPatternMatch(pattern, file) ||
+                FolderPatternMatch(pattern, stem) || (!description.empty() && FolderPatternMatch(pattern, description)))
+                return i;
+    return -1;
 }
 
 // The hidden icons shared out into their folders (the first that matches by
@@ -18788,30 +21500,13 @@ void SortIntoFolders() {
     std::vector<FlyoutState::OverflowFolder> folders(setups.size());
     std::vector<HiddenIcon> loose;
     for (auto& icon : f.hidden) {
-        std::wstring file = OwnerFileName(icon.owner);
-        std::wstring stem = file.ends_with(L".exe") ? file.substr(0, file.size() - 4) : file;
-        std::wstring tip = icon.tip;
-        CharLowerBuffW(tip.data(), (DWORD)tip.size());
-        std::wstring description = IconProgramDescription(icon.owner);
-        int home = -1;
-        // Put somewhere by hand first: in a folder, or out of them all.
-        for (int i = 0; i < (int)setups.size() && home < 0; i++)
-            if (std::find(setups[i].pins.begin(), setups[i].pins.end(), file) != setups[i].pins.end()) home = i;
-        bool outside = std::find(layout.loose.begin(), layout.loose.end(), file) != layout.loose.end();
-        for (int i = 0; i < (int)setups.size() && home < 0 && !outside; i++) {
-            for (auto const& pattern : setups[i].patterns) {
-                if (FolderPatternMatch(pattern, tip) || FolderPatternMatch(pattern, file) ||
-                    FolderPatternMatch(pattern, stem) || (!description.empty() && FolderPatternMatch(pattern, description))) {
-                    home = i;
-                    break;
-                }
-            }
-        }
+        int home = HomeFolder(icon, layout);
         if (home >= 0) folders[home].icons.push_back(std::move(icon));
         else loose.push_back(std::move(icon));
     }
     for (int i = 0; i < (int)setups.size(); i++) {
-        if (folders[i].icons.empty() && !showEmpty) continue;
+        // (an empty folder made here, with no patterns of its own, shows: it's waiting to be filled)
+        if (folders[i].icons.empty() && !showEmpty && !setups[i].patterns.empty()) continue;
         folders[i].name = setups[i].name;
         folders[i].glyph = setups[i].glyph;
         folders[i].setup = i;
@@ -18984,8 +21679,13 @@ void RenderOverflow(Canvas& c, std::vector<Hit>& hits, int hover) {
     c.y += c.Px(10);
 }
 
-// StartAllBack's own list of tray icons when it's installed, else Windows'.
+// In Tourne Desktop, Tourne Studio at the tray folders' settings; in the
+// Windhawk suite, StartAllBack's own list of tray icons when it's installed,
+// else Windows'.
 void OpenTrayCustomization() {
+#ifdef TD_PREFIX
+    td::OpenStudio(L"", L"trayFolders");
+#else
     WCHAR path[MAX_PATH];
     if (ExpandEnvironmentStringsW(L"%ProgramFiles%\\StartAllBack\\StartAllBackCfg.exe", path,
                                   ARRAYSIZE(path)) &&
@@ -18994,6 +21694,7 @@ void OpenTrayCustomization() {
     } else {
         OpenUri(L"ms-settings:taskbar");
     }
+#endif
 }
 
 // The slot under a point in the hidden icons grid, or -1 outside it.
@@ -19068,43 +21769,55 @@ void ChangeFolders(std::function<void(FolderLayout&)> const& change) {
     if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
 }
 
-void ForgetPlacement(FolderLayout& layout, std::wstring const& file) {
-    for (auto& setup : layout.folders) std::erase(setup.pins, file);
-    std::erase(layout.loose, file);
+void ForgetPlacement(FolderLayout& layout, std::wstring const& key) {
+    for (auto& setup : layout.folders) std::erase(setup.pins, key);
+    std::erase(layout.loose, key);
+}
+
+// Placed by hand: the icon itself (program|id), so a program's other icons stay where they are.
+std::wstring PlacedKey(HiddenIcon const& icon) {
+    if (!icon.plugin.empty()) return HiddenIconKey(icon);  // (a plugin item: "plugin:<key>")
+    return OwnerFileName(icon.owner).empty() ? L"" : HiddenIconKey(icon);
 }
 
 void PutInFolder(HiddenIcon const& icon, int setup) {
-    std::wstring file = OwnerFileName(icon.owner);
-    if (file.empty()) return;
+    std::wstring key = PlacedKey(icon);
+    if (key.empty()) return;
     ChangeFolders([&](FolderLayout& layout) {
         if (setup < 0 || setup >= (int)layout.folders.size()) return;
-        ForgetPlacement(layout, file);
-        layout.folders[setup].pins.push_back(file);
+        ForgetPlacement(layout, key);
+        layout.folders[setup].pins.push_back(key);
     });
 }
 
 void TakeOutOfFolder(HiddenIcon const& icon) {
-    std::wstring file = OwnerFileName(icon.owner);
-    if (file.empty()) return;
+    std::wstring key = PlacedKey(icon);
+    if (key.empty()) return;
     ChangeFolders([&](FolderLayout& layout) {
-        ForgetPlacement(layout, file);
-        layout.loose.push_back(file);
+        ForgetPlacement(layout, key);
+        layout.loose.push_back(key);
     });
 }
 
 void StartFolderRename(int setup, bool glyph);
 
+// "New folder", or "New folder 2" and on when that's taken.
+std::wstring FreeFolderName(FolderLayout const& layout) {
+    std::wstring name = L"New folder";
+    for (int n = 2; std::any_of(layout.folders.begin(), layout.folders.end(),
+                                [&](FolderSetup const& s) { return s.name == name; });
+         n++)
+        name = L"New folder " + std::to_wstring(n);
+    return name;
+}
+
 // One icon dropped on another: a new folder of the two, named at once.
 void StackIntoNewFolder(HiddenIcon const& dragged, HiddenIcon const& onto) {
-    std::wstring a = OwnerFileName(onto.owner), b = OwnerFileName(dragged.owner);
+    std::wstring a = PlacedKey(onto), b = PlacedKey(dragged);
     if (a.empty() || b.empty()) return;
     int made = -1;
     ChangeFolders([&](FolderLayout& layout) {
-        std::wstring name = L"New folder";
-        for (int n = 2; std::any_of(layout.folders.begin(), layout.folders.end(),
-                                    [&](FolderSetup const& s) { return s.name == name; });
-             n++)
-            name = L"New folder " + std::to_wstring(n);
+        std::wstring name = FreeFolderName(layout);
         ForgetPlacement(layout, a);
         ForgetPlacement(layout, b);
         FolderSetup setup{name, L"", {}, {a}};
@@ -19210,6 +21923,372 @@ void StartFolderRename(int setup, bool glyph) {
     InvalidateRect(f.hwnd, nullptr, FALSE);
 }
 
+std::wstring MenuEscape(std::wstring text);
+std::wstring IconMenuName(HiddenIcon const* icon, std::wstring const& key);
+
+// The running icons whose place is the overflow (the flyout's own stand-in aside).
+std::vector<HiddenIcon> OverflowIcons() {
+    std::vector<HiddenIcon> all;
+    RequestHiddenIcons(&all, kRelayAllIcons);
+    TrayPlaces places = TrayPlaces::Load();
+    std::erase_if(all, [&](HiddenIcon const& icon) {
+        return (icon.owner == g_wnd && icon.id == kIconIdBase + kOverflow) ||
+               places.For(icon, HiddenIconKey(icon)) != kPlaceOverflow;
+    });
+    return all;
+}
+
+// The flyout opened on a folder (by its place in the layout).
+void OpenFolderSetup(int setup) {
+    auto& f = g_flyout;
+    if (!f.hwnd) return;
+    for (int i = 0; i < (int)f.folders.size(); i++) {
+        if (f.folders[i].setup != setup) continue;
+        f.openFolder = i;
+        LoadOverflowFlyout();
+        LayoutFlyout(-1);
+        InvalidateRect(f.hwnd, nullptr, FALSE);
+        return;
+    }
+}
+
+// A folder's icons, picked from a menu that comes back after each pick: every icon in the overflow,
+// ticked when it's in this folder. One from another folder moves here; a ticked one goes back out,
+// loose. Rename names it in the flyout; Done (or a click away) ends it.
+void PickIntoFolder(POINT screen, int setup) {
+    auto& f = g_flyout;
+    bool rename = false;
+    for (bool again = true; again;) {
+        again = false;
+        FolderLayout layout = LoadFolderLayout();
+        if (setup < 0 || setup >= (int)layout.folders.size()) return;
+        std::vector<MenuItem> icons;
+        for (auto const& icon : OverflowIcons()) {
+            if (PlacedKey(icon).empty()) continue;
+            int home = HomeFolder(icon, layout);
+            std::wstring label = IconMenuName(&icon, HiddenIconKey(icon));
+            if (home >= 0 && home != setup) label += L"  (from " + MenuEscape(layout.folders[home].name) + L")";
+            MenuItem item{label, [&again, icon, home, setup] {
+                              again = true;
+                              if (home == setup) TakeOutOfFolder(icon);
+                              else PutInFolder(icon, setup);
+                          }};
+            item.checked = home == setup;
+            icons.push_back(std::move(item));
+        }
+        std::sort(icons.begin(), icons.end(),
+                  [](MenuItem const& a, MenuItem const& b) { return _wcsicmp(a.label.c_str(), b.label.c_str()) < 0; });
+        std::vector<MenuItem> items;
+        items.push_back({L"Rename " + MenuEscape(layout.folders[setup].name), [&rename] { rename = true; }});
+        items.push_back({L"Done", [] {}});
+        items.push_back({});
+        if (icons.empty()) items.push_back({L"No icons in the overflow", nullptr});
+        for (auto& item : icons) items.push_back(std::move(item));
+        g_flyoutMenu = true;
+        ShowMenu(items, MAKELPARAM(screen.x, screen.y));
+        g_flyoutMenu = false;
+    }
+    if (rename) StartFolderRename(setup, false);
+    if (f.hwnd && IsWindow(f.hwnd) && !f.renameBox) SetForegroundWindow(f.hwnd);
+}
+
+// A new folder in the overflow, empty or with one icon (moved out of its folder if it's in one), opened
+// in the flyout; then the picker for the rest.
+void NewOverflowFolder(POINT screen, HiddenIcon const* first) {
+    std::wstring key = first ? PlacedKey(*first) : L"";
+    int made = -1;
+    ChangeFolders([&](FolderLayout& layout) {
+        FolderSetup setup{FreeFolderName(layout), L"", {}, {}};
+        if (!key.empty()) {
+            ForgetPlacement(layout, key);
+            setup.pins.push_back(key);
+        }
+        layout.folders.push_back(std::move(setup));
+        made = (int)layout.folders.size() - 1;
+    });
+    if (made < 0) return;
+    OpenFolderSetup(made);
+    PickIntoFolder(screen, made);
+}
+
+// Auto sort: what an icon's program is for, from whole words of its file name, its own name for itself,
+// its maker and its tooltip; the first kind that has one. The order matters where words overlap (NVIDIA's
+// recorder is Recording before NVIDIA is Hardware; SteelSeries Sonar is Audio; the Bluetooth icon Explorer
+// shows is Hardware before Explorer's are Windows). A folder whose name asks for a kind takes it ("{.GAME |
+// .SOCIAL}" takes Games and Chat, "W I N D.u x" Windows); a kind no folder asks for goes where its next
+// broader kind goes (Media, then Audio; Security, then Windows; AI, Network, Dev and the like, then Tools).
+struct ProgramKind {
+    PCWSTR folder;
+    std::vector<PCWSTR> words;  // in the program's names and tooltip
+    std::vector<PCWSTR> names;  // in a folder's name
+    PCWSTR broader;
+};
+
+std::vector<ProgramKind> const& ProgramKinds() {
+    static std::vector<ProgramKind> const kinds = {
+        {L"Chat",
+         {L"discord", L"vesktop", L"vencord", L"equicord", L"testcord", L"telegram", L"slack", L"teams", L"whatsapp",
+          L"signal", L"element", L"skype", L"zoom", L"messenger", L"thunderbird", L"outlook", L"mail", L"phone link",
+          L"yourphone", L"kde connect"},
+         {L"chat", L"social", L"messages", L"messaging", L"comms", L"talk"},
+         nullptr},
+        {L"AI", {L"claude", L"chatgpt", L"copilot", L"ollama", L"lm studio"}, {L"ai", L"assistant"}, L"Tools"},
+        {L"Recording",
+         {L"obs", L"sharex", L"shadowplay", L"nvidia share", L"streamlabs", L"greenshot", L"lightshot", L"snagit",
+          L"capture", L"screenshot", L"recordly", L"screen recorder"},
+         {L"recording", L"record", L"capture", L"stream", L"streaming"},
+         L"Media"},
+        {L"Media",
+         {L"spotify", L"vlc", L"foobar", L"musicbee", L"aimp", L"itunes", L"winamp", L"mpc", L"plex", L"tidal",
+          L"deezer", L"audacious", L"media player", L"now playing", L"kodi", L"jellyfin"},
+         {L"media", L"music", L"video", L"player", L"audio"},
+         L"Audio"},
+        {L"Audio",
+         {L"volume", L"speaker", L"speakers", L"headphones", L"headset", L"voicemeeter", L"eartrumpet", L"soundswitch",
+          L"equalizer", L"realtek", L"nahimic", L"sonar", L"wave link", L"audio", L"sound", L"microphone"},
+         {L"audio", L"sound", L"music", L"volume"},
+         L"Media"},
+        {L"Games",
+         {L"steam", L"epic games", L"battle.net", L"gog", L"galaxy", L"ea app", L"origin", L"ubisoft", L"uplay",
+          L"riot", L"vanguard", L"playnite", L"xbox", L"rockstar", L"curseforge", L"overwolf", L"league of legends"},
+         {L"game", L"games", L"gaming", L"play"},
+         nullptr},
+        {L"Downloads",
+         {L"qbittorrent", L"utorrent", L"bittorrent", L"transmission", L"internet download manager", L"idman",
+          L"abdm", L"ab download manager", L"jdownloader", L"free download manager", L"motrix"},
+         {L"download", L"downloads", L"torrent"},
+         L"Tools"},
+        {L"Cloud",
+         {L"onedrive", L"dropbox", L"google drive", L"googledrivefs", L"megasync", L"syncthing", L"pcloud", L"icloud",
+          L"nextcloud"},
+         {L"cloud", L"sync", L"drive"},
+         L"Tools"},
+        {L"Security",
+         {L"windows security", L"securityhealthsystray", L"defender", L"malwarebytes", L"bitdefender", L"avast",
+          L"avg", L"kaspersky", L"norton", L"eset", L"vpn", L"nordvpn", L"protonvpn", L"mullvad", L"wireguard",
+          L"openvpn", L"bitwarden", L"1password", L"keepass", L"keepassxc", L"lastpass", L"dashlane", L"glasswire",
+          L"simplewall", L"portmaster"},
+         {L"security", L"secure", L"safety", L"vpn"},
+         L"Windows"},
+        {L"Network",
+         {L"network", L"wi-fi", L"wifi", L"ethernet", L"netlimiter", L"tailscale", L"zerotier", L"hamachi", L"parsec",
+          L"anydesk", L"teamviewer", L"rustdesk", L"localsend"},
+         {L"network", L"net", L"web", L"remote"},
+         L"Tools"},
+        {L"Dev",
+         {L"docker", L"github", L"visual studio", L"vscode", L"wsl", L"postman", L"jetbrains", L"toolbox"},
+         {L"dev", L"code", L"coding"},
+         L"Tools"},
+        {L"Hardware",
+         {L"alienware", L"alienfx", L"alienfan", L"command center", L"afterburner", L"rtss", L"rivatuner", L"hwinfo",
+          L"icue", L"corsair", L"logitech", L"g hub", L"lghub", L"razer", L"synapse", L"steelseries", L"armoury",
+          L"msi", L"nvidia", L"geforce", L"amd", L"radeon", L"intel", L"dell", L"samsung", L"magician", L"epson",
+          L"printer", L"bluetooth", L"battery", L"signalrgb", L"openrgb", L"safely remove", L"usb", L"eject",
+          L"sensor", L"fan"},
+         {L"hardware", L"device", L"devices", L"hw", L"gear", L"peripherals"},
+         nullptr},
+        {L"Windows",
+         {L"explorer", L"windows"},
+         {L"windows", L"wind", L"win", L"os", L"system", L"microsoft"},
+         nullptr},
+        {L"Tools",
+         {L"powertoys", L"command palette", L"everything", L"autohotkey", L"ditto", L"f.lux", L"flux", L"caffeine",
+          L"windhawk", L"translucenttb", L"rainmeter", L"wallpaper engine", L"lively", L"displayfusion", L"quicklook",
+          L"clipboard", L"sizer", L"unigetui", L"tourne"},
+         {L"tool", L"tools", L"utility", L"utilities", L"util", L"utils"},
+         nullptr},
+    };
+    return kinds;
+}
+
+int ProgramKindIndex(PCWSTR folder) {
+    auto const& kinds = ProgramKinds();
+    for (int i = 0; folder && i < (int)kinds.size(); i++)
+        if (!wcscmp(kinds[i].folder, folder)) return i;
+    return -1;
+}
+
+// The word at a word's start in lower-case text (not inside another word).
+bool HasWord(std::wstring const& text, PCWSTR word) {
+    size_t length = wcslen(word);
+    for (size_t at = text.find(word); at != std::wstring::npos; at = text.find(word, at + 1)) {
+        bool startOk = at == 0 || !iswalnum(text[at - 1]);
+        bool endOk = at + length >= text.size() || !iswalpha(text[at + length]);  // ("hwinfo64" too)
+        if (startOk && endOk) return true;
+    }
+    return false;
+}
+
+// A folder's name asks for a kind: one of its words, or a longer one with the name's letters run together.
+bool FolderNameAsksFor(std::wstring name, ProgramKind const& kind) {
+    CharLowerBuffW(name.data(), (DWORD)name.size());
+    std::wstring together;
+    for (wchar_t c : name)
+        if (iswalnum(c)) together += c;
+    for (PCWSTR word : kind.names)
+        if (HasWord(name, word) || (wcslen(word) >= 4 && together.find(word) != std::wstring::npos)) return true;
+    return false;
+}
+
+// The program's maker, without "Corporation", "Inc." and the like ("" if it names none).
+std::wstring IconMaker(HiddenIcon const& icon) {
+    std::wstring maker = IconProgramVersionText(icon.owner, L"CompanyName");
+    maker = maker.substr(0, maker.find(L','));
+    for (PCWSTR mark : {L"(R)", L"(r)", L"(TM)", L"(tm)", L"®", L"™"})
+        for (size_t at; (at = maker.find(mark)) != std::wstring::npos;) maker.erase(at, wcslen(mark));
+    for (bool cut = true; cut;) {
+        cut = false;
+        while (!maker.empty() && (iswspace(maker.back()) || maker.back() == L'.')) maker.pop_back();
+        size_t space = maker.find_last_of(L' ');
+        if (space == std::wstring::npos) break;
+        std::wstring last = maker.substr(space + 1);
+        CharLowerBuffW(last.data(), (DWORD)last.size());
+        for (PCWSTR suffix : {L"corporation", L"corp", L"inc", L"incorporated", L"ltd", L"limited", L"llc",
+                              L"gmbh", L"aps", L"a/s", L"co", L"company", L"s.a", L"ag", L"b.v", L"pty", L"plc",
+                              L"technologies", L"software"})
+            if (last == suffix) {
+                maker.resize(space);
+                cut = true;
+                break;
+            }
+    }
+    return maker;
+}
+
+// The kind an icon's program is (an index into ProgramKinds), else -1.
+int IconKindOf(HiddenIcon const& icon) {
+    std::wstring file = OwnerFileName(icon.owner);
+    std::wstring stem = file.ends_with(L".exe") ? file.substr(0, file.size() - 4) : file;
+    std::wstring tip = icon.tip.substr(0, icon.tip.find_first_of(L"\r\n"));
+    std::wstring text = stem + L"\n" + IconProgramDescription(icon.owner) + L"\n" +
+                        IconProgramVersionText(icon.owner, L"CompanyName") + L"\n" + tip;
+    CharLowerBuffW(text.data(), (DWORD)text.size());
+    auto const& kinds = ProgramKinds();
+    for (int i = 0; i < (int)kinds.size(); i++)
+        for (PCWSTR word : kinds[i].words)
+            if (HasWord(text, word)) return i;
+    return -1;
+}
+
+constexpr WCHAR kTrayFoldersBeforeSortValue[] = L"TrayFoldersBeforeSort";  // "settings": they were the settings'
+
+// Icons into folders by what their programs are for, and the rest by maker when two or more share one.
+// Each kind goes to the folder whose name asks for it, else the folder most of its icons are in now
+// (the first found), else its broader kind's, else a folder of its own named for it (Chat, Media, Games...;
+// made only for two icons or more). Only loose icons (folders stay as they are), or every icon (the folders
+// that take a kind are kept, emptied and filled again; the rest go). The folders as they were are kept, to
+// undo.
+void AutoSortFolders(bool everything) {
+    auto before = LoadTrayList(kTrayFoldersValue);
+    if (before.empty()) before = {L"settings"};
+    SaveTrayList(kTrayFoldersBeforeSortValue, before);
+    std::vector<HiddenIcon> icons = OverflowIcons();
+    ChangeFolders([&](FolderLayout& layout) {
+        auto const& kinds = ProgramKinds();
+        std::vector<std::wstring> taker(kinds.size());
+        for (size_t k = 0; k < kinds.size(); k++)
+            for (auto const& folder : layout.folders)
+                if (FolderNameAsksFor(folder.name, kinds[k])) {
+                    taker[k] = folder.name;
+                    break;
+                }
+        struct Found {
+            std::wstring key;
+            int kind;
+            bool placed;
+        };
+        std::vector<Found> found;
+        std::vector<std::vector<std::pair<std::wstring, int>>> where(kinds.size());  // folder, icons
+        for (auto const& icon : icons) {
+            std::wstring key = PlacedKey(icon);
+            if (key.empty()) continue;
+            int home = HomeFolder(icon, layout), kind = IconKindOf(icon);
+            found.push_back({key, kind, home >= 0});
+            if (home < 0 || kind < 0) continue;
+            auto& counts = where[kind];
+            auto same = std::find_if(counts.begin(), counts.end(),
+                                     [&](auto const& c) { return c.first == layout.folders[home].name; });
+            if (same == counts.end()) counts.push_back({layout.folders[home].name, 1});
+            else same->second++;
+        }
+        for (size_t k = 0; k < kinds.size(); k++) {
+            if (!taker[k].empty() || where[k].empty()) continue;
+            taker[k] = std::max_element(where[k].begin(), where[k].end(), [](auto const& a, auto const& b) {
+                           return a.second < b.second;
+                       })->first;
+        }
+        auto folderFor = [&](int kind) {
+            for (int at = kind, steps = 0; at >= 0 && steps < 8; at = ProgramKindIndex(kinds[at].broader), steps++)
+                if (!taker[at].empty()) return taker[at];
+            return std::wstring(kinds[kind].folder);
+        };
+        std::vector<std::wstring> kept;
+        if (everything) {
+            FolderLayout fresh;
+            for (auto const& folder : layout.folders)
+                if (std::find(taker.begin(), taker.end(), folder.name) != taker.end()) {
+                    fresh.folders.push_back({folder.name, folder.glyph, {}, {}});
+                    kept.push_back(folder.name);
+                }
+            layout = std::move(fresh);
+        }
+        struct Sorted {
+            std::wstring key, folder;
+        };
+        std::vector<Sorted> sorted;
+        std::vector<std::pair<std::wstring, std::vector<std::wstring>>> makers;  // maker, keys
+        for (size_t i = 0; i < found.size(); i++) {
+            if (found[i].placed && !everything) continue;
+            if (found[i].kind >= 0) {
+                sorted.push_back({found[i].key, folderFor(found[i].kind)});
+                continue;
+            }
+            std::wstring maker;
+            for (auto const& icon : icons)
+                if (PlacedKey(icon) == found[i].key) maker = IconMaker(icon);
+            if (maker.empty()) continue;
+            auto same = std::find_if(makers.begin(), makers.end(),
+                                     [&](auto const& m) { return !_wcsicmp(m.first.c_str(), maker.c_str()); });
+            if (same == makers.end()) {
+                makers.emplace_back(maker, std::vector<std::wstring>{});
+                same = makers.end() - 1;
+            }
+            same->second.push_back(found[i].key);
+        }
+        for (auto const& [maker, keys] : makers)
+            for (auto const& key : keys) sorted.push_back({key, maker});
+        auto existing = [&](std::wstring const& name) {
+            return std::find_if(layout.folders.begin(), layout.folders.end(),
+                                [&](FolderSetup const& s) { return !_wcsicmp(s.name.c_str(), name.c_str()); });
+        };
+        for (auto const& item : sorted) {
+            auto into = existing(item.folder);
+            if (into == layout.folders.end()) {
+                size_t count = std::count_if(sorted.begin(), sorted.end(),
+                                             [&](Sorted const& s) { return s.folder == item.folder; });
+                if (count < 2) continue;
+                layout.folders.push_back({item.folder, L"", {}, {}});
+                into = layout.folders.end() - 1;
+            }
+            ForgetPlacement(layout, item.key);
+            into->pins.push_back(item.key);
+        }
+        // Kept folders nothing went into go too.
+        std::erase_if(layout.folders, [&](FolderSetup const& s) {
+            return s.pins.empty() && std::find(kept.begin(), kept.end(), s.name) != kept.end();
+        });
+    });
+}
+
+// Undoes AutoSortFolders.
+void UndoAutoSort() {
+    auto before = LoadTrayList(kTrayFoldersBeforeSortValue);
+    if (before.empty()) return;
+    if (before.size() == 1 && before[0] == L"settings") RegDeleteKeyValueW(HKEY_CURRENT_USER, kTrayStoreKey, kTrayFoldersValue);
+    else SaveTrayList(kTrayFoldersValue, before);
+    RegDeleteKeyValueW(HKEY_CURRENT_USER, kTrayStoreKey, kTrayFoldersBeforeSortValue);
+}
+
 void ShowFolderMenu(POINT screen, int folder) {
     auto& f = g_flyout;
     if (folder < 0 || folder >= (int)f.folders.size()) return;
@@ -19217,6 +22296,7 @@ void ShowFolderMenu(POINT screen, int folder) {
     std::vector<MenuItem> items;
     items.push_back({L"Rename", [setup] { StartFolderRename(setup, false); }});
     items.push_back({L"Glyph (empty: its icons)", [setup] { StartFolderRename(setup, true); }});
+    items.push_back({L"Pick its icons", [screen, setup] { PickIntoFolder(screen, setup); }});
     items.push_back({});
     items.push_back({L"Delete the folder (its icons stay)", [setup] {
                          ChangeFolders([&](FolderLayout& layout) {
@@ -19232,12 +22312,26 @@ void ShowFolderMenu(POINT screen, int folder) {
     if (f.hwnd && IsWindow(f.hwnd) && !f.renameBox) SetForegroundWindow(f.hwnd);
 }
 
+// The hidden icon shown at a place in the grid while one is dragged (the
+// others make room for it, as RenderOverflow draws them).
+int ShownHiddenAt(int place) {
+    auto const& f = g_flyout;
+    std::vector<int> order;
+    for (int i = 0; i < (int)f.hidden.size(); i++) order.push_back(i);
+    if (f.dragHidden >= 0 && f.dragHidden < (int)order.size() && f.dragTarget >= 0 && f.dragTarget < (int)order.size()) {
+        order.erase(order.begin() + f.dragHidden);
+        order.insert(order.begin() + f.dragTarget, f.dragHidden);
+    }
+    return place >= 0 && place < (int)order.size() ? order[place] : -1;
+}
+
 // Where a dragged hidden icon would land: a folder tile (into it), the middle
-// of another icon (a new folder of the two), the open folder's way back (out
-// of it), else a slot in the grid, the others making room. True if that changed.
+// of another icon held there a moment (a new folder of the two), the open
+// folder's way back (out of it), else a slot in the grid, the others making
+// room. True if that changed.
 bool AimHiddenDrag(POINT pt) {
     auto& f = g_flyout;
-    int folder = -1, stack = -1, target = -1;
+    int folder = -1, stack = -1, target = -1, over = -1;
     bool back = false;
     int hit = -1;
     for (auto const& h : f.hits)
@@ -19254,13 +22348,25 @@ bool AimHiddenDrag(POINT pt) {
         if (target >= 0 && cell > 0 && f.openFolder < 0 && g_settings.overflowFolders) {
             int column = (pt.x - f.overflowLeft) / cell, row = (pt.y - f.overflowTop) / cell;
             int x = (pt.x - f.overflowLeft) % cell, y = (pt.y - f.overflowTop) % cell;
-            int under = row * columns + column - f.folderTiles;
-            if (under >= 0 && under < (int)f.hidden.size() && under != f.dragHidden && x > cell / 4 &&
-                x < cell * 3 / 4 && y > cell / 4 && y < cell * 3 / 4) {
-                stack = under;
-                target = -1;
+            int under = ShownHiddenAt(row * columns + column - f.folderTiles);
+            if (under >= 0 && under != f.dragHidden && x > cell / 4 && x < cell * 3 / 4 && y > cell / 4 &&
+                y < cell * 3 / 4) {
+                // Passing over icons while moving one makes no folders: only one held over another.
+                // Meanwhile the others stay where they are.
+                over = under;
+                if (under == f.dragStack) {
+                    stack = under;
+                } else if (under != f.stackWait) {
+                    f.stackWait = under;
+                    if (f.hwnd) SetTimer(f.hwnd, kTimerStackWait, 450, nullptr);
+                }
+                target = f.dragTarget;
             }
         }
+    }
+    if (f.stackWait >= 0 && (over != f.stackWait || stack >= 0)) {
+        f.stackWait = -1;
+        if (f.hwnd) KillTimer(f.hwnd, kTimerStackWait);
     }
     bool changed = folder != f.dragFolder || stack != f.dragStack || back != f.dragBack || target != f.dragTarget;
     f.dragFolder = folder;
@@ -19281,7 +22387,7 @@ std::wstring MenuEscape(std::wstring text) {
 
 // "Tooltip (program.exe)", or just the program when there's no tooltip.
 std::wstring IconMenuName(HiddenIcon const* icon, std::wstring const& key) {
-    std::wstring program = key.substr(0, key.find(L'|'));
+    std::wstring program = key.starts_with(L"plugin:") ? key.substr(7) : key.substr(0, key.find(L'|'));
     std::wstring tip = icon ? icon->tip.substr(0, icon->tip.find_first_of(L"\r\n")) : L"";
     if (tip.size() > 40) tip = tip.substr(0, 37) + L"...";
     std::wstring name = tip.empty() || !_wcsicmp(tip.c_str(), program.c_str()) ? program : tip + L"  (" + program + L")";
@@ -19340,15 +22446,61 @@ void ShowOverflowMenu(POINT screen) {
         items.push_back({});
         items.push_back({L"Bring back here", nullptr, bringBack});
     }
-    if (g_settings.overflowFolders && !LoadTrayList(kTrayFoldersValue).empty()) {
-        // Folders changed here (dragged into, made, renamed) back to the ones in the settings.
+    if (g_settings.overflowFolders) {
+        // A new folder: picked icons go in (from other folders too), then it can be renamed. Or every icon
+        // sorted into folders by what its program is for.
+        std::vector<MenuItem> newFolder{{L"Pick its icons", [screen] { NewOverflowFolder(screen, nullptr); }}, {}};
+        FolderLayout layout = LoadFolderLayout();
+        std::vector<MenuItem> startWith;
+        for (auto const& icon : all) {
+            std::wstring key = HiddenIconKey(icon);
+            if (icon.owner == g_wnd && icon.id == kIconIdBase + kOverflow) continue;
+            if (places.For(icon, key) != kPlaceOverflow || PlacedKey(icon).empty()) continue;
+            int home = HomeFolder(icon, layout);
+            std::wstring label = L"Start with " + IconMenuName(&icon, key);
+            if (home >= 0) label += L"  (from " + MenuEscape(layout.folders[home].name) + L")";
+            startWith.push_back({label, [screen, icon] { NewOverflowFolder(screen, &icon); }});
+        }
+        std::sort(startWith.begin(), startWith.end(), byName);
+        for (auto& item : startWith) newFolder.push_back(std::move(item));
+        if (startWith.empty()) newFolder.pop_back();
+        std::vector<MenuItem> autoSort{
+            {L"Loose icons (your folders stay)", [] { AutoSortFolders(false); }},
+            {L"All icons (folders made again)", [] { AutoSortFolders(true); }},
+        };
+        if (!LoadTrayList(kTrayFoldersBeforeSortValue).empty()) {
+            autoSort.push_back({});
+            autoSort.push_back({L"Folders as before auto sort", [] {
+                                    UndoAutoSort();
+                                    LoadOverflowFlyout();
+                                    LayoutFlyout(-1);
+                                    if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+                                }});
+        }
         items.push_back({});
-        items.push_back({L"Folders as in the settings", [] {
-                             ForgetFolderLayout();
-                             LoadOverflowFlyout();
-                             LayoutFlyout(-1);
-                             if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
-                         }});
+        items.push_back({L"New folder in the overflow", nullptr, newFolder});
+        items.push_back({L"Auto sort", nullptr, autoSort});
+    }
+    bool changedHere = !LoadTrayList(kTrayFoldersValue).empty();
+    bool keptBefore = !LoadTrayList(kTrayFoldersBeforeValue).empty();
+    if (g_settings.overflowFolders && (changedHere || keptBefore)) {
+        // Folders changed here (dragged into, made, renamed) back to the ones in the settings, and back again.
+        items.push_back({});
+        if (changedHere) {
+            items.push_back({L"Folders as in the settings", [] {
+                                 ForgetFolderLayout();
+                                 LoadOverflowFlyout();
+                                 LayoutFlyout(-1);
+                                 if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+                             }});
+        } else {
+            items.push_back({L"Folders as I had them", [] {
+                                 BringBackFolderLayout();
+                                 LoadOverflowFlyout();
+                                 LayoutFlyout(-1);
+                                 if (g_flyout.hwnd) InvalidateRect(g_flyout.hwnd, nullptr, FALSE);
+                             }});
+        }
     }
     g_flyoutMenu = true;
     ShowMenu(items, MAKELPARAM(screen.x, screen.y));
@@ -19358,12 +22510,29 @@ void ShowOverflowMenu(POINT screen) {
 }
 
 // An icon dragged from the taskbar's tray onto the flyout: into the overflow,
-// in the slot it was dropped on (at the end, off the grid).
+// in the slot it was dropped on (at the end, off the grid); dropped on a
+// folder tile, or while a folder is open, into that folder too.
 bool DropOnFlyout(HWND hWnd, POINT screen, std::wstring const& key) {
+    auto& f = g_flyout;
     TrayPlaces::Load().Set(key, kPlaceOverflow);
     POINT client = screen;
     ScreenToClient(hWnd, &client);
     int slot = HiddenSlotAt(client);
+    int setup = -1;
+    for (auto const& h : f.hits)
+        if (PtInRect(&h.rc, client) && (h.id >> 16) == kHitFolder && (h.id & 0xFFFF) < (int)f.folders.size())
+            setup = f.folders[h.id & 0xFFFF].setup;
+    if (setup < 0 && f.openFolder >= 0 && f.openFolder < (int)f.folders.size()) setup = f.folders[f.openFolder].setup;
+    if (setup >= 0) {
+        std::vector<HiddenIcon> all;
+        RequestHiddenIcons(&all, kRelayAllIcons);
+        for (auto const& icon : all) {
+            if (HiddenIconKey(icon) == key) {
+                PutInFolder(icon, setup);  // (shown at once)
+                return true;
+            }
+        }
+    }
     LoadOverflowFlyout();
     auto& hidden = g_flyout.hidden;
     for (int i = 0; i < (int)hidden.size(); i++) {
@@ -19381,6 +22550,13 @@ void ClickHiddenIcon(int index, int button) {
         return;
     }
     HiddenIcon icon = g_flyout.hidden[index];
+    if (!icon.plugin.empty()) {
+        PluginIconClick(icon, button);
+        // Its look and tooltip read again once the plugin has answered (kTimerHoverTip, 7).
+        g_pluginItemsRead = 0;
+        if (g_flyout.hwnd) SetTimer(g_flyout.hwnd, 7, 400, nullptr);
+        return;
+    }
     if (button == kClickLeft && OpensOnDoubleClick(icon.owner)) {
         button = kClickDouble;
     }
@@ -20830,7 +24006,7 @@ void LoadNotifyFlyout() {
     auto& f = g_flyout;
     f.notifyApps = LoadNotifications();
     // The phone: its name, battery and connection (its notifications are in the list already).
-    f.phone = g_settings.notificationPhone ? ReadPhoneInfo(0) : PhoneInfo{};
+    f.phone = g_settings.notificationPhone ? ReadPhoneInfo(0, TourneHoldsPhone()) : PhoneInfo{};
     DWORD toasts = 1;
     f.notifyDnd = ReadDword(HKEY_CURRENT_USER, kNotificationsPath, L"NOC_GLOBAL_SETTING_TOASTS_ENABLED", &toasts) &&
                   !toasts;
@@ -20872,6 +24048,230 @@ void TextBlock(Canvas& c, HFONT font, COLORREF color, RECT rc, std::wstring cons
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Flyouts and pop-ups opening and closing on the motion engine's lines: popups
+// (timed by fadePopupsIn and fadePopupsOut for the fades) for the flyouts and
+// the new event window, layersIn and layersOut (with fadeLayersIn and
+// fadeLayersOut) for the notification pop-ups. Opening, the window itself is
+// layered while it fades and slides in. Closing, a still of it fades and
+// slides out on its own while the window is already gone, so every close path
+// stays as it was. With none of these lines set, all of it is instant, as before.
+
+struct MotionLines {
+    motion::Anim popups, fadePopupsIn, fadePopupsOut, layersIn, layersOut, fadeLayersIn, fadeLayersOut;
+};
+MotionLines g_motion;  // (the flyouts' thread only)
+
+// Read with the part's settings: as it starts and when they change.
+void LoadMotion() {
+    motion::Forget();
+    g_motion.popups = motion::Get(L"popups");
+    g_motion.fadePopupsIn = motion::Get(L"fadePopupsIn");
+    g_motion.fadePopupsOut = motion::Get(L"fadePopupsOut");
+    g_motion.layersIn = motion::Get(L"layersIn");
+    g_motion.layersOut = motion::Get(L"layersOut");
+    g_motion.fadeLayersIn = motion::Get(L"fadeLayersIn");
+    g_motion.fadeLayersOut = motion::Get(L"fadeLayersOut");
+}
+
+constexpr UINT kMotionFrameMs = 10;
+constexpr double kMotionMaxMs = 1500;  // (as the menus have it)
+
+// How a window opens or closes: a slide between where it's placed and an offset from there, and a fade.
+struct WindowMotion {
+    motion::Anim slide, fade;  // (a part that doesn't run: on is false)
+    POINT offset{};            // the slide's far end, from where the window is placed
+    DWORD start = 0;
+};
+
+// The slide a style asks for: none, from the side, from the top or bottom, or a small one.
+enum MotionSlide { kSlideNone, kSlideSide, kSlideVert, kSlideSmall };
+
+// A window opening or closing as the lines have it: the style from the move leaf (popups, layersIn,
+// layersOut), the fade timed by the fade leaf when that's set, else by the move leaf. "slide" and
+// "slidevert" don't fade unless fadeAlways; a style not known is the fallback. False when nothing runs:
+// neither leaf set, the move leaf off, or every part off.
+bool PlanMotion(motion::Anim const& move, motion::Anim const& fade, PCWSTR fallback, bool fadeAlways, WindowMotion* out,
+                MotionSlide* slide) {
+    *out = {};
+    *slide = kSlideNone;
+    if ((!move.set && !fade.set) || (move.set && !move.on)) return false;
+    std::wstring style = move.set ? motion::StyleWord(move) : L"fade";
+    static constexpr PCWSTR kKnown[] = {L"slide", L"slidevert", L"fade", L"slidefade",
+                                        L"slidefadevert", L"popin", L"gnomed"};
+    if (std::none_of(std::begin(kKnown), std::end(kKnown), [&](PCWSTR known) { return style == known; }))
+        style = fallback;
+    if (move.set) {
+        if (style == L"slide" || style == L"slidefade") *slide = kSlideSide;
+        else if (style == L"slidevert" || style == L"slidefadevert") *slide = kSlideVert;
+        else if (style == L"popin" || style == L"gnomed") *slide = kSlideSmall;
+    }
+    out->slide = move;
+    out->slide.on = *slide != kSlideNone && motion::Ms(move) > 0;
+    if (!out->slide.on) *slide = kSlideNone;
+    out->fade = fade.set ? fade : move;
+    bool fades = fadeAlways || (style != L"slide" && style != L"slidevert");
+    out->fade.on = out->fade.on && fades && motion::Ms(out->fade) > 0;
+    out->start = GetTickCount();
+    return out->slide.on || out->fade.on;
+}
+
+// A part's eased progress (0 to 1, past 1 on an overshoot); clears *done while it still runs.
+double MotionPart(motion::Anim const& a, DWORD start, bool* done) {
+    double ms = a.on ? std::min(motion::Ms(a), kMotionMaxMs) : 0;
+    double p = ms > 0 ? (GetTickCount() - start) / ms : 1;
+    if (p >= 1) return 1;
+    *done = false;
+    return motion::Ease(a, p);
+}
+
+// Where a window opening (or closing) is now: its alpha, out of full, and its offset from where it's placed.
+// True when it's over; the alpha and offset are then those of its end.
+bool MotionAt(WindowMotion const& m, bool closing, BYTE full, BYTE* alpha, POINT* offset) {
+    bool done = true;
+    double s = MotionPart(m.slide, m.start, &done), f = MotionPart(m.fade, m.start, &done);
+    double away = closing ? s : 1 - s;  // (of the offset)
+    double shown = !m.fade.on ? 1 : closing ? 1 - f : f;
+    *offset = {(LONG)std::lround(m.offset.x * away), (LONG)std::lround(m.offset.y * away)};
+    *alpha = (BYTE)std::clamp((int)std::lround(full * shown), 0, 255);
+    return done;
+}
+
+// A window about to show, made ready to open with m: layered, at its first alpha, its timer started.
+void BeginOpening(HWND wnd, WindowMotion const& m) {
+    SetWindowLongPtrW(wnd, GWL_EXSTYLE, GetWindowLongPtrW(wnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+    SetLayeredWindowAttributes(wnd, 0, m.fade.on ? 0 : 255, LWA_ALPHA);
+    SetTimer(wnd, kTimerMotion, kMotionFrameMs, nullptr);
+}
+
+// One frame of a window fading in (no slide); at the end it's fully shown and its timer stops.
+void FadeInStep(HWND wnd, WindowMotion const& m) {
+    BYTE alpha;
+    POINT offset;
+    bool done = MotionAt(m, false, 255, &alpha, &offset);
+    SetLayeredWindowAttributes(wnd, 0, alpha, LWA_ALPHA);
+    if (done) KillTimer(wnd, kTimerMotion);
+}
+
+// While a window slides in from past its screen's edge, only the part on that screen shows.
+void ClipToScreen(HWND wnd, RECT rc, RECT const& screen) {
+    RECT shown;
+    if (!IntersectRect(&shown, &rc, &screen)) shown = {rc.left, rc.top, rc.left, rc.top};
+    OffsetRect(&shown, -rc.left, -rc.top);
+    SetWindowRgn(wnd, CreateRectRgnIndirect(&shown), TRUE);  // (the window owns the region now)
+}
+
+// A still of a window that just closed, fading and sliding out on its own. Clicks go through it.
+constexpr WCHAR kStillClass[] = L"TourneMotionStill_" WH_MOD_ID;
+
+struct MotionStill {
+    HDC dc = nullptr;
+    HBITMAP bitmap = nullptr;
+    HGDIOBJ old = nullptr;
+    RECT from{};       // where the window was
+    RECT screen{};     // what it's kept to, when clipped
+    bool clipped = false;
+    BYTE alpha = 255;  // the window's as it closed
+    WindowMotion motion;
+};
+std::vector<HWND> g_stills;
+
+void FreeStill(MotionStill* s) {
+    if (s->dc && s->old) SelectObject(s->dc, s->old);
+    if (s->dc) DeleteDC(s->dc);
+    if (s->bitmap) DeleteObject(s->bitmap);
+    delete s;
+}
+
+// One frame; false when it's over (gone, or slid past its screen's edge).
+bool StillStep(HWND wnd, MotionStill const& s) {
+    BYTE alpha;
+    POINT offset;
+    if (MotionAt(s.motion, true, s.alpha, &alpha, &offset)) return false;
+    RECT rc = s.from;
+    OffsetRect(&rc, offset.x, offset.y);
+    RECT shown = rc;
+    if (s.clipped && !IntersectRect(&shown, &rc, &s.screen)) return false;
+    POINT at{shown.left, shown.top}, from{shown.left - rc.left, shown.top - rc.top};
+    SIZE size{shown.right - shown.left, shown.bottom - shown.top};
+    BLENDFUNCTION blend{AC_SRC_OVER, 0, alpha, 0};
+    return UpdateLayeredWindow(wnd, nullptr, &at, &size, s.dc, &from, 0, &blend, ULW_ALPHA);
+}
+
+LRESULT CALLBACK StillProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    auto* s = (MotionStill*)GetWindowLongPtrW(wnd, GWLP_USERDATA);
+    switch (msg) {
+        case WM_TIMER:
+            if (wParam == kTimerMotion && (!s || !StillStep(wnd, *s))) DestroyWindow(wnd);
+            return 0;
+        case WM_NCHITTEST:
+            return HTTRANSPARENT;
+        case WM_MOUSEACTIVATE:
+            return MA_NOACTIVATE;
+        case WM_NCDESTROY:
+            KillTimer(wnd, kTimerMotion);
+            std::erase(g_stills, wnd);
+            if (s) {
+                SetWindowLongPtrW(wnd, GWLP_USERDATA, 0);
+                FreeStill(s);
+            }
+            break;
+    }
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+// A still of the window "of", which is about to close, drawn by paint at its alpha now, playing m as it
+// closes (kept to screen when that's given). Nothing when the window isn't showing.
+void StartStill(HWND of, BYTE alpha, WindowMotion const& m, RECT const* screen,
+                std::function<void(HDC, RECT const&)> const& paint) {
+    RECT rc;
+    if (!of || !IsWindowVisible(of) || !GetWindowRect(of, &rc) || rc.right <= rc.left || rc.bottom <= rc.top) return;
+    int width = rc.right - rc.left, height = rc.bottom - rc.top;
+    auto* s = new MotionStill{};
+    HDC screenDc = GetDC(nullptr);
+    s->dc = CreateCompatibleDC(screenDc);
+    s->bitmap = CreateCompatibleBitmap(screenDc, width, height);
+    ReleaseDC(nullptr, screenDc);
+    if (!s->dc || !s->bitmap) {
+        FreeStill(s);
+        return;
+    }
+    s->old = SelectObject(s->dc, s->bitmap);
+    paint(s->dc, RECT{0, 0, width, height});
+    s->from = rc;
+    s->clipped = screen != nullptr;
+    if (screen) s->screen = *screen;
+    s->alpha = alpha;
+    s->motion = m;
+    s->motion.start = GetTickCount();
+    HINSTANCE instance = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&StillProc, &instance);
+    HWND wnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
+                               kStillClass, L"", WS_POPUP, rc.left, rc.top, width, height, nullptr, nullptr, instance,
+                               nullptr);
+    if (!wnd) {
+        FreeStill(s);
+        return;
+    }
+    SetWindowLongPtrW(wnd, GWLP_USERDATA, (LONG_PTR)s);
+    g_stills.push_back(wnd);
+    DWORD corner = 1;  // (square, as the windows it stands for)
+    DwmSetWindowAttribute(wnd, 33, &corner, sizeof(corner));
+    if (!StillStep(wnd, *s)) {
+        DestroyWindow(wnd);
+        return;
+    }
+    ShowWindow(wnd, SW_SHOWNOACTIVATE);
+    SetTimer(wnd, kTimerMotion, kMotionFrameMs, nullptr);
+}
+
+// Every still gone at once (the part stopping).
+void EndStills() {
+    for (HWND wnd : std::vector<HWND>(g_stills)) DestroyWindow(wnd);
+    g_stills.clear();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Notification pop-ups: where Windows' own don't run (Explorer starts the host
 // that draws them), one in the flyouts' style as each notification arrives,
 // stacked over the corner by the taskbar. Its buttons do what the notification
@@ -20891,6 +24291,14 @@ struct Popup {
     int hover = INT_MIN;
     bool tracking = false;
     std::vector<std::pair<RECT, int>> hits;
+    POINT at{};          // where PlacePopups puts it
+    SIZE size{};
+    RECT screen{};       // the screen it's on
+    bool top = false;    // stacked down from the top of it
+    bool opening = false;  // sliding or fading in (its motion timer runs)
+    WindowMotion in;
+    MotionSlide slideIn = kSlideNone;
+    BYTE alpha = 255;
 };
 
 std::vector<Popup*> g_popups;
@@ -20994,6 +24402,79 @@ bool OwnBarOn(HMONITOR monitor, RECT* out) {
     return find.found;
 }
 
+// The pop-up's look, into dc (the size of the window).
+void PaintPopup(HDC dc, RECT const& client, Popup& p) {
+    SetDCBrushColor(dc, ui::kGround);
+    FillRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+    if (p.hover == kPopupBody) {
+        RECT inner{p.scale, p.scale, client.right - p.scale, client.bottom - p.scale};
+        SetDCBrushColor(dc, ui::kHover);
+        FillRect(dc, &inner, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+    RenderPopup(dc, true, p, client.right);
+    SetDCBrushColor(dc, p.hover == INT_MIN ? ui::kEdge : ui::kGreen);
+    FrameRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+}
+
+// A pop-up's slide, from (or out to) the edge of the screen it sits at: past its right edge, or past its top
+// or bottom (the stack's end); a small one from the right.
+POINT PopupSlide(Popup const& p, MotionSlide slide, POINT from) {
+    switch (slide) {
+        case kSlideSide: return {p.screen.right - from.x, 0};
+        case kSlideVert: return {0, p.top ? p.screen.top - (from.y + p.size.cy) : p.screen.bottom - from.y};
+        case kSlideSmall: return {8 * p.scale, 0};
+        default: return {0, 0};
+    }
+}
+
+// Where a pop-up opening is now (pos), its alpha and what shows of it set; true when it's over.
+bool PopupOpeningAt(Popup& p, POINT* pos) {
+    p.in.offset = PopupSlide(p, p.slideIn, p.at);
+    POINT offset;
+    bool done = MotionAt(p.in, false, 255, &p.alpha, &offset);
+    *pos = {p.at.x + offset.x, p.at.y + offset.y};
+    SetLayeredWindowAttributes(p.wnd, 0, p.alpha, LWA_ALPHA);
+    if (p.slideIn == kSlideSide || p.slideIn == kSlideVert) {
+        if (done) SetWindowRgn(p.wnd, nullptr, TRUE);
+        else ClipToScreen(p.wnd, {pos->x, pos->y, pos->x + p.size.cx, pos->y + p.size.cy}, p.screen);
+    }
+    return done;
+}
+
+// With the layersIn line (or fadeLayersIn), a new pop-up slides in from its screen's edge and fades in;
+// set up before PlacePopups first shows it.
+void StartPopupOpening(Popup& p) {
+    if (!PlanMotion(g_motion.layersIn, g_motion.fadeLayersIn, L"slidefade", false, &p.in, &p.slideIn)) return;
+    p.opening = true;
+    BeginOpening(p.wnd, p.in);
+}
+
+// One frame of it (its motion timer).
+void PopupOpeningStep(Popup& p) {
+    POINT pos;
+    bool done = PopupOpeningAt(p, &pos);
+    SetWindowPos(p.wnd, nullptr, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    if (done) {
+        KillTimer(p.wnd, kTimerMotion);
+        p.opening = false;
+    }
+}
+
+// With the layersOut line (or fadeLayersOut), a closing pop-up's still slides out to its screen's edge and
+// fades, from where it is now.
+void PopupStill(Popup& p) {
+    WindowMotion m;
+    MotionSlide slide;
+    RECT rc;
+    if (!PlanMotion(g_motion.layersOut, g_motion.fadeLayersOut, L"slidefade", false, &m, &slide) ||
+        !GetWindowRect(p.wnd, &rc))
+        return;
+    m.offset = PopupSlide(p, slide, {rc.left, rc.top});
+    bool clipped = slide == kSlideSide || slide == kSlideVert;
+    StartStill(p.wnd, p.alpha, m, clipped ? &p.screen : nullptr,
+               [&p](HDC dc, RECT const& client) { PaintPopup(dc, client, p); });
+}
+
 // Stacked up from the corner by the taskbar, newest nearest it.
 void PlacePopups() {
     MONITORINFO mi{sizeof(mi)};
@@ -21015,7 +24496,13 @@ void PlacePopups() {
         int height = RenderPopup(dc, false, p, width);
         ReleaseDC(p.wnd, dc);
         int at = top ? y + gap : y - gap - height;
-        SetWindowPos(p.wnd, HWND_TOPMOST, work.right - gap - width, at, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        p.at = {work.right - gap - width, at};
+        p.size = {width, height};
+        p.screen = mi.rcMonitor;
+        p.top = top;
+        POINT pos = p.at;
+        if (p.opening) PopupOpeningAt(p, &pos);  // (still on its way in: there, its look set before it shows)
+        SetWindowPos(p.wnd, HWND_TOPMOST, pos.x, pos.y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
         y = top ? at + height : at;
         InvalidateRect(p.wnd, nullptr, FALSE);
     }
@@ -21024,11 +24511,113 @@ void PlacePopups() {
 void ClosePopup(Popup* p) {
     std::erase(g_popups, p);
     if (p->wnd) {
+        PopupStill(*p);  // (with the layersOut line, a still of it goes out; the window goes now, as before)
         SetWindowLongPtrW(p->wnd, GWLP_USERDATA, 0);
         DestroyWindow(p->wnd);
     }
     delete p;
     PlacePopups();
+}
+
+void DropNotifyItem(NotifyItem const* item);
+
+// The same notification (in the centre's list, or a pop-up of it).
+bool SameNotify(NotifyItem const& a, NotifyItem const& b) {
+    return a.aumid == b.aumid && a.tag == b.tag && a.group == b.group && a.arrival == b.arrival;
+}
+
+// Gone from wherever it shows here: the centre's list (open or not) and its pop-up.
+void ForgetNotify(NotifyItem const& item, bool wholeApp) {
+    auto& f = g_flyout;
+    for (auto app = f.notifyApps.begin(); app != f.notifyApps.end(); ++app) {
+        if (app->aumid != item.aumid) continue;
+        if (wholeApp) {
+            f.notifyApps.erase(app);
+            break;
+        }
+        for (auto const& other : app->items)
+            if (SameNotify(other, item)) {
+                DropNotifyItem(&other);
+                break;
+            }
+        break;
+    }
+    std::vector<Popup*> closing;
+    for (Popup* p : g_popups)
+        if (wholeApp ? p->item.aumid == item.aumid : SameNotify(p->item, item)) closing.push_back(p);
+    for (Popup* p : closing) ClosePopup(p);
+    if (f.hwnd && IsWindow(f.hwnd) && f.kind == kFlyoutNotify) {
+        LayoutFlyout(-1);
+        InvalidateRect(f.hwnd, nullptr, FALSE);
+    }
+}
+
+// Cleared (a middle click, or Clear): from Windows' list, and for a phone's, kept cleared (phone-link.cpp).
+void ClearNotify(NotifyItem const& item) {
+    RemoveNotification(item);
+    ForgetNotify(item, false);
+}
+
+void CopyNotifyText(NotifyItem const& item) {
+    std::wstring text = item.title;
+    if (!item.body.empty()) text += (text.empty() ? L"" : L"\r\n") + item.body;
+    if (text.empty() || !OpenClipboard(nullptr)) return;
+    EmptyClipboard();
+    if (HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, (text.size() + 1) * sizeof(wchar_t))) {
+        memcpy(GlobalLock(mem), text.c_str(), (text.size() + 1) * sizeof(wchar_t));
+        GlobalUnlock(mem);
+        if (!SetClipboardData(CF_UNICODETEXT, mem)) GlobalFree(mem);
+    }
+    CloseClipboard();
+}
+
+// Its app: a phone app's place on this PC (Discord...), else the app's window brought up, else the app started.
+void OpenNotifyApp(NotifyItem const& item) {
+    if (item.aumid.starts_with(L"Tourne.Phone.")) {
+        std::wstring open = PhoneAppOnPc(item.aumid.substr(13), AppNameFor(item.aumid));
+        if (!open.empty()) ShellExecuteW(nullptr, nullptr, open.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+        else if (HWND start = FindWindowW(L"TourneStartMenu_" WH_MOD_ID, nullptr))
+            PostMessageW(start, RegisterWindowMessageW(L"TournePhoneOpen"), 0, 0);
+        return;
+    }
+    if (HWND w = AppWindow(item.aumid)) ShellBringToFront(w);
+    else LaunchApp(item.aumid, L"");
+}
+
+// Off in Windows' own settings for it (Settings, Notifications agrees; Tourne Studio's list too).
+void TurnOffNotifyApp(std::wstring const& aumid) {
+    std::wstring key = L"Software\\Microsoft\\Windows\\CurrentVersion\\Notifications\\Settings\\" + aumid;
+    DWORD off = 0;
+    RegSetKeyValueW(HKEY_CURRENT_USER, key.c_str(), L"Enabled", REG_DWORD, &off, sizeof(off));
+}
+
+void OpenNotifySettings() {
+#ifdef TD_PREFIX
+    td::OpenStudio(L"notify", L"");
+#else
+    OpenUri(L"ms-settings:notifications");
+#endif
+}
+
+// A notification's right-click menu (in the centre or on its pop-up).
+void ShowNotifyMenu(POINT screen, NotifyItem const& item) {
+    NotifyItem copy = item;
+    std::wstring name = AppNameFor(item.aumid);
+    if (name.empty()) name = L"this app";
+    std::vector<MenuItem> items;
+    items.push_back({L"Clear", [copy] { ClearNotify(copy); }});
+    items.push_back({L"Clear all from " + name, [copy] {
+                         ClearAppNotifications(copy.aumid);
+                         ForgetNotify(copy, true);
+                     }});
+    items.push_back({L"Copy text", [copy] { CopyNotifyText(copy); }});
+    items.push_back({});
+    items.push_back({L"Open " + name, [copy] { OpenNotifyApp(copy); }});
+    items.push_back({L"Turn off notifications from " + name, [copy] { TurnOffNotifyApp(copy.aumid); }});
+    items.push_back({L"Notification settings", [] { OpenNotifySettings(); }});
+    g_flyoutMenu = true;
+    ShowMenu(items, MAKELPARAM(screen.x, screen.y));
+    g_flyoutMenu = false;
 }
 
 LRESULT CALLBACK PopupProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -21043,16 +24632,7 @@ LRESULT CALLBACK PopupProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             HDC mem = CreateCompatibleDC(dc);
             HBITMAP bitmap = CreateCompatibleBitmap(dc, client.right, client.bottom);
             HGDIOBJ old = SelectObject(mem, bitmap);
-            SetDCBrushColor(mem, ui::kGround);
-            FillRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
-            if (p->hover == kPopupBody) {
-                RECT inner{p->scale, p->scale, client.right - p->scale, client.bottom - p->scale};
-                SetDCBrushColor(mem, ui::kHover);
-                FillRect(mem, &inner, (HBRUSH)GetStockObject(DC_BRUSH));
-            }
-            RenderPopup(mem, true, *p, client.right);
-            SetDCBrushColor(mem, p->hover == INT_MIN ? ui::kEdge : ui::kGreen);
-            FrameRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+            PaintPopup(mem, client, *p);
             BitBlt(dc, 0, 0, client.right, client.bottom, mem, 0, 0, SRCCOPY);
             SelectObject(mem, old);
             DeleteObject(bitmap);
@@ -21095,13 +24675,26 @@ LRESULT CALLBACK PopupProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 ActivateNotification(item, item.actions[id].arguments, item.actions[id].activationType);
             return 0;
         }
-        case WM_RBUTTONUP:  // (put away, still in the notification center)
-            ClosePopup(p);
+        case WM_MBUTTONUP: {  // cleared, from the centre too
+            NotifyItem item = p->item;
+            ClearNotify(item);
             return 0;
+        }
+        case WM_RBUTTONUP: {  // its menu; the pop-up waits while it's up (the menu may clear it: p is gone then)
+            KillTimer(wnd, kTimerPopupGone);
+            NotifyItem item = p->item;
+            POINT screen{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            ClientToScreen(wnd, &screen);
+            ShowNotifyMenu(screen, item);
+            if (IsWindow(wnd) && GetWindowLongPtrW(wnd, GWLP_USERDATA)) SetTimer(wnd, kTimerPopupGone, 2000, nullptr);
+            return 0;
+        }
         case WM_MOUSEACTIVATE:
             return MA_NOACTIVATE;
         case WM_TIMER:
             if (wParam == kTimerPopupGone) ClosePopup(p);
+            else if (wParam == kTimerMotion && p->opening) PopupOpeningStep(*p);
+            else if (wParam == kTimerMotion) KillTimer(wnd, kTimerMotion);
             return 0;
     }
     return DefWindowProcW(wnd, msg, wParam, lParam);
@@ -21139,6 +24732,7 @@ void ShowPopup(NotifyApp const& app, NotifyItem const& item) {
     DWORD corner = 1;  // (square, as the flyouts)
     DwmSetWindowAttribute(p->wnd, 33, &corner, sizeof(corner));
     g_popups.push_back(p);
+    StartPopupOpening(*p);
     PlacePopups();
     // (a phone's ringing call stays up as long as a phone rings, to answer it here: phone-ancs.cpp)
     int seconds = item.launch == L"tourne-phone-call" ? 30 : g_settings.notificationPopupSeconds;
@@ -21583,6 +25177,7 @@ struct EventEditor {
 } g_event;
 
 constexpr PCWSTR kImportanceNames[] = {L"Low", L"Normal", L"High"};
+WindowMotion g_eventIn;  // the event window fading in, on the popups line (it doesn't slide)
 
 std::wstring EventText(int id) {
     HWND control = GetDlgItem(g_event.wnd, id);
@@ -21799,7 +25394,12 @@ LRESULT CALLBACK EventWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         case WM_CLOSE:
             DestroyWindow(wnd);
             return 0;
+        case WM_TIMER:
+            if (wParam != kTimerMotion) break;
+            FadeInStep(wnd, g_eventIn);
+            return 0;
         case WM_DESTROY:
+            KillTimer(wnd, kTimerMotion);
             if (e.font) DeleteObject(e.font);
             if (e.ground) DeleteObject(e.ground);
             if (e.field) DeleteObject(e.field);
@@ -21923,6 +25523,12 @@ void OpenEventEditor(LONGLONG dayMinutes) {
     add(L"STATIC", L"Opens Google Calendar in your browser, where you save it.", SS_LEFT, kEvStatus, pad, top,
         right, top + 22 * s);
 
+    // With the popups line (or fadePopupsIn), it fades in as the flyouts do.
+    MotionSlide slide;
+    if (PlanMotion(g_motion.popups, g_motion.fadePopupsIn, L"fade", false, &g_eventIn, &slide) && g_eventIn.fade.on) {
+        g_eventIn.slide.on = false;
+        BeginOpening(e.wnd, g_eventIn);
+    }
     ShowWindow(e.wnd, SW_SHOW);
     SetForegroundWindow(e.wnd);
     SetFocus(title);
@@ -21960,6 +25566,9 @@ constexpr WCHAR kTaskbarAnchorTickProp[] = L"TourneTaskbar_AnchorTick";
 bool g_anchorFromTaskbar;
 RECT g_taskbarAnchor;
 bool g_flyoutAtTop;  // placed against the top of the screen (a taskbar at the top), not the bottom
+WindowMotion g_flyoutIn;  // the flyout opening, on the popups line (its motion timer runs while it does)
+POINT g_flyoutShift{};    // how far its slide has it now from where it's laid out
+BYTE g_flyoutAlpha = 255;
 
 void TakeTaskbarAnchor() {
     g_anchorFromTaskbar = false;
@@ -22031,10 +25640,13 @@ void LayoutFlyout(int iconKind) {
         if (GetWindowRect(hwnd, &current) && IsWindowVisible(hwnd)) {
             // Keep the edge by the taskbar while resizing, as it was placed (a tall flyout, like the
             // notification centre, reaches the top half of the screen either way), on its own screen.
+            // (Laid out where it ends up, while it still slides in.)
+            OffsetRect(&current, -g_flyoutShift.x, -g_flyoutShift.y);
             RECT placed{current.left, g_flyoutAtTop ? current.top : current.bottom - height, 0, 0};
             placed.right = placed.left + width;
             placed.bottom = placed.top + height;
             KeepOnScreen(&placed, current);
+            OffsetRect(&placed, g_flyoutShift.x, g_flyoutShift.y);
             SetWindowPos(hwnd, nullptr, placed.left, placed.top, placed.right - placed.left, placed.bottom - placed.top,
                          SWP_NOZORDER | SWP_NOACTIVATE);
             return;
@@ -22066,6 +25678,7 @@ void LayoutFlyout(int iconKind) {
     }
     RECT placed{x, y, x + width, y + height};
     KeepOnScreen(&placed, anchor);
+    OffsetRect(&placed, g_flyoutShift.x, g_flyoutShift.y);
     SetWindowPos(hwnd, HWND_TOPMOST, placed.left, placed.top, placed.right - placed.left, placed.bottom - placed.top,
                  SWP_NOACTIVATE);
 }
@@ -22108,10 +25721,52 @@ void ReloadFlyout() {
     }
 }
 
+// The flyout's look, into dc (the size of the window).
+void PaintFlyout(HDC dc, RECT const& client) {
+    SetDCBrushColor(dc, ui::kGround);
+    FillRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+    Render(dc, true, g_flyout.hits);
+    SetDCBrushColor(dc, ui::kEdge);
+    FrameRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+}
+
+// One frame of the flyout opening (its motion timer); at the end it's fully shown where it's laid out.
+void FlyoutOpeningStep(HWND hwnd) {
+    POINT offset;
+    bool done = MotionAt(g_flyoutIn, false, 255, &g_flyoutAlpha, &offset);
+    SetLayeredWindowAttributes(hwnd, 0, g_flyoutAlpha, LWA_ALPHA);
+    if (offset.x != g_flyoutShift.x || offset.y != g_flyoutShift.y) {
+        RECT rc;
+        GetWindowRect(hwnd, &rc);
+        SetWindowPos(hwnd, nullptr, rc.left + offset.x - g_flyoutShift.x, rc.top + offset.y - g_flyoutShift.y, 0, 0,
+                     SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        g_flyoutShift = offset;
+    }
+    if (done) KillTimer(hwnd, kTimerMotion);
+}
+
+// With the popups line (or fadePopupsIn), the flyout about to show fades in in its style: slide, slidevert
+// and slidefade come a short way from the bar's side, popin and gnomed a smaller way, as they fade.
+void StartFlyoutOpening(HWND hwnd) {
+    MotionSlide slide;
+    if (!PlanMotion(g_motion.popups, g_motion.fadePopupsIn, L"fade", false, &g_flyoutIn, &slide)) return;
+    int away = (slide == kSlideSmall ? 8 : 20) * g_flyout.scale;
+    g_flyoutIn.offset = {0, slide == kSlideNone ? 0 : g_flyoutAtTop ? -away : away};
+    BeginOpening(hwnd, g_flyoutIn);
+    FlyoutOpeningStep(hwnd);  // (its first look, before it shows)
+}
+
 void CloseFlyout() {
     // Destroying the active window deactivates it, which would close it again.
     if (g_flyout.hwnd && !g_flyoutClosing) {
         g_flyoutClosing = true;
+        // With the popups line (or fadePopupsOut), a still of it fades out; the window goes now, as before.
+        WindowMotion out;
+        MotionSlide slide;
+        if (PlanMotion(g_motion.popups, g_motion.fadePopupsOut, L"fade", true, &out, &slide)) {
+            out.slide.on = false;
+            if (out.fade.on) StartStill(g_flyout.hwnd, g_flyoutAlpha, out, nullptr, PaintFlyout);
+        }
         DestroyWindow(g_flyout.hwnd);
         g_flyoutClosing = false;
     }
@@ -22341,11 +25996,7 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             HDC mem = CreateCompatibleDC(dc);
             HBITMAP bitmap = CreateCompatibleBitmap(dc, client.right, client.bottom);
             HGDIOBJ old = SelectObject(mem, bitmap);
-            SetDCBrushColor(mem, ui::kGround);
-            FillRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
-            Render(mem, true, g_flyout.hits);
-            SetDCBrushColor(mem, ui::kEdge);
-            FrameRect(mem, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+            PaintFlyout(mem, client);
             BitBlt(dc, 0, 0, client.right, client.bottom, mem, 0, 0, SRCCOPY);
             SelectObject(mem, old);
             DeleteObject(bitmap);
@@ -22393,7 +26044,7 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 // Its program hears of the pointer (some set their tooltip
                 // only then), and the tooltip is read again a moment later.
                 int index = hover & 0xFFFF;
-                if ((hover >> 16) == kHitHidden && index < (int)g_flyout.hidden.size()) {
+                if ((hover >> 16) == kHitHidden && index < (int)g_flyout.hidden.size() && g_flyout.hidden[index].plugin.empty()) {
                     HoverHiddenIcon(g_flyout.hidden[index]);
                     SetTimer(hWnd, kTimerHoverTip, 250, nullptr);
                 }
@@ -22410,7 +26061,8 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 g_flyout.dragHidden = -1;
                 g_flyout.dragMoved = false;
                 g_flyout.dragTarget = -1;
-                g_flyout.dragFolder = g_flyout.dragStack = -1;
+                g_flyout.dragFolder = g_flyout.dragStack = g_flyout.stackWait = -1;
+                KillTimer(hWnd, kTimerStackWait);
                 g_flyout.dragBack = false;
                 InvalidateRect(hWnd, nullptr, FALSE);
             }
@@ -22430,7 +26082,7 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             if ((id >> 16) == kHitHidden) {
                 int index = id & 0xFFFF;
                 g_flyout.swallowUp = true;
-                if (index < (int)g_flyout.hidden.size() &&
+                if (index < (int)g_flyout.hidden.size() && g_flyout.hidden[index].plugin.empty() &&
                     !OpensOnDoubleClick(g_flyout.hidden[index].owner)) {
                     ForwardHiddenClick(g_flyout.hidden[index], kClickSecondOfDouble);
                 }
@@ -22455,7 +26107,8 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 g_flyout.dragStart = pt;
                 g_flyout.dragMoved = false;
                 g_flyout.dragTarget = -1;
-                g_flyout.dragFolder = g_flyout.dragStack = -1;
+                g_flyout.dragFolder = g_flyout.dragStack = g_flyout.stackWait = -1;
+                KillTimer(hWnd, kTimerStackWait);
                 g_flyout.dragBack = false;
                 SetCapture(hWnd);
             }
@@ -22487,7 +26140,8 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 g_flyout.dragHidden = -1;
                 g_flyout.dragMoved = false;
                 g_flyout.dragTarget = -1;
-                g_flyout.dragFolder = g_flyout.dragStack = -1;
+                g_flyout.dragFolder = g_flyout.dragStack = g_flyout.stackWait = -1;
+                KillTimer(hWnd, kTimerStackWait);
                 g_flyout.dragBack = false;
                 ReleaseCapture();
                 if (moved) {
@@ -22548,8 +26202,24 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_MBUTTONUP: {
             POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
             int id = HitAt(pt);
+            int hitType = id >> 16;
+            int action = -1;
+            NotifyItem const* note = hitType == kHitNotifyItem || hitType == kHitNotifyAction || hitType == kHitNotifyDismiss
+                                         ? NotifyTargetItem(id & 0xFFFF, &action)
+                                         : nullptr;
             if ((id >> 16) == kHitHidden) {
                 ClickHiddenIcon(id & 0xFFFF, msg == WM_RBUTTONUP ? kClickRight : kClickMiddle);
+            } else if (note && msg == WM_MBUTTONUP) {
+                // A notification: a middle click clears it.
+                NotifyItem copy = *note;
+                ClearNotify(copy);
+            } else if (note) {
+                // Its menu: clear it or its app's, copy it, open its app, turn its app's off, the settings.
+                NotifyItem copy = *note;
+                POINT screen = pt;
+                ClientToScreen(hWnd, &screen);
+                ShowNotifyMenu(screen, copy);
+                if (g_flyout.hwnd && IsWindow(g_flyout.hwnd)) SetForegroundWindow(g_flyout.hwnd);
             } else if (msg == WM_RBUTTONUP && (id >> 16) == kHitCalDay && g_settings.calendarAdd) {
                 // A day in the calendar: a new event on it (the flyout closes as the window takes the focus).
                 OpenEventEditor(CalendarGridStart(g_flyout.calYear, g_flyout.calMonth) + (id & 0xFFFF) * 24 * 60);
@@ -22611,6 +26281,11 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
 
         case WM_TIMER:
+            if (wParam == kTimerMotion) {
+                if (g_flyout.hwnd == hWnd) FlyoutOpeningStep(hWnd);
+                else KillTimer(hWnd, kTimerMotion);
+                return 0;
+            }
             // Programs start and stop playing while the mixer is open.
             if (wParam == kTimerMixer && g_flyout.kind == kFlyoutMixer && g_flyout.dragMixer < 0) {
                 LoadMixerFlyout();
@@ -22621,13 +26296,26 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 if (g_flyout.kind != kFlyoutSecurity || !g_scan.running) KillTimer(hWnd, kTimerScanTick);
                 InvalidateRect(hWnd, nullptr, FALSE);
             }
+            if (wParam == kTimerStackWait) {
+                // Held over another icon a moment: dropped now, the two make a folder.
+                KillTimer(hWnd, kTimerStackWait);
+                if (g_flyout.dragHidden >= 0 && g_flyout.dragMoved && g_flyout.stackWait >= 0 &&
+                    g_flyout.stackWait < (int)g_flyout.hidden.size()) {
+                    g_flyout.dragStack = g_flyout.stackWait;
+                    InvalidateRect(hWnd, nullptr, FALSE);
+                }
+                g_flyout.stackWait = -1;
+            }
             if (wParam == kTimerHoverTip) {
                 KillTimer(hWnd, kTimerHoverTip);
                 std::vector<HiddenIcon> all;
                 if (g_flyout.kind == kFlyoutOverflow && RequestHiddenIcons(&all, kRelayAllIcons)) {
                     for (auto& icon : g_flyout.hidden) {
                         for (auto const& now : all) {
-                            if (now.owner == icon.owner && now.id == icon.id) icon.tip = now.tip;
+                            if (!icon.plugin.empty() ? now.plugin == icon.plugin : now.owner == icon.owner && now.id == icon.id) {
+                                icon.tip = now.tip;
+                                if (!icon.plugin.empty()) icon.pixels = now.pixels;  // (a plugin's glyph changes with it)
+                            }
                         }
                     }
                     InvalidateRect(hWnd, nullptr, FALSE);
@@ -22729,6 +26417,7 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             KillTimer(hWnd, kTimerMixer);
             KillTimer(hWnd, kTimerScanTick);
             KillTimer(hWnd, kTimerHoverTip);
+            KillTimer(hWnd, kTimerMotion);
             if (g_flyout.hwnd == hWnd) EndFolderRename(true, false);  // (a name being typed is kept)
             StopSticky();
             ReleaseMixer();
@@ -22744,6 +26433,8 @@ LRESULT CALLBACK FlyoutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 g_flyout.hwnd = nullptr;
                 g_flyout.kind = kFlyoutNone;
                 g_flyout.hits.clear();
+                g_flyoutShift = {};
+                g_flyoutAlpha = 255;
             }
             return 0;
     }
@@ -22813,6 +26504,8 @@ void ShowFlyout(int flyoutKind, int iconKind) {
 
     g_flyout.hwnd = hwnd;
     g_flyout.kind = flyoutKind;
+    g_flyoutShift = {};
+    g_flyoutAlpha = 255;
     g_flyout.scale = std::max(1, (int)(dpiX + USER_DEFAULT_SCREEN_DPI / 2) / USER_DEFAULT_SCREEN_DPI);
     g_flyout.width = 300 * g_flyout.scale;
     g_flyout.fitWidth = 0;
@@ -22821,7 +26514,7 @@ void ShowFlyout(int flyoutKind, int iconKind) {
     g_flyout.swallowUp = false;
     g_flyout.dragHidden = -1;
     g_flyout.dragMoved = false;
-    g_flyout.dragFolder = g_flyout.dragStack = -1;
+    g_flyout.dragFolder = g_flyout.dragStack = g_flyout.stackWait = -1;
     g_flyout.dragBack = false;
     g_flyout.renameBox = nullptr;
     g_flyout.openFolder = -1;  // opens on all the hidden icons
@@ -22871,6 +26564,7 @@ void ShowFlyout(int flyoutKind, int iconKind) {
     }
     LoadFlyout();
     LayoutFlyout(iconKind);
+    StartFlyoutOpening(hwnd);
     ShowWindow(hwnd, SW_SHOWNORMAL);
     SetForegroundWindow(hwnd);
 }
@@ -23033,18 +26727,31 @@ void ExplorerSideSettingsChanged(bool loadSettings) {
 }
 
 // Programs whose state lives in a settings file get their icon redrawn when
-// the file changes. One thread, asleep until then.
+// the file changes, and every icon when Tourne'Icons changes its Taskbar
+// buttons (HKCU\Software\Tourne\Icons). One thread, asleep until then.
 HANDLE g_appStateThread;
 HANDLE g_appStateStop;
 
 DWORD WINAPI AppStateThread(LPVOID) {
     HANDLE watch = FindFirstChangeNotificationW(TamerSettingsFolder().c_str(), FALSE,
                                                 FILE_NOTIFY_CHANGE_LAST_WRITE);
-    if (watch == INVALID_HANDLE_VALUE) {
-        return 0;
-    }
-    HANDLE events[] = {g_appStateStop, watch};
-    while (WaitForMultipleObjects(2, events, FALSE, INFINITE) == WAIT_OBJECT_0 + 1) {
+    HKEY icons = nullptr;
+    RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Icons", 0, nullptr, 0, KEY_NOTIFY, nullptr, &icons,
+                    nullptr);
+    HANDLE iconsChanged = icons ? CreateEventW(nullptr, FALSE, FALSE, nullptr) : nullptr;
+    auto watchIcons = [&] {
+        return iconsChanged && RegNotifyChangeKeyValue(icons, FALSE, REG_NOTIFY_CHANGE_LAST_SET, iconsChanged, TRUE) ==
+                                   ERROR_SUCCESS;
+    };
+    bool watchingIcons = watchIcons();
+    std::vector<HANDLE> events{g_appStateStop};
+    if (watch != INVALID_HANDLE_VALUE) events.push_back(watch);
+    if (watchingIcons) events.push_back(iconsChanged);
+    while (events.size() > 1) {
+        DWORD woke = WaitForMultipleObjects((DWORD)events.size(), events.data(), FALSE, INFINITE);
+        if (woke == WAIT_OBJECT_0 || woke >= WAIT_OBJECT_0 + events.size()) {
+            break;
+        }
         // Programs save in more than one write; redraw once it has settled.
         if (WaitForSingleObject(g_appStateStop, 200) == WAIT_OBJECT_0) {
             break;
@@ -23052,9 +26759,15 @@ DWORD WINAPI AppStateThread(LPVOID) {
         if (g_themeEnabled) {
             ThemeExistingIcons();
         }
-        FindNextChangeNotification(watch);
+        if (events[woke - WAIT_OBJECT_0] == iconsChanged) {
+            watchIcons();
+        } else {
+            FindNextChangeNotification(watch);
+        }
     }
-    FindCloseChangeNotification(watch);
+    if (watch != INVALID_HANDLE_VALUE) FindCloseChangeNotification(watch);
+    if (iconsChanged) CloseHandle(iconsChanged);
+    if (icons) RegCloseKey(icons);
     return 0;
 }
 
@@ -23559,6 +27272,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         msg = WM_APP_MIDDLE;
     }
 
+    // A bind's "flyout" (binds.cpp): one of these flyouts opened, or closed again if it's open. wParam: its kind.
+    static const UINT openFlyout = RegisterWindowMessageW(L"TourneTray_Flyout");
+    if (msg == openFlyout && openFlyout) {
+        int kind = (int)wParam;
+        if (kind > kFlyoutNone && kind <= kFlyoutDevices) {
+            if (IsFlyoutOpen(kind)) CloseFlyout();
+            else ShowFlyout(kind, kind == kFlyoutMixer ? kVolume : -1);
+        }
+        return 0;
+    }
+
     static const UINT notificationCentre = RegisterWindowMessageW(L"TourneTray_NotificationCenter");
     if (msg == notificationCentre) {
         // The Tourne clock was clicked: a toggle, like the tray icons. A click
@@ -23635,6 +27359,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             AcquireSRWLockExclusive(&g_settingsLock);
             g_settings = std::move(loaded);
             ReleaseSRWLockExclusive(&g_settingsLock);
+            LoadMotion();
         }
             if (g_started) {
                 OnBatterySettings();
@@ -23654,6 +27379,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 g_receivedHidden =
                     UnpackHiddenIcons((const BYTE*)copyData->lpData, copyData->cbData);
                 g_hiddenReceived = true;
+                return TRUE;
+            }
+            // Tourne Desktop's plugin items, from its plugin runtime (AddPluginIcons asked).
+            wchar_t from[64];
+            if (copyData && copyData->dwData == kPluginBarItemsId && copyData->lpData &&
+                GetClassNameW((HWND)wParam, from, 64) && !wcscmp(from, kPluginHostClass)) {
+                auto const* text = (wchar_t const*)copyData->lpData;
+                unsigned version = 0;
+                g_pluginItems = UnpackPluginBarItems(std::wstring_view(text, wcsnlen(text, copyData->cbData / sizeof(wchar_t))), &version);
+                g_pluginVersion = version;
                 return TRUE;
             }
             break;
@@ -23811,6 +27546,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 CloseNotifyCounter();
             }
             CloseAllPopups();
+            EndStills();
             g_wnd = nullptr;
             PostQuitMessage(0);
             return 0;
@@ -23851,12 +27587,19 @@ DWORD WINAPI ThreadProc(LPVOID parameter) {
     flyoutClass.lpszClassName = kFlyoutClass;
     RegisterClassW(&flyoutClass);
 
+    WNDCLASSW stillClass{};
+    stillClass.lpfnWndProc = StillProc;
+    stillClass.hInstance = instance;
+    stillClass.lpszClassName = kStillClass;
+    RegisterClassW(&stillClass);
+
     {
         auto loaded = LoadSettings();
         AcquireSRWLockExclusive(&g_settingsLock);
         g_settings = std::move(loaded);
         ReleaseSRWLockExclusive(&g_settingsLock);
     }
+    LoadMotion();
     g_taskbarCreatedMessage = RegisterWindowMessageW(L"TaskbarCreated");
 
     // A hidden top-level window: TaskbarCreated, WM_SETTINGCHANGE and power
@@ -23930,6 +27673,7 @@ DWORD WINAPI ThreadProc(LPVOID parameter) {
     StopNetworkWatch();
     DestroyFonts();
     UnregisterClassW(kFlyoutClass, instance);
+    UnregisterClassW(kStillClass, instance);
     UnregisterClassW(kWindowClass, instance);
     CoUninitialize();
     return 0;
@@ -27628,6 +31372,75 @@ bool ProgramIconMatches(std::wstring const& row, std::wstring const& appId, std:
         return (!path.empty() && ProgramWildcard(row, path)) || (!name.empty() && ProgramWildcard(row, name)) ||
                (!appId.empty() && ProgramWildcard(row, appId));
     return (!path.empty() && row == path) || (!name.empty() && row == name) || (!appId.empty() && row == appId);
+}
+
+// Tourne'Icons' Taskbar buttons rows, which it hands over as "program<tab>icon" lines (newest first) in
+// HKCU\Software\Tourne\Icons: Buttons from its Windhawk mod while that runs, Buttons Kit and Buttons Lasting
+// from the other two. They come before these settings' rows. While the Windhawk mod runs it holds the button
+// icons (it took these settings' rows in), so these settings' rows step aside. Read again whenever the key
+// was written since the last look, so a change shows on the next look at once.
+struct TourneIconsButtons {
+    std::vector<ProgramIcon> rows;
+    bool holds = false;
+};
+
+SRWLOCK g_tourneIconsLock = SRWLOCK_INIT;
+TourneIconsButtons g_tourneIconsButtons;
+FILETIME g_tourneIconsWritten;
+bool g_tourneIconsRead;
+
+void ForgetTourneIconsButtons() {
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    g_tourneIconsRead = false;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+}
+
+TourneIconsButtons ReadTourneIconsButtons() {
+    HKEY key = nullptr;
+    FILETIME written{};
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Icons", 0, KEY_READ, &key) == ERROR_SUCCESS) {
+        RegQueryInfoKeyW(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                         &written);
+    }
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    if (!g_tourneIconsRead || CompareFileTime(&written, &g_tourneIconsWritten) != 0) {
+        g_tourneIconsRead = true;
+        g_tourneIconsWritten = written;
+        TourneIconsButtons fresh;
+        for (PCWSTR value : {L"Buttons", L"Buttons Kit", L"Buttons Lasting"}) {
+            DWORD size = 0;
+            if (!key || RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS) {
+                continue;
+            }
+            std::vector<WCHAR> text(size / sizeof(WCHAR) + 2, L'\0');
+            DWORD got = (DWORD)(text.size() * sizeof(WCHAR));
+            if (RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, text.data(), &got) != ERROR_SUCCESS) {
+                continue;
+            }
+            if (value[7] == L'\0') fresh.holds = true;  // (Buttons: the Windhawk mod's)
+            for (PCWSTR line = text.data(); *line; line += wcslen(line) + 1) {
+                std::wstring_view row = line;
+                size_t tab = row.find(L'\t');
+                if (tab == std::wstring_view::npos) continue;
+                std::wstring program(row.substr(0, tab));
+                CharLowerBuffW(program.data(), (DWORD)program.size());
+                std::wstring icon = ProgramIconPath(std::wstring(row.substr(tab + 1)));
+                if (!program.empty() && !icon.empty()) fresh.rows.push_back({program, icon});
+            }
+        }
+        g_tourneIconsButtons = std::move(fresh);
+    }
+    TourneIconsButtons result = g_tourneIconsButtons;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+    if (key) RegCloseKey(key);
+    return result;
+}
+
+// These settings' rows (own) with Tourne'Icons' ahead of them, or in their place while it holds them.
+std::vector<ProgramIcon> WithTourneIcons(std::vector<ProgramIcon> const& own) {
+    TourneIconsButtons published = ReadTourneIconsButtons();
+    if (!published.holds) published.rows.insert(published.rows.end(), own.begin(), own.end());
+    return std::move(published.rows);
 }
 
 // Rows end at the first run of empty ones, so a blank row in the middle
@@ -31623,6 +35436,7 @@ struct HiddenIcon {
     std::wstring tip;
     int size = 0;
     std::vector<uint32_t> pixels;  // Premultiplied BGRA, size x size.
+    std::wstring plugin;  // A Tourne Desktop plugin item standing in as an icon (its key; no owner then).
 };
 
 std::wstring LowerFileName(std::wstring_view path) {
@@ -31835,6 +35649,9 @@ bool OpensOnDoubleClickIn(HWND owner, std::wstring list) {
 
 // An icon by program and icon id, which stays the same across restarts.
 std::wstring HiddenIconKey(HiddenIcon const& icon) {
+    if (!icon.plugin.empty()) {
+        return L"plugin:" + icon.plugin;
+    }
     return OwnerFileName(icon.owner) + L"|" + std::to_wstring(icon.id);
 }
 
@@ -31916,13 +35733,42 @@ struct TrayPlaces {
         return kPlaceDefault;
     }
 
-    // Where an icon goes: its own place, else where Explorer's tray has it.
+    // A place its program's icons were given under other ids, when they all agree. Some programs take a new
+    // icon id each run (MSI Afterburner: 66130, 66354, 66544; HWiNFO), so an icon put in the overflow (or a
+    // folder there) came back in the tray as a stranger, gone from where it was put (2026-10-16).
+    int OfProgram(std::wstring const& key) const {
+        size_t bar = key.rfind(L'|');
+        if (key.starts_with(L"plugin:") || bar == std::wstring::npos || bar == 0) {
+            return kPlaceDefault;
+        }
+        std::wstring program = key.substr(0, bar + 1);
+        int found = kPlaceDefault;
+        for (auto const& [k, place] : places) {
+            if (!k.starts_with(program) || k.find(L'|', program.size()) != std::wstring::npos) {
+                continue;
+            }
+            if (found != kPlaceDefault && found != place) {
+                return kPlaceDefault;
+            }
+            found = place;
+        }
+        return found;
+    }
+
+    // Where an icon goes: its own place, else its program's, else where Explorer's tray has it.
     int For(HiddenIcon const& icon, std::wstring const& key) const {
         int place = Of(key);
+        if (place == kPlaceDefault) {
+            place = OfProgram(key);
+        }
         return place != kPlaceDefault ? place : icon.overflow ? kPlaceOverflow : kPlaceTray;
     }
 
     void Set(std::wstring const& key, int place) {
+        // A plugin item's own place is the tray: back there, it keeps no place.
+        if (place == kPlaceTray && key.starts_with(L"plugin:")) {
+            place = kPlaceDefault;
+        }
         std::erase_if(places, [&](auto const& entry) { return entry.first == key; });
         if (place != kPlaceDefault) {
             places.push_back({key, place});
@@ -32071,6 +35917,15 @@ void ApplyTrayOrder(std::vector<T>& items, std::vector<std::wstring> const& orde
 // When the items change, the runtime posts kPluginBarChangedMessage to every
 // bar, which asks again. Outside Tourne Desktop (the Windhawk suite) there is
 // no such window, so no items.
+// System Icons asks the same way (with SendMessageTimeout, so the answer comes
+// while it waits), to show the items the user moved into the overflow flyout
+// among its hidden icons, and posts their clicks back as a bar does.
+//
+// Plugin items are placed like tray icons, by the key "plugin:<key>" in the
+// tray's places and order (tray-shared.cpp): in the tray (the default), in the
+// overflow, or hidden. Each can have an icon of the user's own in place of its
+// glyph or picture (kPluginIconsValue); the runtime draws it into the item's
+// picture, so every bar and the flyout show it alike.
 
 [[maybe_unused]] constexpr wchar_t kPluginHostClass[] = L"TourneDesktopPlugins";
 [[maybe_unused]] constexpr wchar_t kPluginBarChangedMessage[] = L"TourneSuite_PluginBarChanged";
@@ -32078,6 +35933,9 @@ void ApplyTrayOrder(std::vector<T>& items, std::vector<std::wstring> const& orde
 [[maybe_unused]] constexpr wchar_t kPluginBarEventMessage[] = L"TourneSuite_PluginBarEvent";
 [[maybe_unused]] constexpr ULONG_PTR kPluginBarItemsId = 0x54504C49;  // "TPLI"
 [[maybe_unused]] constexpr wchar_t kPluginGlyphFont[] = L"tabler-icons";
+[[maybe_unused]] constexpr LPARAM kPluginAskIconsChanged = 1;  // an ask's lParam: the user's icons changed, read them again
+[[maybe_unused]] constexpr wchar_t kPluginIconsKey[] = L"Software\\TourneTray";  // (beside the tray's places)
+[[maybe_unused]] constexpr wchar_t kPluginIconsValue[] = L"PluginIcons";       // "plugin:<key><tab>file" (or "file,index")
 
 enum PluginBarEvent : int { kPluginClick, kPluginRightClick, kPluginMiddleClick, kPluginScrollUp, kPluginScrollDown, kPluginEnter, kPluginLeave };
 [[maybe_unused]] static LPARAM MakePluginBarEvent(int index, PluginBarEvent event) { return (LPARAM)((index & 0xFFFF) | (event << 16)); }
@@ -32088,6 +35946,9 @@ struct PluginBarItem {
     std::wstring text;
     std::wstring tip;
     COLORREF color = CLR_INVALID;  // the text's colour when the plugin set one, else the bar's
+    std::wstring image;            // a picture in place of the glyph: a file of its pixels ("TBI1", width, height,
+                                   // premultiplied BGRA rows top-down, at the screen's scale), or empty
+    COLORREF glyphColor = CLR_INVALID;  // the glyph's own colour, when the plugin set one
 };
 
 // Packed: the version, \x1D, then items split by \x1E and their fields by \x1F.
@@ -32097,7 +35958,8 @@ struct PluginBarItem {
         auto const& item = items[i];
         if (i) out += L'\x1E';
         out += item.key + L'\x1F' + item.glyph + L'\x1F' + item.text + L'\x1F' + item.tip + L'\x1F' +
-               (item.color == CLR_INVALID ? L"" : std::to_wstring(item.color));
+               (item.color == CLR_INVALID ? L"" : std::to_wstring(item.color)) + L'\x1F' + item.image + L'\x1F' +
+               (item.glyphColor == CLR_INVALID ? L"" : std::to_wstring(item.glyphColor));
     }
     return out;
 }
@@ -32112,17 +35974,135 @@ struct PluginBarItem {
         size_t end = packed.find(L'\x1E');
         std::wstring_view one = packed.substr(0, end);
         packed = end == std::wstring_view::npos ? std::wstring_view() : packed.substr(end + 1);
-        std::wstring fields[5];
-        for (int i = 0; i < 5; i++) {
+        std::wstring fields[7];
+        for (int i = 0; i < 7; i++) {
             size_t cut = one.find(L'\x1F');
             fields[i] = std::wstring(one.substr(0, cut));
             one = cut == std::wstring_view::npos ? std::wstring_view() : one.substr(cut + 1);
         }
         PluginBarItem item{fields[0], fields[1], fields[2], fields[3]};
         if (!fields[4].empty()) item.color = (COLORREF)wcstoul(fields[4].c_str(), nullptr, 10);
+        item.image = fields[5];
+        if (!fields[6].empty()) item.glyphColor = (COLORREF)wcstoul(fields[6].c_str(), nullptr, 10);
         items.push_back(std::move(item));  // (kept even if empty, so indexes match the runtime's)
     }
     return items;
+}
+
+// The user's own icons for plugin items: (item's place key "plugin:<key>", its file).
+[[maybe_unused]] static std::vector<std::pair<std::wstring, std::wstring>> LoadPluginIcons() {
+    std::vector<std::pair<std::wstring, std::wstring>> rows;
+    DWORD size = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPluginIconsKey, kPluginIconsValue, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS ||
+        size < sizeof(wchar_t))
+        return rows;
+    std::wstring buffer(size / sizeof(wchar_t) + 2, L'\0');
+    size = (DWORD)(buffer.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPluginIconsKey, kPluginIconsValue, RRF_RT_REG_MULTI_SZ, nullptr, buffer.data(), &size) != ERROR_SUCCESS)
+        return rows;
+    for (const wchar_t* p = buffer.data(); p < buffer.data() + buffer.size() && *p; p += wcslen(p) + 1) {
+        std::wstring row = p;
+        size_t tab = row.find(L'\t');
+        if (tab != std::wstring::npos && tab + 1 < row.size()) rows.push_back({row.substr(0, tab), row.substr(tab + 1)});
+    }
+    return rows;
+}
+
+// An item's own icon set (an empty file puts its own back).
+[[maybe_unused]] static void SavePluginIcon(std::wstring const& key, std::wstring const& file) {
+    auto rows = LoadPluginIcons();
+    std::erase_if(rows, [&](auto const& row) { return row.first == key; });
+    if (!file.empty()) rows.push_back({key, file});
+    std::wstring data;
+    for (auto const& [k, f] : rows) data += k + L'\t' + f + L'\0';
+    data += L'\0';
+    HKEY reg;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kPluginIconsKey, 0, nullptr, 0, KEY_SET_VALUE, nullptr, &reg, nullptr) != ERROR_SUCCESS) return;
+    if (rows.empty()) RegDeleteValueW(reg, kPluginIconsValue);
+    else RegSetValueExW(reg, kPluginIconsValue, 0, REG_MULTI_SZ, (const BYTE*)data.data(), (DWORD)(data.size() * sizeof(wchar_t)));
+    RegCloseKey(reg);
+}
+
+// An item's picture, from the file of its pixels the runtime made (see PluginBarItem::image).
+[[maybe_unused]] static bool ReadPluginImageFile(std::wstring const& path, int* w, int* h, std::vector<uint32_t>* pixels) {
+    if (path.empty()) return false;
+    HANDLE f = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return false;
+    char head[12] = {};
+    DWORD got = 0;
+    bool ok = false;
+    if (ReadFile(f, head, 12, &got, nullptr) && got == 12 && !memcmp(head, "TBI1", 4)) {
+        uint32_t pw = 0, ph = 0;
+        memcpy(&pw, head + 4, 4), memcpy(&ph, head + 8, 4);
+        if (pw && ph && pw <= 1024 && ph <= 256) {
+            pixels->resize((size_t)pw * ph);
+            DWORD bytes = (DWORD)(pixels->size() * 4);
+            ok = ReadFile(f, pixels->data(), bytes, &got, nullptr) && got == bytes;
+            if (ok) *w = (int)pw, *h = (int)ph;
+            else pixels->clear();
+        }
+    }
+    CloseHandle(f);
+    return ok;
+}
+
+// An item as a tray icon's pixels (premultiplied BGRA, size by size): its picture fitted in, else its glyph,
+// else the first letter of its text; in `color` unless the plugin chose its glyph's colour.
+[[maybe_unused]] static std::vector<uint32_t> PluginItemPixels(PluginBarItem const& item, int size, COLORREF color) {
+    std::vector<uint32_t> out((size_t)size * size, 0);
+    if (size <= 0) return out;
+    int pw = 0, ph = 0;
+    std::vector<uint32_t> picture;
+    if (ReadPluginImageFile(item.image, &pw, &ph, &picture)) {
+        // Fitted in, its shape kept (an area average when it's smaller), centred.
+        double k = std::min((double)size / pw, (double)size / ph);
+        int ow = std::max(1, (int)(pw * k + 0.5)), oh = std::max(1, (int)(ph * k + 0.5));
+        int left = (size - ow) / 2, top = (size - oh) / 2;
+        for (int y = 0; y < oh; y++)
+            for (int x = 0; x < ow; x++) {
+                int x0 = x * pw / ow, x1 = std::max(x0 + 1, (x + 1) * pw / ow), y0 = y * ph / oh, y1 = std::max(y0 + 1, (y + 1) * ph / oh);
+                uint32_t sum[4] = {}, n = 0;
+                for (int sy = y0; sy < y1 && sy < ph; sy++)
+                    for (int sx = x0; sx < x1 && sx < pw; sx++, n++)
+                        for (int c = 0; c < 4; c++) sum[c] += picture[(size_t)sy * pw + sx] >> (c * 8) & 0xFF;
+                uint32_t v = 0;
+                for (int c = 0; c < 4; c++) v |= (n ? sum[c] / n : 0) << (c * 8);
+                out[(size_t)(top + y) * size + left + x] = v;
+            }
+        return out;
+    }
+    bool glyph = !item.glyph.empty();
+    std::wstring text = glyph ? item.glyph : item.text.substr(0, 1);
+    if (text.empty()) return out;
+    if (glyph && item.glyphColor != CLR_INVALID) color = item.glyphColor;
+    else if (item.color != CLR_INVALID) color = item.color;
+    // Drawn white on black; how bright each pixel came out is how much of the colour it takes.
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HDC dc = CreateCompatibleDC(nullptr);
+    HBITMAP bitmap = CreateDIBSection(dc, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (!bitmap) return DeleteDC(dc), out;
+    HGDIOBJ oldBitmap = SelectObject(dc, bitmap);
+    HFONT font = CreateFontW(-(glyph ? size : size * 3 / 4), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+                             CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, glyph ? kPluginGlyphFont : L"Segoe UI");
+    HGDIOBJ oldFont = SelectObject(dc, font);
+    SetBkMode(dc, TRANSPARENT);
+    SetTextColor(dc, RGB(255, 255, 255));
+    RECT rc{0, 0, size, size};
+    DrawTextW(dc, text.c_str(), (int)text.size(), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
+    GdiFlush();
+    auto const* drawn = (uint32_t const*)bits;
+    for (size_t i = 0; i < out.size(); i++) {
+        uint32_t p = drawn[i], a = std::max({p & 0xFF, p >> 8 & 0xFF, p >> 16 & 0xFF});
+        if (a) out[i] = a << 24 | (GetRValue(color) * a / 255) << 16 | (GetGValue(color) * a / 255) << 8 | GetBValue(color) * a / 255;
+    }
+    SelectObject(dc, oldFont);
+    SelectObject(dc, oldBitmap);
+    DeleteObject(font);
+    DeleteObject(bitmap);
+    DeleteDC(dc);
+    return out;
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Shell core ("// @inline shell-core.cpp", in the taskbar and System Icons,
@@ -32299,10 +36279,12 @@ RECT ShellRoomBesideBar(ShellBar const& bar) {
     HWND root = GetAncestor(w, GA_ROOTOWNER);
     HWND popup = GetLastActivePopup(root ? root : w);
     HWND target = popup && IsWindowVisible(popup) && IsWindowEnabled(popup) ? popup : w;
-    if (IsIconic(w)) PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0);
+    // (a minimised admin window never gets the restore message: Windows keeps it from us; SwitchToThisWindow
+    // restores it itself)
+    if (IsIconic(w) && !PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0)) SwitchToThisWindow(w, TRUE);
     auto inFront = [&] {
         HWND fg = GetForegroundWindow();
-        return fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w));
+        return !IsIconic(w) && (fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w)));
     };
     if (SetForegroundWindow(target) && inFront()) return true;
     // Windows lets the process that had the last input event take the front:
@@ -32434,6 +36416,19 @@ bool ShellLaunchAppsFolder(std::wstring const& parsing, PCWSTR args = nullptr) {
 // MenuMeasureItem and MenuDrawItem. AppendMenuHeader adds a section's title
 // (a jump list's "Tasks"), AppendMenuIcon an item with an icon; the caller
 // keeps the icon until the menu closes.
+//
+// Also here, for every menu that goes through TrackStyledMenu: the mouse wheel
+// scrolls a menu taller than its screen (MenuWheel*), menus can open with a
+// short animation (g_menuMotion, none by default), and labels or verbs can be
+// taken out of a shell menu or moved into a "More options" submenu
+// (ApplyMenuRules, UndoMenuRules).
+//
+// A program with menus on several threads (Tourne Menus, in Explorer) defines
+// MENU_STYLE_STORAGE as thread_local before this file, so each thread has its own.
+
+#ifndef MENU_STYLE_STORAGE
+#define MENU_STYLE_STORAGE
+#endif
 
 struct MenuLook {
     uint32_t ground = 0x121C21, line = 0x1E2F36, edge = 0x4F8F6A, text = 0x66EA97, accent = 0x15FFA2,
@@ -32452,13 +36447,48 @@ struct MenuLook {
     bool frame = false;
     bool caps = false;  // item text in capitals, as its icon title font is used
     uint32_t frameLine = 0xADA69E, band = 0x151F24;
+    // The frame as set (taskbar.menuFrame*): the band between the lines, the lines' colours (none: frameLine;
+    // two or three: a gradient from the top left to the bottom right), and a glow round them, 0 to 100.
+    int frameGap = 6;
+    uint32_t frameStops[3]{};
+    int frameStopCount = 0;
+    int frameGlow = 0;
     // Windows' own classic menus, as other programs show them here (LookLikeWindowsMenus): flat rows,
     // Windows' row sizes and insets, and the arrow and the chosen item's text in their own colours.
     bool windows = false;
     uint32_t hoverText = 0xFFFFFFFF, arrow = 0xFFFFFFFF;  // all ones: the text colour
 };
 
-MenuLook g_menuLook;
+MENU_STYLE_STORAGE MenuLook g_menuLook;
+// A foreign menu's items Windows' shell has made owner-drawn for its own look (its immersive menu helper, as
+// in a file dialog with no hook to stop it) taken over too: those with text, and separators. Set for one menu.
+MENU_STYLE_STORAGE bool g_menuTakeOwnerDrawn = false;
+
+// How menus open (taskbar.menuAnimation): at once (none, the default), or with a short animation timed by
+// the motion engine (its popups line), set by whoever opens the menu.
+struct MenuMotion {
+    int style = 0;  // 0 none, 1 fade, 2 slide (and fade), 3 unfold
+    double ms = 150;
+    double (*ease)(double t) = nullptr;  // the motion engine's curve (may pass 1 on the way); null: an ease-out
+};
+MENU_STYLE_STORAGE MenuMotion g_menuMotion;
+// Submenus open on a click (or Right / Enter), not as the pointer passes over them (taskbar.menuFlyoutClick here;
+// FlyoutClick in Tourne Menus' published look).
+MENU_STYLE_STORAGE bool g_menuFlyoutClick = false;
+
+// The motion styles by the names the settings use.
+int MenuMotionStyle(std::wstring const& name) {
+    return name == L"fade" ? 1 : name == L"slide" ? 2 : name == L"unfold" ? 3 : 0;
+}
+
+// A motion line's style word for menus (motion.popups = 1, 3, default, popin 80%): popin and gnomed unfold, slide
+// and slidefade slide, fade fades; any other word (or none) keeps the menuAnimation setting's.
+int MenuMotionStyleWord(std::wstring const& word, int fallback) {
+    if (word == L"popin" || word == L"gnomed" || word == L"unfold") return 3;
+    if (word == L"slide" || word == L"slidefade" || word == L"slidevert" || word == L"slidefadevert") return 2;
+    if (word == L"fade") return 1;
+    return fallback;
+}
 
 constexpr COLORREF MenuRgb(uint32_t rgb) {
     return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
@@ -32488,7 +36518,7 @@ bool MenuBitmapDrawable(HBITMAP bitmap) {
 
 // The items styled now, so another owner's owner-drawn items (a shell
 // context menu's) are never taken for ours.
-std::vector<StyledMenuItem*> g_styledItems;
+MENU_STYLE_STORAGE std::vector<StyledMenuItem*> g_styledItems;
 
 StyledMenuItem* StyledItemOf(ULONG_PTR data) {
     auto* item = (StyledMenuItem*)data;
@@ -32519,7 +36549,7 @@ void AppendMenuIcon(HMENU menu, UINT flags, UINT_PTR id, LPCWSTR text, HICON ico
 
 // An icon as a menu item's bitmap (32 bpp, alpha premultiplied, as menus
 // draw them), for native menus.
-std::vector<HBITMAP> g_nativeMenuBitmaps;  // made for menus open now
+MENU_STYLE_STORAGE std::vector<HBITMAP> g_nativeMenuBitmaps;  // made for menus open now
 
 HBITMAP MenuIconBitmap(HICON icon) {
     int size = 16 * g_menuLook.scale;
@@ -32582,7 +36612,11 @@ void StyleMenuItems(HMENU menu, bool foreign = false) {
         info.cch = ARRAYSIZE(text);
         if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
         if (info.hSubMenu) StyleMenuItems(info.hSubMenu, foreign);
-        if (info.fType & MFT_OWNERDRAW) continue;  // styled already, or drawn by its owner
+        if (info.fType & MFT_OWNERDRAW) {  // styled already, or drawn by its owner
+            bool shellDrawn = foreign && g_menuTakeOwnerDrawn && !StyledItemOf(info.dwItemData) &&
+                              (text[0] || (info.fType & MFT_SEPARATOR));
+            if (!shellDrawn) continue;
+        }
         if (g_menuLook.caps && !foreign) CharUpperBuffW(text, (DWORD)wcslen(text));
         auto* item = new StyledMenuItem{text, (info.fType & MFT_SEPARATOR) != 0, info.hSubMenu != nullptr};
         item->type = info.fType;
@@ -32616,8 +36650,8 @@ void StyleMenuItems(HMENU menu, bool foreign = false) {
     }    // The background between items, and around them.
     MENUINFO mi{sizeof(mi)};
     mi.fMask = MIM_BACKGROUND;
-    static HBRUSH brush;
-    static uint32_t brushColor = 0xFFFFFFFF;
+    static MENU_STYLE_STORAGE HBRUSH brush;
+    static MENU_STYLE_STORAGE uint32_t brushColor = 0xFFFFFFFF;
     if (brushColor != g_menuLook.ground) {
         if (brush) DeleteObject(brush);
         brush = CreateSolidBrush(MenuRgb(g_menuLook.ground));
@@ -32699,6 +36733,82 @@ bool MenuMeasureItem(MEASUREITEMSTRUCT* measure) {
     return true;
 }
 
+uint32_t MenuMix(uint32_t a, uint32_t b, float t) {
+    auto channel = [&](int shift) {
+        int x = (a >> shift) & 0xFF, y = (b >> shift) & 0xFF;
+        return (uint32_t)std::clamp((int)(x + (y - x) * t + 0.5f), 0, 255) << shift;
+    };
+    return channel(16) | channel(8) | channel(0);
+}
+
+// The frame line's colour at a point of the menu window (x, y in it; w, h its size).
+uint32_t FrameLineAt(MenuLook const& look, int x, int y, int w, int h) {
+    if (look.frameStopCount <= 0) return look.frameLine;
+    if (look.frameStopCount == 1) return look.frameStops[0];
+    float t = std::clamp((x / (float)std::max(1, w - 1) + y / (float)std::max(1, h - 1)) / 2, 0.f, 1.f);
+    float at = t * (look.frameStopCount - 1);
+    int i = std::min((int)at, look.frameStopCount - 2);
+    return MenuMix(look.frameStops[i], look.frameStops[i + 1], at - i);
+}
+
+// Where the inner frame line is, in from the menu window's edge (the outer line is at 0).
+int FrameInnerAt(int scale) { return (std::clamp(g_menuLook.frameGap, 1, 16) + 2) * scale - 1; }
+
+// A frame line one pixel across, from (x, y) for length pixels, across or down, each pixel coloured by where it
+// sits on the menu window (at: where this dc's 0,0 is in the window; size: the window's), with its glow over the
+// colours to each side (before: above or left, after: below or right). As plain as before without a colour
+// gradient or a glow set. pass: 1 the glow only, 2 the line only, 3 both (glows first for every line, then the
+// lines, so a glow never covers the line it meets at a corner).
+void FrameLine(HDC dc, int x, int y, int length, bool across, POINT at, SIZE size, uint32_t before, uint32_t after,
+               bool glowBefore = true, bool glowAfter = true, int pass = 3) {
+    auto const& look = g_menuLook;
+    if (look.frameStopCount <= 0 && look.frameGlow <= 0) {
+        if (!(pass & 2)) return;
+        RECT r = across ? RECT{x, y, x + length, y + 1} : RECT{x, y, x + 1, y + length};
+        SetDCBrushColor(dc, MenuRgb(look.frameLine));
+        FillRect(dc, &r, (HBRUSH)GetStockObject(DC_BRUSH));
+        return;
+    }
+    if (length <= 0) return;
+    float glow = std::clamp(look.frameGlow, 0, 100) / 100.f;
+    // Each strip (the line, and each glow row beside it) is worked out here and drawn in one call: pixel by pixel,
+    // a flyout's frame was thousands of trips into the kernel, which made flyouts open slowly and held up the pointer.
+    auto strip = [&](int sx, int sy, std::vector<uint32_t> const& px) {
+        BITMAPINFO bi{};
+        bi.bmiHeader = {sizeof(BITMAPINFOHEADER), across ? length : 1, -(across ? 1 : length), 1, 32, BI_RGB};
+        SetDIBitsToDevice(dc, sx, sy, across ? length : 1, across ? 1 : length, 0, 0, 0, across ? 1 : length, px.data(), &bi,
+                          DIB_RGB_COLORS);
+    };
+    auto dib = [](uint32_t rgb) {  // (0xRRGGBB, as MenuRgb takes it, to a DIB pixel)
+        COLORREF c = MenuRgb(rgb);
+        return (uint32_t)GetRValue(c) << 16 | (uint32_t)GetGValue(c) << 8 | GetBValue(c);
+    };
+    std::vector<uint32_t> line(length);
+    for (int i = 0; i < length; i++)
+        line[i] = FrameLineAt(look, (across ? x + i : x) + at.x, (across ? y : y + i) + at.y, size.cx, size.cy);
+    if (glow > 0 && (pass & 1)) {
+        // One pixel each side up to half strength, two beyond (a frame is only a few pixels across).
+        int reach = look.frameGlow > 50 ? 2 : 1;
+        std::vector<uint32_t> row(length);
+        for (int d = 1; d <= reach; d++) {
+            float a = glow * (d == 1 ? 0.55f : 0.22f);
+            if (glowBefore) {
+                for (int i = 0; i < length; i++) row[i] = dib(MenuMix(before, line[i], a));
+                strip(across ? x : x - d, across ? y - d : y, row);
+            }
+            if (glowAfter) {
+                for (int i = 0; i < length; i++) row[i] = dib(MenuMix(after, line[i], a));
+                strip(across ? x : x + d, across ? y + d : y, row);
+            }
+        }
+    }
+    if (pass & 2) {
+        std::vector<uint32_t> row(length);
+        for (int i = 0; i < length; i++) row[i] = dib(line[i]);
+        strip(x, y, row);
+    }
+}
+
 bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
     if (!draw || draw->CtlType != ODT_MENU) return false;
     StyledMenuItem* item = StyledItemOf(draw->itemData);
@@ -32720,14 +36830,23 @@ bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
 
     if (look.frame) {
         // The band and the inner line round the items; what follows draws inside them.
-        int nc = 3 * s;  // the menu window's own border, measured from the window when it can be
+        int nc = 3 * s, ncTop = 3 * s;  // the menu window's own border, measured from the window when it can be
+        SIZE windowSize{r.right - r.left + 2 * nc, 0};
         if (HWND menuWindow = WindowFromDC(dc)) {
             RECT window, client;
             POINT origin{0, 0};
-            if (GetWindowRect(menuWindow, &window) && GetClientRect(menuWindow, &client) && ClientToScreen(menuWindow, &origin))
+            if (GetWindowRect(menuWindow, &window) && GetClientRect(menuWindow, &client) && ClientToScreen(menuWindow, &origin)) {
                 nc = origin.x - window.left;
+                ncTop = origin.y - window.top;
+                windowSize = {window.right - window.left, window.bottom - window.top};
+            }
         }
-        int inset = std::max(1, 8 * s - nc);
+        // The inner line sits frameGap past the outer one (StartAllBack's: 6). Closer than the window's own border
+        // is wide, it's in that border, drawn with the outer one (StyledMenuWindowProc), and the items fill to
+        // their edges.
+        int innerAt = FrameInnerAt(s);
+        bool lineInEdge = innerAt < nc;
+        int inset = lineInEdge ? 0 : innerAt + 1 - nc;
         RECT whole = r;
         fill(whole, look.band);
         int xl = r.left + inset, xr = r.right - inset;
@@ -32736,16 +36855,29 @@ bool MenuDrawItem(DRAWITEMSTRUCT* draw) {
         if (item->padTop) {
             inside.top = r.top + inset;
             lineTop = r.top + inset - 1;
-            fill(RECT{xl - 1, lineTop, xr + 1, lineTop + 1}, look.frameLine);
         }
         if (item->padBottom) {
             inside.bottom = r.bottom - inset;
             lineBottom = r.bottom - inset + 1;
-            fill(RECT{xl - 1, inside.bottom, xr + 1, inside.bottom + 1}, look.frameLine);
         }
         fill(inside, look.ground);
-        fill(RECT{xl - 1, lineTop, xl, lineBottom}, look.frameLine);
-        fill(RECT{xr, lineTop, xr + 1, lineBottom}, look.frameLine);
+        POINT at{nc, ncTop};
+        if (lineInEdge) {
+            // The line is in the border; only its glow reaches in here, when it sits right beside the items.
+            if (innerAt == nc - 1) {
+                if (item->padTop) FrameLine(dc, r.left - 1, r.top - 1, r.right - r.left + 2, true, at, windowSize, look.band, look.ground, false, true, 1);
+                if (item->padBottom)
+                    FrameLine(dc, r.left - 1, r.bottom, r.right - r.left + 2, true, at, windowSize, look.ground, look.band, true, false, 1);
+                FrameLine(dc, r.left - 1, r.top, r.bottom - r.top, false, at, windowSize, look.band, look.ground, false, true, 1);
+                FrameLine(dc, r.right, r.top, r.bottom - r.top, false, at, windowSize, look.ground, look.band, true, false, 1);
+            }
+        } else for (int pass : {1, 2}) {
+            if (item->padTop) FrameLine(dc, xl - 1, lineTop, xr + 1 - (xl - 1), true, at, windowSize, look.band, look.ground, true, true, pass);
+            if (item->padBottom)
+                FrameLine(dc, xl - 1, inside.bottom, xr + 1 - (xl - 1), true, at, windowSize, look.ground, look.band, true, true, pass);
+            FrameLine(dc, xl - 1, lineTop, lineBottom - lineTop, false, at, windowSize, look.band, look.ground, true, true, pass);
+            FrameLine(dc, xr, lineTop, lineBottom - lineTop, false, at, windowSize, look.ground, look.band, true, true, pass);
+        }
         r = RECT{xl, r.top + (item->padTop ? 12 * s : 0), xr, r.bottom - (item->padBottom ? 12 * s : 0) - item->extraBottom};
     }
     if (look.frame) {
@@ -32878,8 +37010,40 @@ LRESULT CALLBACK StyledMenuWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
             CombineRgn(frame, frame, inside, RGN_DIFF);
             SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.band : g_menuLook.ground));
             FillRgn(dc, frame, (HBRUSH)GetStockObject(DC_BRUSH));
-            SetDCBrushColor(dc, MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge));
-            FrameRect(dc, &window, (HBRUSH)GetStockObject(DC_BRUSH));
+            if (g_menuLook.frame) {
+                // The outer line, its glow falling inwards onto the band (the frame as set: FrameLine).
+                POINT at{0, 0};
+                SIZE size{window.right, window.bottom};
+                uint32_t band = g_menuLook.band, ground = g_menuLook.ground;
+                // The inner line too when it falls in this border (a small gap), with the items' ground inside it.
+                int q = FrameInnerAt(std::max(1, g_menuLook.scale));
+                bool inner = q < client.left && q < client.top;
+                if (inner) {
+                    RECT in{q + 1, q + 1, window.right - q - 1, window.bottom - q - 1};
+                    HRGN ring = CreateRectRgnIndirect(&in);
+                    HRGN items = CreateRectRgnIndirect(&client);
+                    CombineRgn(ring, ring, items, RGN_DIFF);
+                    SetDCBrushColor(dc, MenuRgb(ground));
+                    FillRgn(dc, ring, (HBRUSH)GetStockObject(DC_BRUSH));
+                    DeleteObject(ring);
+                    DeleteObject(items);
+                }
+                for (int pass : {1, 2}) {
+                    FrameLine(dc, 0, 0, window.right, true, at, size, band, band, false, true, pass);
+                    FrameLine(dc, 0, window.bottom - 1, window.right, true, at, size, band, band, true, false, pass);
+                    FrameLine(dc, 0, 0, window.bottom, false, at, size, band, band, false, true, pass);
+                    FrameLine(dc, window.right - 1, 0, window.bottom, false, at, size, band, band, true, false, pass);
+                    if (!inner) continue;
+                    int w = window.right - 2 * q, h = window.bottom - 2 * q;
+                    FrameLine(dc, q, q, w, true, at, size, band, ground, true, true, pass);
+                    FrameLine(dc, q, window.bottom - 1 - q, w, true, at, size, ground, band, true, true, pass);
+                    FrameLine(dc, q, q, h, false, at, size, band, ground, true, true, pass);
+                    FrameLine(dc, window.right - 1 - q, q, h, false, at, size, ground, band, true, true, pass);
+                }
+            } else {
+                SetDCBrushColor(dc, MenuRgb(g_menuLook.edge));
+                FrameRect(dc, &window, (HBRUSH)GetStockObject(DC_BRUSH));
+            }
             DeleteObject(frame);
             DeleteObject(inside);
             if (msg == WM_NCPAINT) ReleaseDC(hwnd, dc);
@@ -32892,16 +37056,24 @@ LRESULT CALLBACK StyledMenuWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
     return DefSubclassProc(hwnd, msg, wParam, lParam);
 }
 
+LRESULT CALLBACK MenuMotionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR);
+
+// Whether the menu windows made now are drawn here (TrackStyledMenu), or only animated (a native menu).
+MENU_STYLE_STORAGE bool g_menuWindowsStyled = true;
+
 LRESULT CALLBACK StyledMenuHookProc(int code, WPARAM wParam, LPARAM lParam) {
     if (code == HC_ACTION) {
         auto* call = (CWPSTRUCT*)lParam;
         if (call->message == WM_CREATE) {
             WCHAR cls[16];
             if (GetClassNameW(call->hwnd, cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768")) {
+                if (g_menuMotion.style) SetWindowSubclass(call->hwnd, MenuMotionProc, 0, 0);
+                if (!g_menuWindowsStyled) return CallNextHookEx(nullptr, code, wParam, lParam);
                 SetWindowSubclass(call->hwnd, StyledMenuWindowProc, 0, 0);
                 DWORD square = 1;  // DWMWCP_DONOTROUND
                 DwmSetWindowAttribute(call->hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &square, sizeof(square));
-                COLORREF border = MenuRgb(g_menuLook.frame ? g_menuLook.frameLine : g_menuLook.edge);
+                // No border from Windows: the frame drawn here is the edge (both together made it 2 px).
+                COLORREF border = 0xFFFFFFFE;  // DWMWA_COLOR_NONE
                 DwmSetWindowAttribute(call->hwnd, 34 /* DWMWA_BORDER_COLOR */, &border, sizeof(border));
             }
         }
@@ -32957,8 +37129,8 @@ void UnNativeMenuItems(HMENU menu) {
 }
 
 // The theme's menu ground and edge, sampled once per theme (reset when the theme reloads).
-HTHEME g_menuSampled = nullptr;
-uint32_t g_menuSampledGround = 0, g_menuSampledEdge = 0;
+MENU_STYLE_STORAGE HTHEME g_menuSampled = nullptr;
+MENU_STYLE_STORAGE uint32_t g_menuSampledGround = 0, g_menuSampledEdge = 0;
 
 // A menu stays on one screen: the one "from" is on (what opened it: a flyout, the taskbar, an icon), or
 // else the one under its point. A point on or past that screen's edge is brought back inside, and with
@@ -32974,7 +37146,19 @@ UINT TrackMenuOnScreen(HMENU menu, UINT flags, int x, int y, HWND owner, RECT co
     y = std::clamp(y, (int)m.top, (int)m.bottom - 1);
     TPMPARAMS params{sizeof(params)};
     if (from) IntersectRect(&params.rcExclude, from, &m);
-    return TrackPopupMenuEx(menu, flags, x, y, owner, from && !IsRectEmpty(&params.rcExclude) ? &params : nullptr);
+    // Submenus open the moment the pointer is on them: Windows' hover delay (400 ms unless changed) is 0 while one
+    // of these menus is open, and put back after (not saved, so nothing else keeps it). Set to open on a click,
+    // the delay is a minute instead, so hovering never opens one.
+    constexpr PCWSTR kFlyoutClick = L"taskbar.menuFlyoutClick";  // (through a variable: another part's setting)
+    UINT want = g_menuFlyoutClick || Wh_GetIntSetting(kFlyoutClick) ? 60000 : 0;
+    static MENU_STYLE_STORAGE int open;
+    UINT delay = 0;
+    bool changed = !open++ && SystemParametersInfoW(SPI_GETMENUSHOWDELAY, 0, &delay, 0) && delay != want &&
+                   SystemParametersInfoW(SPI_SETMENUSHOWDELAY, want, nullptr, 0);
+    UINT result = TrackPopupMenuEx(menu, flags, x, y, owner, from && !IsRectEmpty(&params.rcExclude) ? &params : nullptr);
+    if (changed) SystemParametersInfoW(SPI_SETMENUSHOWDELAY, delay, nullptr, 0);
+    open--;
+    return result;
 }
 
 // StartAllBack's menu look, as the taskbar gives its menus with a StartAllBack style and its bar
@@ -32985,6 +37169,23 @@ void FrameLikeStartAllBack(MenuLook& look, HFONT iconTitleFont, bool caps) {
     look.frame = true;
     look.caps = caps;
     look.text = 0x5A9A7D;
+    // The frame as set in the taskbar (read by full names through variables, so the build doesn't file them
+    // under the part reading them): the gap between the lines, their colours, their glow.
+    constexpr PCWSTR kGap = L"taskbar.menuFrameGap", kColors = L"taskbar.menuFrameColors", kGlow = L"taskbar.menuFrameGlow";
+    int gap = Wh_GetIntSetting(kGap);
+    look.frameGap = gap > 0 ? std::clamp(gap, 1, 16) : 6;
+    look.frameGlow = std::clamp(Wh_GetIntSetting(kGlow), 0, 100);
+    look.frameStopCount = 0;
+    PCWSTR colors = Wh_GetStringSetting(kColors);
+    for (PCWSTR p = colors; p && *p && look.frameStopCount < 3;) {
+        while (*p && *p != L'#') p++;
+        if (!*p) break;
+        wchar_t* end = nullptr;
+        unsigned long rgb = wcstoul(p + 1, &end, 16);
+        if (end - (p + 1) == 6) look.frameStops[look.frameStopCount++] = (uint32_t)rgb;
+        p = end && end > p + 1 ? end : p + 1;
+    }
+    Wh_FreeStringSetting(colors);
 }
 
 // Whether the taskbar frames its menus so (its settings, read by their full names through variables,
@@ -33150,19 +37351,894 @@ void FitStyledMenu(HMENU menu, int x, int y, RECT const* from) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// The mouse wheel over a menu taller than its screen (Windows only scrolls one with its arrows, while
+// they're pointed at): each notch becomes Up or Down presses that select the new bottom or top item, so
+// the menu scrolls 3 items a notch, never wrapping (as Tourne Mod Tray 1.0.1 does). A low-level mouse
+// hook takes the wheel over the menu wherever Windows would send it (the menu's thread isn't always in
+// front); a message filter hook does the same for wheel messages that reach the menu, should the first
+// not be allowed. Over a menu with a submenu open, the submenu closes first.
+
+MENU_STYLE_STORAGE HHOOK g_menuWheelFilter = nullptr;
+// The low-level hook lives on a thread of its own while a menu is open: on the menu's thread every mouse move
+// anywhere waited for the menu to finish painting (the pointer hitched over items).
+MENU_STYLE_STORAGE HANDLE g_menuWheelHookThread = nullptr, g_menuWheelHookStop = nullptr;
+MENU_STYLE_STORAGE int g_menuWheelDepth = 0;  // TrackStyledMenu calls open on this thread
+MENU_STYLE_STORAGE int g_menuWheelDelta = 0;  // the part of a notch not used yet (touchpads)
+MENU_STYLE_STORAGE DWORD g_menuWheelThread = 0;
+constexpr int kMenuWheelItems = 3;
+constexpr UINT kMnGetHMenu = 0x01E1;  // MN_GETHMENU: the menu a menu window shows
+// Where the last turn left a menu, until its key presses have been taken (turns come faster than the menu
+// takes them): its first item showing and the item selected.
+struct MenuWheelPending {
+    HWND window = nullptr;
+    int top = -1, hilite = -1;
+};
+MENU_STYLE_STORAGE MenuWheelPending g_menuWheelPending;
+
+struct MenuWindowsFound {
+    std::vector<HWND> windows;  // this thread's menu windows showing, the topmost (the deepest open) first
+};
+
+BOOL CALLBACK FindMenuWindows(HWND hwnd, LPARAM lp) {
+    WCHAR cls[16];
+    if (IsWindowVisible(hwnd) && GetClassNameW(hwnd, cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768"))
+        ((MenuWindowsFound*)lp)->windows.push_back(hwnd);
+    return TRUE;
+}
+
+// The first or last item showing (between the arrows), by position; -1 if none.
+int MenuItemAtEdge(HWND menuWnd, HMENU menu, bool top) {
+    RECT rc;
+    GetWindowRect(menuWnd, &rc);
+    int x = (rc.left + rc.right) / 2;
+    for (int d = 1; d < 80; d += 2) {
+        POINT pt{x, top ? rc.top + d : rc.bottom - 1 - d};
+        int i = MenuItemFromPoint(nullptr, menu, pt);
+        if (i >= 0) return i;
+    }
+    return -1;
+}
+
+bool MenuItemSelectable(HMENU menu, int i) {
+    UINT state = GetMenuState(menu, i, MF_BYPOSITION);
+    return state != (UINT)-1 && !(state & MF_SEPARATOR);
+}
+
+// notches > 0: up (the wheel turned away), < 0: down. Over the menu window that's at the point.
+void MenuWheelScroll(POINT pt, int notches) {
+    MenuWindowsFound found;
+    EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+    size_t at = 0;
+    for (; at < found.windows.size(); at++) {
+        RECT rc;
+        if (GetWindowRect(found.windows[at], &rc) && PtInRect(&rc, pt)) break;
+    }
+    if (at == found.windows.size()) return;
+    HWND menuWnd = found.windows[at];
+    HMENU menu = (HMENU)SendMessageW(menuWnd, kMnGetHMenu, 0, 0);
+    int count = menu ? GetMenuItemCount(menu) : 0;
+    int first = MenuItemAtEdge(menuWnd, menu, true), last = MenuItemAtEdge(menuWnd, menu, false);
+    if (count <= 0 || first < 0 || last < first || (first == 0 && last == count - 1)) return;  // (all of it shows)
+    int shown = last - first + 1;
+    int top = std::clamp(first - notches * kMenuWheelItems, 0, count - shown);
+    if (top == first) return;
+    int hilite = -1;
+    for (int i = 0; i < count && hilite < 0; i++)
+        if (GetMenuState(menu, i, MF_BYPOSITION) & MF_HILITE) hilite = i;
+    // The last turn's presses not taken yet: on from where they'll leave it.
+    auto& pending = g_menuWheelPending;
+    MSG queued;
+    if (pending.window == menuWnd && pending.hilite >= 0 && PeekMessageW(&queued, menuWnd, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE)) {
+        first = pending.top;
+        hilite = pending.hilite;
+        top = std::clamp(first - notches * kMenuWheelItems, 0, count - shown);
+        if (top == first) return;
+    }
+    // The keys go to the deepest menu open: the ones over this close first (each Esc closes one).
+    for (size_t i = 0; i < at; i++) PostMessageW(menuWnd, WM_KEYDOWN, VK_ESCAPE, 0);
+    // The menu scrolls to keep the selected item showing: the new bottom item going down, the new top going up.
+    UINT key = VK_DOWN;
+    int steps = 0, to = hilite;
+    if (hilite < 0 || top > first) {
+        for (int i = hilite < 0 ? 0 : hilite + 1; i <= top + shown - 1; i++)  // (with none selected, Down picks the first)
+            if (MenuItemSelectable(menu, i)) steps++, to = i;
+    } else {
+        key = VK_UP;
+        for (int i = hilite - 1; i >= top; i--)
+            if (MenuItemSelectable(menu, i)) steps++, to = i;
+    }
+    for (int i = 0; i < steps; i++) PostMessageW(menuWnd, WM_KEYDOWN, key, 0);
+    Wh_Log(L"wheel %d: showing %d..%d of %d, selected %d, %d x %ls", notches, first, first + shown - 1, count, hilite, steps,
+           key == VK_DOWN ? L"Down" : L"Up");
+    pending = {menuWnd, top, steps ? to : -1};
+}
+
+void MenuWheelBy(POINT pt, int delta) {
+    g_menuWheelDelta += delta;
+    int notches = g_menuWheelDelta / WHEEL_DELTA;
+    g_menuWheelDelta -= notches * WHEEL_DELTA;
+    if (notches) MenuWheelScroll(pt, notches);
+}
+
+// Over a menu window of this thread.
+bool OverMenuWindow(POINT pt) {
+    MenuWindowsFound found;
+    EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+    for (HWND w : found.windows) {
+        RECT rc;
+        if (GetWindowRect(w, &rc) && PtInRect(&rc, pt)) return true;
+    }
+    return false;
+}
+
+// On the hook's own thread (g_menuWheelThread there is the menu's): a turn over a menu window goes to that
+// window as a wheel message, which MenuWheelFilterProc takes on the menu's thread. Moves pass at once.
+LRESULT CALLBACK MenuWheelLLProc(int code, WPARAM wp, LPARAM lp) {
+    if (code == HC_ACTION && wp == WM_MOUSEWHEEL) {
+        auto* ms = (MSLLHOOKSTRUCT*)lp;
+        MenuWindowsFound found;
+        EnumThreadWindows(g_menuWheelThread, FindMenuWindows, (LPARAM)&found);
+        for (HWND w : found.windows) {
+            RECT rc;
+            if (!GetWindowRect(w, &rc) || !PtInRect(&rc, ms->pt)) continue;
+            PostMessageW(w, WM_MOUSEWHEEL, MAKEWPARAM(0, HIWORD(ms->mouseData)), MAKELPARAM(ms->pt.x, ms->pt.y));
+            return 1;  // (taken: nothing else scrolls)
+        }
+    }
+    return CallNextHookEx(nullptr, code, wp, lp);
+}
+
+struct MenuWheelHookStart {
+    DWORD menuThread;
+    HANDLE stop;
+};
+
+DWORD WINAPI MenuWheelHookThread(void* p) {
+    auto start = *(MenuWheelHookStart*)p;
+    delete (MenuWheelHookStart*)p;
+    g_menuWheelThread = start.menuThread;  // (this thread's copy, where storage is per thread)
+    HMODULE self = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&MenuWheelLLProc, &self);
+    HHOOK hook = SetWindowsHookExW(WH_MOUSE_LL, MenuWheelLLProc, self, 0);
+    while (MsgWaitForMultipleObjects(1, &start.stop, FALSE, INFINITE, QS_ALLINPUT) != WAIT_OBJECT_0) {
+        MSG m;
+        while (PeekMessageW(&m, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&m);
+    }
+    if (hook) UnhookWindowsHookEx(hook);
+    return 0;
+}
+
+LRESULT CALLBACK MenuWheelFilterProc(int code, WPARAM wp, LPARAM lp) {
+    if (code == MSGF_MENU && g_menuWheelDepth) {
+        MSG* m = (MSG*)lp;
+        if (m->message == WM_MOUSEWHEEL) {
+            POINT pt{(short)LOWORD(m->lParam), (short)HIWORD(m->lParam)};
+            MenuWheelBy(pt, GET_WHEEL_DELTA_WPARAM(m->wParam));
+            return TRUE;
+        }
+    }
+    return CallNextHookEx(nullptr, code, wp, lp);
+}
+
+void MenuWheelStart() {
+    if (g_menuWheelDepth++) return;
+    g_menuWheelDelta = 0;
+    g_menuWheelPending = {};
+    g_menuWheelThread = GetCurrentThreadId();
+    g_menuWheelFilter = SetWindowsHookExW(WH_MSGFILTER, MenuWheelFilterProc, nullptr, GetCurrentThreadId());
+    g_menuWheelHookStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (g_menuWheelHookStop)
+        g_menuWheelHookThread = CreateThread(nullptr, 0, MenuWheelHookThread, new MenuWheelHookStart{g_menuWheelThread, g_menuWheelHookStop}, 0, nullptr);
+}
+
+void MenuWheelStop() {
+    if (--g_menuWheelDepth) return;
+    if (g_menuWheelFilter) UnhookWindowsHookEx(g_menuWheelFilter);
+    g_menuWheelFilter = nullptr;
+    if (g_menuWheelHookStop) SetEvent(g_menuWheelHookStop);
+    if (g_menuWheelHookThread) {
+        WaitForSingleObject(g_menuWheelHookThread, 500);  // (it only unhooks)
+        CloseHandle(g_menuWheelHookThread);
+    }
+    if (g_menuWheelHookStop) CloseHandle(g_menuWheelHookStop);
+    g_menuWheelHookThread = g_menuWheelHookStop = nullptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Menus opening with a short animation (g_menuMotion): each menu window, as it's first shown, fades in,
+// slides 10 px in (and fades) from the side away from where it opens, or unfolds from that side, over
+// g_menuMotion.ms on the motion engine's curve. Windows' own menu fade stays off (TPM_NOANIMATION).
+
+constexpr UINT_PTR kMenuMotionTimer = 0x7E51;
+
+struct MenuMotionState {
+    HWND window = nullptr;
+    DWORD start = 0;
+    POINT at{};  // where it ends up
+    SIZE size{};
+    int dy = 0;  // where it starts, above (< 0) or below (> 0) that
+    bool up = false;  // it opens upwards (unfolds from the bottom)
+};
+MENU_STYLE_STORAGE std::vector<MenuMotionState>* g_menuMotions = nullptr;
+
+MenuMotionState* MenuMotionOf(HWND hwnd) {
+    if (!g_menuMotions) return nullptr;
+    for (auto& m : *g_menuMotions)
+        if (m.window == hwnd) return &m;
+    return nullptr;
+}
+
+void MenuMotionDrop(HWND hwnd) {
+    if (g_menuMotions) std::erase_if(*g_menuMotions, [&](MenuMotionState const& m) { return m.window == hwnd; });
+}
+
+// One step: t is the eased progress (may pass 1 on the way).
+void MenuMotionApply(MenuMotionState const& m, double t, bool done) {
+    int style = g_menuMotion.style;
+    if (style == 1 || style == 2) {
+        int alpha = done ? 255 : std::clamp((int)(t * 255 + 0.5), 0, 255);
+        SetLayeredWindowAttributes(m.window, 0, (BYTE)alpha, LWA_ALPHA);
+    }
+    if (style == 2) {
+        int y = m.at.y + (done ? 0 : (int)std::lround(m.dy * (1 - t)));
+        SetWindowPos(m.window, nullptr, m.at.x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    }
+    if (style == 3) {
+        if (done) {
+            SetWindowRgn(m.window, nullptr, TRUE);
+        } else {
+            int h = std::clamp((int)std::lround(m.size.cy * t), 1, (int)m.size.cy);
+            HRGN rgn = m.up ? CreateRectRgn(0, m.size.cy - h, m.size.cx, m.size.cy) : CreateRectRgn(0, 0, m.size.cx, h);
+            SetWindowRgn(m.window, rgn, TRUE);  // (the window owns the region now)
+        }
+    }
+}
+
+double MenuMotionEase(double p) {
+    if (g_menuMotion.ease) return g_menuMotion.ease(p);
+    double q = 1 - p;
+    return 1 - q * q * q;  // (an ease-out)
+}
+
+LRESULT CALLBACK MenuMotionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    switch (msg) {
+        case WM_WINDOWPOSCHANGING: {
+            auto* pos = (WINDOWPOS*)lParam;
+            if (!(pos->flags & SWP_SHOWWINDOW) || MenuMotionOf(hwnd) || !g_menuMotion.style || g_menuMotion.ms < 1) break;
+            // Only the menu itself moves in; its submenus are there at once (a submenu that eases in reads as a hang).
+            {
+                bool another = false;
+                for (HWND w = FindWindowExW(nullptr, nullptr, L"#32768", nullptr); w && !another; w = FindWindowExW(nullptr, w, L"#32768", nullptr))
+                    another = w != hwnd && IsWindowVisible(w) && GetWindowThreadProcessId(w, nullptr) == GetCurrentThreadId();
+                if (another) break;
+            }
+            RECT r;
+            GetWindowRect(hwnd, &r);
+            MenuMotionState m;
+            m.window = hwnd;
+            m.at = (pos->flags & SWP_NOMOVE) ? POINT{r.left, r.top} : POINT{pos->x, pos->y};
+            m.size = (pos->flags & SWP_NOSIZE) ? SIZE{r.right - r.left, r.bottom - r.top} : SIZE{pos->cx, pos->cy};
+            POINT cursor;
+            GetCursorPos(&cursor);
+            m.up = m.at.y + m.size.cy <= cursor.y + 2;  // (it ends above the pointer)
+            m.dy = (m.up ? 10 : -10) * std::max(1, g_menuLook.scale);
+            m.start = GetTickCount();
+            if (!g_menuMotions) g_menuMotions = new std::vector<MenuMotionState>;
+            g_menuMotions->push_back(m);
+            // Its first look, before it shows.
+            if (g_menuMotion.style == 1 || g_menuMotion.style == 2) {
+                SetWindowLongPtrW(hwnd, GWL_EXSTYLE, GetWindowLongPtrW(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+                SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
+            }
+            if (g_menuMotion.style == 2) {
+                pos->x = m.at.x;
+                pos->y = m.at.y + m.dy;
+                pos->flags &= ~SWP_NOMOVE;
+            }
+            if (g_menuMotion.style == 3) {
+                HRGN rgn = m.up ? CreateRectRgn(0, m.size.cy - 1, m.size.cx, m.size.cy) : CreateRectRgn(0, 0, m.size.cx, 1);
+                SetWindowRgn(hwnd, rgn, FALSE);
+            }
+            SetTimer(hwnd, kMenuMotionTimer, 10, nullptr);
+            break;
+        }
+        case WM_TIMER: {
+            if (wParam != kMenuMotionTimer) break;
+            MenuMotionState* m = MenuMotionOf(hwnd);
+            if (!m) {
+                KillTimer(hwnd, kMenuMotionTimer);
+                return 0;
+            }
+            double p = (GetTickCount() - m->start) / std::max(1.0, g_menuMotion.ms);
+            bool done = p >= 1;
+            MenuMotionApply(*m, done ? 1 : MenuMotionEase(p), done);
+            if (done) KillTimer(hwnd, kMenuMotionTimer);
+            return 0;
+        }
+        case WM_NCDESTROY:
+            KillTimer(hwnd, kMenuMotionTimer);
+            MenuMotionDrop(hwnd);
+            RemoveWindowSubclass(hwnd, MenuMotionProc, 0);
+            break;
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Items taken out of a shell menu, or moved into a "More options" submenu at its end, by their label
+// (without its & and what follows a tab, any case, a trailing "..." optional) or, where the caller can
+// tell, their verb ("cut", "properties", "openas"). Only the menu's own items, not its submenus'. Separators
+// left doubled, first or last go too. Items can also be renamed, and new ones added that run a command (the
+// menu file, menus.conf, below). UndoMenuRules puts everything back where it was, for a caller that keeps the
+// menu (Explorer's).
+
+struct MenuRules {
+    std::vector<std::wstring> hide, more;  // lower case
+    std::wstring moreLabel = L"More options";
+    struct Rename {
+        std::wstring from, to;  // from: lower case
+    };
+    std::vector<Rename> rename;
+    struct Add {
+        std::wstring label, command;  // label "-": a separator
+        bool top = false;             // first in the menu, else last (before "More options")
+    };
+    std::vector<Add> add;
+    bool Any() const { return !hide.empty() || !more.empty() || !rename.empty() || !add.empty(); }
+};
+
+// The ids of added items: above the shell's (1 to 0x7FFF) and the desktop menu's own (0x8000 on).
+constexpr UINT kMenuAddFirst = 0xFE00, kMenuAddLast = 0xFEFF;
+
+// "Cast to Device, Give access to" -> {"cast to device", "give access to"}.
+std::vector<std::wstring> MenuRuleList(std::wstring const& text) {
+    std::vector<std::wstring> out;
+    size_t start = 0;
+    while (start <= text.size()) {
+        size_t comma = text.find(L',', start);
+        std::wstring item = text.substr(start, comma == std::wstring::npos ? std::wstring::npos : comma - start);
+        item.erase(0, item.find_first_not_of(L" \t\""));
+        size_t end = item.find_last_not_of(L" \t\"");
+        item.erase(end == std::wstring::npos ? 0 : end + 1);
+        for (auto& c : item) c = (wchar_t)towlower(c);
+        if (!item.empty()) out.push_back(item);
+        if (comma == std::wstring::npos) break;
+        start = comma + 1;
+    }
+    return out;
+}
+
+// A label as the rules compare it.
+std::wstring MenuRuleLabel(std::wstring const& text) {
+    std::wstring out;
+    for (size_t i = 0; i < text.size() && text[i] != L'\t'; i++) {
+        if (text[i] == L'&') {
+            if (i + 1 < text.size() && text[i + 1] == L'&') out += L'&', i++;
+            continue;
+        }
+        out += (wchar_t)towlower(text[i]);
+    }
+    while (!out.empty() && (iswspace(out.back()) || out.back() == L'.' || out.back() == 0x2026)) out.pop_back();
+    out.erase(0, out.find_first_not_of(L" \t"));
+    return out;
+}
+
+struct MenuRulesUndo {
+    HMENU menu = nullptr, more = nullptr;
+    bool separator = false;  // a separator was added before the submenu
+    struct Renamed {
+        int at;  // where it was, before anything was taken out
+        std::wstring text;
+    };
+    std::vector<Renamed> renamed;
+    bool added = false;
+    std::vector<std::wstring> commands;  // the added items', by id - kMenuAddFirst (kept after the undo: RunMenuRule)
+    struct Taken {
+        int at;  // where it was
+        MENUITEMINFOW info;
+        std::wstring text;
+    };
+    std::vector<Taken> taken;  // in the order they were
+};
+
+// verbOf (may be null) gives an item's verb from its command id.
+template <class VerbOf>
+MenuRulesUndo ApplyMenuRules(HMENU menu, MenuRules const& rules, VerbOf&& verbOf) {
+    MenuRulesUndo undo;
+    undo.menu = menu;
+    if (!rules.Any() || !menu) return undo;
+    // (an entry ending " (greyed)" only takes the item while it's greyed out, as Paste with nothing to paste)
+    auto listed = [](std::vector<std::wstring> const& list, std::wstring const& a, std::wstring const& b, bool greyed) {
+        constexpr std::wstring_view kGreyed = L" (greyed)";
+        for (auto const& entry : list) {
+            std::wstring_view x = entry;
+            if (x.size() > kGreyed.size() && x.substr(x.size() - kGreyed.size()) == kGreyed) {
+                if (!greyed) continue;
+                x.remove_suffix(kGreyed.size());
+            }
+            if ((!a.empty() && x == a) || (!b.empty() && x == b)) return true;
+        }
+        return false;
+    };
+    // What each item is: 0 stays, 1 goes, 2 moves.
+    int count = GetMenuItemCount(menu);
+    std::vector<int> fate(std::max(0, count), 0);
+    std::vector<bool> separator(std::max(0, count), false);
+    for (int i = 0; i < count; i++) {
+        WCHAR text[256] = L"";
+        MENUITEMINFOW info{sizeof(info)};
+        info.fMask = MIIM_FTYPE | MIIM_ID | MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
+        info.dwTypeData = text;
+        info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
+        separator[i] = info.fType & MFT_SEPARATOR;
+        bool greyed = info.fState & MFS_DISABLED;
+        if (separator[i]) continue;
+        std::wstring label = MenuRuleLabel(text), verb;
+        if (!info.hSubMenu || info.wID) verb = verbOf(info.wID);
+        for (auto& c : verb) c = (wchar_t)towlower(c);
+        if (listed(rules.hide, label, verb, greyed)) fate[i] = 1;
+        else if (listed(rules.more, label, verb, greyed)) fate[i] = 2;
+        for (auto const& r : rules.rename) {
+            if (r.from != label && (verb.empty() || r.from != verb)) continue;
+            // (what follows a tab, the shortcut shown on the right, stays)
+            std::wstring now = text, to = r.to;
+            if (size_t tab = now.find(L'\t'); tab != std::wstring::npos) to += now.substr(tab);
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)to.c_str();
+            if (SetMenuItemInfoW(menu, i, TRUE, &set)) undo.renamed.push_back({i, now});
+            break;
+        }
+    }
+    // The added ones, at the top or the end: separators round them where the menu has items.
+    auto addItems = [&] {
+        for (int pass = 0; pass < 2; pass++) {
+            std::vector<MenuRules::Add const*> list;
+            for (auto const& a : rules.add)
+                if (a.top == (pass == 0)) list.push_back(&a);
+            if (list.empty()) continue;
+            int at = pass == 0 ? 0 : GetMenuItemCount(menu);
+            auto insert = [&](MenuRules::Add const* a) {
+                UINT id = kMenuAddFirst + (UINT)undo.commands.size();
+                if (id > kMenuAddLast) return;
+                undo.commands.push_back(a ? a->command : L"");
+                MENUITEMINFOW info{sizeof(info)};
+                info.fMask = MIIM_FTYPE | MIIM_ID | (a && a->label != L"-" ? MIIM_STRING : 0);
+                info.fType = a && a->label != L"-" ? MFT_STRING : MFT_SEPARATOR;
+                info.wID = id;
+                info.dwTypeData = a ? (LPWSTR)a->label.c_str() : nullptr;
+                if (InsertMenuItemW(menu, at, TRUE, &info)) at++, undo.added = true;
+            };
+            int n = GetMenuItemCount(menu);
+            bool edge = pass == 0 ? n == 0 || (GetMenuState(menu, 0, MF_BYPOSITION) & MF_SEPARATOR)
+                                  : n == 0 || (GetMenuState(menu, n - 1, MF_BYPOSITION) & MF_SEPARATOR);
+            if (pass == 1 && !edge && list.front()->label != L"-") insert(nullptr);
+            for (auto* a : list) insert(a);
+            if (pass == 0 && !edge && list.back()->label != L"-") insert(nullptr);
+        }
+    };
+    // Separators that would be first, last or doubled once the rest is gone.
+    bool any = false;
+    for (int f : fate) any |= f != 0;
+    if (!any) {
+        addItems();
+        return undo;
+    }
+    int lastKept = -1;  // the last item staying in the menu, before i
+    for (int i = 0; i < count; i++) {
+        if (fate[i]) continue;
+        if (separator[i] && (lastKept < 0 || separator[lastKept])) fate[i] = 1;
+        else lastKept = i;
+    }
+    if (lastKept >= 0 && separator[lastKept]) fate[lastKept] = 1;
+    // Taken out from the end, so the places of the rest stay as they were.
+    std::vector<MenuRulesUndo::Taken> taken;
+    for (int i = count - 1; i >= 0; i--) {
+        if (!fate[i]) continue;
+        MenuRulesUndo::Taken t{i, {sizeof(MENUITEMINFOW)}, {}};
+        WCHAR text[256] = L"";
+        t.info.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_ID | MIIM_SUBMENU | MIIM_STRING | MIIM_DATA | MIIM_BITMAP | MIIM_CHECKMARKS;
+        t.info.dwTypeData = text;
+        t.info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &t.info)) continue;
+        t.text = text;
+        if (!RemoveMenu(menu, i, MF_BYPOSITION)) continue;
+        taken.insert(taken.begin(), t);
+    }
+    undo.taken = taken;
+    addItems();
+    // The moved ones, in their order, in a submenu at the end (after a separator).
+    for (auto& t : undo.taken) {
+        if (fate[t.at] != 2) continue;
+        if (!undo.more) undo.more = CreatePopupMenu();
+        MENUITEMINFOW info = t.info;
+        info.dwTypeData = (LPWSTR)t.text.c_str();
+        InsertMenuItemW(undo.more, GetMenuItemCount(undo.more), TRUE, &info);
+    }
+    if (undo.more) {
+        int n = GetMenuItemCount(menu);
+        if (n > 0 && !(GetMenuState(menu, n - 1, MF_BYPOSITION) & MF_SEPARATOR)) {
+            AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+            undo.separator = true;
+        }
+        AppendMenuW(menu, MF_POPUP | MF_STRING, (UINT_PTR)undo.more, rules.moreLabel.empty() ? L"More options" : rules.moreLabel.c_str());
+    }
+    return undo;
+}
+
+void UndoMenuRules(MenuRulesUndo& undo) {
+    if (!undo.menu) return;
+    if (undo.added) {
+        for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
+            UINT id = GetMenuItemID(undo.menu, i);
+            if (id >= kMenuAddFirst && id <= kMenuAddLast) RemoveMenu(undo.menu, i, MF_BYPOSITION);
+        }
+        undo.added = false;
+    }
+    auto renameBack = [&] {
+        for (auto& r : undo.renamed) {
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)r.text.c_str();
+            SetMenuItemInfoW(undo.menu, r.at, TRUE, &set);
+        }
+        undo.renamed.clear();
+    };
+    if (undo.taken.empty()) return renameBack();
+    if (undo.more) {
+        // The submenu and the separator added before it.
+        for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
+            if (GetSubMenu(undo.menu, i) != undo.more) continue;
+            RemoveMenu(undo.menu, i, MF_BYPOSITION);
+            if (undo.separator && i > 0) RemoveMenu(undo.menu, i - 1, MF_BYPOSITION);
+            break;
+        }
+        while (GetMenuItemCount(undo.more) > 0) RemoveMenu(undo.more, 0, MF_BYPOSITION);  // (theirs again: not destroyed)
+        DestroyMenu(undo.more);
+        undo.more = nullptr;
+    }
+    for (auto& t : undo.taken) {
+        MENUITEMINFOW info = t.info;
+        info.dwTypeData = (LPWSTR)t.text.c_str();
+        InsertMenuItemW(undo.menu, std::min(t.at, GetMenuItemCount(undo.menu)), TRUE, &info);
+    }
+    undo.taken.clear();
+    renameBack();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The menu file, %APPDATA%\Tourne\Desktop\menus.conf: what each menu shows, a line each, under sections
+// that say which menus they're for. Read again whenever it changes; what didn't make sense is written to
+// menus.log beside it.
+//
+//   # a note
+//   hide Cast to Device              (a label, any case, or a verb: properties, openas; "Paste (greyed)" too)
+//   more Give access to              (into the "More options" submenu at the end)
+//   more-label More...
+//   rename Copy as path -> Copy path
+//   add Open in Terminal = wt.exe -d %folder%
+//   add top Edit in Notepad = notepad.exe %file%
+//   add separator
+//   [when menu desktop, files *.txt *.md]   (every condition holds; ! before one turns it round)
+//   [all]                                   (back to every menu)
+//
+// Conditions: menu NAME... (desktop, taskbar, explorer, dialog, windows), app NAME.exe..., files PATTERN...
+// (every chosen item's name matches one), folder (every chosen item is a folder), background (nothing
+// chosen: the empty space), shift. Where a menu doesn't know what's chosen (Explorer's, through Tourne Menus),
+// files, folder and background never hold, nor their opposites. In commands: %file% (the first chosen, quoted),
+// %files% (all of them), %folder% (where the menu opened, or the first one's folder), and %VARIABLES%.
+
+struct MenuContext {
+    std::wstring menu;                // desktop, taskbar, explorer, dialog or windows
+    std::wstring app;                 // the program's file name, lower case
+    bool known = false;               // what's chosen is known
+    std::vector<std::wstring> files;  // full paths
+    std::wstring folder;
+};
+
+struct MenuFile {
+    struct Line {
+        std::wstring verb, item, value;
+        bool top = false;
+    };
+    struct Section {
+        std::vector<std::wstring> when;  // lower case, one condition each
+        std::vector<Line> lines;
+    };
+    std::vector<Section> sections;
+};
+
+// "*.txt" against "notes.TXT".
+bool MenuWild(wchar_t const* pattern, wchar_t const* text) {
+    if (!*pattern) return !*text;
+    if (*pattern == L'*') return MenuWild(pattern + 1, text) || (*text && MenuWild(pattern, text + 1));
+    if (!*text) return false;
+    if (*pattern != L'?' && towlower(*pattern) != towlower(*text)) return false;
+    return MenuWild(pattern + 1, text + 1);
+}
+
+std::wstring MenuTrim(std::wstring x) {
+    x.erase(0, x.find_first_not_of(L" \t"));
+    size_t end = x.find_last_not_of(L" \t\r");
+    x.erase(end == std::wstring::npos ? 0 : end + 1);
+    return x;
+}
+
+MenuFile ParseMenuFile(std::wstring const& text, std::wstring* errors) {
+    MenuFile file;
+    file.sections.push_back({});
+    int number = 0;
+    size_t start = 0;
+    auto error = [&](std::wstring const& why) {
+        if (errors) *errors += L"line " + std::to_wstring(number) + L": " + why + L"\r\n";
+    };
+    while (start < text.size()) {
+        size_t end = text.find(L'\n', start);
+        std::wstring line = MenuTrim(text.substr(start, end == std::wstring::npos ? std::wstring::npos : end - start));
+        start = end == std::wstring::npos ? text.size() : end + 1;
+        number++;
+        if (line.empty() || line[0] == L'#') continue;
+        if (line[0] == L'[') {
+            if (line.back() != L']') {
+                error(L"a section needs its closing ]");
+                continue;
+            }
+            std::wstring inner = MenuTrim(line.substr(1, line.size() - 2));
+            for (auto& c : inner) c = (wchar_t)towlower(c);
+            MenuFile::Section section;
+            if (inner != L"all") {
+                if (inner.compare(0, 5, L"when ")) {
+                    error(L"a section is [when ...] or [all]");
+                    continue;
+                }
+                for (auto const& c : MenuRuleList(inner.substr(5))) {
+                    std::wstring key = c[0] == L'!' ? MenuTrim(c.substr(1)) : c;
+                    key = key.substr(0, key.find(L' '));
+                    if (key != L"menu" && key != L"app" && key != L"files" && key != L"folder" && key != L"background" &&
+                        key != L"shift")
+                        error(L"no condition \"" + key + L"\" (menu, app, files, folder, background, shift)");
+                    else section.when.push_back(c);
+                }
+            }
+            file.sections.push_back(section);
+            continue;
+        }
+        size_t space = line.find_first_of(L" \t");
+        MenuFile::Line l;
+        l.verb = line.substr(0, space);
+        for (auto& c : l.verb) c = (wchar_t)towlower(c);
+        std::wstring rest = space == std::wstring::npos ? L"" : MenuTrim(line.substr(space));
+        if (l.verb == L"add") {
+            if (!_wcsnicmp(rest.c_str(), L"top ", 4)) l.top = true, rest = MenuTrim(rest.substr(4));
+            if (!_wcsicmp(rest.c_str(), L"separator") || rest == L"-") {
+                l.item = L"-";
+            } else {
+                size_t eq = rest.find(L'=');
+                if (eq == std::wstring::npos || MenuTrim(rest.substr(0, eq)).empty() || MenuTrim(rest.substr(eq + 1)).empty()) {
+                    error(L"add needs a label and a command: add LABEL = COMMAND");
+                    continue;
+                }
+                l.item = MenuTrim(rest.substr(0, eq));
+                l.value = MenuTrim(rest.substr(eq + 1));
+            }
+        } else if (l.verb == L"rename") {
+            size_t arrow = rest.find(L"->");
+            if (arrow == std::wstring::npos || MenuTrim(rest.substr(0, arrow)).empty() || MenuTrim(rest.substr(arrow + 2)).empty()) {
+                error(L"rename needs both names: rename OLD -> NEW");
+                continue;
+            }
+            l.item = MenuRuleLabel(MenuTrim(rest.substr(0, arrow)));
+            l.value = MenuTrim(rest.substr(arrow + 2));
+        } else if (l.verb == L"hide" || l.verb == L"more" || l.verb == L"more-label") {
+            if (rest.empty()) {
+                error(l.verb + L" needs an item");
+                continue;
+            }
+            l.item = rest;
+            // (as the settings' lists are compared: lower case, " (greyed)" kept)
+            if (l.verb != L"more-label")
+                for (auto& c : l.item) c = (wchar_t)towlower(c);
+        } else {
+            error(L"no verb \"" + l.verb + L"\" (hide, more, more-label, rename, add)");
+            continue;
+        }
+        file.sections.back().lines.push_back(l);
+    }
+    return file;
+}
+
+// 1 holds, 0 doesn't, -1 can't tell (what's chosen isn't known).
+int MenuConditionHolds(std::wstring const& condition, MenuContext const& c) {
+    bool flip = condition[0] == L'!';
+    std::wstring x = flip ? MenuTrim(condition.substr(1)) : condition;
+    size_t space = x.find(L' ');
+    std::wstring key = x.substr(0, space);
+    std::vector<std::wstring> words;
+    for (size_t at = space; at != std::wstring::npos && at < x.size();) {
+        size_t from = x.find_first_not_of(L' ', at);
+        if (from == std::wstring::npos) break;
+        at = x.find(L' ', from);
+        words.push_back(x.substr(from, at == std::wstring::npos ? std::wstring::npos : at - from));
+    }
+    int holds = 0;
+    if (key == L"menu" || key == L"app") {
+        std::wstring const& what = key == L"menu" ? c.menu : c.app;
+        for (auto const& w : words) holds |= MenuWild(w.c_str(), what.c_str());
+    } else if (key == L"shift") {
+        holds = GetKeyState(VK_SHIFT) < 0;
+    } else {
+        if (!c.known) return -1;
+        if (key == L"background") {
+            holds = c.files.empty();
+        } else if (key == L"folder") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                DWORD a = GetFileAttributesW(f.c_str());
+                if (a == INVALID_FILE_ATTRIBUTES || !(a & FILE_ATTRIBUTE_DIRECTORY)) holds = 0;
+            }
+        } else if (key == L"files") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                size_t slash = f.find_last_of(L"\\/");
+                std::wstring name = slash == std::wstring::npos ? f : f.substr(slash + 1);
+                bool one = false;
+                for (auto const& w : words) one |= MenuWild(w.c_str(), name.c_str());
+                if (!one) holds = 0;
+            }
+        }
+    }
+    return flip ? !holds : holds;
+}
+
+// The rules a menu gets: the settings' (base), then the file's sections that hold for it, in order.
+MenuRules MenuRulesFor(MenuFile const& file, MenuContext const& c, MenuRules rules) {
+    for (auto const& section : file.sections) {
+        bool holds = true;
+        for (auto const& w : section.when) holds &= MenuConditionHolds(w, c) == 1;
+        if (!holds) continue;
+        for (auto const& l : section.lines) {
+            if (l.verb == L"hide") rules.hide.push_back(l.item);
+            else if (l.verb == L"more") rules.more.push_back(l.item);
+            else if (l.verb == L"more-label") rules.moreLabel = l.item;
+            else if (l.verb == L"rename") rules.rename.push_back({l.item, l.value});
+            else if (l.verb == L"add") rules.add.push_back({l.item, l.value, l.top});
+        }
+    }
+    return rules;
+}
+
+std::wstring MenuFilePath() {
+    WCHAR roaming[MAX_PATH] = L"";  // (from the environment: nothing to link, in any program)
+    DWORD n = GetEnvironmentVariableW(L"APPDATA", roaming, ARRAYSIZE(roaming));
+    return n && n < ARRAYSIZE(roaming) ? std::wstring(roaming) + L"\\Tourne\\Desktop\\menus.conf" : L"";
+}
+
+// The file as it is now: parsed again only when it changed (its time and size), its errors then written down.
+MenuFile const& LoadMenuFile() {
+    static MENU_STYLE_STORAGE MenuFile* s_file;
+    static MENU_STYLE_STORAGE ULONGLONG s_seen;  // its write time, when last read
+    static MENU_STYLE_STORAGE ULONGLONG s_size;
+    static MENU_STYLE_STORAGE DWORD s_checked;
+    if (!s_file) s_file = new MenuFile;
+    if (s_checked && GetTickCount() - s_checked < 500) return *s_file;  // (several menus at once: one look)
+    s_checked = GetTickCount() | 1;
+    std::wstring path = MenuFilePath();
+    WIN32_FILE_ATTRIBUTE_DATA a{};
+    if (path.empty() || !GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &a)) {
+        if (s_seen) *s_file = {}, s_seen = 0;
+        return *s_file;
+    }
+    ULONGLONG time = ((ULONGLONG)a.ftLastWriteTime.dwHighDateTime << 32) | a.ftLastWriteTime.dwLowDateTime;
+    ULONGLONG size = ((ULONGLONG)a.nFileSizeHigh << 32) | a.nFileSizeLow;
+    if (time == s_seen && size == s_size) return *s_file;
+    s_seen = time, s_size = size;
+    std::wstring text;
+    HANDLE h = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (h != INVALID_HANDLE_VALUE) {
+        std::string bytes((size_t)std::min<ULONGLONG>(size, 1 << 20), '\0');
+        DWORD got = 0;
+        if (!bytes.empty() && ReadFile(h, bytes.data(), (DWORD)bytes.size(), &got, nullptr)) {
+            bytes.resize(got);
+            if (bytes.size() >= 3 && !bytes.compare(0, 3, "\xEF\xBB\xBF")) bytes.erase(0, 3);
+            int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+            text.resize(n);
+            MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), n);
+        }
+        CloseHandle(h);
+    }
+    std::wstring errors;
+    *s_file = ParseMenuFile(text, &errors);
+    // menus.log: what didn't make sense, or that all of it did.
+    std::wstring log = path.substr(0, path.size() - 5) + L".log";
+    std::wstring report = errors.empty() ? L"menus.conf read: every line made sense\r\n" : L"menus.conf: lines left out\r\n" + errors;
+    HANDLE out = CreateFileW(log.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if (out != INVALID_HANDLE_VALUE) {
+        int n = WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), nullptr, 0, nullptr, nullptr);
+        std::string utf8(n, '\0');
+        WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), utf8.data(), n, nullptr, nullptr);
+        DWORD wrote = 0;
+        WriteFile(out, utf8.data(), (DWORD)utf8.size(), &wrote, nullptr);
+        CloseHandle(out);
+    }
+    return *s_file;
+}
+
+// This program's file name, lower case (for "app" conditions).
+std::wstring MenuAppName(HWND owner = nullptr) {
+    DWORD pid = GetCurrentProcessId();
+    if (owner) GetWindowThreadProcessId(owner, &pid);
+    std::wstring name;
+    if (HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
+        WCHAR path[MAX_PATH];
+        DWORD n = ARRAYSIZE(path);
+        if (QueryFullProcessImageNameW(p, 0, path, &n)) {
+            name = path;
+            name = name.substr(name.find_last_of(L'\\') + 1);
+        }
+        CloseHandle(p);
+    }
+    for (auto& c : name) c = (wchar_t)towlower(c);
+    return name;
+}
+
+// The chosen command, when it's one the rules added: run, and true.
+bool RunMenuRule(MenuRulesUndo const& undo, UINT cmd, MenuContext const& c) {
+    if (cmd < kMenuAddFirst || cmd > kMenuAddLast || cmd - kMenuAddFirst >= undo.commands.size()) return false;
+    std::wstring command = undo.commands[cmd - kMenuAddFirst];
+    if (command.empty()) return true;
+    std::wstring folder = c.folder;
+    if (folder.empty() && !c.files.empty()) folder = c.files[0].substr(0, c.files[0].find_last_of(L"\\/"));
+    auto quoted = [](std::wstring const& x) { return L"\"" + x + L"\""; };
+    std::wstring all;
+    for (auto const& f : c.files) all += (all.empty() ? L"" : L" ") + quoted(f);
+    auto put = [&](std::wstring const& name, std::wstring const& value) {
+        for (size_t at = 0; (at = command.find(name, at)) != std::wstring::npos; at += value.size()) command.replace(at, name.size(), value);
+    };
+    put(L"%files%", all);
+    put(L"%file%", c.files.empty() ? L"" : quoted(c.files[0]));
+    put(L"%folder%", folder.empty() ? L"" : quoted(folder));
+    WCHAR expanded[4096];
+    if (ExpandEnvironmentStringsW(command.c_str(), expanded, ARRAYSIZE(expanded))) command = expanded;
+    // The program (quoted, or up to the first space), then its arguments.
+    std::wstring program, args;
+    command = MenuTrim(command);
+    if (!command.empty() && command[0] == L'"') {
+        size_t close = command.find(L'"', 1);
+        program = command.substr(1, close == std::wstring::npos ? std::wstring::npos : close - 1);
+        args = close == std::wstring::npos ? L"" : MenuTrim(command.substr(close + 1));
+    } else {
+        size_t space = command.find(L' ');
+        program = command.substr(0, space);
+        args = space == std::wstring::npos ? L"" : MenuTrim(command.substr(space));
+    }
+    ShellExecuteW(nullptr, nullptr, program.c_str(), args.empty() ? nullptr : args.c_str(), folder.empty() ? nullptr : folder.c_str(), SW_SHOWNORMAL);
+    return true;
+}
+
 UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool foreign = false, RECT const* from = nullptr) {
     if (MenusLikeWindows()) LookLikeWindowsMenus(g_menuLook);
+    MenuWheelStart();
     if (g_menuLook.native) {
-        static int depth;
+        static MENU_STYLE_STORAGE int depth;
         NativeMenuItems(menu, foreign);
         depth++;
+        // Windows' own menus, only animated here when set.
+        bool styled = g_menuWindowsStyled;
+        g_menuWindowsStyled = false;
+        HHOOK hook = g_menuMotion.style ? SetWindowsHookExW(WH_CALLWNDPROC, StyledMenuHookProc, nullptr, GetCurrentThreadId()) : nullptr;
         UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);  // no fade: it opens at once
+        if (hook) UnhookWindowsHookEx(hook);
+        g_menuWindowsStyled = styled;
         depth--;
         UnNativeMenuItems(menu);
         if (!depth) {
             for (HBITMAP bitmap : g_nativeMenuBitmaps) DeleteObject(bitmap);
             g_nativeMenuBitmaps.clear();
         }
+        MenuWheelStop();
         return result;
     }
     // A visual style's menu: its own ground and border around the items too.
@@ -33182,6 +38258,7 @@ UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool fore
     UINT result = TrackMenuOnScreen(menu, flags | TPM_NOANIMATION, x, y, owner, from);
     if (hook) UnhookWindowsHookEx(hook);
     FreeStyledMenuItems(menu);
+    MenuWheelStop();
     return result;
 }
 // Peek, as the taskbar's thumbnails do ("// @inline live-peek.cpp"): every
@@ -33892,9 +38969,20 @@ struct Settings {
     // What stays at the edge while the bar is away: 0 a sliver of the bar, 1 a glow, 2 nothing.
     int shyAnim = 1, shyEase = 3, shyDuration = 220, shyHideDelay = 600, shyShowDelay = 250;
     motion::Anim motionBar;  // the motion tree's "bar" line (motion.cpp), when one is set
+    motion::Anim motionPopups;  // and its "popups" line, for menus opening
+    motion::Anim motionStart;   // "start": the Start menu opening and closing
+    motion::Anim motionPreviewIn;  // "fadePopupsIn": the window previews fading in
+    motion::Anim motionDesksIn, motionDesksOut;  // "workspacesIn", "workspacesOut": the pager's lit desktop moving
+    motion::Anim motionLayersIn, motionLayersOut;  // "fadeLayersIn", "fadeLayersOut": the floating pager's fade
+    motion::Anim motionScreenAdded;  // "monitorAdded": a new screen's bar coming in
+    int menuAnimation = 0;      // MenuMotionStyle: 0 at once
+    MenuRules menuRules;        // labels or verbs left out of shell menus, or moved into "More options"
+    bool desktopMenuReady = false;
     int shyRevealZone = 0;                               // px from the edge that brings a hidden bar back
     bool shyRevealAttention = false, shyRevealStart = false;
     bool fullscreenStayAway = true;               // keep out of a full-screen program's way
+    std::wstring emptyDoubleClick = L"show-desktop";  // a Tourne Menu action (tourne:...), or "none"
+    std::wstring emptyMiddleClick = L"none", emptyMiddleDoubleClick = L"none";  // the same, with the middle button
     std::vector<std::wstring> fullscreenPrograms;  // and of these (lower case), full screen or not
     // Fading when idle: after idleAfter s away, to idleOpacity %, always (0), only while nothing touches
     // the bar (1) or only while something does (2); rising within idleNear px; over these ms.
@@ -33952,6 +39040,8 @@ struct Settings {
     UINT moveNextMods = 0, moveNextVk = 0, movePrevMods = 0, movePrevVk = 0;
     UINT moveToDesktopMods = 0;         // with 1 to 9: the window in front sent there; 0 for none
     bool followMoved = false;           // and switched to that desktop with it
+    bool dropOnPager = false;           // a window dragged by its title bar onto a mark is sent to that desktop
+    bool squareCorners = false;         // windows' corners square (published for the suite's Square Corners)
     bool sabBackdrop = true;  // StartAllBack's own bar gradient behind clear styles
     bool coloring = false;    // custom background colour
     COLORREF tint = 0;
@@ -34159,12 +39249,27 @@ Settings LoadSettings() {
     // hiding animation's curve, length and style instead.
     motion::Forget();
     s.motionBar = motion::Get(L"bar");
+    s.motionPopups = motion::Get(L"popups");
+    s.motionStart = motion::Get(L"start");
+    s.motionPreviewIn = motion::Get(L"fadePopupsIn");
+    s.motionDesksIn = motion::Get(L"workspacesIn");
+    s.motionDesksOut = motion::Get(L"workspacesOut");
+    s.motionLayersIn = motion::Get(L"fadeLayersIn");
+    s.motionLayersOut = motion::Get(L"fadeLayersOut");
+    s.motionScreenAdded = motion::Get(L"monitorAdded");
+    s.menuAnimation = MenuMotionStyle(TextSetting(L"taskbar.menuAnimation"));
+    if (s.motionPopups.set) s.menuAnimation = s.motionPopups.on ? MenuMotionStyleWord(motion::StyleWord(s.motionPopups), s.menuAnimation) : 0;
+    s.menuRules.hide = MenuRuleList(TextSetting(L"taskbar.menuHide"));
+    s.menuRules.more = MenuRuleList(TextSetting(L"taskbar.menuMore"));
+    if (std::wstring label = TextSetting(L"taskbar.menuMoreLabel"); !label.empty()) s.menuRules.moreLabel = label;
+    s.desktopMenuReady = Wh_GetIntSetting(L"taskbar.desktopMenuReady") != 0;
     if (s.motionBar.set) {
         std::wstring style = motion::StyleWord(s.motionBar);
         if (!s.motionBar.on) s.shyAnim = 0;
         else if (style == L"slide") s.shyAnim = 1;
         else if (style == L"fade") s.shyAnim = 2;
         else if (style == L"slidefade") s.shyAnim = 3;
+        else if (s.shyAnim == 0) s.shyAnim = 1;  // (on, with no style of its own: it slides, not waits and jumps)
     }
     s.shyHideDelay = std::clamp(Wh_GetIntSetting(L"taskbar.shyHideDelay"), 0, 5000);
     s.shyShowDelay = std::clamp(Wh_GetIntSetting(L"taskbar.shyShowDelay"), 0, 5000);
@@ -34176,6 +39281,12 @@ Settings LoadSettings() {
     s.shyRevealAttention = Wh_GetIntSetting(L"taskbar.shyRevealAttention") != 0;
     s.shyRevealStart = Wh_GetIntSetting(L"taskbar.shyRevealStart") != 0;
     s.fullscreenStayAway = Wh_GetIntSetting(L"taskbar.fullscreenStayAway") != 0;
+    s.emptyDoubleClick = TextSetting(L"taskbar.emptyDoubleClick");
+    if (s.emptyDoubleClick.empty()) s.emptyDoubleClick = L"show-desktop";
+    s.emptyMiddleClick = TextSetting(L"taskbar.emptyMiddleClick");
+    s.emptyMiddleDoubleClick = TextSetting(L"taskbar.emptyMiddleDoubleClick");
+    if (s.emptyMiddleClick.empty()) s.emptyMiddleClick = L"none";
+    if (s.emptyMiddleDoubleClick.empty()) s.emptyMiddleDoubleClick = L"none";
     for (int i = 0; i < 64; i++) {
         PCWSTR value = Wh_GetStringSetting(L"taskbar.fullscreenPrograms[%d]", i);
         std::wstring program = value ? value : L"";
@@ -34315,6 +39426,8 @@ Settings LoadSettings() {
     s.goToDesktopMods = numberMods(TextSetting(L"taskbar.desktopKeys.goTo"));
     s.moveToDesktopMods = numberMods(TextSetting(L"taskbar.desktopKeys.moveTo"));
     s.followMoved = Wh_GetIntSetting(L"taskbar.desktopKeys.follow") != 0;
+    s.dropOnPager = Wh_GetIntSetting(L"taskbar.desktopKeys.dropOnPager") != 0;
+    s.squareCorners = Wh_GetIntSetting(L"taskbar.squareCorners") != 0;
     s.sabBackdrop = TextSetting(L"taskbar.barBackground") != L"scheme";
     std::wstring coloring = TextSetting(L"taskbar.coloring");
     if (coloring == L"custom") {
@@ -35102,12 +40215,86 @@ bool ProgramIconMatches(std::wstring const& row, std::wstring const& appId, std:
     return (!path.empty() && row == path) || (!name.empty() && row == name) || (!appId.empty() && row == appId);
 }
 
-// Your own icon for a program (Button icons), matched by app id, full path or
-// file name, with * and ? matching any text. The icon is a file, or "file,index".
+// Tourne'Icons' Taskbar buttons rows, which it hands over as "program<tab>icon" lines (newest first) in
+// HKCU\Software\Tourne\Icons: Buttons from its Windhawk mod while that runs, Buttons Kit and Buttons Lasting
+// from the other two. They come before these settings' rows. While the Windhawk mod runs it holds the button
+// icons (it took these settings' rows in), so these settings' rows step aside. Read again whenever the key
+// was written since the last look, so a change shows on the next look at once.
+struct TourneIconsButtons {
+    std::vector<ProgramIcon> rows;
+    bool holds = false;
+};
+
+SRWLOCK g_tourneIconsLock = SRWLOCK_INIT;
+TourneIconsButtons g_tourneIconsButtons;
+FILETIME g_tourneIconsWritten;
+bool g_tourneIconsRead;
+
+void ForgetTourneIconsButtons() {
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    g_tourneIconsRead = false;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+}
+
+TourneIconsButtons ReadTourneIconsButtons() {
+    HKEY key = nullptr;
+    FILETIME written{};
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Icons", 0, KEY_READ, &key) == ERROR_SUCCESS) {
+        RegQueryInfoKeyW(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                         &written);
+    }
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    if (!g_tourneIconsRead || CompareFileTime(&written, &g_tourneIconsWritten) != 0) {
+        g_tourneIconsRead = true;
+        g_tourneIconsWritten = written;
+        TourneIconsButtons fresh;
+        for (PCWSTR value : {L"Buttons", L"Buttons Kit", L"Buttons Lasting"}) {
+            DWORD size = 0;
+            if (!key || RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS) {
+                continue;
+            }
+            std::vector<WCHAR> text(size / sizeof(WCHAR) + 2, L'\0');
+            DWORD got = (DWORD)(text.size() * sizeof(WCHAR));
+            if (RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, text.data(), &got) != ERROR_SUCCESS) {
+                continue;
+            }
+            if (value[7] == L'\0') fresh.holds = true;  // (Buttons: the Windhawk mod's)
+            for (PCWSTR line = text.data(); *line; line += wcslen(line) + 1) {
+                std::wstring_view row = line;
+                size_t tab = row.find(L'\t');
+                if (tab == std::wstring_view::npos) continue;
+                std::wstring program(row.substr(0, tab));
+                CharLowerBuffW(program.data(), (DWORD)program.size());
+                std::wstring icon = ProgramIconPath(std::wstring(row.substr(tab + 1)));
+                if (!program.empty() && !icon.empty()) fresh.rows.push_back({program, icon});
+            }
+        }
+        g_tourneIconsButtons = std::move(fresh);
+    }
+    TourneIconsButtons result = g_tourneIconsButtons;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+    if (key) RegCloseKey(key);
+    return result;
+}
+
+// These settings' rows (own) with Tourne'Icons' ahead of them, or in their place while it holds them.
+std::vector<ProgramIcon> WithTourneIcons(std::vector<ProgramIcon> const& own) {
+    TourneIconsButtons published = ReadTourneIconsButtons();
+    if (!published.holds) published.rows.insert(published.rows.end(), own.begin(), own.end());
+    return std::move(published.rows);
+}
+
+// Your own icon for a program (Button icons, and Tourne'Icons' Taskbar buttons
+// ahead of them), matched by app id, full path or file name, with * and ?
+// matching any text. The icon is a file, or "file,index".
 HICON CustomIcon(std::wstring const& appId, std::wstring const& program, int size) {
-    if (g_settings.buttonIcons.empty()) return nullptr;
+    TourneIconsButtons published = ReadTourneIconsButtons();
+    if (g_settings.buttonIcons.empty() && published.rows.empty()) return nullptr;
+    std::vector<std::pair<std::wstring, std::wstring>> rows;
+    for (auto const& row : published.rows) rows.push_back({row.program, row.icon});
+    if (!published.holds) rows.insert(rows.end(), g_settings.buttonIcons.begin(), g_settings.buttonIcons.end());
     std::wstring id = Lower(appId), path = Lower(program);
-    for (auto const& [match, file] : g_settings.buttonIcons) {
+    for (auto const& [match, file] : rows) {
         if (!ProgramIconMatches(match, id, path)) continue;
         std::wstring key = L"custom:" + file;
         for (auto const& c : g_iconCache)
@@ -35427,6 +40614,28 @@ std::vector<PluginBarItem> g_pluginItems;  // as the runtime last sent them (the
 unsigned g_pluginVersion = 0;              // that list's version, sent back with a click
 std::vector<RECT> g_pluginRects;           // where each is on this bar (kept per bar, with its state)
 UINT g_msgPluginsChanged = 0, g_msgPluginsAsk = 0, g_msgPluginsEvent = 0;
+// An item's picture (barWidget.setImage), read from the file of pixels the runtime made for it.
+struct PluginPicture {
+    int w = 0, h = 0;
+    std::vector<uint32_t> pixels;  // premultiplied BGRA, top-down
+};
+std::vector<PluginPicture> g_pluginPictures;  // (by item, as g_pluginItems)
+PluginPicture ReadPluginPicture(std::wstring const& path) {
+    PluginPicture p;
+    if (!ReadPluginImageFile(path, &p.w, &p.h, &p.pixels)) p = {};
+    return p;
+}
+// The plugin items the user moved out of the tray (into the overflow, or hidden), by "plugin:<key>": the bar
+// leaves them out. Read with the tray's places (BuildTray) and as the items arrive.
+std::vector<std::wstring> g_pluginAway;
+bool PluginAway(PluginBarItem const& item) {
+    return std::find(g_pluginAway.begin(), g_pluginAway.end(), L"plugin:" + item.key) != g_pluginAway.end();
+}
+void ReadPluginAway(TrayPlaces const& places) {
+    g_pluginAway.clear();
+    for (auto const& [key, place] : places.places)
+        if (key.starts_with(L"plugin:") && (place == kPlaceOverflow || place == kPlaceHidden)) g_pluginAway.push_back(key);
+}
 int PluginIndexOf(int hit) {
     int count = std::min({(int)g_pluginItems.size(), (int)g_pluginRects.size(), kPluginMax});
     return hit >= kHitPlugin && hit < kHitPlugin + count ? hit - kHitPlugin : -1;
@@ -37056,14 +42265,16 @@ void BuildTray() {
     }
     ApplyTrayOrder(shown, LoadTrayList(kTrayOrderValue), [](TrayItem const& item) { return item.key; });
     g_tray = std::move(shown);
+    ReadPluginAway(places);
 }
 
 // The tray built again from the icons' places and order; true when the bar's icons changed.
 bool RebuildTray() {
     if (!IsMainBar() || g_trayDrag >= 0) return false;
     std::vector<TrayItem> before = g_tray;
+    std::vector<std::wstring> awayBefore = g_pluginAway;
     BuildTray();
-    bool same = g_tray.size() == before.size();
+    bool same = g_tray.size() == before.size() && g_pluginAway == awayBefore;
     for (size_t i = 0; same && i < before.size(); i++) same = g_tray[i].key == before[i].key;
     // Unchanged, the icons keep their places: built afresh they'd have none until the next layout, and a
     // redraw meanwhile (a hover, as an app updates its icon) drew the tray empty.
@@ -37138,8 +42349,17 @@ Clock g_clock;
 // The main bar has the Start button and the tray; the others the buttons of
 // their screen's windows, and the clock.
 
+// A bar coming in for a screen just added (motion.monitorAdded): waiting until it's set up (unseen till
+// then), then slid in from its edge, faded in, or both.
+struct BarArrival {
+    bool pending = false, running = false, fade = false, slide = false;
+    double level = 1, start = 0;  // eased progress: 0 at its edge (or unseen), 1 in place
+    POINT home{};                 // its place
+};
+
 struct BarState {
     HWND hwnd = nullptr;              // never swapped: how a window finds its state
+    BarArrival arrive;                // never swapped: read through g_active
     HMONITOR monitor = nullptr;       // its screen; null for the main bar
     std::vector<Button> buttons;
     bool labels = false;
@@ -37426,11 +42646,18 @@ std::vector<int> PluginLengths() {
     };
     for (auto const& item : g_pluginItems) {
         if (out.size() >= (size_t)kPluginMax) break;
-        if (Vertical()) {
-            out.push_back(item.glyph.empty() ? 0 : TrayCell());
+        if (PluginAway(item)) {
+            out.push_back(0);  // (in the overflow flyout, or hidden)
             continue;
         }
-        int len = item.glyph.empty() ? 0 : width(PluginGlyphFont(), item.glyph);
+        if (Vertical()) {
+            bool picture = out.size() < g_pluginPictures.size() && g_pluginPictures[out.size()].w;
+            out.push_back(item.glyph.empty() && !picture ? 0 : TrayCell());
+            continue;
+        }
+        size_t index = out.size();
+        int picture = index < g_pluginPictures.size() ? g_pluginPictures[index].w : 0;
+        int len = picture ? picture : item.glyph.empty() ? 0 : width(PluginGlyphFont(), item.glyph);
         if (!item.text.empty()) len += (len ? Px(6) : 0) + std::min(width(g_font, item.text), Px(320));
         out.push_back(len ? len + Px(12) : 0);
     }
@@ -37914,6 +43141,37 @@ void Layout(HWND wnd) {
     }
 
     UpdateTooltips(wnd);
+}
+
+// The gaps between segments take clicks as the bar's empty space (drawn at alpha 1), except over windows of
+// Tourne's own that sit in the bar under it (Tourne'Table's media strip, also from windhawk-mod.exe when the Table
+// runs as a mod, so known by its class there; its quick settings on a right click): there they stay see-through,
+// so those still get their clicks. In the bar's own terms (client pixels).
+std::vector<RECT> BarPassThrough(HWND wnd) {
+    std::vector<RECT> out;
+    RECT bar;
+    if (!GetWindowRect(wnd, &bar)) return out;
+    for (HWND h = GetWindow(wnd, GW_HWNDNEXT); h; h = GetWindow(h, GW_HWNDNEXT)) {
+        if (!IsWindowVisible(h) || (GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TRANSPARENT)) continue;
+        wchar_t cls[64] = L"";
+        GetClassNameW(h, cls, 64);
+        DWORD pid = 0;
+        GetWindowThreadProcessId(h, &pid);
+        if (pid != GetCurrentProcessId() && wcsncmp(cls, L"DesktopAudioVis", 15)) continue;  // (the Table's, as a mod)
+        if (!wcscmp(cls, L"Progman") || !wcsncmp(cls, L"TourneTaskbar", 13)) continue;
+        RECT r, in;
+        if (!GetWindowRect(h, &r) || !IntersectRect(&in, &r, &bar)) continue;
+        if ((in.right - in.left) * (in.bottom - in.top) * 2 > (bar.right - bar.left) * (bar.bottom - bar.top)) continue;  // (not a big one)
+        OffsetRect(&in, -bar.left, -bar.top);
+        out.push_back(in);
+    }
+    return out;
+}
+
+bool InPassThrough(std::vector<RECT> const& rects, int x, int y) {
+    for (auto const& r : rects)
+        if (x >= r.left && x < r.right && y >= r.top && y < r.bottom) return true;
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38481,24 +43739,62 @@ HFONT PluginGlyphFont() {
     return font;
 }
 
-// A plugin item: its glyph, then its text, in the clock's colour unless the plugin chose one.
-void DrawPluginItem(HDC dc, PluginBarItem const& item, RECT const& r) {
+// A plugin item's picture over the bar's (opaque) pixels, at `left` (centred when `left` is -1), middle down.
+void BlendPluginPicture(uint32_t* bits, int w, int h, PluginPicture const& p, RECT const& r, int left) {
+    if (!bits || !p.w) return;
+    GdiFlush();
+    int x0 = left >= 0 ? left : (r.left + r.right - p.w) / 2, y0 = (r.top + r.bottom - p.h) / 2;
+    for (int y = 0; y < p.h; y++) {
+        int ty = y0 + y;
+        if (ty < 0 || ty >= h || ty < r.top || ty >= r.bottom) continue;
+        for (int x = 0; x < p.w; x++) {
+            int tx = x0 + x;
+            if (tx < 0 || tx >= w || tx < r.left || tx >= r.right) continue;
+            uint32_t src = p.pixels[(size_t)y * p.w + x], a = src >> 24;
+            if (!a) continue;
+            uint32_t& dst = bits[(size_t)ty * w + tx];
+            uint32_t out = 0;
+            for (int shift = 0; shift < 24; shift += 8) {
+                uint32_t sc = (src >> shift) & 0xFF, dc = (dst >> shift) & 0xFF;
+                out |= std::min<uint32_t>(255, sc + dc * (255 - a) / 255) << shift;
+            }
+            dst = out | (dst & 0xFF000000);
+        }
+    }
+}
+
+// A plugin item: its glyph (or picture), then its text, in the clock's colour unless the plugin chose one.
+void DrawPluginItem(HDC dc, PluginBarItem const& item, RECT const& r, PluginPicture const* picture = nullptr, uint32_t* bits = nullptr,
+                    int bitsW = 0, int bitsH = 0) {
     COLORREF color = PaletteRef(g_settings.palette.text);
     if (g_themed && g_theme.clock && SUCCEEDED(GetThemeColor(g_theme.clock, 1, 1, TMT_TEXTCOLOR, &color))) {
     } else if (g_themed && g_theme.band) {
         GetThemeColor(g_theme.band, kBandButton, kStateNormal, TMT_TEXTCOLOR, &color);
     }
     if (item.color != CLR_INVALID) color = item.color;
-    SetTextColor(dc, color);
+    COLORREF glyphColor = item.glyphColor != CLR_INVALID ? item.glyphColor : color;
+    bool hasPicture = picture && picture->w;
     RECT at = r;
     if (Vertical() || item.text.empty()) {
+        if (hasPicture) return BlendPluginPicture(bits, bitsW, bitsH, *picture, r, -1);
+        SetTextColor(dc, glyphColor);
         HGDIOBJ old = SelectObject(dc, PluginGlyphFont());
         DrawTextW(dc, item.glyph.c_str(), (int)item.glyph.size(), &at, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_NOCLIP);
         SelectObject(dc, old);
         return;
     }
     at.left += Px(6), at.right -= Px(6);
-    if (!item.glyph.empty()) {
+    if (hasPicture) {
+        SetTextColor(dc, color);
+        HGDIOBJ old = SelectObject(dc, g_font);
+        DrawTextW(dc, item.text.c_str(), (int)item.text.size(), &at, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX | DT_CALCRECT);
+        SelectObject(dc, old);
+        at = r;
+        at.left += Px(6), at.right -= Px(6);
+        BlendPluginPicture(bits, bitsW, bitsH, *picture, r, at.left);
+        at.left += picture->w + Px(6);
+    } else if (!item.glyph.empty()) {
+        SetTextColor(dc, glyphColor);
         HGDIOBJ old = SelectObject(dc, PluginGlyphFont());
         SIZE s{};
         GetTextExtentPoint32W(dc, item.glyph.c_str(), (int)item.glyph.size(), &s);
@@ -38507,6 +43803,7 @@ void DrawPluginItem(HDC dc, PluginBarItem const& item, RECT const& r) {
         SelectObject(dc, old);
         at.left += s.cx + Px(6);
     }
+    SetTextColor(dc, color);
     HGDIOBJ old = SelectObject(dc, g_font);
     DrawTextW(dc, item.text.c_str(), (int)item.text.size(), &at, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOPREFIX | DT_END_ELLIPSIS);
     SelectObject(dc, old);
@@ -40024,6 +45321,7 @@ static void CssFadeNode(css::Node& n, ULONGLONG now) {
     std::wstring easing = L"ease";
     double dBg = CssFadeSeconds(st, L"background-color", L"background", &easing), dColor = CssFadeSeconds(st, L"color", L"color", &easing),
            dBorder = CssFadeSeconds(st, L"border-color", L"border", &easing), dOpacity = CssFadeSeconds(st, L"opacity", L"opacity", &easing);
+    if (g_settings.motionBar.set && !g_settings.motionBar.on) dBg = dColor = dBorder = dOpacity = 0;  // (the bar's motion off: no fades)
     if (dBg > 0 || dColor > 0 || dBorder > 0 || dOpacity > 0) {
         auto it = g_cssFades.find(n.key);
         if (it == g_cssFades.end()) {
@@ -40208,6 +45506,11 @@ void CssRedraw(HWND wnd) {
     HDC screen = GetDC(nullptr);
     Surface out(screen, rc.right, rc.bottom);
     memcpy(out.bits, sf.px.data(), sf.px.size() * sizeof(uint32_t));
+    // Between the theme's islands: all but see-through (alpha 1), so the bar still takes clicks there as its empty
+    // space (a double-click shows the desktop) instead of passing them to the desktop under it.
+    std::vector<RECT> through = BarPassThrough(wnd);  // (Tourne'Table's strip under it keeps its clicks)
+    for (size_t i = 0, n = sf.px.size(); i < n; i++)
+        if (!(out.bits[i] >> 24) && !InPassThrough(through, (int)(i % rc.right), (int)(i / rc.right))) out.bits[i] = 0x01000000;
     GdiFlush();
     RECT wr;
     GetWindowRect(wnd, &wr);
@@ -40818,6 +46121,8 @@ void OpenOwnSettings(std::wstring const& query = L"") {
 // watches the key), and its choices are kept beside the tray's, in kTrayStoreKey.
 
 void Redraw(HWND wnd);
+double NowMs();
+void PaintFloatingPager();
 void HidePreview();
 void HideDesktopPreview();
 void HideDesktopPreviewSoon();
@@ -40855,6 +46160,7 @@ int g_pagerFloatHot = -1, g_pagerFloatPressed = -1;
 bool g_pagerFloatTracking = false;
 double g_pagerFade = 1, g_pagerFadeTarget = 1;  // a floating pager's fade: 1 is its full opacity
 ULONGLONG g_pagerFadeTick = 0;
+double g_pagerFadeFrom = 1, g_pagerFadeStart = 0;  // on a motion line: where the fade set off, and when
 HFONT g_pagerTextFont = nullptr, g_pagerTextFontOf = nullptr;  // g_font, greyscale-smoothed, for the floating one
 bool g_pagerDrag = false;        // pressed on it, unlocked: may turn into carrying it
 bool g_pagerCarry = false;       // being carried (shown floating under the pointer)
@@ -40862,6 +46168,7 @@ bool g_pagerCarryFromBar = false;  // carried off the bar: letting go on the bar
 bool g_pagerOverBar = false;     // carried from the bar and over it, where letting go docks it
 POINT g_pagerDragStart{};        // where the press was, in the pressed window
 POINT g_pagerGrab{};             // the pointer's place in the floating pager while carried
+int g_pagerDropHot = -1;         // the mark a window being dragged is over (lit as if pointed at)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Its choices and the desktops
@@ -41156,32 +46463,56 @@ void PagerText(PagerTarget& t, RECT rc, std::wstring const& text, uint32_t rgb) 
         }
 }
 
+// The lit desktop moving to the one gone to, on the motion engine's "workspacesIn" line (or a parent's):
+// slid there (slide, slidevert, or no style), or faded across ("fade": the one left fading out on
+// "workspacesOut"). Its frames come from a timer of the bar's thread, only while it moves (PagerMoveTick).
+struct PagerMove {
+    UINT_PTR timer = 0;      // (none: still)
+    bool fade = false;
+    double from = 0;         // where it set off, in desktops (between two, when a move was cut short)
+    double start = 0;
+    double at = 0;           // slide: where it is now
+    double in = 1, out = 0;  // fade: how lit the one gone to and the one left are
+};
+PagerMove g_pagerMove;
+
+// The move as drawn now: none if still, or if the desktops it was between are gone.
+bool PagerMoving(int count) {
+    auto const& m = g_pagerMove;
+    int to = g_pagerDesktops.current;
+    return m.timer && count > 1 && to >= 0 && to < count && m.from >= 0 && m.from <= count - 1;
+}
+
+RECT LerpRect(RECT const& a, RECT const& b, double f) {
+    auto mix = [f](LONG x, LONG y) { return (LONG)std::lround(x + (y - x) * f); };
+    return {mix(a.left, b.left), mix(a.top, b.top), mix(a.right, b.right), mix(a.bottom, b.bottom)};
+}
+
 void DrawPagerItems(PagerTarget& t, std::vector<RECT> const& items, int hot, int pressed, bool vertical) {
     auto const& l = g_settings.pagerLook;
     PagerColors c = PagerColorsNow();
     int style = PagerStyleFor(vertical);
     int outline = Px(l.outline);
-    GdiFlush();
-    for (int i = 0; i < (int)items.size(); i++) {
-        RECT r = items[i];
-        bool current = i == g_pagerDesktops.current;
-        bool lit = i == hot || i == pressed;
+    int count = (int)items.size();
+    bool moving = PagerMoving(count);
+    // A desktop's dot (lit or not), its shape, and the box behind a number or a name.
+    auto dotOf = [&](RECT const& r, bool current) {
+        SIZE d = PagerDotSize(current);
         int cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-        if (style == kPagerDots) {
-            SIZE d = PagerDotSize(current);
-            int along = d.cx, across = d.cy;
-            int w = vertical ? across : along, h = vertical ? along : across;
-            RECT dot{cx - w / 2, cy - h / 2, cx - w / 2 + w, cy - h / 2 + h};
-            PagerShape shape = l.shape == kMarkCircle    ? PagerShape{1, 0}
-                               : l.shape == kMarkDiamond ? PagerShape{2, 0}
-                               : l.shape == kMarkPixel   ? PagerShape{3, (float)g_scale}
-                               : l.shape == kMarkPill    ? PagerShape{0, std::min(w, h) / 2.f}
-                                                         : PagerShape{0, 0};
-            uint32_t inner = current ? c.current : lit ? c.hot : c.mark;
-            PaintPagerMark(t, dot, shape, inner, current ? c.currentEdge : c.markEdge, std::min(outline, std::min(w, h) / 2));
-            continue;
-        }
+        int w = vertical ? d.cy : d.cx, h = vertical ? d.cx : d.cy;
+        return RECT{cx - w / 2, cy - h / 2, cx - w / 2 + w, cy - h / 2 + h};
+    };
+    auto dotShape = [&](RECT const& dot) {
+        int w = dot.right - dot.left, h = dot.bottom - dot.top;
+        return l.shape == kMarkCircle    ? PagerShape{1, 0}
+               : l.shape == kMarkDiamond ? PagerShape{2, 0}
+               : l.shape == kMarkPixel   ? PagerShape{3, (float)g_scale}
+               : l.shape == kMarkPill    ? PagerShape{0, std::min(w, h) / 2.f}
+                                         : PagerShape{0, 0};
+    };
+    auto boxOf = [&](RECT const& r) {
         RECT box = r;
+        int cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
         if (style == kPagerNumbers) {
             int s = std::min({PagerBoxSize(), (int)(r.right - r.left) - Px(2), (int)(r.bottom - r.top) - Px(4)});
             box = {cx - s / 2, cy - s / 2, cx - s / 2 + s, cy - s / 2 + s};
@@ -41189,6 +46520,21 @@ void DrawPagerItems(PagerTarget& t, std::vector<RECT> const& items, int hot, int
             int spacing = Px(l.spacing);
             InflateRect(&box, -spacing / 2, -Px(4));
         }
+        return box;
+    };
+    GdiFlush();
+    for (int i = 0; i < count; i++) {
+        RECT r = items[i];
+        bool current = i == g_pagerDesktops.current && !moving;  // (moving: lit where the move has it, below)
+        bool lit = i == hot || i == pressed;
+        if (style == kPagerDots) {
+            RECT dot = dotOf(r, current);
+            int w = dot.right - dot.left, h = dot.bottom - dot.top;
+            uint32_t inner = current ? c.current : lit ? c.hot : c.mark;
+            PaintPagerMark(t, dot, dotShape(dot), inner, current ? c.currentEdge : c.markEdge, std::min(outline, std::min(w, h) / 2));
+            continue;
+        }
+        RECT box = boxOf(r);
         PagerShape shape = PagerBoxShape(box);
         uint32_t text = c.mark;
         if (current && style == kPagerNumbers) {
@@ -41205,9 +46551,55 @@ void DrawPagerItems(PagerTarget& t, std::vector<RECT> const& items, int hot, int
         } else if (outline) {
             PaintPagerMark(t, box, shape, c.panel, c.markEdge, outline, 255);
         }
+        if (moving) continue;  // (its text goes over the lit mark, below)
         RECT tr = box;
         InflateRect(&tr, style == kPagerNames ? -Px(4) : 0, 0);
         PagerText(t, tr, style == kPagerNumbers ? std::to_wstring(i + 1) : PagerLabel(i), text);
+    }
+    if (!moving) return;
+
+    // The lit mark where the move has it: one sliding between two desktops' places, or two fading.
+    auto const& m = g_pagerMove;
+    int to = g_pagerDesktops.current, left = (int)std::lround(m.from);
+    auto place = [&](int i) { return style == kPagerDots ? dotOf(items[i], true) : boxOf(items[i]); };
+    std::vector<std::pair<RECT, double>> marks;  // where, and how lit (0 to 1)
+    if (m.fade) {
+        if (left != to) marks.push_back({place(left), std::clamp(m.out, 0.0, 1.0)});
+        marks.push_back({place(to), std::clamp(m.in, 0.0, 1.0)});
+    } else {
+        int i = std::clamp((int)std::floor(m.at), 0, count - 2);
+        marks.push_back({LerpRect(place(i), place(i + 1), m.at - i), 1.0});
+    }
+    for (auto const& [rc, level] : marks) {
+        int alpha = (int)std::lround(255 * level), w = rc.right - rc.left, h = rc.bottom - rc.top;
+        if (style == kPagerDots) {
+            PaintPagerMark(t, rc, dotShape(rc), c.current, c.currentEdge, std::min(outline, std::min(w, h) / 2), alpha);
+        } else if (style == kPagerNumbers) {
+            PaintPagerMark(t, rc, PagerBoxShape(rc), c.current, c.currentEdge, outline, alpha);
+        } else {
+            PaintPagerMark(t, rc, PagerBoxShape(rc), MixRgb(c.panel, c.current, 48), c.currentEdge, outline, alpha);
+            RECT line = vertical ? RECT{rc.left, rc.top, rc.left + Px(2), rc.bottom} : RECT{rc.left, rc.bottom - Px(2), rc.right, rc.bottom};
+            PaintPagerShape(t, line, {}, c.current, alpha);
+        }
+    }
+    if (style == kPagerDots) return;
+    // The numbers or names over it, in the lit colour as much as the lit mark covers them.
+    for (int i = 0; i < count; i++) {
+        RECT box = boxOf(items[i]);
+        double covered = 0;
+        for (auto const& [rc, level] : marks) {
+            RECT over;
+            if (!IntersectRect(&over, &box, &rc)) continue;
+            double span = vertical ? box.bottom - box.top : box.right - box.left;
+            double part = vertical ? over.bottom - over.top : over.right - over.left;
+            covered = std::max(covered, span > 0 ? level * part / span : 0);
+        }
+        bool lit = i == hot || i == pressed;
+        uint32_t plain = lit ? c.hot : c.mark, onMark = style == kPagerNumbers ? c.panel : c.hot;
+        RECT tr = box;
+        InflateRect(&tr, style == kPagerNames ? -Px(4) : 0, 0);
+        PagerText(t, tr, style == kPagerNumbers ? std::to_wstring(i + 1) : PagerLabel(i),
+                  MixRgb(plain, onMark, (int)std::lround(255 * std::clamp(covered, 0.0, 1.0))));
     }
 }
 
@@ -41233,7 +46625,8 @@ void PlaceDockedPager(RECT area) {
 void DrawDockedPager(HDC dc, uint32_t* bits, int w, int h) {
     if (IsRectEmpty(&g_pagerRect)) return;
     PagerTarget t{bits, w, h, dc, false};
-    DrawPagerItems(t, g_pagerItems, PagerIndexOf(g_hot), PagerIndexOf(g_pressed), Vertical());
+    DrawPagerItems(t, g_pagerItems, g_pagerDropHot >= 0 ? g_pagerDropHot : PagerIndexOf(g_hot), PagerIndexOf(g_pressed),
+                   Vertical());
 }
 
 int DockedPagerHit(POINT pt) {
@@ -41341,15 +46734,43 @@ POINT KeepPagerOnScreen(POINT at) {
     return at;
 }
 
+// The fade's motion line: "fadeLayersIn" coming up, "fadeLayersOut" going down (or a parent's). None set: its
+// own steady fade.
+motion::Anim const& PagerFadeMotion() {
+    return g_pagerFadeTarget >= g_pagerFadeFrom ? g_settings.motionLayersIn : g_settings.motionLayersOut;
+}
+
 // The fade: towards its target a step at a time, then still.
 void StartPagerFade(double target) {
     g_pagerFadeTarget = target;
     if (fabs(g_pagerFade - target) < 0.001 || !g_pagerWnd) return;
     g_pagerFadeTick = GetTickCount64();
+    g_pagerFadeFrom = g_pagerFade;
+    g_pagerFadeStart = NowMs();
+    auto const& a = PagerFadeMotion();
+    if (a.set && (!a.on || motion::Ms(a) <= 0)) {
+        // Its line is off: there at once.
+        g_pagerFade = target;
+        KillTimer(g_pagerWnd, kPagerTimerFade);
+        PresentFloatingPager();
+        return;
+    }
     SetTimer(g_pagerWnd, kPagerTimerFade, 15, nullptr);
 }
 
 void PagerFadeStep() {
+    if (auto const& a = PagerFadeMotion(); a.set) {
+        double ms = std::min(motion::Ms(a), 3000.0);
+        double t = ms > 0 && a.on ? (NowMs() - g_pagerFadeStart) / ms : 1;
+        double eased = t >= 1 ? 1 : motion::Ease(a, t);
+        g_pagerFade = std::clamp(g_pagerFadeFrom + (g_pagerFadeTarget - g_pagerFadeFrom) * eased, 0.0, 1.0);
+        if (t >= 1) {
+            g_pagerFade = g_pagerFadeTarget;
+            KillTimer(g_pagerWnd, kPagerTimerFade);
+        }
+        PresentFloatingPager();
+        return;
+    }
     ULONGLONG now = GetTickCount64();
     double step = (now - g_pagerFadeTick) / 220.0;  // the whole way in about a fifth of a second
     g_pagerFadeTick = now;
@@ -41865,6 +47286,58 @@ void PagerHoverOnBar(HWND bar, int hit) {
 ////////////////////////////////////////////////////////////////////////////////
 // What it does
 
+// The lit desktop's move (PagerMove, drawn in DrawPagerItems): set off, a frame, and still again.
+void PagerMoveStop() {
+    if (g_pagerMove.timer) KillTimer(nullptr, g_pagerMove.timer);
+    g_pagerMove = {};
+}
+
+// The pager drawn again where it shows: docked on the main bar, or floating.
+void PagerMoveRedraw() {
+    if (HWND bar = g_wnd) {
+        BarScope scope(&g_mainBar);
+        if (!IsRectEmpty(&g_pagerRect)) Redraw(bar);
+    }
+    if (g_pagerWnd && IsWindowVisible(g_pagerWnd)) PaintFloatingPager();
+}
+
+void CALLBACK PagerMoveTick(HWND, UINT, UINT_PTR, DWORD) {
+    auto& m = g_pagerMove;
+    auto const& in = g_settings.motionDesksIn;
+    auto const& out = g_settings.motionDesksOut.set ? g_settings.motionDesksOut : in;
+    double now = NowMs(), msIn = std::min(motion::Ms(in), 2000.0), msOut = std::min(motion::Ms(out), 2000.0);
+    double tIn = msIn > 0 ? (now - m.start) / msIn : 1, tOut = msOut > 0 ? (now - m.start) / msOut : 1;
+    if (!in.set || !in.on || (tIn >= 1 && (!m.fade || tOut >= 1))) {
+        PagerMoveStop();  // there: lit where it is, as ever
+    } else if (m.fade) {
+        m.in = tIn >= 1 ? 1 : motion::Ease(in, tIn);
+        m.out = tOut >= 1 ? 0 : 1 - motion::Ease(out, tOut);
+    } else {
+        m.at = m.from + (g_pagerDesktops.current - m.from) * motion::Ease(in, tIn);
+    }
+    PagerMoveRedraw();
+}
+
+// The lit desktop changed (from the one given to the current one): it moves there, when a motion line says so.
+void PagerMoveStart(int from) {
+    auto const& in = g_settings.motionDesksIn;
+    int to = g_pagerDesktops.current;
+    if (!in.set || !in.on || motion::Ms(in) <= 0 || from == to || from < 0 || from >= g_pagerDesktops.count) {
+        PagerMoveStop();
+        return;
+    }
+    auto& m = g_pagerMove;
+    bool fade = motion::StyleWord(in) == L"fade";
+    // A move cut short sets off again from where it had got to (kept on the run, past any overshoot).
+    double at = m.timer && !m.fade && !fade ? std::clamp(m.at, 0.0, g_pagerDesktops.count - 1.0) : from;
+    m.fade = fade;
+    m.from = m.at = at;
+    m.in = 0;
+    m.out = 1;
+    m.start = NowMs();
+    if (!m.timer) m.timer = SetTimer(nullptr, 0, USER_TIMER_MINIMUM, PagerMoveTick);
+}
+
 // Straight there through Windows' desktop manager where it answers, else Ctrl+Win+Left or Right once per desktop
 // between, as Win+Tab's own switching (css-data.cpp). For clicks, the wheel and the desktop keys alike.
 void PagerShowCurrent(int target);
@@ -41878,7 +47351,9 @@ void PagerGoTo(int target) {
 
 // Shown at once; the registry says so a moment later.
 void PagerShowCurrent(int target) {
+    int was = g_pagerDesktops.current;
     g_pagerDesktops.current = target;
+    PagerMoveStart(was);
     if (g_settings.pagerLook.shape == kMarkPill) {
         ApplyPager();  // the wide mark moved: the run's lengths changed
         return;
@@ -41894,6 +47369,10 @@ void PagerStep(int wheel) {
     PagerGoTo(std::clamp(g_pagerDesktops.current + (wheel < 0 ? 1 : -1), 0, g_pagerDesktops.count - 1));
 }
 
+// Windows' virtual desktops, through the manager Task view uses ("// @inline virtual-desktops.cpp", in
+// desktops-pager.cpp and binds.cpp): switch to one, rename one, send a window to one. Plus the
+// desktops' ids and the current one, as Windows keeps them in the registry.
+
 ////////////////////////////////////////////////////////////////////////////////
 // Windows' own desktop manager, the one Task view uses (IVirtualDesktopManagerInternal, undocumented, from
 // the immersive shell). Its layout changes between Windows builds and its id changes with it, so the id
@@ -41903,8 +47382,9 @@ void PagerStep(int wheel) {
 constexpr CLSID kClsidImmersiveShell = {0xC2F03A33, 0x21F5, 0x47FA, {0xB4, 0xBB, 0x15, 0x63, 0x62, 0xA2, 0xF2, 0x39}};
 constexpr GUID kSidVdmInternal = {0xC5E0CDCA, 0x7B6E, 0x41B2, {0x9F, 0xC4, 0xD9, 0x39, 0x75, 0xCC, 0x46, 0x7B}};
 constexpr IID kIidVdmInternal = {0x53F5CA0B, 0x158F, 0x4124, {0x90, 0x0C, 0x05, 0x71, 0x58, 0x06, 0x0B, 0x27}};
-constexpr int kVdmMoveView = 4, kVdmSwitchDesktop = 9, kVdmSwitchAndMoveForeground = 10, kVdmFindDesktop = 14,
-              kVdmSetDesktopName = 16;
+constexpr int kVdmMoveView = 4, kVdmSwitchDesktop = 9, kVdmSwitchAndMoveForeground = 10, kVdmCreateDesktop = 11,
+              kVdmFindDesktop = 14, kVdmSetDesktopName = 16;
+constexpr int kVdGetId = 4;  // IVirtualDesktop's own, on those builds
 // The shell's windows as it sees them (IApplicationViewCollection, the same on those builds), for a window's view.
 constexpr IID kIidViewCollection = {0x1841C6D7, 0x4F9D, 0x42C0, {0xAF, 0x41, 0x87, 0x47, 0x53, 0x8F, 0x10, 0xE5}};
 constexpr int kViewForHwnd = 6;
@@ -41929,8 +47409,9 @@ bool VdmFind(GUID const& id, IUnknown** vdm, IUnknown** desktop) {
     return false;
 }
 
-// Straight to a desktop, as Task view goes (no keys pressed for it, so keys held for a hotkey don't matter).
-bool VdmSwitchTo(GUID const& id) {
+// Straight to a desktop, as Task view goes (no keys pressed for it, so keys held for a hotkey don't matter); VdmSwitchTo
+// (desktop-slide.cpp, below) animates it when a motion line says so.
+bool VdmSwitchNow(GUID const& id) {
     IUnknown *vdm, *desktop;
     if (!VdmFind(id, &vdm, &desktop)) return false;
     using Switch = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown*);
@@ -41938,6 +47419,26 @@ bool VdmSwitchTo(GUID const& id) {
     desktop->Release();
     vdm->Release();
     return ok;
+}
+
+// A new desktop at the end, as Task view's "New desktop" makes it; its id, or GUID_NULL if Windows didn't make one.
+GUID VdmCreate() {
+    GUID id{};
+    IServiceProvider* shell = nullptr;
+    if (FAILED(CoCreateInstance(kClsidImmersiveShell, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shell)))) return id;
+    IUnknown* vdm = nullptr;
+    shell->QueryService(kSidVdmInternal, kIidVdmInternal, (void**)&vdm);
+    shell->Release();
+    if (!vdm) return id;
+    using Create = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown**);
+    using GetId = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, GUID*);
+    IUnknown* desktop = nullptr;
+    if (SUCCEEDED(VdmSlot<Create>(vdm, kVdmCreateDesktop)(vdm, &desktop)) && desktop) {
+        VdmSlot<GetId>(desktop, kVdGetId)(desktop, &id);
+        desktop->Release();
+    }
+    vdm->Release();
+    return id;
 }
 
 // Renamed as Task view renames it (empty: back to "Desktop N"). The name is an HSTRING, made by combase.
@@ -41991,6 +47492,243 @@ bool VdmSendWindow(HWND h, GUID const& id, bool follow) {
     return ok;
 }
 
+// The desktops' ids (none until a second desktop has ever been made), or the current one's.
+std::vector<GUID> VdReadGuids(wchar_t const* value) {
+    std::vector<GUID> ids;
+    BYTE data[16 * 64];
+    DWORD size = sizeof(data);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VirtualDesktops", value,
+                     RRF_RT_REG_BINARY, nullptr, data, &size) != ERROR_SUCCESS)
+        return ids;
+    for (DWORD at = 0; at + 16 <= size; at += 16) {
+        GUID g;
+        memcpy(&g, data + at, 16);
+        ids.push_back(g);
+    }
+    return ids;
+}
+
+// The current desktop's place among them (0 when there is only one).
+int VdCurrentIndex(std::vector<GUID> const& ids) {
+    std::vector<GUID> current = VdReadGuids(L"CurrentVirtualDesktop");
+    for (size_t i = 0; i < ids.size() && !current.empty(); i++)
+        if (!memcmp(&ids[i], &current[0], sizeof(GUID))) return (int)i;
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Desktops changing, animated as Hyprland's workspaces ("// @inline desktop-slide.cpp", at the end of
+// virtual-desktops.cpp): the motion lines workspacesIn and workspacesOut (or workspaces, global above them),
+// styles slide, slidevert, fade, slidefade N%, slidefadevert N%. With no line set anywhere up the tree the
+// switch is Windows' plain one, as before.
+//
+// Tourne doesn't draw other programs' windows, so for the length of the move a window of its own covers the
+// screens and shows them through DWM thumbnails: the desktop you leave sliding (or fading) out, the one you go
+// to coming in, and what's on every desktop (the wallpaper, the bar, pinned windows) staying still. Windows'
+// own switch happens under it once it's up; it goes when the move ends, with the real windows already there.
+// A tool window has no place on a desktop, so the cover isn't hidden by the switch itself. Its own thread,
+// so a part's hooks never wait on it.
+
+
+
+struct DesktopSlide {
+    motion::Anim in, out;
+    GUID from, to;
+    int dir;  // 1: to a desktop further right
+    HANDLE ready, go;
+};
+
+HANDLE g_slideThread;
+std::atomic<bool> g_slideCancel;
+
+LRESULT CALLBACK DesktopSlideProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (msg == WM_ERASEBKGND) {
+        PaintDesktop((HDC)wParam);  // (under the thumbnails, in case nothing shows the wallpaper)
+        return 1;
+    }
+    if (msg == WM_NCHITTEST) return HTTRANSPARENT;
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+DWORD WINAPI DesktopSlideThread(void* param) {
+    auto* job = (DesktopSlide*)param;
+    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    IVirtualDesktopManager* vdm = nullptr;
+    CoCreateInstance(CLSID_VirtualDesktopManager, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&vdm));
+
+    enum Kind { Still, Out, In };
+    struct Item {
+        HWND h;
+        RECT r, monitor;
+        Kind kind;
+        bool topmost;
+        HTHUMBNAIL thumb;
+        SIZE source;
+    };
+    struct Walk {
+        std::vector<Item> items;  // frontmost first
+        IVirtualDesktopManager* vdm;
+        DesktopSlide* job;
+    } walk{{}, vdm, job};
+    EnumWindows(
+        [](HWND h, LPARAM p) -> BOOL {
+            auto* w = (Walk*)p;
+            if (w->items.size() >= 80) return FALSE;
+            if (!IsWindowVisible(h) || IsIconic(h)) return TRUE;
+            RECT r;
+            if (!GetWindowRect(h, &r) || r.right - r.left < 8 || r.bottom - r.top < 8) return TRUE;
+            // Overlays that let clicks through or show nothing (NVIDIA's, Tourne's own visualiser): their
+            // thumbnails come out solid (DWM doesn't keep a layered window's see-through), so they're left out.
+            LONG ex = GetWindowLongW(h, GWL_EXSTYLE);
+            BYTE alpha = 255;
+            DWORD how = 0;
+            if ((ex & WS_EX_TRANSPARENT) || ((ex & WS_EX_LAYERED) && GetLayeredWindowAttributes(h, nullptr, &alpha, &how) && (how & LWA_ALPHA) && !alpha))
+                return TRUE;
+            GUID d{};
+            bool onOne = w->vdm && SUCCEEDED(w->vdm->GetWindowDesktopId(h, &d)) && d != GUID{};
+            DWORD cloaked = 0;
+            DwmGetWindowAttribute(h, DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+            Kind kind;
+            if (onOne && d == w->job->from && !cloaked) kind = Out;
+            else if (onOne && d == w->job->to) kind = In;
+            else if (!onOne && !cloaked) kind = Still;
+            else return TRUE;
+            MONITORINFO mi{sizeof(mi)};
+            GetMonitorInfoW(MonitorFromRect(&r, MONITOR_DEFAULTTONEAREST), &mi);
+            bool topmost = GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TOPMOST;
+            w->items.push_back({h, r, mi.rcMonitor, kind, topmost, nullptr, {}});
+            return TRUE;
+        },
+        (LPARAM)&walk);
+    if (vdm) vdm->Release();
+
+    int vx = GetSystemMetrics(SM_XVIRTUALSCREEN), vy = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    int vw = GetSystemMetrics(SM_CXVIRTUALSCREEN), vh = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    WNDCLASSW wc{};
+    wc.lpfnWndProc = DesktopSlideProc;
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = L"TourneDesktopSlide";
+    RegisterClassW(&wc);  // (once a process; a second register fails harmlessly)
+    HWND cover = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT, wc.lpszClassName, L"",
+                                 WS_POPUP, vx, vy, vw, vh, nullptr, nullptr, wc.hInstance, nullptr);
+
+    // Thumbnails are drawn in the order made: what stays below, the desktop coming, the one going, then what's
+    // kept on top.
+    auto& items = walk.items;
+    std::vector<Item*> order;
+    for (int pass = 0; pass < 4; pass++)
+        for (auto it = items.rbegin(); it != items.rend(); ++it) {
+            int at = it->kind == Still ? (it->topmost ? 3 : 0) : it->kind == In ? 1 : 2;
+            if (at == pass) order.push_back(&*it);
+        }
+    for (Item* i : order) {
+        if (!cover || FAILED(DwmRegisterThumbnail(cover, i->h, &i->thumb))) {
+            i->thumb = nullptr;
+            continue;
+        }
+        if (FAILED(DwmQueryThumbnailSourceSize(i->thumb, &i->source)) || !i->source.cx) i->source = {i->r.right - i->r.left, i->r.bottom - i->r.top};
+    }
+
+    auto style = [](motion::Anim const& a) { return motion::StyleWord(a); };
+    std::wstring inStyle = style(job->in), outStyle = style(job->out);
+    // One window at its place for the progress e (0 to 1, or past it on an overshoot) of the move.
+    auto place = [&](Item const& i, double e) {
+        if (!i.thumb) return;
+        std::wstring s = i.kind == In ? inStyle : outStyle;
+        motion::Anim const& a = i.kind == In ? job->in : job->out;
+        bool fade = s == L"fade" || s.rfind(L"slidefade", 0) == 0;
+        bool vert = s == L"slidevert" || s == L"slidefadevert";
+        double share = s == L"fade" ? 0 : s.rfind(L"slidefade", 0) == 0 ? motion::StylePercent(a, 0.2) : 1;
+        RECT const& m = i.monitor;
+        double span = (vert ? m.bottom - m.top : m.right - m.left) * share;
+        double shift = 0, alpha = 1;
+        if (i.kind == Out) shift = -job->dir * span * e, alpha = fade ? 1 - e : 1;
+        if (i.kind == In) shift = job->dir * span * (1 - e), alpha = fade ? e : 1;
+        RECT dest = i.r;
+        OffsetRect(&dest, vert ? 0 : (int)lround(shift), vert ? (int)lround(shift) : 0);
+        RECT seen;
+        DWM_THUMBNAIL_PROPERTIES p{};
+        p.dwFlags = DWM_TNP_VISIBLE | DWM_TNP_RECTDESTINATION | DWM_TNP_RECTSOURCE | DWM_TNP_OPACITY | DWM_TNP_SOURCECLIENTAREAONLY;
+        p.fSourceClientAreaOnly = FALSE;
+        p.opacity = (BYTE)std::clamp(lround(alpha * 255), 0L, 255L);
+        p.fVisible = IntersectRect(&seen, &dest, &m) && p.opacity > 0;
+        if (p.fVisible) {
+            // The part on its own screen only: a window going doesn't slide onto the next screen.
+            double sx = (double)i.source.cx / std::max(1L, i.r.right - i.r.left), sy = (double)i.source.cy / std::max(1L, i.r.bottom - i.r.top);
+            p.rcSource = {(LONG)lround((seen.left - dest.left) * sx), (LONG)lround((seen.top - dest.top) * sy),
+                          (LONG)lround((seen.right - dest.left) * sx), (LONG)lround((seen.bottom - dest.top) * sy)};
+            p.rcDestination = seen;
+            OffsetRect(&p.rcDestination, -vx, -vy);
+        }
+        DwmUpdateThumbnailProperties(i.thumb, &p);
+    };
+    for (Item* i : order) place(*i, 0);
+    if (cover) {
+        SetWindowPos(cover, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        UpdateWindow(cover);
+        DwmFlush();
+        DwmFlush();  // (on screen before anything under it changes)
+    }
+    SetEvent(job->ready);
+    WaitForSingleObject(job->go, 1000);
+
+    double inMs = std::max(1.0, motion::Ms(job->in)), outMs = std::max(1.0, motion::Ms(job->out));
+    ULONGLONG start = GetTickCount64();
+    while (cover && !g_slideCancel) {
+        double t = (double)(GetTickCount64() - start);
+        double ein = motion::Ease(job->in, t / inMs), eout = motion::Ease(job->out, t / outMs);
+        for (Item* i : order) place(*i, i->kind == In ? ein : eout);
+        DwmFlush();
+        MSG msg;
+        while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&msg);
+        if (t >= inMs && t >= outMs) break;
+    }
+
+    for (Item* i : order)
+        if (i->thumb) DwmUnregisterThumbnail(i->thumb);
+    if (cover) DestroyWindow(cover);
+    if (SUCCEEDED(com)) CoUninitialize();
+    CloseHandle(job->ready);
+    CloseHandle(job->go);
+    delete job;
+    return 0;
+}
+
+// To a desktop: animated when a motion line says so, else straight there. False if Windows didn't switch.
+bool VdmSwitchTo(GUID const& id) {
+    std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+    int from = VdCurrentIndex(ids), to = -1;
+    for (size_t i = 0; i < ids.size(); i++)
+        if (ids[i] == id) to = (int)i;
+    motion::Anim in = motion::Get(L"workspacesIn"), out = motion::Get(L"workspacesOut");
+    bool animate = to >= 0 && to != from && in.set && in.on && motion::Ms(in) > 0 && !GetSystemMetrics(SM_REMOTESESSION);
+    if (g_slideThread) {
+        // One still moving: to its end at once, so the next starts from the desktop really shown.
+        g_slideCancel = true;
+        WaitForSingleObject(g_slideThread, 1000);
+        CloseHandle(g_slideThread);
+        g_slideThread = nullptr;
+    }
+    if (!animate) return VdmSwitchNow(id);
+    g_slideCancel = false;
+    auto* job = new DesktopSlide{in, out, ids[from], id, to > from ? 1 : -1, CreateEventW(nullptr, TRUE, FALSE, nullptr),
+                                 CreateEventW(nullptr, TRUE, FALSE, nullptr)};
+    HANDLE ready = job->ready, go = job->go;
+    g_slideThread = CreateThread(nullptr, 0, DesktopSlideThread, job, 0, nullptr);
+    if (!g_slideThread) {
+        CloseHandle(ready);
+        CloseHandle(go);
+        delete job;
+        return VdmSwitchNow(id);
+    }
+    WaitForSingleObject(ready, 250);
+    bool ok = VdmSwitchNow(id);
+    if (!ok) g_slideCancel = true;
+    SetEvent(go);
+    return ok;
+}
+
 // The window in front sent to a desktop (the "Desktop keys"). Not the desktop itself or the taskbar.
 void PagerSendWindow(int target) {
     if (target < 0 || target >= (int)g_pagerDesktops.ids.size() || target == g_pagerDesktops.current) return;
@@ -42006,6 +47744,134 @@ void PagerSendWindow(int target) {
         MessageBeep(MB_ICONWARNING);
         return;
     }
+    HideDesktopPreview();
+    CssDesktopsChanged();
+    if (follow) PagerShowCurrent(target);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A window dropped on a mark ("Send a window by dropping it on the pager"): dragged there by its title bar,
+// it goes back where it was picked up and is sent to that desktop. Windows says when a drag by hand starts
+// and ends (an out-of-context event hook on the bar's thread, two events a drag); only while one is under
+// way does a timer look for the mark under the pointer, to light it.
+
+struct PagerWindowDrag {
+    HWND wnd = nullptr;
+    WINDOWPLACEMENT was{sizeof(WINDOWPLACEMENT)};
+    RECT rect{};
+    UINT_PTR timer = 0;
+};
+PagerWindowDrag g_pagerWindowDrag;
+HWINEVENTHOOK g_pagerDragHook = nullptr;
+
+// The mark nearest the point, when it's within a few pixels of the run of marks (the marks are small and
+// the gaps between them count too); -1 for none.
+int NearestPagerMark(std::vector<RECT> const& items, POINT pt) {
+    int count = std::min((int)items.size(), g_pagerDesktops.count);
+    if (count <= 0) return -1;
+    RECT run = items[0];
+    for (int i = 1; i < count; i++) UnionRect(&run, &run, &items[i]);
+    InflateRect(&run, Px(8), Px(8));
+    if (!PtInRect(&run, pt)) return -1;
+    int best = -1, distance = INT_MAX;
+    for (int i = 0; i < count; i++) {
+        RECT const& r = items[i];
+        int dx = pt.x < r.left ? r.left - pt.x : pt.x >= r.right ? pt.x - r.right + 1 : 0;
+        int dy = pt.y < r.top ? r.top - pt.y : pt.y >= r.bottom ? pt.y - r.bottom + 1 : 0;
+        if (dx + dy < distance) distance = dx + dy, best = i;
+    }
+    return best;
+}
+
+// The desktop whose mark is at this point on the screen, floating or docked; -1 for none.
+int PagerDropTarget(POINT screen) {
+    if (g_pagerWnd && IsWindowVisible(g_pagerWnd)) {
+        POINT pt = screen;
+        ScreenToClient(g_pagerWnd, &pt);
+        return NearestPagerMark(g_pagerFloatItems, pt);
+    }
+    BarScope scope(&g_mainBar);
+    HWND bar = g_wnd;
+    if (!bar || IsRectEmpty(&g_pagerRect)) return -1;
+    POINT pt = screen;
+    ScreenToClient(bar, &pt);
+    return NearestPagerMark(g_pagerItems, pt);
+}
+
+// Whether a drag that just started is a move, not a resize: what the window says is under the pointer
+// (it's in its own move loop, which answers). A window that doesn't answer in time is taken as moved.
+bool PagerDragIsMove(HWND h) {
+    POINT pt;
+    if (!GetCursorPos(&pt)) return true;
+    DWORD_PTR hit = HTCAPTION;
+    if (!SendMessageTimeoutW(h, WM_NCHITTEST, 0, MAKELPARAM(pt.x, pt.y), SMTO_ABORTIFHUNG | SMTO_BLOCK, 100, &hit))
+        return true;
+    return !((hit >= HTLEFT && hit <= HTBOTTOMRIGHT) || hit == HTGROWBOX);
+}
+
+void PagerDropLight(int target) {
+    if (target == g_pagerDropHot) return;
+    g_pagerDropHot = target;
+    g_pagerFloatHot = target;
+    PagerMoveRedraw();
+}
+
+void PagerWindowDragEnd() {
+    auto& d = g_pagerWindowDrag;
+    if (d.timer) KillTimer(nullptr, d.timer);
+    d = {};
+    PagerDropLight(-1);
+}
+
+void CALLBACK PagerWindowDragTick(HWND, UINT, UINT_PTR, DWORD) {
+    POINT pt;
+    if (g_pagerWindowDrag.wnd && GetCursorPos(&pt)) PagerDropLight(PagerDropTarget(pt));
+}
+
+void CALLBACK PagerDragEvent(HWINEVENTHOOK, DWORD event, HWND wnd, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !wnd) return;
+    auto& d = g_pagerWindowDrag;
+    HWND top = GetAncestor(wnd, GA_ROOT);
+    if (event == EVENT_SYSTEM_MOVESIZESTART) {
+        PagerWindowDragEnd();
+        if (!g_settings.dropOnPager || !g_settings.desktops || !PagerShown() || g_pagerDesktops.ids.size() < 2 || !top)
+            return;
+        if (!PagerDragIsMove(top)) return;
+        WCHAR cls[64] = L"";
+        GetClassNameW(top, cls, ARRAYSIZE(cls));
+        Wh_Log(L"pager drop: a drag of %s started", cls);
+        d.wnd = top;
+        GetWindowPlacement(top, &d.was);
+        GetWindowRect(top, &d.rect);
+        d.timer = SetTimer(nullptr, 0, 30, PagerWindowDragTick);
+        return;
+    }
+    if (event != EVENT_SYSTEM_MOVESIZEEND || !d.wnd || top != d.wnd) return;
+    POINT pt{};
+    GetCursorPos(&pt);
+    int target = PagerDropTarget(pt);
+    PagerWindowDrag was = d;
+    PagerWindowDragEnd();
+    if (target < 0) return;
+    WCHAR cls[64] = L"";
+    GetClassNameW(was.wnd, cls, ARRAYSIZE(cls));
+    if (target >= (int)g_pagerDesktops.ids.size() || target == g_pagerDesktops.current) {
+        Wh_Log(L"pager drop: %s on desktop %d, the one showing (or unknown): nothing to do", cls, target + 1);
+        return;
+    }
+    // Back where it was picked up (it was let go of over the bar), maximized again if it was. (A window
+    // snapped to half the screen leaves its snap as it's picked up, so its size is no sign of a resize.)
+    if (was.was.showCmd == SW_SHOWMAXIMIZED) SetWindowPlacement(was.wnd, &was.was);
+    else
+        SetWindowPos(was.wnd, nullptr, was.rect.left, was.rect.top, was.rect.right - was.rect.left, was.rect.bottom - was.rect.top,
+                     SWP_NOZORDER | SWP_NOACTIVATE);
+    bool follow = g_settings.followMoved;
+    if (!VdmSendWindow(was.wnd, g_pagerDesktops.ids[target], follow)) {
+        Wh_Log(L"pager drop: %s on desktop %d: Windows' desktop manager wouldn't move it", cls, target + 1);
+        MessageBeep(MB_ICONWARNING);
+        return;
+    }
+    Wh_Log(L"pager drop: %s sent to desktop %d", cls, target + 1);
     HideDesktopPreview();
     CssDesktopsChanged();
     if (follow) PagerShowCurrent(target);
@@ -42178,7 +48044,11 @@ void PagerDesktopsChanged() {
     if (now == g_pagerDesktops) return;
     bool resized = now.count != g_pagerDesktops.count || now.names != g_pagerDesktops.names ||
                    (now.current != g_pagerDesktops.current && g_settings.pagerLook.shape == kMarkPill);
+    bool recounted = now.count != g_pagerDesktops.count;
+    int was = g_pagerDesktops.current;
     g_pagerDesktops = std::move(now);
+    if (recounted) PagerMoveStop();  // (desktops came or went: lit where it is now)
+    else if (was != g_pagerDesktops.current) PagerMoveStart(was);
     if (g_deskPreview.desktop >= g_pagerDesktops.count) HideDesktopPreview();
     else if (g_deskPreview.desktop >= 0) InvalidateRect(g_deskPreview.wnd, nullptr, FALSE);  // its label
     if (resized) {
@@ -42423,9 +48293,16 @@ void RegisterPagerClass(HINSTANCE instance) {
     rename.hCursor = LoadCursorW(nullptr, IDC_IBEAM);
     rename.lpszClassName = kRenameClass;
     RegisterClassW(&rename);
+    if (!g_pagerDragHook)
+        g_pagerDragHook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, nullptr, PagerDragEvent, 0, 0,
+                                          WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 }
 
 void ClosePager() {
+    if (g_pagerDragHook) UnhookWinEvent(g_pagerDragHook);
+    g_pagerDragHook = nullptr;
+    PagerWindowDragEnd();
+    PagerMoveStop();
     CloseRenameBox(false);
     if (g_pagerInstance) UnregisterClassW(kRenameClass, g_pagerInstance);
     HideDesktopPreview();
@@ -42463,6 +48340,7 @@ void Redraw(HWND wnd) {
     auto const& p = g_settings.palette;
     bool segmented = EffSegments() != Segments::Off;
     bool floatingOrb = EffSegments() == Segments::Central;
+    std::vector<RECT> through = segmented ? BarPassThrough(wnd) : std::vector<RECT>{};
 
     // The opaque picture: background, buttons, labels, orb.
     Fill(content.dc, rc, p.ground);
@@ -42672,7 +48550,8 @@ void Redraw(HWND wnd) {
     for (int i = 0; i < (int)g_pluginRects.size() && i < (int)g_pluginItems.size(); i++) {
         if (IsRectEmpty(&g_pluginRects[i])) continue;
         trayState(kHitPlugin + i, g_pluginRects[i]);
-        DrawPluginItem(content.dc, g_pluginItems[i], g_pluginRects[i]);
+        DrawPluginItem(content.dc, g_pluginItems[i], g_pluginRects[i], i < (int)g_pluginPictures.size() ? &g_pluginPictures[i] : nullptr,
+                       content.bits, rc.right, rc.bottom);
     }
     if (!IsRectEmpty(&g_clockRect)) {
         trayState(kHitClock, g_clockRect);
@@ -42749,7 +48628,8 @@ void Redraw(HWND wnd) {
                 out.bits[at] = px;
                 continue;
             }
-            out.bits[at] = solid ? (content.bits[at] | 0xFF000000) : 0;
+            // (between segments: all but see-through, alpha 1, so the bar still takes clicks there as its empty space)
+            out.bits[at] = solid ? (content.bits[at] | 0xFF000000) : segmented && !framed && !InPassThrough(through, x, y) ? 0x01000000 : 0;
         }
     }
     if (floatingOrb && mainBar) {
@@ -42810,8 +48690,14 @@ int HitTest(POINT pt) {
 // Actions and menus
 
 void ActivateWindow(HWND h) {
-    if (IsIconic(h)) ShowWindowAsync(h, SW_RESTORE);
-    if (!SetForegroundWindow(h)) SwitchToThisWindow(h, TRUE);
+    // A minimised admin window (Task Manager) never hears the restore: Windows keeps a program's messages from
+    // one running as admin. SwitchToThisWindow restores it itself, so it goes too while the window is down
+    // (and SetForegroundWindow alone would "succeed" with it still minimised).
+    if (IsIconic(h)) {
+        ShowWindowAsync(h, SW_RESTORE);
+        SwitchToThisWindow(h, TRUE);
+    }
+    if (!SetForegroundWindow(h) || IsIconic(h)) SwitchToThisWindow(h, TRUE);
 }
 
 void ClickWindow(HWND h) {
@@ -43263,6 +49149,85 @@ HFONT MenuIconFont() {
     return g_menuIconFont;
 }
 
+// The bar's menu look: the style's menu look if it has one, else the scheme; StartAllBack's framed look
+// with its bar background (its icon title font, capitals, icons; Menu No Icons still decides about icons).
+MenuLook BarMenuLook() {
+    auto const& p = g_settings.palette;
+    MenuLook look = {p.ground, p.line, p.edge, p.text, p.accent, p.dim, p.hover, g_tipFont,
+                     g_themed ? g_theme.menu : nullptr, g_scale, !g_settings.menuIcons};
+    if (g_settings.sabBackdrop && g_themed && !look.theme) FrameLikeStartAllBack(look, MenuIconFont(), StartCapsSetting());
+    return look;
+}
+
+// How menus open (menuAnimation), on the motion engine's popups curve when a motion line sets one.
+double PopupsEase(double t) { return motion::Ease(g_settings.motionPopups, t); }
+
+void ApplyMenuMotion() {
+    g_menuMotion = {};
+    g_menuMotion.style = g_settings.menuAnimation;
+    if (g_settings.motionPopups.set && g_settings.motionPopups.on) {
+        g_menuMotion.ms = std::clamp(motion::Ms(g_settings.motionPopups), 0.0, 1500.0);
+        g_menuMotion.ease = PopupsEase;
+    }
+}
+
+// Square window corners, for the suite's Square Corners part (square-corners.cpp), which watches the value.
+// Written only when it changes, so the programs it runs in aren't woken for nothing.
+void PublishCorners() {
+    DWORD now = g_settings.squareCorners, was = 2, size = sizeof(was);
+    RegGetValueW(HKEY_CURRENT_USER, L"Software\\Tourne\\Corners", L"Square", RRF_RT_REG_DWORD, nullptr, &was, &size);
+    if (was != now) RegSetKeyValueW(HKEY_CURRENT_USER, L"Software\\Tourne\\Corners", L"Square", REG_DWORD, &now, sizeof(now));
+}
+
+// The bar's menus as Tourne Menus draws them in Explorer, the file dialogs and Windows' own menus
+// (tourne-menus.wh.cpp): their look, how they open and the rules, in HKCU\Software\Tourne\Menus.
+// Written by the main bar as its settings apply; Tourne Menus reads it as each menu opens.
+void PublishMenuLook() {
+    MenuLook look = BarMenuLook();
+    if (MenusLikeWindows()) LookLikeWindowsMenus(look);
+    HKEY key = nullptr;
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Menus", 0, nullptr, 0, KEY_SET_VALUE, nullptr, &key, nullptr))
+        return;
+    auto dword = [&](PCWSTR name, DWORD v) { RegSetValueExW(key, name, 0, REG_DWORD, (BYTE const*)&v, sizeof(v)); };
+    auto text = [&](PCWSTR name, std::wstring const& v) {
+        RegSetValueExW(key, name, 0, REG_SZ, (BYTE const*)v.c_str(), (DWORD)((v.size() + 1) * sizeof(wchar_t)));
+    };
+    auto joined = [](std::vector<std::wstring> const& list) {
+        std::wstring out;
+        for (auto const& x : list) out += (out.empty() ? L"" : L", ") + x;
+        return out;
+    };
+    dword(L"Ground", look.ground), dword(L"Line", look.line), dword(L"Edge", look.edge), dword(L"Text", look.text);
+    dword(L"Accent", look.accent), dword(L"Dim", look.dim), dword(L"Hover", look.hover);
+    dword(L"HoverText", look.hoverText), dword(L"Arrow", look.arrow), dword(L"FrameLine", look.frameLine), dword(L"Band", look.band);
+    dword(L"Native", look.native), dword(L"Classic", look.classic), dword(L"OwnText", look.ownText), dword(L"Frame", look.frame);
+    dword(L"Caps", look.caps), dword(L"NoIcons", look.noIcons), dword(L"Windows", look.windows);
+    dword(L"FrameGap", look.frameGap), dword(L"FrameGlow", look.frameGlow), dword(L"FrameStopCount", look.frameStopCount);
+    RegSetValueExW(key, L"FrameStops", 0, REG_BINARY, (BYTE const*)look.frameStops, sizeof(look.frameStops));
+    dword(L"Scale", look.scale);
+    LOGFONTW font{};
+    if (look.font && GetObjectW(look.font, sizeof(font), &font)) RegSetValueExW(key, L"Font", 0, REG_BINARY, (BYTE const*)&font, sizeof(font));
+    else RegDeleteValueW(key, L"Font");
+    text(L"Theme", look.theme ? g_settings.style : L"");
+    dword(L"Animation", g_menuMotion.style);
+    dword(L"FlyoutClick", Wh_GetIntSetting(L"taskbar.menuFlyoutClick") != 0);
+    dword(L"AnimationMs", (DWORD)std::lround(g_menuMotion.ms));
+    std::wstring curve;
+    if (g_menuMotion.ease) {
+        auto const& c = g_settings.motionPopups.curve;
+        WCHAR line[160];
+        if (c.spring) swprintf_s(line, L"spring %g %g %g", c.mass, c.stiffness, c.damping);
+        else swprintf_s(line, L"bezier %g %g %g %g", c.x1, c.y1, c.x2, c.y2);
+        curve = line;
+    }
+    text(L"Curve", curve);
+    text(L"Hide", joined(g_settings.menuRules.hide));
+    text(L"More", joined(g_settings.menuRules.more));
+    text(L"MoreLabel", g_settings.menuRules.moreLabel);
+    dword(L"Stamp", GetTickCount());
+    RegCloseKey(key);
+}
+
 // A popup menu at the pointer; returns the chosen command, or 0. Menus that
 // open their own menu on a right-click leave out TPM_RIGHTBUTTON, and
 // TPM_NONOTIFY, which would hide the right-click from the bar.
@@ -43308,21 +49273,164 @@ int RunMenu(HWND wnd, HMENU menu, UINT flags = TPM_RIGHTBUTTON | TPM_NONOTIFY) {
     g_menuFromButton = false;
     g_inMenu = true;
     SetForegroundWindow(wnd);
-    // In the theme: the style's menu look if it has one, else the scheme.
-    auto const& p = g_settings.palette;
-    g_menuLook = {p.ground, p.line, p.edge, p.text, p.accent, p.dim, p.hover, g_tipFont,
-                  g_themed ? g_theme.menu : nullptr, g_scale, !g_settings.menuIcons};
-    if (g_settings.sabBackdrop && g_themed && !g_menuLook.theme) {
-        // StartAllBack's menu look: its icon title font, capitals, icons, and the framed ground.
-        // (Menu No Icons still decides about icons: noIcons is left as set.)
-        FrameLikeStartAllBack(g_menuLook, MenuIconFont(), StartCapsSetting());
-    }
+    g_menuLook = BarMenuLook();
     // Beside the bar it mustn't cover it; at the pointer it only has to stay on the pointer's screen.
     int cmd = (int)TrackStyledMenu(menu, TPM_RETURNCMD | flags, pt.x, pt.y, wnd, false, beside ? &bar : nullptr);
     PostMessageW(wnd, WM_NULL, 0, 0);
     g_inMenu = false;
     DestroyMenu(menu);
     return cmd;
+}
+
+// Tourne's menu look for the other parts of the same program (Tourne'Table, built into Tourne Desktop), which
+// find this by name. A part running in Windhawk finds no such export in its host and keeps Windows' own menu.
+// Their owner window doesn't pass the items' measuring and drawing on, so it's done here while the menu is up.
+LRESULT CALLBACK StyledMenuOwnerProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    if (msg == WM_MEASUREITEM && MenuMeasureItem((MEASUREITEMSTRUCT*)lParam)) return TRUE;
+    if (msg == WM_DRAWITEM && MenuDrawItem((DRAWITEMSTRUCT*)lParam)) return TRUE;
+    return DefSubclassProc(wnd, msg, wParam, lParam);
+}
+
+extern "C" __declspec(dllexport) UINT TourneStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner) {
+    g_menuLook = BarMenuLook();
+    bool forwarded = SetWindowSubclass(owner, StyledMenuOwnerProc, 0x7D4E, 0);
+    UINT result = TrackStyledMenu(menu, flags, x, y, owner);
+    if (forwarded) RemoveWindowSubclass(owner, StyledMenuOwnerProc, 0x7D4E);
+    return result;
+}
+
+// The same look for a window a part draws itself (Tourne'Table's quick-settings panel): the menus' colours, font,
+// scale and capitals (layout must match TourneMenuLookC in tourne-table.wh.cpp; size is its sizeof, checked),
+// and their frame painted round a window's whole client area, giving back where the rows go inside it.
+struct TourneMenuLookC {
+    uint32_t ground, line, edge, text, accent, dim, hover, hoverText, band;
+    HFONT font;
+    int scale, frame, caps;
+    uint32_t frameLine;  // the frame's line (where a colour gradient ends), 0xFFFFFFFF when there is no frame
+};
+
+extern "C" __declspec(dllexport) BOOL TourneMenuLookFor(TourneMenuLookC* out, int size) {
+    if (!out || size != (int)sizeof(TourneMenuLookC)) return FALSE;
+    MenuLook look = BarMenuLook();
+    *out = {look.ground, look.line, look.edge, look.text, look.accent, look.dim, look.hover, look.hoverText, look.band,
+            look.font, std::max(1, look.scale), look.frame ? 1 : 0, look.caps ? 1 : 0,
+            !look.frame ? 0xFFFFFFFFu : look.frameStopCount > 0 ? look.frameStops[look.frameStopCount - 1] : look.frameLine};
+    return TRUE;
+}
+
+// The menus' frame colours for Tourne Studio's borders: up to max, top left to bottom right (one: a plain line);
+// 0 when the menus have no frame.
+extern "C" __declspec(dllexport) int TourneMenuFrameStops(uint32_t* stops, int max) {
+    MenuLook look = BarMenuLook();
+    if (!stops || max <= 0 || !look.frame) return 0;
+    if (look.frameStopCount <= 0) return stops[0] = look.frameLine, 1;
+    int n = std::min(look.frameStopCount, max);
+    for (int i = 0; i < n; i++) stops[i] = look.frameStops[i];
+    return n;
+}
+
+extern "C" __declspec(dllexport) void TourneMenuPaintFrame(HDC dc, int w, int h, RECT* inner) {
+    g_menuLook = BarMenuLook();
+    auto const& look = g_menuLook;
+    int s = std::max(1, look.scale);
+    RECT all{0, 0, w, h};
+    SetDCBrushColor(dc, MenuRgb(look.frame ? look.band : look.ground));
+    FillRect(dc, &all, (HBRUSH)GetStockObject(DC_BRUSH));
+    if (!look.frame) {
+        SetDCBrushColor(dc, MenuRgb(look.edge));
+        FrameRect(dc, &all, (HBRUSH)GetStockObject(DC_BRUSH));
+        if (inner) *inner = {1, 1, w - 1, h - 1};
+        return;
+    }
+    // As StyledMenuWindowProc draws a menu's: the band, the outer line, the inner line, the items' ground inside.
+    int q = FrameInnerAt(s);
+    RECT in{q + 1, q + 1, w - q - 1, h - q - 1};
+    SetDCBrushColor(dc, MenuRgb(look.ground));
+    FillRect(dc, &in, (HBRUSH)GetStockObject(DC_BRUSH));
+    POINT at{0, 0};
+    SIZE wh{w, h};
+    for (int pass : {1, 2}) {
+        FrameLine(dc, 0, 0, w, true, at, wh, look.band, look.band, false, true, pass);
+        FrameLine(dc, 0, h - 1, w, true, at, wh, look.band, look.band, true, false, pass);
+        FrameLine(dc, 0, 0, h, false, at, wh, look.band, look.band, false, true, pass);
+        FrameLine(dc, w - 1, 0, h, false, at, wh, look.band, look.band, true, false, pass);
+        FrameLine(dc, q, q, w - 2 * q, true, at, wh, look.band, look.ground, true, true, pass);
+        FrameLine(dc, q, h - 1 - q, w - 2 * q, true, at, wh, look.ground, look.band, true, true, pass);
+        FrameLine(dc, q, q, h - 2 * q, false, at, wh, look.band, look.ground, true, true, pass);
+        FrameLine(dc, w - 1 - q, q, h - 2 * q, false, at, wh, look.ground, look.band, true, true, pass);
+    }
+    if (inner) *inner = in;
+}
+
+// The same for a menu of Windows' own in Tourne Desktop's Open and Save dialogs (desktop/host/dialog-look.cpp),
+// drawn as Tourne Menus draws them in other programs: the published look, the menu rules, and submenus
+// ("Send to", "Open with") styled as the shell fills them in.
+// The look exactly as published for Tourne Menus (PublishMenuLook), so these menus match File Explorer's: its
+// colours and switches over the bar's, and no visual style unless one was published.
+void PublishedMenuLook(MenuLook& look) {
+    HKEY key = nullptr;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Menus", 0, KEY_READ, &key)) return;
+    auto dword = [&](PCWSTR name, uint32_t fallback) {
+        DWORD v = 0, size = sizeof(v);
+        return RegQueryValueExW(key, name, nullptr, nullptr, (BYTE*)&v, &size) ? fallback : (uint32_t)v;
+    };
+    look.ground = dword(L"Ground", look.ground), look.line = dword(L"Line", look.line), look.edge = dword(L"Edge", look.edge);
+    look.text = dword(L"Text", look.text), look.accent = dword(L"Accent", look.accent), look.dim = dword(L"Dim", look.dim);
+    look.hover = dword(L"Hover", look.hover), look.hoverText = dword(L"HoverText", look.hoverText);
+    look.arrow = dword(L"Arrow", look.arrow), look.frameLine = dword(L"FrameLine", look.frameLine), look.band = dword(L"Band", look.band);
+    look.native = dword(L"Native", look.native), look.classic = dword(L"Classic", look.classic);
+    look.ownText = dword(L"OwnText", look.ownText), look.frame = dword(L"Frame", look.frame), look.caps = dword(L"Caps", look.caps);
+    look.noIcons = dword(L"NoIcons", look.noIcons), look.windows = dword(L"Windows", look.windows);
+    look.frameGap = (int)dword(L"FrameGap", look.frameGap), look.frameGlow = (int)dword(L"FrameGlow", look.frameGlow);
+    look.frameStopCount = std::clamp((int)dword(L"FrameStopCount", look.frameStopCount), 0, 3);
+    DWORD size = sizeof(look.frameStops);
+    if (RegQueryValueExW(key, L"FrameStops", nullptr, nullptr, (BYTE*)look.frameStops, &size)) look.frameStopCount = 0;
+    WCHAR theme[8] = L"";
+    DWORD chars = sizeof(theme);
+    LSTATUS got = RegQueryValueExW(key, L"Theme", nullptr, nullptr, (BYTE*)theme, &chars);
+    if ((got == ERROR_SUCCESS && !theme[0])) look.theme = nullptr;
+    RegCloseKey(key);
+}
+
+LRESULT CALLBACK ShellMenuOwnerProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    switch (msg) {
+        case WM_MEASUREITEM:
+            if (MenuMeasureItem((MEASUREITEMSTRUCT*)lParam)) return TRUE;
+            break;
+        case WM_DRAWITEM:
+            if (MenuDrawItem((DRAWITEMSTRUCT*)lParam)) return TRUE;
+            break;
+        case WM_INITMENUPOPUP: {
+            LRESULT result = DefSubclassProc(wnd, msg, wParam, lParam);
+            StyleMenuItems((HMENU)wParam, true);
+            return result;
+        }
+    }
+    return DefSubclassProc(wnd, msg, wParam, lParam);
+}
+
+extern "C" __declspec(dllexport) UINT TourneStyledShellMenu(HMENU menu, UINT flags, int x, int y, HWND owner, RECT const* exclude) {
+    g_menuLook = BarMenuLook();
+    PublishedMenuLook(g_menuLook);
+    MenuContext context;
+    context.menu = L"dialog";
+    context.app = MenuAppName(owner);
+    MenuRules with = MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules);
+    MenuRulesUndo rules = ApplyMenuRules(menu, with, [](UINT) { return std::wstring(); });
+    bool forwarded = SetWindowSubclass(owner, ShellMenuOwnerProc, 0x7D4F, 0);
+    g_menuTakeOwnerDrawn = true;  // (the dialog's folder view has made its items owner-drawn in Windows' look)
+    bool ours = !with.add.empty() && !(flags & TPM_RETURNCMD);  // (as Tourne Menus does: see its TrackHere)
+    UINT result = TrackStyledMenu(menu, flags | (ours ? TPM_RETURNCMD : 0), x, y, owner, true,
+                                  exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
+    g_menuTakeOwnerDrawn = false;
+    if (forwarded) RemoveWindowSubclass(owner, ShellMenuOwnerProc, 0x7D4F);
+    UndoMenuRules(rules);
+    if (RunMenuRule(rules, result, context)) return ours ? TRUE : 0;
+    if (ours) {
+        if (result && !(flags & TPM_NONOTIFY)) PostMessageW(owner, WM_COMMAND, result, 0);
+        return result != 0;
+    }
+    return result;
 }
 
 // A group with several windows: a list to pick one from, until thumbnails.
@@ -43338,7 +49446,7 @@ void PickWindow(HWND wnd, Button const& b) {
 
 enum : int { kCmdNew = 1, kCmdRestore, kCmdMinimize, kCmdMaximize, kCmdClose, kCmdTaskManager, kCmdDesktop,
              kCmdTaskbarSettings, kCmdTourneSettings, kCmdOpenStyles, kCmdMoveLeft, kCmdMoveRight, kCmdEndTask, kCmdInstallTheme, kCmdGetYasb,
-             kCmdWindhawk };
+             kCmdWindhawk, kCmdPluginIcon, kCmdPluginIconBack };
 // Tray placement commands: kCmdPlace + icon * 4 + TrayPlace; a running icon in or out of the tray
 // (kCmdTrayToggle + icon); one not running, placed for when it starts (kCmdTrayKnown + icon).
 constexpr int kCmdPlace = 1000, kCmdTrayToggle = 3000, kCmdTrayKnown = 4000;
@@ -43487,19 +49595,56 @@ struct ShellMenu {
     int command = 0;
     POINT pt{};
     bool open = false;  // on screen: its submenus are styled as they fill in
+    std::set<HMENU> filled;  // submenus the extensions have filled in already (ahead, or on a first hover)
 };
 ShellMenu g_shellMenu;
 std::wstring g_jumpApp;  // while a jump list is open: its app's shortcut or program
 
-void CloseShellMenu() {
-    if (g_shellMenu.menu3) g_shellMenu.menu3->Release();
-    if (g_shellMenu.menu2) g_shellMenu.menu2->Release();
-    if (g_shellMenu.menu) g_shellMenu.menu->Release();
-    if (g_shellMenu.popup) DestroyMenu(g_shellMenu.popup);
-    g_shellMenu = {};
+void ReleaseShellMenu(ShellMenu& m) {
+    if (m.menu3) m.menu3->Release();
+    if (m.menu2) m.menu2->Release();
+    if (m.menu) m.menu->Release();
+    if (m.popup) DestroyMenu(m.popup);
+    m = {};
+}
+
+void CloseShellMenu() { ReleaseShellMenu(g_shellMenu); }
+
+// A shell menu's verb for one of its commands (ids from 1), lower case; empty when it has none.
+std::wstring ShellMenuVerb(IContextMenu* menu, UINT id) {
+    WCHAR verb[80] = L"";
+    if (!menu || id < 1 || id > 0x7FFF ||
+        FAILED(menu->GetCommandString(id - 1, GCS_VERBW, nullptr, (LPSTR)verb, ARRAYSIZE(verb))))
+        return L"";
+    verb[ARRAYSIZE(verb) - 1] = 0;
+    for (WCHAR* c = verb; *c; c++) *c = (WCHAR)towlower(*c);
+    return verb;
 }
 
 // The shell menu's own drawing and submenus.
+bool ShellMenuMessageTo(ShellMenu& m, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
+    *result = 0;
+    if (m.menu3) return SUCCEEDED(m.menu3->HandleMenuMsg2(msg, wParam, lParam, result));
+    if (m.menu2) return SUCCEEDED(m.menu2->HandleMenuMsg(msg, wParam, lParam));
+    return false;
+}
+
+// Every submenu of a shell menu filled in now (Send to, 7-Zip, WinRAR...), as each would be on its first hover:
+// a flyout made ahead opens at once, instead of its extension filling it on the menu's thread as the pointer
+// passes (which made menus with flyouts hitch).
+void FillShellSubmenus(ShellMenu& m, HMENU menu, int depth = 0) {
+    if (!menu || depth > 3) return;
+    int count = GetMenuItemCount(menu);
+    for (int i = 0; i < count; i++) {
+        HMENU sub = GetSubMenu(menu, i);
+        if (!sub || m.filled.count(sub)) continue;
+        LRESULT result;
+        ShellMenuMessageTo(m, WM_INITMENUPOPUP, (WPARAM)sub, MAKELPARAM(i, FALSE), &result);
+        m.filled.insert(sub);
+        FillShellSubmenus(m, sub, depth + 1);
+    }
+}
+
 bool ShellMenuMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
     *result = 0;
     if (g_shellMenu.menu3) return SUCCEEDED(g_shellMenu.menu3->HandleMenuMsg2(msg, wParam, lParam, result));
@@ -43527,10 +49672,20 @@ void OpenShellMenu(HWND wnd, std::wstring const& path) {
         return;
     }
     GetCursorPos(&g_shellMenu.pt);
+    IContextMenu* shell = g_shellMenu.menu;
+    MenuContext context;
+    context.menu = L"taskbar";
+    context.app = MenuAppName();
+    context.known = true;
+    context.files = {path};
+    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules),
+                                         [&](UINT id) { return ShellMenuVerb(shell, id); });
     g_shellMenu.open = true;
     int cmd = (int)TrackStyledMenu(g_shellMenu.popup, TPM_RECURSE | TPM_RETURNCMD | TPM_RIGHTBUTTON,
                                    g_shellMenu.pt.x, g_shellMenu.pt.y, wnd, true);
     g_shellMenu.open = false;
+    UndoMenuRules(rules);
+    if (RunMenuRule(rules, (UINT)cmd, context)) cmd = 0;
     if (cmd > 0) {
         g_shellMenu.command = cmd;
         EndMenu();  // the jump list too
@@ -43635,6 +49790,7 @@ void ButtonMenu(HWND wnd, Button const& b) {
 constexpr UINT_PTR kTimerPreviewShow = 5;
 constexpr UINT_PTR kTimerPreviewHide = 6;
 constexpr UINT_PTR kTimerPeek = 1;  // on the preview window
+constexpr UINT_PTR kTimerPreviewFade = 2;  // on the preview window, while it fades in
 constexpr WCHAR kPreviewClass[] = L"TournePreview_" WH_MOD_ID;
 constexpr WCHAR kPreviewShadowClass[] = L"TournePreviewShadow_" WH_MOD_ID;  // the same, with a drop shadow
 HINSTANCE g_instance;  // the classes' module
@@ -43660,6 +49816,9 @@ struct Preview {
     bool dismiss = false;         // dismissed: goes at the hide timer whatever the pointer's on
     POINT at{};                   // the pointer when it opened (placed on the pointer)
     RECT buttonRc{};              // its button, on the screen
+    bool fading = false;          // fading in (motion.fadePopupsIn)
+    bool layered = false;         // the whole window fading, layered until it's in
+    double fade = 1, fadeStart = 0;
 };
 Preview g_preview;
 
@@ -43904,6 +50063,8 @@ void PaintPreview(HWND wnd, HDC target) {
 void ShowWindowMenuFor(HWND h);
 void CloseFromPreview(int index);
 
+void PreviewFadeFrame();
+
 LRESULT CALLBACK PreviewProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     BarScope barScope(BarOf(g_preview.bar));  // its bar's scale and fonts
     switch (msg) {
@@ -43919,7 +50080,10 @@ LRESULT CALLBACK PreviewProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_ERASEBKGND:
             return 1;
         case WM_TIMER:
-            if (wParam == kTimerPeek) {
+            if (wParam == kTimerPreviewFade) {
+                if (wnd == g_preview.wnd) PreviewFadeFrame();
+                else KillTimer(wnd, kTimerPreviewFade);
+            } else if (wParam == kTimerPeek) {
                 KillTimer(wnd, kTimerPeek);
                 int hot = g_preview.hot;
                 if (hot >= 0 && hot < (int)g_preview.cells.size()) LivePeek(g_preview.cells[hot].hwnd, wnd, kPeekTaskbar);
@@ -44012,6 +50176,68 @@ void SetPreviewBackdrop(HWND wnd) {
     AccentPolicy policy{backdrop == 2 ? 4 : 3, 0, 0x01000000, 0};  // ACRYLICBLURBEHIND, BLURBEHIND; the drawn tint carries the colour
     CompositionData data{19 /* WCA_ACCENT_POLICY */, &policy, sizeof(policy)};
     set(wnd, &data);
+}
+
+// Fading in on the motion engine's "fadePopupsIn" line (or a parent's): the thumbnails through their
+// own opacity, and an opaque preview's whole window through layering, only while it fades (a
+// see-through one's backdrop stays as it is: only its thumbnails fade). No line: up at once, as ever.
+double NowMs();
+
+bool PreviewFadeOn() {
+    auto const& a = g_settings.motionPreviewIn;
+    return a.set && a.on && motion::Ms(a) > 0;
+}
+
+BYTE PreviewFadeAlpha() { return g_preview.fading ? (BYTE)std::lround(255 * std::clamp(g_preview.fade, 0.0, 1.0)) : 255; }
+
+void PreviewThumbnailsAlpha() {
+    DWM_THUMBNAIL_PROPERTIES props{};
+    props.dwFlags = DWM_TNP_OPACITY;
+    props.opacity = PreviewFadeAlpha();
+    for (auto const& cell : g_preview.cells)
+        if (cell.thumbnail) DwmUpdateThumbnailProperties(cell.thumbnail, &props);
+}
+
+// In: opaque, and no longer layered (drawn again at once).
+void PreviewFadeDone(HWND wnd) {
+    KillTimer(wnd, kTimerPreviewFade);
+    g_preview.fading = false;
+    g_preview.fade = 1;
+    if (g_preview.layered) {
+        g_preview.layered = false;
+        SetWindowLongPtrW(wnd, GWL_EXSTYLE, GetWindowLongPtrW(wnd, GWL_EXSTYLE) & ~(LONG_PTR)WS_EX_LAYERED);
+        RedrawWindow(wnd, nullptr, nullptr, RDW_INVALIDATE | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN | RDW_UPDATENOW);
+    }
+    PreviewThumbnailsAlpha();
+}
+
+void PreviewFadeFrame() {
+    HWND wnd = g_preview.wnd;
+    if (!wnd || !g_preview.fading) return;
+    auto const& a = g_settings.motionPreviewIn;
+    double ms = std::min(motion::Ms(a), 1500.0);
+    double t = ms > 0 && PreviewFadeOn() ? (NowMs() - g_preview.fadeStart) / ms : 1;
+    if (t >= 1) {
+        PreviewFadeDone(wnd);
+        return;
+    }
+    g_preview.fade = motion::Ease(a, t);
+    if (g_preview.layered) SetLayeredWindowAttributes(wnd, 0, PreviewFadeAlpha(), LWA_ALPHA);
+    PreviewThumbnailsAlpha();
+}
+
+// A preview window just made, before it shows: it starts to fade in.
+void PreviewFadeIn(HWND wnd) {
+    if (!PreviewFadeOn()) return;
+    g_preview.fading = true;
+    g_preview.fade = 0;
+    g_preview.fadeStart = NowMs();
+    if (!PreviewSeeThrough()) {
+        SetWindowLongPtrW(wnd, GWL_EXSTYLE, GetWindowLongPtrW(wnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+        g_preview.layered = SetLayeredWindowAttributes(wnd, 0, 0, LWA_ALPHA) != 0;
+        if (!g_preview.layered) SetWindowLongPtrW(wnd, GWL_EXSTYLE, GetWindowLongPtrW(wnd, GWL_EXSTYLE) & ~(LONG_PTR)WS_EX_LAYERED);
+    }
+    if (!SetTimer(wnd, kTimerPreviewFade, USER_TIMER_MINIMUM, nullptr)) PreviewFadeDone(wnd);  // (no frames: up at once)
 }
 
 void ShowPreview(HWND bar, int index) {
@@ -44111,6 +50337,7 @@ void ShowPreview(HWND bar, int index) {
         if (PreviewSeeThrough()) SetPreviewBackdrop(g_preview.wnd);
         BOOL noFade = TRUE;  // no DWM fade: the thumbnails are up as soon as it is
         DwmSetWindowAttribute(g_preview.wnd, 3 /* DWMWA_TRANSITIONS_FORCEDISABLED */, &noFade, sizeof(noFade));
+        PreviewFadeIn(g_preview.wnd);
     }
     SetWindowPos(g_preview.wnd, HWND_TOPMOST, x, y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
     PreviewHooks(true);
@@ -44138,7 +50365,7 @@ void ShowPreview(HWND bar, int index) {
         props.dwFlags = DWM_TNP_RECTDESTINATION | DWM_TNP_VISIBLE | DWM_TNP_OPACITY | DWM_TNP_SOURCECLIENTAREAONLY;
         props.rcDestination = dest;
         props.fVisible = TRUE;
-        props.opacity = 255;
+        props.opacity = PreviewFadeAlpha();  // (255 unless it's fading in)
         props.fSourceClientAreaOnly = FALSE;
         DwmUpdateThumbnailProperties(cell.thumbnail, &props);
     }
@@ -44405,9 +50632,37 @@ void DragTrayIcon(HWND wnd, POINT pt) {
 }
 
 // Dragging a plugin item along the tray (a horizontal bar's): it takes its place among the icons as it
-// goes, and keeps it in the tray's saved order when let go on the bar.
+// goes, and keeps it in the tray's saved order when let go on the bar. As a tray icon does, it goes into
+// the overflow when let go on System Icons' arrow (resting there opens the flyout) or on the open flyout.
 void DragPluginItem(HWND wnd, POINT pt) {
     if (g_pluginDrag < 0 || g_pluginDrag >= (int)g_pluginItems.size()) return;
+    RECT client;
+    GetClientRect(wnd, &client);
+    if (!PtInRect(&client, pt)) {
+        // Off the bar it follows the pointer, toward the overflow flyout.
+        if (g_trayDragOnArrow) KillTimer(wnd, kTimerDragOpen);
+        g_trayDragOnArrow = false;
+        static HiddenIcon ghost;
+        if (!g_trayGhost.wnd) {
+            ghost.size = Px(16);
+            ghost.pixels = PluginItemPixels(g_pluginItems[g_pluginDrag], ghost.size, PaletteRef(g_settings.palette.text));
+        }
+        POINT screen = pt;
+        ClientToScreen(wnd, &screen);
+        g_trayGhost.Move(ghost, screen);
+        g_hot = g_pressed = -2;
+        Redraw(wnd);
+        return;
+    }
+    g_trayGhost.Hide();
+    int at = HitTest(pt) - kHitTray;
+    bool wasOnArrow = g_trayDragOnArrow;
+    g_trayDragOnArrow = at >= 0 && at < (int)g_tray.size() && IsOverflowArrow(g_tray[at]);
+    if (g_trayDragOnArrow && !wasOnArrow) SetTimer(wnd, kTimerDragOpen, 450, nullptr);
+    else if (!g_trayDragOnArrow && wasOnArrow) KillTimer(wnd, kTimerDragOpen);
+    g_hot = g_pressed = g_trayDragOnArrow ? kHitTray + at : kHitPlugin + g_pluginDrag;
+    if (g_trayDragOnArrow || wasOnArrow) Redraw(wnd);
+    if (g_trayDragOnArrow) return;
     int slot = 0;
     for (; slot < (int)g_tray.size(); slot++)
         if (pt.x < (g_tray[slot].rc.left + g_tray[slot].rc.right) / 2) break;
@@ -44419,6 +50674,9 @@ void DragPluginItem(HWND wnd, POINT pt) {
 
 void EndPluginDrag(HWND wnd, bool keep) {
     if (keep) SaveTrayOrder();  // (as laid out now, with the item in its new place)
+    KillTimer(wnd, kTimerDragOpen);
+    g_trayDragOnArrow = false;
+    g_trayGhost.Hide();
     g_pluginDrag = -1;
     g_pluginDragMoved = false;
     g_pluginDragSlot = -1;
@@ -44446,7 +50704,7 @@ HWND OpenOverflowFlyout() {
 
 void OpenOverflowWhileDragging(HWND wnd) {
     KillTimer(wnd, kTimerDragOpen);
-    if (g_trayDrag < 0 || !g_trayDragOnArrow || OpenOverflowFlyout()) return;
+    if ((g_trayDrag < 0 && g_pluginDrag < 0) || !g_trayDragOnArrow || OpenOverflowFlyout()) return;
     for (int i = 0; i < (int)g_tray.size(); i++)
         if (IsOverflowArrow(g_tray[i])) return ClickTrayIcon(i, kClickLeft);
 }
@@ -44606,6 +50864,82 @@ void TrayIconMenu(HWND wnd, int index) {
         Redraw(wnd);
     } else if (cmd >= kCmdPlace && cmd <= kCmdPlace + kPlaceHidden) {
         PlaceTrayIcon(wnd, key, cmd - kCmdPlace);
+    }
+}
+
+bool HasExtension(std::wstring const& name, std::initializer_list<PCWSTR> extensions);
+
+// The user's own icon for a plugin item: a picture (.ico, .png, .svg...), or a program or library and then
+// one of its icons ("file,index"). Empty when nothing was picked.
+std::wstring PickPluginIcon(HWND wnd) {
+    IFileOpenDialog* dialog = nullptr;
+    if (FAILED(CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&dialog)))) return L"";
+    COMDLG_FILTERSPEC types[] = {{L"Icons and pictures", L"*.ico;*.png;*.svg;*.jpg;*.jpeg;*.bmp;*.gif;*.exe;*.dll;*.icl;*.cpl"},
+                                 {L"All files", L"*.*"}};
+    dialog->SetFileTypes(2, types);
+    dialog->SetTitle(L"An icon for this item");
+    DWORD options = 0;
+    dialog->GetOptions(&options);
+    dialog->SetOptions(options | FOS_FORCEFILESYSTEM | FOS_FILEMUSTEXIST);
+    std::wstring path;
+    IShellItem* item = nullptr;
+    LPWSTR chosen = nullptr;
+    if (SUCCEEDED(dialog->Show(wnd)) && SUCCEEDED(dialog->GetResult(&item)) && SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, &chosen))) {
+        path = chosen;
+        CoTaskMemFree(chosen);
+    }
+    if (item) item->Release();
+    dialog->Release();
+    if (path.empty() || !HasExtension(path, {L".exe", L".dll", L".icl", L".cpl", L".mun"})) return path;
+    // A program or library: which of its icons, in Windows' own picker.
+    WCHAR file[MAX_PATH];
+    if (path.size() >= MAX_PATH) return L"";
+    wcscpy_s(file, path.c_str());
+    int index = 0;
+    if (!PickIconDlg(wnd, file, ARRAYSIZE(file), &index)) return L"";
+    return Expand(file) + L"," + std::to_wstring(index);
+}
+
+// Tells the plugin runtime the user's icons changed: it draws them again and sends the items back.
+void PluginIconsChanged(HWND wnd) {
+    if (HWND host = PluginHost()) PostMessageW(host, g_msgPluginsAsk, (WPARAM)wnd, kPluginAskIconsChanged);
+}
+
+// Shift+right-click on a plugin item: where it goes (tray, overflow or hidden; a hidden one comes back from the
+// bar menu's tray icons list), as for a tray icon, and its icon. (Its own right-click
+// menu, if it has one, is a plain right-click.)
+void PluginItemMenu(HWND wnd, int index) {
+    if (index < 0 || index >= (int)g_pluginItems.size()) return;
+    PluginBarItem const& item = g_pluginItems[index];
+    std::wstring key = L"plugin:" + item.key;
+    std::wstring label = item.tip.substr(0, item.tip.find_first_of(L"\r\n"));
+    if (label.empty()) label = item.text;
+    if (label.empty()) label = item.key;
+    if (label.size() > 48) label = label.substr(0, 47) + L"\x2026";
+    for (size_t at = 0; (at = label.find(L'&', at)) != std::wstring::npos; at += 2) label.insert(at, 1, L'&');
+    auto icons = LoadPluginIcons();
+    bool own = std::any_of(icons.begin(), icons.end(), [&](auto const& row) { return row.first == key; });
+    int place = TrayPlaces::Load().Of(key);
+    HMENU menu = CreatePopupMenu();
+    AppendMenuW(menu, MF_STRING | MF_GRAYED, 0, label.c_str());
+    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    AppendMenuW(menu, MF_STRING | (place == kPlaceDefault || place == kPlaceTray ? MF_CHECKED : 0), kCmdPlace + kPlaceTray, L"Show in the tray");
+    AppendMenuW(menu, MF_STRING | (place == kPlaceOverflow ? MF_CHECKED : 0), kCmdPlace + kPlaceOverflow, L"Move to the overflow");
+    AppendMenuW(menu, MF_STRING | (place == kPlaceHidden ? MF_CHECKED : 0), kCmdPlace + kPlaceHidden, L"Hide");
+    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    AppendMenuW(menu, MF_STRING, kCmdPluginIcon, L"Change icon...");
+    AppendMenuW(menu, MF_STRING | (own ? 0 : MF_GRAYED), kCmdPluginIconBack, L"Put back original icon");
+    int cmd = RunMenu(wnd, menu);
+    if (cmd == kCmdPlace + kPlaceTray || cmd == kCmdPlace + kPlaceOverflow || cmd == kCmdPlace + kPlaceHidden) {
+        PlaceTrayIcon(wnd, key, cmd - kCmdPlace);
+    } else if (cmd == kCmdPluginIcon) {
+        std::wstring file = PickPluginIcon(wnd);
+        if (file.empty()) return;
+        SavePluginIcon(key, file);
+        PluginIconsChanged(wnd);
+    } else if (cmd == kCmdPluginIconBack) {
+        SavePluginIcon(key, L"");
+        PluginIconsChanged(wnd);
     }
 }
 
@@ -45435,10 +51769,25 @@ void BarMenu(HWND wnd, bool fromClock) {
     std::vector<std::wstring> trayKeys, knownKeys;
     std::vector<int> trayNow;
     HMENU icons = nullptr;
-    if (g_settings.tray && !g_trayAll.empty()) {
+    if (g_settings.tray && (!g_trayAll.empty() || !g_pluginItems.empty())) {
         icons = CreatePopupMenu();
         TrayPlaces places = TrayPlaces::Load();
         HMENU each = CreatePopupMenu();
+        // Plugin items first: in the tray, or in the overflow.
+        for (auto const& item : g_pluginItems) {
+            std::wstring key = L"plugin:" + item.key;
+            if (std::find(trayKeys.begin(), trayKeys.end(), key) != trayKeys.end()) continue;
+            int place = places.Of(key) == kPlaceDefault ? kPlaceTray : places.Of(key);
+            std::wstring label = item.tip.substr(0, item.tip.find_first_of(L"\r\n"));
+            if (label.empty()) label = item.text.empty() ? item.key : item.text;
+            if (label.size() > 48) label = label.substr(0, 47) + L"\x2026";
+            for (size_t at = 0; (at = label.find(L'&', at)) != std::wstring::npos; at += 2) label.insert(at, 1, L'&');
+            AppendMenuW(icons, MF_STRING | (place == kPlaceTray ? MF_CHECKED : 0), kCmdTrayToggle + trayKeys.size(),
+                        (label + (place == kPlaceHidden ? L"\t(hidden)" : L"")).c_str());
+            trayKeys.push_back(key);
+            trayNow.push_back(place);
+        }
+        if (!g_pluginItems.empty() && !g_trayAll.empty()) AppendMenuW(icons, MF_SEPARATOR, 0, nullptr);
         for (auto const& icon : g_trayAll) {
             std::wstring key = HiddenIconKey(icon);
             if (std::find(trayKeys.begin(), trayKeys.end(), key) != trayKeys.end()) continue;
@@ -45521,6 +51870,8 @@ void BarMenu(HWND wnd, bool fromClock) {
 bool Hides() { return g_settings.autoHide != g_hideFlip || g_settings.shy; }
 void ShyApply(HWND wnd);
 
+void ArriveApply(HWND wnd);
+
 void PlaceBar(HWND wnd) {
     RECT r = BarRect(g_slide > 0 || !Hides());
     if (g_appBar) {
@@ -45541,9 +51892,20 @@ void PlaceBar(HWND wnd) {
         r = abd.rc;
     }
     if (CssActive()) r = CssBody(r);  // a YASB theme's bar floats inside the space it reserves
+    // Logged when it moves (Tourne saw the bar's hit spots a pixel off after a screen snip).
+    RECT was{};
+    GetWindowRect(wnd, &was);
+    if (!EqualRect(&was, &r))
+        Wh_Log(L"Bar placed at %d,%d to %d,%d (was %d,%d to %d,%d)", r.left, r.top, r.right, r.bottom, was.left, was.top,
+               was.right, was.bottom);
     SetWindowPos(wnd, g_underFullscreen ? HWND_BOTTOM : HWND_TOPMOST, r.left, r.top, r.right - r.left, r.bottom - r.top,
                  SWP_NOACTIVATE | SWP_SHOWWINDOW);
     if (Hides() && (g_slide < 1 || g_edgeHint)) ShyApply(wnd);  // midway, or the glow at the edge
+    if (BarArrival& a = g_active->arrive; a.running && a.slide) {
+        // Placed again while a new screen's bar slides in: it goes on to (and ends at) the new place.
+        a.home = {r.left, r.top};
+        ArriveApply(wnd);
+    }
 }
 
 void SetAppBar(HWND wnd, bool on) {
@@ -45820,6 +52182,9 @@ void HideSystemTaskbar(HWND wnd, bool hide) {
 //     database (wpndatabase.db, through Windows' own winsqlite3.dll, as System Icons reads it);
 //   - each phone app's name and icon: Phone Link's phoneapps.db, so a notification shows as Discord or
 //     Messages with its own icon, not as Phone Link.
+// With Tourne holding the phone instead (phone-map.cpp, phone-ancs.cpp), only Tourne's own notifications count,
+// and the phone is still known by name with Phone Link unlinked or gone (kept in HKCU\Software\Tourne\StartMenu
+// while it's still paired).
 // On a thread of its own when the Start menu opens. Idle cost: none.
 
 constexpr wchar_t kPhoneLinkPackage[] = L"Microsoft.YourPhone_8wekyb3d8bbwe";
@@ -45836,6 +52201,7 @@ std::wstring PhoneLower(std::wstring s) {
 struct PhoneNote {
     std::wstring app, package, title, body;
     long long when = 0;  // FILETIME
+    std::wstring aumid, tag, group;  // which of Windows' notifications it is (to clear it, as the centre does)
 };
 
 struct PhoneInfo {
@@ -45845,6 +52211,7 @@ struct PhoneInfo {
     bool connected = false;
     int unread = 0;
     std::vector<PhoneNote> notes;
+    bool read = false;  // (PhoneNow: it has been read at least once)
 };
 
 namespace phonedb {
@@ -45915,8 +52282,9 @@ std::wstring Wide(unsigned char const* s) {
 }
 
 // Each row of a read-only query (the file left as it is: Phone Link and Windows keep writing it).
+// bind: the text for the statement's ?1, if it has one (never put into the SQL itself).
 template <typename Row>
-bool Query(std::wstring const& file, char const* sql, Row row) {
+bool Query(std::wstring const& file, char const* sql, Row row, std::string const* bind = nullptr) {
     auto* api = Load();
     if (!api || GetFileAttributesW(file.c_str()) == INVALID_FILE_ATTRIBUTES) return false;
     std::wstring uri = L"file:" + file;
@@ -45929,10 +52297,10 @@ bool Query(std::wstring const& file, char const* sql, Row row) {
     }
     Stmt* stmt = nullptr;
     bool ok = api->prepare(db, sql, -1, &stmt, nullptr) == 0;
-    if (ok) {
+    if (ok && bind) ok = api->bindText(stmt, 1, bind->c_str(), (int)bind->size(), (void*)-1) == 0;  // (SQLITE_TRANSIENT)
+    if (ok)
         while (api->step(stmt) == kRow) row(api, stmt);
-        api->finalize(stmt);
-    }
+    if (stmt) api->finalize(stmt);
     api->close(db);
     return ok;
 }
@@ -45981,7 +52349,71 @@ std::wstring PhoneJsonText(std::wstring const& text, std::wstring const& key, si
     return out;
 }
 
-// The linked phone: the device entry that isn't this PC (Cross Device's, else Phone Link's own copy).
+// The phone's Bluetooth device (Classic or LE), by its name: whether Windows has it paired, and its battery and
+// whether it's connected, as Settings, Bluetooth & devices shows them. False: none by that name.
+bool PhoneBluetoothDevice(std::wstring const& name, int* battery, bool* connected) {
+    if (name.empty()) return false;
+    using GetListSize = CONFIGRET(WINAPI*)(PULONG, PCWSTR, ULONG);
+    using GetList = CONFIGRET(WINAPI*)(PCWSTR, PZZWSTR, ULONG, ULONG);
+    using Locate = CONFIGRET(WINAPI*)(PDEVINST, DEVINSTID_W, ULONG);
+    using GetProperty = CONFIGRET(WINAPI*)(DEVINST, const DEVPROPKEY*, DEVPROPTYPE*, PBYTE, PULONG, ULONG);
+    static HMODULE lib = LoadLibraryExW(L"cfgmgr32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (!lib) return false;
+    auto listSize = (GetListSize)(void*)GetProcAddress(lib, "CM_Get_Device_ID_List_SizeW");
+    auto list = (GetList)(void*)GetProcAddress(lib, "CM_Get_Device_ID_ListW");
+    auto locate = (Locate)(void*)GetProcAddress(lib, "CM_Locate_DevNodeW");
+    auto property = (GetProperty)(void*)GetProcAddress(lib, "CM_Get_DevNode_PropertyW");
+    if (!listSize || !list || !locate || !property) return false;
+    constexpr DEVPROPKEY kName{{0xa45c254e, 0xdf1c, 0x4efd, {0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0}}, 14};  // FriendlyName
+    constexpr DEVPROPKEY kBattery{{0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
+    constexpr DEVPROPKEY kConnected{{0x83da6326, 0x97a6, 0x4088, {0x94, 0x53, 0xa1, 0x92, 0x3f, 0x57, 0x3b, 0x29}}, 15};
+    bool found = false;
+    // Every node by that name (an iPhone has a Classic and an LE one, and only some carry the battery): the
+    // battery from whichever has it, connected if any is.
+    for (PCWSTR bus : {L"BTHLE", L"BTHENUM"}) {
+        ULONG size = 0;
+        if (listSize(&size, bus, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS || !size) continue;
+        std::vector<WCHAR> ids(size);
+        if (list(bus, ids.data(), size, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS) continue;
+        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
+            DEVINST node = 0;
+            if (locate(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) continue;
+            WCHAR friendly[256] = L"";
+            ULONG bytes = sizeof(friendly);
+            DEVPROPTYPE type = 0;
+            if (property(node, &kName, &type, (PBYTE)friendly, &bytes, 0) != CR_SUCCESS || name != friendly) continue;
+            found = true;
+            BYTE level = 0;
+            bytes = sizeof(level);
+            if (battery && *battery < 0 && property(node, &kBattery, &type, &level, &bytes, 0) == CR_SUCCESS && type == DEVPROP_TYPE_BYTE)
+                *battery = level;
+            DEVPROP_BOOLEAN on = DEVPROP_FALSE;
+            bytes = sizeof(on);
+            if (connected && property(node, &kConnected, &type, (PBYTE)&on, &bytes, 0) == CR_SUCCESS && on == DEVPROP_TRUE)
+                *connected = true;
+        }
+    }
+    return found;
+}
+
+// The phone as Tourne last saw it linked (HKCU\Software\Tourne\StartMenu: PhoneName, PhoneOs, PhoneModel).
+constexpr wchar_t kPhoneRecordKey[] = L"Software\\Tourne\\StartMenu";
+
+std::wstring PhoneRecord(PCWSTR value) {
+    WCHAR text[256] = L"";
+    DWORD size = sizeof(text);
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneRecordKey, value, RRF_RT_REG_SZ, nullptr, text, &size) != ERROR_SUCCESS) return {};
+    return text;
+}
+
+void KeepPhoneRecord(PhoneInfo const& info) {
+    for (auto [value, text] : {std::pair{L"PhoneName", &info.name}, std::pair{L"PhoneOs", &info.os}, std::pair{L"PhoneModel", &info.model}})
+        if (PhoneRecord(value) != *text)
+            RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneRecordKey, value, REG_SZ, text->c_str(), (DWORD)((text->size() + 1) * sizeof(WCHAR)));
+}
+
+// The linked phone: the device entry that isn't this PC (Cross Device's, else Phone Link's own copy). Without one
+// (Phone Link unlinked or removed), the phone Tourne last saw linked, while Windows still has it paired.
 void ReadPhoneIdentity(PhoneInfo& info) {
     std::wstring base = PhoneLocalAppData() + L"\\Packages\\";
     for (PCWSTR package : {L"MicrosoftWindows.CrossDevice_cw5n1h2txyewy", L"Microsoft.YourPhone_8wekyb3d8bbwe"}) {
@@ -45997,50 +52429,21 @@ void ReadPhoneIdentity(PhoneInfo& info) {
             info.os = os + L" " + PhoneJsonText(text, L"OsVersion", at, next);
             info.name = PhoneJsonText(text, L"DisplayName", at, next);
             info.model = PhoneJsonText(text, L"ModelName", at, next);
+            if (!info.name.empty()) KeepPhoneRecord(info);
             return;
         }
     }
+    std::wstring name = PhoneRecord(L"PhoneName");
+    if (name.empty() || !PhoneBluetoothDevice(name, nullptr, nullptr)) return;
+    info.linked = true;
+    info.name = name;
+    info.os = PhoneRecord(L"PhoneOs");
+    info.model = PhoneRecord(L"PhoneModel");
 }
 
-// Its Bluetooth device, by name: the battery and whether it's connected, as Windows keeps them.
+// Its battery and whether it's connected.
 void ReadPhoneBluetooth(PhoneInfo& info) {
-    if (info.name.empty()) return;
-    using GetListSize = CONFIGRET(WINAPI*)(PULONG, PCWSTR, ULONG);
-    using GetList = CONFIGRET(WINAPI*)(PCWSTR, PZZWSTR, ULONG, ULONG);
-    using Locate = CONFIGRET(WINAPI*)(PDEVINST, DEVINSTID_W, ULONG);
-    using GetProperty = CONFIGRET(WINAPI*)(DEVINST, const DEVPROPKEY*, DEVPROPTYPE*, PBYTE, PULONG, ULONG);
-    static HMODULE lib = LoadLibraryExW(L"cfgmgr32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (!lib) return;
-    auto listSize = (GetListSize)(void*)GetProcAddress(lib, "CM_Get_Device_ID_List_SizeW");
-    auto list = (GetList)(void*)GetProcAddress(lib, "CM_Get_Device_ID_ListW");
-    auto locate = (Locate)(void*)GetProcAddress(lib, "CM_Locate_DevNodeW");
-    auto property = (GetProperty)(void*)GetProcAddress(lib, "CM_Get_DevNode_PropertyW");
-    if (!listSize || !list || !locate || !property) return;
-    constexpr DEVPROPKEY kName{{0xa45c254e, 0xdf1c, 0x4efd, {0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0}}, 14};  // FriendlyName
-    constexpr DEVPROPKEY kBattery{{0x104ea319, 0x6ee2, 0x4701, {0xbd, 0x47, 0x8d, 0xdb, 0xf4, 0x25, 0xbb, 0xe5}}, 2};
-    constexpr DEVPROPKEY kConnected{{0x83da6326, 0x97a6, 0x4088, {0x94, 0x53, 0xa1, 0x92, 0x3f, 0x57, 0x3b, 0x29}}, 15};
-    for (PCWSTR bus : {L"BTHLE", L"BTHENUM"}) {
-        ULONG size = 0;
-        if (listSize(&size, bus, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS || !size) continue;
-        std::vector<WCHAR> ids(size);
-        if (list(bus, ids.data(), size, CM_GETIDLIST_FILTER_ENUMERATOR | CM_GETIDLIST_FILTER_PRESENT) != CR_SUCCESS) continue;
-        for (PCWSTR id = ids.data(); *id; id += wcslen(id) + 1) {
-            DEVINST node = 0;
-            if (locate(&node, (DEVINSTID_W)id, CM_LOCATE_DEVNODE_NORMAL) != CR_SUCCESS) continue;
-            WCHAR name[256] = L"";
-            ULONG bytes = sizeof(name);
-            DEVPROPTYPE type = 0;
-            if (property(node, &kName, &type, (PBYTE)name, &bytes, 0) != CR_SUCCESS || info.name != name) continue;
-            BYTE battery = 0;
-            bytes = sizeof(battery);
-            if (property(node, &kBattery, &type, &battery, &bytes, 0) != CR_SUCCESS || type != DEVPROP_TYPE_BYTE) continue;
-            info.battery = battery;
-            DEVPROP_BOOLEAN on = DEVPROP_FALSE;
-            bytes = sizeof(on);
-            info.connected = property(node, &kConnected, &type, (PBYTE)&on, &bytes, 0) == CR_SUCCESS && on == DEVPROP_TRUE;
-            return;
-        }
-    }
+    PhoneBluetoothDevice(info.name, &info.battery, &info.connected);
 }
 
 // Phone Link's data folder for the phone: the one written last.
@@ -46078,6 +52481,79 @@ std::vector<std::pair<std::wstring, std::wstring>> PhoneApps() {
     return apps;
 }
 
+// Emoji and fancy letters as the pixel fonts can draw them: a face or a heart as its plain symbol (":)", "<3"),
+// fancy letters (maths bold or script, fullwidth) as plain ones, other emoji as "*"; the joiners and colour/skin marks between them
+// dropped. Everything else as it was.
+std::wstring PlainSymbols(std::wstring const& s) {
+    struct Swap {
+        char32_t from, to;  // a range
+        PCWSTR as;
+    };
+    static Swap const swaps[] = {
+        {0x2764, 0x2764, L"<3"}, {0x2665, 0x2665, L"<3"}, {0x1F493, 0x1F49F, L"<3"}, {0x1F9E1, 0x1F9E1, L"<3"},
+        {0x1F49A, 0x1F49C, L"<3"}, {0x1F5A4, 0x1F5A4, L"<3"}, {0x1F90D, 0x1F90E, L"<3"}, {0x1FA75, 0x1FA77, L"<3"},
+        {0x1F60D, 0x1F60D, L"<3"}, {0x1F970, 0x1F970, L"<3"}, {0x1F618, 0x1F618, L":*"}, {0x1F617, 0x1F61A, L":*"},
+        {0x1F602, 0x1F602, L"xD"}, {0x1F923, 0x1F923, L"xD"}, {0x1F606, 0x1F606, L"xD"}, {0x1F605, 0x1F605, L"^^'"},
+        {0x1F600, 0x1F601, L":D"}, {0x1F603, 0x1F604, L":D"}, {0x1F60A, 0x1F60A, L":)"}, {0x1F642, 0x1F642, L":)"},
+        {0x263A, 0x263A, L":)"}, {0x1F607, 0x1F607, L":)"}, {0x1F609, 0x1F609, L";)"}, {0x1F60E, 0x1F60E, L"B)"},
+        {0x1F61B, 0x1F61D, L":P"}, {0x1F60B, 0x1F60B, L":P"}, {0x1F622, 0x1F622, L":'("}, {0x1F62D, 0x1F62D, L":'("},
+        {0x1F61E, 0x1F61F, L":("}, {0x1F641, 0x1F641, L":("}, {0x2639, 0x2639, L":("}, {0x1F614, 0x1F614, L":("},
+        {0x1F620, 0x1F621, L">:("}, {0x1F62E, 0x1F62F, L":O"}, {0x1F632, 0x1F632, L":O"}, {0x1F610, 0x1F611, L":|"},
+        {0x1F612, 0x1F612, L"-_-"}, {0x1F644, 0x1F644, L"-_-"}, {0x1F634, 0x1F634, L"zzz"}, {0x1F914, 0x1F914, L"hmm"},
+        {0x1F937, 0x1F937, L"shrug"}, {0x1F44D, 0x1F44D, L"(y)"}, {0x1F44E, 0x1F44E, L"(n)"}, {0x1F44B, 0x1F44B, L"o/"},
+        {0x1F64F, 0x1F64F, L"(pray)"}, {0x1F525, 0x1F525, L"(fire)"}, {0x1F480, 0x1F480, L"(skull)"},
+        {0x2620, 0x2620, L"(skull)"}, {0x1F440, 0x1F440, L"(eyes)"}, {0x1F389, 0x1F38A, L"(party)"},
+        {0x1F4AF, 0x1F4AF, L"100"}, {0x2705, 0x2705, L"[v]"}, {0x2714, 0x2714, L"v"}, {0x274C, 0x274C, L"x"},
+        {0x2716, 0x2716, L"x"}, {0x2B50, 0x2B50, L"*"}, {0x1F31F, 0x1F31F, L"*"}, {0x2728, 0x2728, L"*"},
+        {0x1F3B5, 0x1F3B6, L"(music)"}, {0x1F4F7, 0x1F4F8, L"(photo)"}, {0x26A0, 0x26A0, L"(!)"}, {0x2757, 0x2757, L"!"},
+        {0x2753, 0x2753, L"?"}, {0x2190, 0x2190, L"<-"}, {0x2192, 0x2192, L"->"}, {0x2191, 0x2191, L"^"}, {0x2193, 0x2193, L"v"},
+        {0x2194, 0x2194, L"<->"}, {0x21A9, 0x21AA, L"<-"}, {0x2022, 0x2022, L"\u00B7"}, {0x2023, 0x2023, L">"},
+        {0x2018, 0x2019, L"'"}, {0x201C, 0x201D, L"\""}, {0x2013, 0x2014, L"-"}, {0x00A0, 0x00A0, L" "},
+    };
+    std::wstring out;
+    out.reserve(s.size());
+    for (size_t i = 0; i < s.size(); i++) {
+        char32_t c = s[i];
+        size_t n = 1;
+        if (c >= 0xD800 && c <= 0xDBFF && i + 1 < s.size() && s[i + 1] >= 0xDC00 && s[i + 1] <= 0xDFFF) {
+            c = 0x10000 + ((c - 0xD800) << 10) + (s[i + 1] - 0xDC00);
+            n = 2;
+        }
+        i += n - 1;
+        // Marks between and after emoji: colour (FE0F), joiner (200D), skin tones, keycap, tags.
+        if (c == 0xFE0E || c == 0xFE0F || c == 0x200D || c == 0x20E3 || (c >= 0x1F3FB && c <= 0x1F3FF) || (c >= 0xE0020 && c <= 0xE007F))
+            continue;
+        PCWSTR swapped = nullptr;
+        for (auto const& w : swaps)
+            if (c >= w.from && c <= w.to) {
+                swapped = w.as;
+                break;
+            }
+        if (swapped) {
+            // (a word, not glued to the next one: "thanks<3" reads as "thanks <3")
+            if (wcslen(swapped) > 1 && !out.empty() && out.back() != L' ' && iswalnum(out.back())) out += L' ';
+            out += swapped;
+            continue;
+        }
+        if (c >= 0x1D400 && c <= 0x1D6A3) {  // fancy letters: bold, italic, script, fraktur, double-struck...
+            int k = (int)((c - 0x1D400) % 52);
+            out += (wchar_t)(k < 26 ? L'A' + k : L'a' + k - 26);
+        } else if (c >= 0x1D7CE && c <= 0x1D7FF) {  // and their digits
+            out += (wchar_t)(L'0' + (c - 0x1D7CE) % 10);
+        } else if (c >= 0xFF01 && c <= 0xFF5E) {  // fullwidth
+            out += (wchar_t)(c - 0xFEE0);
+        } else if (c >= 0x1F1E6 && c <= 0x1F1FF) {  // a flag's letters
+            continue;
+        } else if ((c >= 0x1F000 && c <= 0x1FAFF) || (c >= 0x2600 && c <= 0x27BF) || (c >= 0x2B00 && c <= 0x2BFF) ||
+                   (c >= 0x2190 && c <= 0x21FF) || (c >= 0x2300 && c <= 0x23FF) || (c >= 0xE000 && c <= 0xF8FF) || c > 0xFFFF) {
+            if (out.empty() || out.back() != L'*') out += L'*';
+        } else {
+            out += (wchar_t)c;
+        }
+    }
+    return out;
+}
+
 std::wstring PhoneXmlText(std::wstring_view xml) {
     std::wstring out;
     for (size_t i = 0; i < xml.size(); i++) {
@@ -46106,6 +52582,51 @@ std::wstring PhoneXmlText(std::wstring_view xml) {
 }
 
 // A phone app's name: as Phone Link lists it, else its package's last part ("com.google.Gmail": Gmail).
+// Where a phone app's notification opens on this PC, so it can be answered there: Apple's notification service
+// lets the PC only clear one or press its own one or two buttons, never reply. The app itself when it's installed
+// here (its link scheme is registered), else its website; empty for an app with neither (the centre opens then).
+std::wstring PhoneAppOnPc(std::wstring const& package, std::wstring const& name) {
+    struct Place {
+        std::initializer_list<PCWSTR> words;  // in its bundle id or name
+        PCWSTR app, web;                      // its own link (scheme first), its site
+    };
+    static Place const places[] = {
+        {{L"discord", L"hammerandchisel"}, L"discord://-/channels/@me", L"https://discord.com/channels/@me"},
+        {{L"slack"}, L"slack://open", L"https://app.slack.com"},
+        {{L"whatsapp"}, L"whatsapp://", L"https://web.whatsapp.com"},
+        {{L"telegram", L"ph.telegra"}, L"tg://", L"https://web.telegram.org"},
+        {{L"spotify"}, L"spotify:", L"https://open.spotify.com"},
+        {{L"teams"}, L"msteams:", L"https://teams.microsoft.com"},
+        {{L"gmail"}, nullptr, L"https://mail.google.com"},
+        {{L"outlook"}, L"outlookmail:", L"https://outlook.live.com/mail"},
+        {{L"reddit"}, nullptr, L"https://www.reddit.com/notifications"},
+        {{L"instagram"}, nullptr, L"https://www.instagram.com/direct/inbox"},
+        {{L"messenger", L"facebook"}, nullptr, L"https://www.messenger.com"},
+        {{L"twitter", L"atebits"}, nullptr, L"https://x.com/notifications"},
+        {{L"github"}, nullptr, L"https://github.com/notifications"},
+        {{L"youtube"}, nullptr, L"https://www.youtube.com/feed/subscriptions"},
+        {{L"twitch"}, nullptr, L"https://www.twitch.tv"},
+        {{L"steam", L"valvesoftware"}, L"steam://open/friends", L"https://steamcommunity.com"},
+    };
+    std::wstring text = PhoneLower(package + L" " + name);
+    for (auto const& place : places) {
+        bool match = false;
+        for (PCWSTR w : place.words) match = match || text.find(w) != std::wstring::npos;
+        if (!match) continue;
+        if (place.app) {
+            std::wstring scheme(place.app, wcschr(place.app, L':') - place.app);
+            HKEY key;
+            if (RegOpenKeyExW(HKEY_CLASSES_ROOT, scheme.c_str(), 0, KEY_READ, &key) == ERROR_SUCCESS) {
+                bool registered = RegQueryValueExW(key, L"URL Protocol", nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS;
+                RegCloseKey(key);
+                if (registered) return place.app;
+            }
+        }
+        return place.web;
+    }
+    return {};
+}
+
 std::wstring PhoneAppName(std::wstring const& package, std::vector<std::pair<std::wstring, std::wstring>> const& apps) {
     for (auto const& [p, name] : apps)
         if (p == package && !name.empty()) return name;
@@ -46123,14 +52644,16 @@ std::wstring PhoneRegisteredName(std::wstring const& aumid) {
     return name;
 }
 
-// The phone's notifications, newest first: Phone Link's toasts and its badge (the unread count), or Tourne's own
-// (phone-ancs.cpp, when Tourne holds the phone; all of them count as new while they're in the centre).
-void ReadPhoneNotes(PhoneInfo& info, int most) {
+// The phone's notifications, newest first: Phone Link's toasts and its badge (the unread count), and Tourne's own
+// (phone-ancs.cpp; all of them count as new while they're in the centre). own: Tourne holds the phone, so only
+// Tourne's (Phone Link's left over would show twice, and its old badge would stand for the count).
+void ReadPhoneNotes(PhoneInfo& info, int most, bool own) {
     std::wstring db = PhoneLocalAppData() + L"\\Microsoft\\Windows\\Notifications\\wpndatabase.db";
     auto apps = PhoneApps();
     std::string sql =
-        "SELECT n.Type, n.ArrivalTime, n.Payload, h.PrimaryId FROM Notification n JOIN NotificationHandler h ON h.RecordId = n.HandlerId"
-        " WHERE (h.PrimaryId LIKE 'Microsoft.YourPhone%' OR h.PrimaryId LIKE 'Tourne.Phone.%') AND (n.Type = 'badge' OR n.Type = 'toast')"
+        "SELECT n.Type, n.ArrivalTime, n.Payload, h.PrimaryId, n.Tag, n.[Group] FROM Notification n JOIN NotificationHandler h ON h.RecordId = n.HandlerId"
+        + std::string(own ? " WHERE h.PrimaryId LIKE 'Tourne.Phone.%' AND n.Type = 'toast'"
+                          : " WHERE (h.PrimaryId LIKE 'Microsoft.YourPhone%' OR h.PrimaryId LIKE 'Tourne.Phone.%') AND (n.Type = 'badge' OR n.Type = 'toast')") +
         " ORDER BY n.ArrivalTime DESC";
     bool badge = false;
     int ours = 0;
@@ -46151,6 +52674,9 @@ void ReadPhoneNotes(PhoneInfo& info, int most) {
         if ((int)info.notes.size() >= most) return;
         PhoneNote note;
         note.when = api->int64(stmt, 1);
+        note.aumid = handler;
+        note.tag = phonedb::Wide(api->text(stmt, 4));
+        note.group = phonedb::Wide(api->text(stmt, 5));
         std::vector<std::wstring> texts;
         for (size_t at = 0; (at = xml.find(L"<text", at)) != std::wstring::npos;) {
             size_t open = xml.find(L'>', at), close = xml.find(L"</text>", at);
@@ -46188,38 +52714,55 @@ void ReadPhoneNotes(PhoneInfo& info, int most) {
         if (note.app.empty()) note.app = L"Phone Link";
         if (!texts.empty()) note.title = texts[0];
         for (size_t i = 1; i < texts.size(); i++) note.body += (note.body.empty() ? L"" : L" ") + texts[i];
+        note.title = PlainSymbols(note.title);
+        note.body = PlainSymbols(note.body);
         if (!note.title.empty() || !note.body.empty()) info.notes.push_back(note);
     });
     if (!badge) info.unread = ours;
 }
 
-PhoneInfo ReadPhoneInfo(int notes) {
+PhoneInfo ReadPhoneInfo(int notes, bool own = false) {
     PhoneInfo info;
     ReadPhoneIdentity(info);
     if (!info.linked) return info;
     ReadPhoneBluetooth(info);
-    ReadPhoneNotes(info, notes);
+    ReadPhoneNotes(info, notes, own);
     return info;
+}
+
+// Phone apps' icons made so far, by package and size (null: Phone Link had none then, asked again in a minute).
+struct PhoneMadeIcon {
+    HICON icon = nullptr;
+    ULONGLONG when = 0;
+};
+std::map<std::wstring, PhoneMadeIcon> g_phoneAppIcons;
+
+// Let go of them all (the scale or the colours changed: they're made again as they're drawn).
+void ForgetPhoneAppIcons() {
+    for (auto& [key, made] : g_phoneAppIcons)
+        if (made.icon) DestroyIcon(made.icon);
+    g_phoneAppIcons.clear();
 }
 
 // A phone app's icon from Phone Link's copy (a PNG), at a size; kept for the next paint. Null: none.
 HICON PhoneAppIcon(std::wstring const& package, int size) {
-    static std::map<std::wstring, HICON> made;
     std::wstring key = package + L"|" + std::to_wstring(size);
-    auto it = made.find(key);
-    if (it != made.end()) return it->second;
+    auto it = g_phoneAppIcons.find(key);
+    if (it != g_phoneAppIcons.end() && (it->second.icon || GetTickCount64() - it->second.when < 60000)) return it->second.icon;
     HICON icon = nullptr;
     std::string png;
     std::wstring folder = PhoneDataFolder();
+    std::string lower = phonedb::Utf8(package);
     if (!folder.empty())
-        phonedb::Query(folder + L"phoneapps.db", ("SELECT blob FROM phone_apps WHERE lower(package_name) = '" +
-                                                  phonedb::Utf8(package) + "'").c_str(),
-                       [&](phonedb::Api const* api, phonedb::Stmt* stmt) {
-                           auto* b = (char const*)api->blob(stmt, 0);
-                           if (b && png.empty()) png.assign(b, (size_t)api->bytes(stmt, 0));
-                       });
+        phonedb::Query(
+            folder + L"phoneapps.db", "SELECT blob FROM phone_apps WHERE lower(package_name) = ?1",
+            [&](phonedb::Api const* api, phonedb::Stmt* stmt) {
+                auto* b = (char const*)api->blob(stmt, 0);
+                if (b && png.empty()) png.assign(b, (size_t)api->bytes(stmt, 0));
+            },
+            &lower);
     IWICImagingFactory* factory = nullptr;
-    if (!png.empty() && package.find(L'\'') == std::wstring::npos &&
+    if (!png.empty() &&
         SUCCEEDED(CoCreateInstance(kPhoneWicFactory, nullptr, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&factory))) {
         IStream* stream = SHCreateMemStream((BYTE const*)png.data(), (UINT)png.size());
         IWICBitmapDecoder* decoder = nullptr;
@@ -46250,7 +52793,7 @@ HICON PhoneAppIcon(std::wstring const& package, int size) {
         if (stream) stream->Release();
         factory->Release();
     }
-    made[key] = icon;
+    g_phoneAppIcons[key] = {icon, GetTickCount64()};
     return icon;
 }
 
@@ -46259,16 +52802,18 @@ std::mutex g_phoneLock;
 PhoneInfo g_phone;
 bool g_phoneRead = false;      // g_phone has been read once
 std::atomic<bool> g_phoneReading{false};
+HANDLE g_phoneThread = nullptr;  // the last read's (waited for before this code goes: PhoneReadWait)
 
 struct PhoneJob {
     HWND wnd;
     UINT done;
     int notes;
+    bool own;
 };
 
 DWORD WINAPI PhoneThread(LPVOID param) {
     std::unique_ptr<PhoneJob> job((PhoneJob*)param);
-    PhoneInfo info = ReadPhoneInfo(job->notes);
+    PhoneInfo info = ReadPhoneInfo(job->notes, job->own);
     {
         std::lock_guard<std::mutex> lock(g_phoneLock);
         g_phone = std::move(info);
@@ -46279,36 +52824,140 @@ DWORD WINAPI PhoneThread(LPVOID param) {
     return 0;
 }
 
-void ReadPhoneSoon(HWND wnd, UINT done, int notes) {
+// own: Tourne holds the phone (ReadPhoneNotes).
+void ReadPhoneSoon(HWND wnd, UINT done, int notes, bool own) {
     if (g_phoneReading.exchange(true)) return;
-    auto* job = new PhoneJob{wnd, done, notes};
-    if (HANDLE thread = CreateThread(nullptr, 0, PhoneThread, job, 0, nullptr)) {
-        SetThreadPriority(thread, THREAD_PRIORITY_BELOW_NORMAL);
-        CloseHandle(thread);
+    if (g_phoneThread) {
+        WaitForSingleObject(g_phoneThread, INFINITE);  // (it has said it's done: only its last instructions left)
+        CloseHandle(g_phoneThread);
+        g_phoneThread = nullptr;
+    }
+    auto* job = new PhoneJob{wnd, done, notes, own};
+    if ((g_phoneThread = CreateThread(nullptr, 0, PhoneThread, job, 0, nullptr))) {
+        SetThreadPriority(g_phoneThread, THREAD_PRIORITY_BELOW_NORMAL);
     } else {
         delete job;
         g_phoneReading = false;
     }
 }
 
-PhoneInfo PhoneNow() {
-    std::lock_guard<std::mutex> lock(g_phoneLock);
-    return g_phone;
+// The read under way finished before this code goes (the Start menu's end).
+void PhoneReadWait() {
+    if (!g_phoneThread) return;
+    WaitForSingleObject(g_phoneThread, 10000);
+    CloseHandle(g_phoneThread);
+    g_phoneThread = nullptr;
 }
 
-// Whether a phone is linked, for the layout before the first read is back (the small file only).
+PhoneInfo PhoneNow() {
+    std::lock_guard<std::mutex> lock(g_phoneLock);
+    PhoneInfo info = g_phone;
+    info.read = g_phoneRead;
+    return info;
+}
+
+// Whether a phone is linked: the last read's answer, else (before the first read is back) the small file's,
+// looked at again after half a minute so a phone linked since isn't missed.
 bool PhoneLinked() {
     {
         std::lock_guard<std::mutex> lock(g_phoneLock);
         if (g_phoneRead) return g_phone.linked;
     }
-    static int known = -1;
-    if (known < 0) {
+    static bool known = false;
+    static ULONGLONG lookedAt = 0;
+    if (!lookedAt || GetTickCount64() - lookedAt > 30000) {
         PhoneInfo info;
         ReadPhoneIdentity(info);
         known = info.linked;
+        lookedAt = GetTickCount64();
     }
-    return known != 0;
+    return known;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Phone notifications you cleared (middle click, Clear, Clear all): kept so they don't come back. The phone sends
+// every one it still has again each time it connects (signing in, a restart, Tourne or Explorer starting again),
+// and phone-ancs.cpp shows only those not listed here. Each is known by its content (PhoneNoteKey: the toast's
+// tag), not by the phone's number for it, which starts again with every connection. The newest 400 are kept,
+// in HKCU\Software\Tourne\Phone (ClearedNotes).
+
+constexpr wchar_t kPhoneClearedKey[] = L"Software\\Tourne\\Phone";
+constexpr size_t kPhoneClearedMost = 400;
+
+// A notification's key from what it says: the app, its words and the phone's time for it ("p" + 16 hex digits).
+std::wstring PhoneNoteKey(std::wstring const& app, std::wstring const& title, std::wstring const& subtitle,
+                          std::wstring const& message, std::wstring const& when) {
+    unsigned long long h = 1469598103934665603ull;
+    for (auto const* part : {&app, &title, &subtitle, &message, &when}) {
+        for (wchar_t c : *part) h = (h ^ (unsigned)c) * 1099511628211ull;
+        h = (h ^ 0x1F) * 1099511628211ull;  // (between parts)
+    }
+    wchar_t out[24];
+    swprintf(out, 24, L"p%016llx", h);
+    return out;
+}
+
+std::vector<std::wstring> PhoneClearedNotes() {
+    std::vector<std::wstring> out;
+    DWORD bytes = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &bytes) != ERROR_SUCCESS || !bytes)
+        return out;
+    std::vector<wchar_t> list(bytes / sizeof(wchar_t) + 2, 0);
+    bytes = (DWORD)(list.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", RRF_RT_REG_MULTI_SZ, nullptr, list.data(), &bytes) != ERROR_SUCCESS)
+        return out;
+    for (const wchar_t* p = list.data(); *p; p += wcslen(p) + 1) out.push_back(p);
+    return out;
+}
+
+bool PhoneNoteCleared(std::wstring const& key) {
+    auto list = PhoneClearedNotes();
+    return std::find(list.begin(), list.end(), key) != list.end();
+}
+
+// Cleared: noted (only Tourne's own phone notifications have such keys; anything else is left out).
+void PhoneNoteClear(std::wstring const& aumid, std::wstring const& tag) {
+    if (!aumid.starts_with(L"Tourne.Phone.") || tag.size() != 17 || tag[0] != L'p') return;
+    auto list = PhoneClearedNotes();
+    if (std::find(list.begin(), list.end(), tag) != list.end()) return;
+    list.push_back(tag);
+    if (list.size() > kPhoneClearedMost) list.erase(list.begin(), list.end() - kPhoneClearedMost);
+    std::wstring multi;
+    for (auto const& item : list) multi += item + L'\0';
+    multi += L'\0';
+    RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedNotes", REG_MULTI_SZ, multi.data(), (DWORD)(multi.size() * sizeof(wchar_t)));
+}
+
+// Conversations cleared from the phone pane: hidden until a text newer than the last one then comes
+// (HKCU\Software\Tourne\Phone, ClearedConvos: "key|time of its last text", newest 200).
+std::map<std::wstring, long long> PhoneClearedConvos() {
+    std::map<std::wstring, long long> out;
+    DWORD bytes = 0;
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &bytes) != ERROR_SUCCESS || !bytes)
+        return out;
+    std::vector<wchar_t> list(bytes / sizeof(wchar_t) + 2, 0);
+    bytes = (DWORD)(list.size() * sizeof(wchar_t));
+    if (RegGetValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", RRF_RT_REG_MULTI_SZ, nullptr, list.data(), &bytes) != ERROR_SUCCESS)
+        return out;
+    for (const wchar_t* p = list.data(); *p; p += wcslen(p) + 1) {
+        std::wstring item = p;
+        size_t bar = item.rfind(L'|');
+        if (bar != std::wstring::npos) out[item.substr(0, bar)] = _wtoi64(item.c_str() + bar + 1);
+    }
+    return out;
+}
+
+void PhoneClearConvo(std::wstring const& key, long long when) {
+    auto cleared = PhoneClearedConvos();
+    cleared[key] = when;
+    std::vector<std::pair<long long, std::wstring>> newest;
+    for (auto const& [k, w] : cleared) newest.push_back({w, k});
+    std::sort(newest.rbegin(), newest.rend());
+    if (newest.size() > 200) newest.resize(200);
+    std::wstring multi;
+    for (auto const& [w, k] : newest) multi += k + L"|" + std::to_wstring(w) + L'\0';
+    multi += L'\0';
+    RegSetKeyValueW(HKEY_CURRENT_USER, kPhoneClearedKey, L"ClearedConvos", REG_MULTI_SZ, multi.data(), (DWORD)(multi.size() * sizeof(wchar_t)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46813,6 +53462,7 @@ struct State {
     bool dropped = false;     // the phone closed the notification server's connection
     std::wstring sentHandle;  // the last sent text's handle, and its place, for SendingSuccess/Failure
     size_t sentAt = SIZE_MAX;
+    bool pushing = false;     // a text is being handed to the phone (its place is held outside the lock: no Trim)
 };
 State g;
 HANDLE g_thread;
@@ -46857,6 +53507,19 @@ std::wstring Unescape(std::wstring const& s) {
         out += n == L't' ? L'\t' : n == L'n' ? L'\n' : n == L'r' ? L'\r' : n;
     }
     return out;
+}
+
+// Under g.lock: the oldest let go once there are well over kKept (as the file keeps them), the places of the
+// ones waiting to go moved with them.
+void Trim() {
+    if (g.pushing || g.texts.size() <= kKept + 100) return;
+    size_t drop = g.texts.size() - kKept;
+    g.texts.erase(g.texts.begin(), g.texts.begin() + drop);
+    std::deque<size_t> outbox;
+    for (size_t at : g.outbox)
+        if (at >= drop) outbox.push_back(at - drop);
+    g.outbox = std::move(outbox);
+    g.sentAt = g.sentAt != SIZE_MAX && g.sentAt >= drop ? g.sentAt - drop : SIZE_MAX;
 }
 
 // Under g.lock.
@@ -46916,6 +53579,7 @@ void Load() {
         t.read = f[2] == L"1";
         t.address = Unescape(f[3]);
         t.name = Unescape(f[4]);
+        if (t.address.empty()) t.address = !t.name.empty() ? t.name : L"Unknown sender";
         t.body = Unescape(f[5]);
         g.texts.push_back(std::move(t));
     }
@@ -47178,12 +53842,14 @@ bool Fetch(Session& mas, std::wstring const& handle) {
     if (!p.ok) return true;  // (not one with text: a picture alone)
     Text t;
     t.when = Now();
-    t.address = p.address;
+    // (one whose sender has no number or email is kept under their name, so its conversation still opens)
+    t.address = !p.address.empty() ? p.address : !p.name.empty() ? p.name : L"Unknown sender";
     t.name = p.name;
     t.body = p.body;
     {
         std::lock_guard<std::mutex> lock(g.lock);
         g.texts.push_back(std::move(t));
+        Trim();
         Save();
     }
     Changed();
@@ -47203,12 +53869,14 @@ bool SendQueued(Session& mas) {
             if (at >= g.texts.size()) continue;
             auto const& t = g.texts[at];
             bmsg = MakeBMessage(t.address, t.name, t.body);
+            g.pushing = true;
         }
         std::wstring handle;
         int result = mas.Push(bmsg, &handle);
         {
             std::lock_guard<std::mutex> lock(g.lock);
             // Taken: sent (the phone may still say SendingFailure for it); refused: not sent.
+            g.pushing = false;
             g.texts[at].kind = result == 0 ? L's' : L'f';
             g.sentHandle = handle;
             g.sentAt = at;
@@ -47436,6 +54104,7 @@ bool Send(std::wstring const& address, std::wstring const& name, std::wstring co
         t.read = true;
         g.texts.push_back(t);
         if (t.kind == L'p') g.outbox.push_back(g.texts.size() - 1);
+        Trim();
         Save();
     }
     Changed();
@@ -47620,7 +54289,11 @@ struct Note {
     uint8_t flags = 0, category = 0;
     std::string app;
     std::wstring appName, title, subtitle, message, when, positive, negative;
+    std::wstring key;  // PhoneNoteKey (phone-link.cpp): its toast's tag, the same each time the phone sends it
 };
+
+// Each notification shown, by the phone's number for it: its toast's tag (on the connection's thread only).
+std::map<uint32_t, std::wstring> g_tags;
 
 void Show(Note const& n, bool quiet) {
     std::wstring aumid = AumidFor(n.app);
@@ -47654,7 +54327,7 @@ void Show(Note const& n, bool quiet) {
         winrt::Windows::Data::Xml::Dom::XmlDocument doc;
         doc.LoadXml(xml);
         winrt::Windows::UI::Notifications::ToastNotification toast(doc);
-        toast.Tag(std::to_wstring(n.uid));
+        toast.Tag(n.key);
         toast.Group(kGroup);
         if (quiet) toast.SuppressPopup(true);
         winrt::Windows::UI::Notifications::ToastNotificationManager::CreateToastNotifier(aumid).Show(toast);
@@ -47668,16 +54341,20 @@ void Hide(uint32_t uid, std::wstring const& aumid) {
         wprintf(L"  would take away %u\n", uid);
         return;
     }
+    auto tag = g_tags.find(uid);
+    if (tag == g_tags.end()) return;
     try {
-        winrt::Windows::UI::Notifications::ToastNotificationManager::History().Remove(std::to_wstring(uid), kGroup, aumid);
+        winrt::Windows::UI::Notifications::ToastNotificationManager::History().Remove(tag->second, kGroup, aumid);
     } catch (...) {
     }
+    g_tags.erase(tag);
 }
 
 // Every phone notification shown before (from the apps named so far): the phone sends the ones it still has
 // again when it connects, so the centre matches it.
 void HideAll() {
     if (g_dryRun) return;
+    g_tags.clear();
     HKEY root;
     if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Classes\\AppUserModelId", 0, KEY_READ, &root) != ERROR_SUCCESS) return;
     WCHAR name[256];
@@ -47693,6 +54370,27 @@ void HideAll() {
             winrt::Windows::UI::Notifications::ToastNotificationManager::History().Clear(aumid);
         } catch (...) {
         }
+    }
+}
+
+// Cleared from the phone pane (its right-click), as the notification centre clears one: from Windows' list only;
+// the phone keeps its own, and sends the ones it still has again when it connects next.
+constexpr bool kCanClear = true;
+
+void Clear(std::wstring const& tag, std::wstring const& group, std::wstring const& aumid) {
+    PhoneNoteClear(aumid, tag);  // (so it doesn't come back when the phone connects again)
+    try {
+        winrt::Windows::UI::Notifications::ToastNotificationManager::History().Remove(tag, group, aumid);
+    } catch (...) {
+    }
+}
+
+void ClearApp(std::wstring const& aumid) {
+    try {
+        for (auto const& toast : winrt::Windows::UI::Notifications::ToastNotificationManager::History().GetHistory(aumid))
+            PhoneNoteClear(aumid, std::wstring(toast.Tag()));
+        winrt::Windows::UI::Notifications::ToastNotificationManager::History().Clear(aumid);
+    } catch (...) {
     }
 }
 
@@ -47713,6 +54411,8 @@ State g;
 HANDLE g_stopEvent, g_eventsEvent, g_answerEvent, g_linkEvent;
 HANDLE g_thread;
 std::atomic<int> g_shown{0};  // (for the probe)
+HWND g_tellWnd = nullptr;  // told (g_tellMsg) when notifications came or went, so the phone pane reads them again
+UINT g_tellMsg = 0;
 
 void SetLink(Link link) {
     {
@@ -47789,6 +54489,12 @@ void Handle(GattCharacteristic const& point, Event const& e, std::map<std::strin
     n.when = Timestamp(v[kDate]);
     n.positive = phonemap::FromUtf8(v[kPositiveLabel]);
     n.negative = phonemap::FromUtf8(v[kNegativeLabel]);
+    n.key = PhoneNoteKey(phonemap::FromUtf8(n.app), n.title, n.subtitle, n.message, phonemap::FromUtf8(v[kDate]));
+    // Changed: the one it was goes (its words, so its key, may be new).
+    if (auto old = g_tags.find(e.uid); old != g_tags.end() && old->second != n.key) Hide(e.uid, AumidFor(n.app));
+    // Cleared here before: left cleared, however often the phone sends it again.
+    if (PhoneNoteCleared(n.key)) return;
+    g_tags[e.uid] = n.key;
     Show(n, (e.flags & kPreExisting) != 0 || e.id == kModified);  // (one already there, or changed: no pop-up)
     if (n.category == kIncomingCall) {
         std::lock_guard<std::mutex> lock(g.lock);
@@ -47922,6 +54628,15 @@ DWORD WINAPI Run(LPVOID) {
                         stopping = true;
                         break;
                     }
+                    // Phone Link opened since: it shows the phone's notifications now, so Tourne's go (else each
+                    // shows twice) and Tourne waits for it to end, as before connecting.
+                    if (HANDLE phoneLink = phonemap::PhoneLinkRunning()) {
+                        CloseHandle(phoneLink);
+                        HideAll();
+                        shown.clear();
+                        if (g_tellWnd) PostMessageW(g_tellWnd, g_tellMsg, 0, 0);
+                        break;
+                    }
                     // Buttons clicked: their actions, done on the phone (no answer comes but the notification's going).
                     for (;;) {
                         std::pair<uint32_t, uint8_t> a;
@@ -47952,6 +54667,10 @@ DWORD WINAPI Run(LPVOID) {
                             g.events.pop_front();
                         }
                         if (e.id == kRemoved) {
+                            {
+                                std::lock_guard<std::mutex> lock(g.lock);
+                                g.calls.erase(e.uid);
+                            }
                             if (auto it = shown.find(e.uid); it != shown.end()) {
                                 Hide(e.uid, it->second);
                                 shown.erase(it);
@@ -47961,8 +54680,16 @@ DWORD WINAPI Run(LPVOID) {
                             Handle(point, e, apps, shown);
                         }
                     }
-                    if (g_shown != before || gone)
+                    if (g_shown != before || gone) {
                         phonemap::Log(L"notifications: " + std::to_wstring(g_shown - before) + L" shown, " + std::to_wstring(gone) + L" taken away");
+                        if (g_tellWnd) PostMessageW(g_tellWnd, g_tellMsg, 0, 0);
+                    }
+                }
+                {
+                    // The phone's ids start again when it does: nothing kept for them carries over.
+                    std::lock_guard<std::mutex> lock(g.lock);
+                    g.calls.clear();
+                    g.actions.clear();
                 }
                 data.ValueChanged(dataToken);
                 source.ValueChanged(sourceToken);
@@ -47993,7 +54720,9 @@ DWORD WINAPI Run(LPVOID) {
 ////////////////////////////////////////////////////////////////////////////////
 // For the phone pane.
 
-void Begin() {
+void Begin(HWND tell, UINT message) {
+    g_tellWnd = tell;
+    g_tellMsg = message;
     if (g_thread) return;
     g_stopEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
     g_eventsEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
@@ -48067,11 +54796,15 @@ void Perform(uint32_t uid, uint8_t action) {
 #else
 namespace phoneancs {
 enum class Link { Off, NoPhone, PhoneLink, Away, Ready, Refused };
-inline void Begin() {}
+inline void Begin(HWND, UINT) {}
 inline void End() {}
 inline Link LinkNow() { return Link::Off; }
 inline void Perform(uint32_t, uint8_t) {}
 inline void StartCallsHelper() {}
+constexpr bool kCanClear = false;
+inline void Clear(std::wstring const&, std::wstring const&, std::wstring const&) {}
+inline void ClearApp(std::wstring const&) {}
+inline void HideAll() {}
 }  // namespace phoneancs
 #endif
 
@@ -48438,7 +55171,29 @@ std::atomic<bool> g_sending{false};
 // Sends files to the phone (on a thread of its own; one sending at a time). pick: when several LocalSend devices
 // answer, which one (called on that thread with their names; -1: none).
 void SendFiles(std::vector<std::wstring> files, std::function<int(std::vector<std::wstring> const&)> pick) {
-    if (files.empty() || g_sending.exchange(true)) return;
+    if (files.empty()) return;
+    if (g_sending.exchange(true)) {
+        Tell(L"Already sending to your phone", L"Send these once the files on their way are done.");
+        return;
+    }
+    // Over 4 GB a file can't go in one upload (its length doesn't fit): left out, and said so.
+    std::vector<std::wstring> tooBig;
+    for (auto it = files.begin(); it != files.end();) {
+        WIN32_FILE_ATTRIBUTE_DATA a{};
+        if (GetFileAttributesExW(it->c_str(), GetFileExInfoStandard, &a) && a.nFileSizeHigh) {
+            tooBig.push_back(it->substr(it->find_last_of(L"\\/") + 1));
+            it = files.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    if (!tooBig.empty())
+        Tell(tooBig.size() == 1 ? L"Too big to send" : L"Some too big to send",
+             tooBig[0] + (tooBig.size() > 1 ? L" and " + std::to_wstring(tooBig.size() - 1) + L" more are" : L" is") + L" over 4 GB.");
+    if (files.empty()) {
+        g_sending = false;
+        return;
+    }
     std::thread([files, pick] {
         WSADATA wsa;
         WSAStartup(MAKEWORD(2, 2), &wsa);  // (for the search's sockets)
@@ -48514,6 +55269,7 @@ constexpr WCHAR kStartClass[] = L"TourneStartMenu_" WH_MOD_ID;
 constexpr WCHAR kStartKey[] = L"Software\\Tourne\\StartMenu";
 constexpr UINT WM_APP_START = WM_APP + 5;  // the Windows key: open or close it
 constexpr UINT_PTR kTimerFlyout = 1, kTimerApps = 2;
+constexpr UINT_PTR kTimerPhoneNotes = 4;  // the phone's notifications changed: read once Windows has them
 
 ////////////////////////////////////////////////////////////////////////////////
 // Settings
@@ -48584,7 +55340,7 @@ struct StartConfig {
     int phoneNotes = 4;         // its recent notifications
     std::wstring phoneIcon;     // the phone's icon ("file,index"; empty: Phone Link's, through Button icons)
     std::wstring phoneActionIcons[4];  // Messages, Notifications, Send a file, Phone settings
-    bool phoneAppIcons = true;  // notifications with their phone apps' own icons (else Notifications' icon)
+    bool phoneAppIcons = false;  // notifications with their phone apps' own logos (else their designs, themed)
     bool phoneTray = false;     // the tray's phone (Phone Link's icon) opens it as a flyout
     int phoneTexts = 3;         // its conversations, Tourne holding its texts itself (phone-map.cpp); 0: Phone Link's link
 };
@@ -49091,9 +55847,15 @@ HFONT StartFont() {
 }
 
 // The flyouts' and menus' look, as set: by default made from the Start
-// menu's own colours (so from the theme), else the style's menus, or the
-// colour scheme.
+// menu's own colours (so from the theme), else the style's menus, the
+// colour scheme, or the bar's own menus (Tourne Menus' look: its frame,
+// gradient and glow).
 MenuLook StartMenuLook() {
+    if (g_startConfig.colors == L"tourne") {
+        MenuLook look = BarMenuLook();
+        if (MenusLikeWindows()) LookLikeWindowsMenus(look);
+        return look;
+    }
     auto const& p = g_settings.palette;
     MenuLook look{p.ground, p.line, p.edge, p.text, p.accent, p.dim, p.hover, g_tipFont, nullptr, g_scale,
                   !g_settings.menuIcons};
@@ -49898,18 +56660,35 @@ void ReadProgKids(ProgNode& node) {
         apps.name = L"Apps";
         apps.parsing = L"shell:AppsFolder";
         apps.folder = apps.read = true;
-        ProgNode& into = g_startConfig.appsInFolder ? apps : node;
+        // A Start Menu folder of your own called Apps (shortcuts for the packaged
+        // apps, with your icons) takes them in, rather than a second Apps folder
+        // listing each one twice. Your shortcut wins over the app of the same name.
+        ProgNode* own = nullptr;
+        if (g_startConfig.appsInFolder) {
+            for (auto& k : node.kids)
+                if (k.folder && !_wcsicmp(k.name.c_str(), L"Apps")) own = &k;
+            if (own) ReadProgKids(*own);
+        }
+        ProgNode& into = !g_startConfig.appsInFolder ? node : own ? *own : apps;
+        auto named = [](std::vector<ProgNode> const& kids, std::wstring const& name) {
+            return std::any_of(kids.begin(), kids.end(),
+                               [&](ProgNode const& k) { return !k.folder && !_wcsicmp(k.name.c_str(), name.c_str()); });
+        };
         for (auto const& app : g_startApps) {
             if (app.parsing.find(L'!') == std::wstring::npos) continue;
-            bool have = std::any_of(node.kids.begin(), node.kids.end(),
-                                    [&](ProgNode const& k) { return !k.folder && !_wcsicmp(k.name.c_str(), app.name.c_str()); });
-            if (have) continue;
+            if (named(node.kids, app.name) || (own && named(own->kids, app.name))) continue;
             ProgNode kid;
             kid.name = app.name;
             kid.parsing = app.parsing;
             into.kids.push_back(std::move(kid));
         }
-        if (g_startConfig.appsInFolder && !apps.kids.empty()) {
+        if (own) {
+            int order = g_startConfig.sortOrder;
+            std::sort(own->kids.begin(), own->kids.end(), [order](ProgNode const& a, ProgNode const& b) {
+                if (a.folder != b.folder && order != 2) return order == 1 ? a.folder : !a.folder;
+                return StartCompare(a.name, b.name) < 0;
+            });
+        } else if (g_startConfig.appsInFolder && !apps.kids.empty()) {
             std::sort(apps.kids.begin(), apps.kids.end(),
                       [](ProgNode const& a, ProgNode const& b) { return StartCompare(a.name, b.name) < 0; });
             node.kids.push_back(std::move(apps));
@@ -50090,6 +56869,7 @@ constexpr int kSmFooter = 10000, kSmPlace = 20000, kSmShutdown = 30000, kSmShutd
 
 constexpr UINT WM_APP_PHONE = WM_APP + 7;        // phone-link.cpp's read is back
 constexpr UINT WM_APP_PHONE_TEXTS = WM_APP + 8;  // phone-map.cpp: a text came or went, or the link changed
+constexpr UINT WM_APP_PHONE_NOTES = WM_APP + 9;  // phone-ancs.cpp: the phone's notifications came or went
 
 // The phone's links, into Phone Link's own pages. Their icons: yours (startMenu.phone*Icon), else the
 // phone app's (a package), else Phone Link's.
@@ -50312,6 +57092,16 @@ PhoneLayout PhoneComputeLayout(int x0, int y0, int x1, bool apart, int fillTo = 
 
 // How many notifications to read: as many as Start's pane or the phone's own window (sized by you) shows.
 int PhoneNotesWanted() { return std::max(g_startConfig.phoneNotes, (int)g_phoneWly.notes.size()); }
+
+// The phone read again in the background (back as WM_APP_PHONE); with Tourne holding it, its own notifications only.
+void PhoneReadAgain() {
+    if (g_startWnd) ReadPhoneSoon(g_startWnd, WM_APP_PHONE, PhoneNotesWanted(), PhoneTexting());
+}
+
+// The phone just came into sight: the open conversation (kept from last time) has been seen now.
+void PhoneSeen() {
+    if (!g_phoneChat.empty()) phonemap::MarkRead(g_phoneChat);
+}
 
 // What's under pt in the phone's layout: one of the kSmPhone codes, or -1.
 int PhoneHitTest(PhoneLayout const& P, POINT pt) {
@@ -50853,6 +57643,7 @@ void ForgetPhoneIcons() {
     for (auto& [key, icon] : g_phoneIcons)
         if (icon) DestroyIcon(icon);
     g_phoneIcons.clear();
+    ForgetPhoneAppIcons();
 }
 
 HICON PhoneSpecIcon(std::wstring const& spec, int size) {
@@ -50892,10 +57683,35 @@ HICON PhoneBatteryIcon(int percent, int size) {
     return PhoneSpecIcon(design, size);
 }
 
-// A notification's: its phone app's own (startMenu.phoneAppIcons), else Notifications' icon.
+// The tray's design for a phone app, drawn in the theme's colours: the same one the notification centre gives
+// its notifications (DesignForApp in system-icons-host.cpp; keep the two lists in step), else the phone's.
+PCWSTR PhoneAppDesign(PhoneNote const& note) {
+    std::wstring text = PhoneLower(note.package + L" " + note.app);
+    auto has = [&](std::initializer_list<PCWSTR> words) {
+        for (PCWSTR w : words)
+            if (text.find(w) != std::wstring::npos) return true;
+        return false;
+    };
+    if (has({L"mail", L"outlook", L"proton"})) return L"tourne:app-mail";
+    if (has({L"reddit"})) return L"tourne:app-reddit";
+    if (has({L"youtube", L"tiktok", L"twitch", L"netflix", L"video"})) return L"tourne:app-video";
+    if (has({L"amazon", L"ebay", L"etsy", L"shop", L"walmart", L"costco", L"target"})) return L"tourne:app-shop";
+    if (has({L"instagram", L"snapchat", L"camera", L"photos"})) return L"tourne:app-capture";
+    if (has({L"spotify"})) return L"tourne:app-spotify";
+    if (has({L"music", L"podcast", L"audible"})) return L"tourne:app-audio";
+    if (has({L"mobilesms", L"messages", L"whatsapp", L"discord", L"messenger", L"telegram", L"signal", L"slack",
+             L"teams", L"chat"})) {
+        return L"tourne:app-chat";
+    }
+    return kPhoneDesign;
+}
+
+// A notification's: its phone app's own logo (startMenu.phoneAppIcons), else its design in the theme's colours,
+// as the notification centre shows it, else Notifications' icon.
 HICON PhoneNoteIcon(PhoneNote const& note, int size) {
     if (g_startConfig.phoneAppIcons && !note.package.empty())
         if (HICON app = PhoneAppIcon(note.package, size)) return app;
+    if (HICON themed = PhoneSpecIcon(PhoneAppDesign(note), size)) return themed;
     return PhoneActionIcon(1, size);
 }
 
@@ -50970,7 +57786,23 @@ void PhoneBuildConvos() {
     }
     for (auto& c : g_phoneConvos)
         if (c.name.empty()) c.name = c.address;
+    // Cleared ones (a middle click, or Clear) stay out until a newer text comes in them.
+    auto cleared = PhoneClearedConvos();
+    std::erase_if(g_phoneConvos, [&](PhoneConvo const& c) {
+        auto it = cleared.find(c.key);
+        return it != cleared.end() && c.when <= it->second && c.key != g_phoneChat;
+    });
     std::stable_sort(g_phoneConvos.begin(), g_phoneConvos.end(), [](auto const& a, auto const& b) { return a.when > b.when; });
+}
+
+void PhoneRepaint();
+
+// A conversation cleared from the list (it comes back with its next text).
+void PhoneClearConvoAt(int index) {
+    if (index < 0 || index >= (int)g_phoneConvos.size()) return;
+    PhoneClearConvo(g_phoneConvos[index].key, g_phoneConvos[index].when);
+    g_phoneConvos.erase(g_phoneConvos.begin() + index);
+    PhoneRepaint();
 }
 
 PhoneConvo const* PhoneChatConvo() {
@@ -50992,14 +57824,19 @@ std::wstring PhoneLinkWords() {
 
 // The open conversation's latest texts, newest at the bottom, as bubbles: theirs on the left, yours on the right
 // in the accent's tint, with "Sending..." or "Not sent" under one that hasn't gone.
+// How far the open conversation is scrolled up from its newest text (the wheel over it), and how far it can go.
+int g_phoneThreadScroll = 0, g_phoneThreadMax = 0;
+
 void PaintPhoneThread(HDC dc, RECT area, int lineH) {
     int saved = SaveDC(dc);
     IntersectClipRect(dc, area.left, area.top, area.right, area.bottom);
     int pad = Px(6), left = area.left + Px(12), right = area.right - g_sl.frameBorder - Px(10);
     int widest = std::max(Px(60), (right - left) * 4 / 5);
-    int y = area.bottom - Px(4);
+    g_phoneThreadScroll = std::clamp(g_phoneThreadScroll, 0, g_phoneThreadMax);
+    int bottom = area.bottom - Px(4), y = bottom + g_phoneThreadScroll;
     bool any = false;
-    for (int i = (int)g_phoneTexts.size() - 1; i >= 0 && y > area.top; i--) {
+    // Newest at the bottom, upward from there; all of them measured (for how far it scrolls), the ones in sight drawn.
+    for (int i = (int)g_phoneTexts.size() - 1; i >= 0; i--) {
         auto const& t = g_phoneTexts[i];
         if (phonemap::Key(t.address) != g_phoneChat) continue;
         any = true;
@@ -51009,17 +57846,21 @@ void PaintPhoneThread(HDC dc, RECT area, int lineH) {
             y -= lineH;
             StartText(dc, note, RECT{left, y, right, y + lineH}, t.kind == L'f' ? 0xD13438 : g_sl.dim, mine ? DT_RIGHT : DT_LEFT);
         }
+        std::wstring body = PlainSymbols(t.body);
         RECT size{0, 0, widest - pad * 2, 0};
-        DrawTextW(dc, t.body.c_str(), -1, &size, DT_CALCRECT | DT_WORDBREAK | DT_EDITCONTROL | DT_NOPREFIX);
+        DrawTextW(dc, body.c_str(), -1, &size, DT_CALCRECT | DT_WORDBREAK | DT_EDITCONTROL | DT_NOPREFIX);
         int w = size.right + pad * 2, h = size.bottom + pad;
         y -= h;
         RECT bubble{mine ? right - w : left, y, mine ? right : left + w, y + h};
-        Fill(dc, bubble, mine ? StartMix(g_sl.ground, g_sl.accent, 0.3) : StartMix(g_sl.ground, g_sl.text, 0.1));
-        RECT inside{bubble.left + pad, bubble.top + pad / 2, bubble.right - pad, bubble.bottom};
-        SetTextColor(dc, PaletteRef(g_sl.text));
-        DrawTextW(dc, t.body.c_str(), -1, &inside, DT_WORDBREAK | DT_EDITCONTROL | DT_NOPREFIX);
+        if (bubble.bottom > area.top && bubble.top < area.bottom) {
+            Fill(dc, bubble, mine ? StartMix(g_sl.ground, g_sl.accent, 0.3) : StartMix(g_sl.ground, g_sl.text, 0.1));
+            RECT inside{bubble.left + pad, bubble.top + pad / 2, bubble.right - pad, bubble.bottom};
+            SetTextColor(dc, PaletteRef(g_sl.text));
+            DrawTextW(dc, body.c_str(), -1, &inside, DT_WORDBREAK | DT_EDITCONTROL | DT_NOPREFIX);
+        }
         y -= Px(4);
     }
+    g_phoneThreadMax = std::max(0, (int)(area.top + Px(4)) - (y - g_phoneThreadScroll));
     if (!any) StartText(dc, L"Nothing yet", RECT{left, area.top, right, area.top + lineH + Px(8)}, g_sl.dim);
     RestoreDC(dc, saved);
 }
@@ -51061,7 +57902,7 @@ void PaintPhoneTexts(HDC dc, PhoneLayout const& P, int hot, int pressed, int lin
             std::wstring when = StartCase(PhoneWhen(c.when));
             SIZE ws{};
             GetTextExtentPoint32W(dc, when.c_str(), (int)when.size(), &ws);
-            StartText(dc, c.name, RECT{nx, ny, nr - ws.cx - Px(6), ny + lineH}, g_sl.accent);
+            StartText(dc, PlainSymbols(c.name), RECT{nx, ny, nr - ws.cx - Px(6), ny + lineH}, g_sl.accent);
             StartText(dc, when, RECT{nx, ny, nr, ny + lineH}, g_sl.dim, DT_RIGHT);
             int lineRight = nr;
             if (c.unread) {
@@ -51074,7 +57915,7 @@ void PaintPhoneTexts(HDC dc, PhoneLayout const& P, int hot, int pressed, int lin
                 SelectObject(dc, oldPen);
                 lineRight -= d + Px(6);
             }
-            std::wstring line = (c.kind == L'f' ? L"Not sent: " : c.kind != L'i' ? L"You: " : L"") + c.last;
+            std::wstring line = (c.kind == L'f' ? L"Not sent: " : c.kind != L'i' ? L"You: " : L"") + PlainSymbols(c.last);
             StartText(dc, line, RECT{nx, ny + lineH, lineRight, ny + lineH * 2}, on ? g_sl.hotText : c.unread ? g_sl.text : g_sl.dim);
         }
         return;
@@ -51086,7 +57927,7 @@ void PaintPhoneTexts(HDC dc, PhoneLayout const& P, int hot, int pressed, int lin
     SIZE ws{};
     std::wstring shownWords = StartCase(words);
     GetTextExtentPoint32W(dc, shownWords.c_str(), (int)shownWords.size(), &ws);
-    StartText(dc, L"‹  " + (c ? c->name : g_phoneChat), RECT{h.left + Px(12), h.top, right - ws.cx - Px(6), h.bottom},
+    StartText(dc, L"‹  " + PlainSymbols(c ? c->name : g_phoneChat), RECT{h.left + Px(12), h.top, right - ws.cx - Px(6), h.bottom},
               on ? g_sl.hotText : g_sl.accent);
     if (!words.empty()) StartText(dc, words, RECT{h.left + Px(12), h.top, right, h.bottom}, g_sl.dim, DT_RIGHT);
     PaintPhoneThread(dc, P.thread, lineH);
@@ -51238,7 +58079,7 @@ void PaintPhone(HDC dc, PhoneLayout const& P, int hot, int pressed, bool apart) 
         GetTextExtentPoint32W(dc, shown.c_str(), (int)shown.size(), &size);
         bx += size.cx + Px(10);
     }
-    StartText(dc, phone.connected ? L"Connected" : g_phoneRead ? L"Not connected" : L"", RECT{bx, y, right, y + lineH},
+    StartText(dc, phone.connected ? L"Connected" : phone.read ? L"Not connected" : L"", RECT{bx, y, right, y + lineH},
               phone.connected ? g_sl.accent : g_sl.dim);
     PhoneButton(dc, P.detach, kSmPhoneDetach, hot == kSmPhoneDetach, pressed == kSmPhoneDetach, false);
     PhoneButton(dc, P.close, kSmPhoneClose, hot == kSmPhoneClose, pressed == kSmPhoneClose, false);
@@ -51269,7 +58110,7 @@ void PaintPhone(HDC dc, PhoneLayout const& P, int hot, int pressed, bool apart) 
         RECT r = P.notes[i];
         if (i >= (int)phone.notes.size()) {
             // None stored: Phone Link keeps them in its own window until it posts them.
-            if (i == 0 && g_phoneRead)
+            if (i == 0 && phone.read)
                 StartText(dc, phone.unread > 0 ? L"Open Notifications to see them" : L"Nothing new from your phone",
                           RECT{r.left + Px(12), r.top, r.right - Px(8), r.top + lineH + Px(8)}, g_sl.dim);
             continue;
@@ -51812,6 +58653,15 @@ void InvalidateCascadeItem(Cascade& c, int i) {
 // Sizes and places a cascade beside what opened it (a screen rectangle),
 // on its screen: a new column where the screen runs out with Multi-column
 // flyouts, else scroll arrows.
+// Where a cascade's items start in from its edge (inside Tourne Menus' frame when it has one), and their text.
+int CascadePad() {
+    return g_menuLook.frame && !g_menuLook.theme ? FrameInnerAt(std::max(1, g_menuLook.scale)) + 1 + Px(2) : Px(3);
+}
+int CascadeTextLeft(int icon) {
+    if (g_menuLook.frame && !g_menuLook.theme) return icon ? Px(11) + icon + Px(8) : Px(31);
+    return icon ? Px(6) + icon + Px(8) : Px(22);
+}
+
 void LayoutCascade(Cascade& c, RECT const& from, int parentLeft, int& x, int& y, int& w, int& h) {
     HDC dc = GetDC(nullptr);
     HGDIOBJ old = g_menuLook.font ? SelectObject(dc, g_menuLook.font) : nullptr;
@@ -51828,10 +58678,12 @@ void LayoutCascade(Cascade& c, RECT const& from, int parentLeft, int& x, int& y,
     ReleaseDC(nullptr, dc);
 
     int icon = CascadeIconPx();
-    int row = std::max(Px(18), std::max(icon + Px(6), (int)tm.tmHeight + Px(5)));
-    int textLeft = icon ? Px(6) + icon + Px(8) : Px(22);
+    bool framed = g_menuLook.frame && !g_menuLook.theme;
+    int row = framed ? std::max(Px(22), std::max(icon + Px(6), (int)tm.tmHeight + Px(8)))
+                     : std::max(Px(18), std::max(icon + Px(6), (int)tm.tmHeight + Px(5)));
+    int textLeft = CascadeTextLeft(icon);
     int itemWidth = std::clamp(textLeft + widest + Px(30), Px(140), Px(420));
-    int pad = Px(3);
+    int pad = CascadePad();
     MONITORINFO mi{sizeof(mi)};
     GetMonitorInfoW(MonitorFromRect(&from, MONITOR_DEFAULTTONEAREST), &mi);
     RECT work = mi.rcWork;
@@ -52002,19 +58854,42 @@ void EnsureCascadeVisible(Cascade& c, int i) {
 void PaintCascade(Cascade& c, HDC dc) {
     auto const& look = g_menuLook;
     HTHEME theme = look.theme;
+    bool framed = look.frame && !theme;
     RECT client;
     GetClientRect(c.wnd, &client);
     auto fill = [&](RECT const& r, uint32_t rgb) {
         SetDCBrushColor(dc, MenuRgb(rgb));
         FillRect(dc, &r, (HBRUSH)GetStockObject(DC_BRUSH));
     };
-    fill(client, look.ground);
-    SetDCBrushColor(dc, MenuRgb(look.edge));
-    FrameRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+    if (framed) {
+        // Tourne Menus' frame, as StyledMenuWindowProc draws it round a menu: the band, the outer line, the
+        // items' ground inside the inner line, both lines with the gradient and glow as set.
+        fill(client, look.band);
+        int q = FrameInnerAt(std::max(1, look.scale));
+        fill(RECT{q + 1, q + 1, client.right - q - 1, client.bottom - q - 1}, look.ground);
+        POINT at{0, 0};
+        SIZE size{client.right, client.bottom};
+        uint32_t band = look.band, ground = look.ground;
+        int w = client.right - 2 * q, h = client.bottom - 2 * q;
+        for (int pass : {1, 2}) {
+            FrameLine(dc, 0, 0, client.right, true, at, size, band, band, false, true, pass);
+            FrameLine(dc, 0, client.bottom - 1, client.right, true, at, size, band, band, true, false, pass);
+            FrameLine(dc, 0, 0, client.bottom, false, at, size, band, band, false, true, pass);
+            FrameLine(dc, client.right - 1, 0, client.bottom, false, at, size, band, band, true, false, pass);
+            FrameLine(dc, q, q, w, true, at, size, band, ground, true, true, pass);
+            FrameLine(dc, q, client.bottom - 1 - q, w, true, at, size, ground, band, true, true, pass);
+            FrameLine(dc, q, q, h, false, at, size, band, ground, true, true, pass);
+            FrameLine(dc, client.right - 1 - q, q, h, false, at, size, ground, band, true, true, pass);
+        }
+    } else {
+        fill(client, look.ground);
+        SetDCBrushColor(dc, MenuRgb(look.edge));
+        FrameRect(dc, &client, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
     HGDIOBJ oldFont = look.font ? SelectObject(dc, look.font) : nullptr;
     SetBkMode(dc, TRANSPARENT);
     int icon = CascadeIconPx();
-    int textLeft = icon ? Px(6) + icon + Px(8) : Px(22);
+    int textLeft = CascadeTextLeft(icon);
     // Items scroll between the arrows.
     RECT view = client;
     if (c.scrolls) {
@@ -52041,7 +58916,8 @@ void PaintCascade(Cascade& c, HDC dc) {
             if (theme) DrawThemeBackground(theme, dc, MENU_POPUPITEM, MPI_HOT, &h, nullptr);
             else fill(h, look.hover);
         }
-        COLORREF color = MenuRgb(item.disabled || item.header ? look.dim : look.text);
+        bool hoverText = hot && !item.disabled && !item.header && look.hoverText != 0xFFFFFFFF;
+        COLORREF color = MenuRgb(item.disabled || item.header ? look.dim : hoverText ? look.hoverText : look.text);
         if (theme && (!look.ownText || item.disabled))
             GetThemeColor(theme, MENU_POPUPITEM, item.disabled ? MPI_DISABLED : hot ? MPI_HOT : MPI_NORMAL, TMT_TEXTCOLOR,
                           &color);
@@ -52052,13 +58928,27 @@ void PaintCascade(Cascade& c, HDC dc) {
             continue;
         }
         if (item.icon && icon)
-            DrawIconEx(dc, r.left + Px(6), (r.top + r.bottom - icon) / 2, item.icon, icon, icon, 0, nullptr, DI_NORMAL);
+            DrawIconEx(dc, r.left + (framed ? Px(11) : Px(6)), (r.top + r.bottom - icon) / 2, item.icon, icon, icon, 0, nullptr, DI_NORMAL);
         RECT t{r.left + textLeft, r.top, r.right - Px(22), r.bottom};
-        DrawTextW(dc, item.text.c_str(), -1, &t, DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX | DT_END_ELLIPSIS);
+        std::wstring text = item.text;
+        if (look.caps) CharUpperBuffW(text.data(), (DWORD)text.size());
+        DrawTextW(dc, text.c_str(), -1, &t, DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX | DT_END_ELLIPSIS);
         if (item.folder) {
             int size = Px(16);
             RECT a{r.right - Px(4) - size, (r.top + r.bottom - size) / 2, r.right - Px(4), (r.top + r.bottom + size) / 2};
-            if (theme) {
+            if (framed) {
+                // Tourne Menus' chevron (MenuDrawItem's), 4 x 8 pixels, in the arrow colour when one is set.
+                static constexpr const char* kChevron[] = {"#...", "##..", ".##.", "..##", "..##", ".##.", "##..", "#..."};
+                int x = r.right - Px(12), y = (r.top + r.bottom) / 2 - Px(4);
+                COLORREF arrow = look.arrow != 0xFFFFFFFF && !item.disabled ? MenuRgb(look.arrow) : color;
+                SetDCBrushColor(dc, arrow);
+                for (int row = 0; row < 8; row++)
+                    for (int col = 0; col < 4; col++)
+                        if (kChevron[row][col] == '#') {
+                            RECT dot{x + col * Px(1), y + row * Px(1), x + (col + 1) * Px(1), y + (row + 1) * Px(1)};
+                            FillRect(dc, &dot, (HBRUSH)GetStockObject(DC_BRUSH));
+                        }
+            } else if (theme) {
                 DrawThemeBackground(theme, dc, MENU_POPUPSUBMENU, MSM_NORMAL, &a, nullptr);
             } else {
                 int ah = Px(4), ax = a.left + Px(6), ay = (a.top + a.bottom) / 2;
@@ -52548,13 +59438,163 @@ void ScrollToRow(int index) {
 void HidePhoneWindow();
 void PhoneActivate(int hit);
 
+////////////////////////////////////////////////////////////////////////////////
+// Opening and closing on the motion engine's "start" line (motion.cpp): faded, slid a short way in from
+// the bar's edge, or both. Layered only while it moves, so it's drawn as ever once it's still. popin and
+// gnomed have no scaling here: a fade and a shorter slide. No line: shown and hidden at once, as ever.
+
+constexpr UINT_PTR kTimerStartMotion = 5;
+double NowMs();
+
+struct StartMotion {
+    HWND wnd = nullptr;    // the window it's moving (none: still)
+    bool closing = false;
+    bool disabled = false;  // turned off for input while it goes
+    double level = 1;      // 0 away, 1 in place
+    double from = 1, start = 0;
+    POINT home{};          // its place
+};
+StartMotion g_startMotion;
+
+bool StartMotionOn() {
+    auto const& a = g_settings.motionStart;
+    return a.set && a.on && motion::Ms(a) > 0;
+}
+
+double StartMotionMs() { return std::min(motion::Ms(g_settings.motionStart), 1000.0); }
+
+// Faded or not, and how far it slides.
+void StartMotionStyle(bool* fade, int* slide) {
+    std::wstring w = motion::StyleWord(g_settings.motionStart);
+    bool slides = w == L"slide" || w == L"slidevert" || w == L"slidefade" || w == L"slidefadevert";
+    *fade = w != L"slide" && w != L"slidevert";
+    *slide = slides ? Px(32) : w == L"popin" || w == L"gnomed" ? Px(12) : 0;
+}
+
+void StartMotionLayer(HWND wnd, bool on, bool clickThrough) {
+    LONG_PTR ex = GetWindowLongPtrW(wnd, GWL_EXSTYLE);
+    LONG_PTR want = ex & ~(LONG_PTR)(WS_EX_LAYERED | WS_EX_TRANSPARENT);
+    if (on) want |= WS_EX_LAYERED | (clickThrough ? WS_EX_TRANSPARENT : 0);
+    if (want != ex) SetWindowLongPtrW(wnd, GWL_EXSTYLE, want);
+}
+
+// The window where the motion has it: its opacity, and its place (nearer the bar while it's away).
+void StartMotionApply() {
+    auto const& m = g_startMotion;
+    bool fade;
+    int slide;
+    StartMotionStyle(&fade, &slide);
+    BYTE alpha = fade ? (BYTE)std::lround(255 * std::clamp(m.level, 0.0, 1.0)) : 255;
+    SetLayeredWindowAttributes(m.wnd, 0, alpha, LWA_ALPHA);
+    if (!slide) return;
+    int d = (int)std::lround(slide * (1 - m.level));
+    POINT at = m.home;
+    switch (g_settings.edge) {
+        case Edge::Top: at.y -= d; break;
+        case Edge::Bottom: at.y += d; break;
+        case Edge::Left: at.x -= d; break;
+        case Edge::Right: at.x += d; break;
+    }
+    SetWindowPos(m.wnd, nullptr, at.x, at.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+// Still again: hidden if it was closing, back in its place, opaque and no longer layered, taking input.
+void StartMotionEnd() {
+    StartMotion m = g_startMotion;
+    if (!m.wnd) return;
+    KillTimer(m.wnd, kTimerStartMotion);
+    bool alive = IsWindow(m.wnd);
+    if (alive && m.closing) ShowWindow(m.wnd, SW_HIDE);  // (still closing meanwhile: losing the focus doesn't close it again)
+    g_startMotion = {};
+    if (!alive) return;
+    SetWindowPos(m.wnd, nullptr, m.home.x, m.home.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    StartMotionLayer(m.wnd, false, false);
+    if (m.disabled) EnableWindow(m.wnd, TRUE);
+    // (Drawn again once it's no longer layered: now if it's showing, else when it's next shown.)
+    RedrawWindow(m.wnd, nullptr, nullptr, RDW_INVALIDATE | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN | (m.closing ? 0 : RDW_UPDATENOW));
+}
+
+// Sets off from where it is now towards in place (opening) or away (closing).
+void StartMotionGo(bool closing) {
+    auto& m = g_startMotion;
+    if (!m.wnd) {
+        RECT r;
+        GetWindowRect(g_startWnd, &r);
+        m.home = {r.left, r.top};
+        m.level = closing ? 1 : 0;
+    }
+    m.wnd = g_startWnd;
+    m.closing = closing;
+    m.from = m.level;
+    m.start = NowMs();
+    // While it goes, clicks pass through it and keys don't reach it.
+    StartMotionLayer(m.wnd, true, closing);
+    if (closing && !m.disabled && IsWindowEnabled(m.wnd)) {
+        EnableWindow(m.wnd, FALSE);
+        m.disabled = true;
+    } else if (!closing && m.disabled) {
+        EnableWindow(m.wnd, TRUE);
+        m.disabled = false;
+    }
+    StartMotionApply();
+    if (!SetTimer(m.wnd, kTimerStartMotion, USER_TIMER_MINIMUM, nullptr)) StartMotionEnd();  // (no frames: there at once)
+}
+
+// Before it's shown (placed already): true when it opens moving, from away or from where a close left it.
+bool StartMotionOpen() {
+    auto& m = g_startMotion;
+    if (m.wnd && m.wnd != g_startWnd) m = {};  // (a window since closed)
+    bool was = m.wnd != nullptr;
+    if (was) {
+        // Placed again: its place is where it is now.
+        RECT r;
+        GetWindowRect(g_startWnd, &r);
+        m.home = {r.left, r.top};
+        m.closing = false;  // (ending here leaves it shown)
+    }
+    if (!StartMotionOn() || (!was && IsWindowVisible(g_startWnd))) {
+        StartMotionEnd();
+        return false;
+    }
+    StartMotionGo(false);
+    return true;
+}
+
+// Closing: true when it goes moving (hidden at the end), false to hide it now.
+bool StartMotionClose() {
+    if (g_startMotion.wnd && g_startMotion.wnd != g_startWnd) g_startMotion = {};
+    if (!StartMotionOn()) {
+        StartMotionEnd();
+        return false;
+    }
+    StartMotionGo(true);
+    return true;
+}
+
+bool StartClosing() { return g_startMotion.wnd && g_startMotion.wnd == g_startWnd && g_startMotion.closing; }
+
+void StartMotionFrame() {
+    auto& m = g_startMotion;
+    if (!m.wnd) return;
+    double to = m.closing ? 0 : 1;
+    double span = StartMotionMs() * std::abs(to - m.from);
+    double t = span > 0 ? (NowMs() - m.start) / span : 1;
+    if (t >= 1 || !StartMotionOn()) {
+        m.level = to;
+        StartMotionEnd();
+        return;
+    }
+    m.level = m.from + (to - m.from) * motion::Ease(g_settings.motionStart, t);
+    StartMotionApply();
+}
+
 void HideStart() {
     CloseCascades(0);
     if (g_startTip) SendMessageW(g_startTip, TTM_POP, 0, 0);
     if (!g_phoneState.pinned) HidePhoneWindow();  // (apart, it goes with the Start menu unless kept open)
-    if (!g_startWnd || !IsWindowVisible(g_startWnd)) return;
+    if (!g_startWnd || !IsWindowVisible(g_startWnd) || StartClosing()) return;
     KillTimer(g_startWnd, kTimerFlyout);
-    ShowWindow(g_startWnd, SW_HIDE);
+    if (!StartMotionClose()) ShowWindow(g_startWnd, SW_HIDE);
     g_startHiddenAt = GetTickCount();
     g_inMenu = false;
     // Start's list read again for next time, once whatever was opened is up.
@@ -52665,6 +59705,11 @@ void PlaceStartWindow(HWND wnd) {
     x = std::clamp(x, (int)m.left, std::max((int)m.left, (int)m.right - L.width));
     y = std::clamp(y, (int)m.top, std::max((int)m.top, (int)m.bottom - L.height));
     SetWindowPos(wnd, HWND_TOPMOST, x, y, L.width, L.height, SWP_NOACTIVATE);
+    if (wnd == g_startMotion.wnd) {
+        // Placed again while it moves: the motion goes on to (and ends at) the new place.
+        g_startMotion.home = {x, y};
+        StartMotionApply();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52925,6 +59970,7 @@ void ShowPhoneWindow() {
     ShowWindow(g_phoneWnd, SW_SHOWNOACTIVATE);
     InvalidateRect(g_phoneWnd, nullptr, FALSE);
     if (g_phoneState.pinned) SetTimer(g_phoneWnd, kTimerPhoneRead, 60000, nullptr);
+    PhoneSeen();
 }
 
 // As the tray's flyout it takes the focus (and closes when it goes); otherwise never, so the Start menu
@@ -52964,7 +60010,7 @@ bool PhoneFromTray(RECT const& cell, bool asked) {
         SavePhoneState();
     }
     g_phoneView = PhoneNow();
-    ReadPhoneSoon(g_startWnd, WM_APP_PHONE, PhoneNotesWanted());
+    PhoneReadAgain();
     SIZE size = PhoneWindowSize();
     MONITORINFO mi{sizeof(mi)};
     GetMonitorInfoW(MonitorFromRect(&cell, MONITOR_DEFAULTTONEAREST), &mi);
@@ -52981,6 +60027,7 @@ bool PhoneFromTray(RECT const& cell, bool asked) {
     StartCorners(g_phoneWnd);
     InvalidateRect(g_phoneWnd, nullptr, FALSE);
     StartForeground(g_phoneWnd);
+    PhoneSeen();
     return true;
 }
 
@@ -53072,6 +60119,16 @@ void PhoneRun(int hit) {
             PhoneSendFiles();
             return;
         }
+        // A notification: its app on this PC to answer it in (Discord...), when it has one there; else the centre.
+        if (hit >= kSmPhoneNote && hit - kSmPhoneNote < (int)g_phoneView.notes.size()) {
+            auto const& note = g_phoneView.notes[hit - kSmPhoneNote];
+            std::wstring open = PhoneAppOnPc(note.package, note.app);
+            if (!open.empty()) {
+                HideStart();
+                ShellExecuteW(nullptr, nullptr, open.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+                return;
+            }
+        }
         bool notes = hit >= kSmPhoneNote || hit == kSmPhoneAction + 1;
         if (notes || hit == kSmPhoneHead || hit == kSmPhoneAction + 3) {
             HideStart();
@@ -53126,7 +60183,18 @@ void PhoneFocusReply() {
     SetFocus(g_phoneReply);
 }
 
+// The wheel over the open conversation (pt on the screen): older texts up, newer down. False: not over it.
+bool PhoneThreadWheel(HWND wnd, PhoneLayout const& P, POINT pt, int delta) {
+    ScreenToClient(wnd, &pt);
+    if (g_phoneChat.empty() || !PtInRect(&P.thread, pt)) return false;
+    int was = g_phoneThreadScroll;
+    g_phoneThreadScroll = std::clamp(g_phoneThreadScroll + delta * Px(60) / WHEEL_DELTA, 0, g_phoneThreadMax);
+    if (g_phoneThreadScroll != was) InvalidateRect(wnd, &P.thread, FALSE);
+    return true;
+}
+
 void PhoneOpenChat(std::wstring const& key) {
+    g_phoneThreadScroll = 0;  // (from its newest)
     g_phoneChat = key;
     phonemap::MarkRead(key);
     phonemap::Wake();
@@ -53210,12 +60278,75 @@ void PhoneActivate(int hit) {
     else if (hit != kSmPhoneStrip) PhoneRun(hit);
 }
 
-// Right-click on the phone: Phone Link, where it's shown, and closing it.
-void PhoneMenu(HWND owner) {
-    enum : int { kOpen = 1, kApart, kPinned, kClose, kUndock, kResetSize, kSettings };
+// Notifications cleared from the pane, as the notification centre clears them: gone from Windows' list and from
+// the pane at once (the count with them). Not read again now: Windows' database can lag behind the clear, and
+// the next read (the next time the phone shows) has it right.
+void PhoneRepaint() {
+    if (g_phoneWnd && IsWindowVisible(g_phoneWnd)) InvalidateRect(g_phoneWnd, nullptr, FALSE);
+    if (g_startWnd && IsWindowVisible(g_startWnd) && g_sly.phone) {
+        RECT pane{g_sly.placesRight, 0, g_sly.width, g_sly.body};
+        InvalidateRect(g_startWnd, &pane, FALSE);
+    }
+}
+
+void PhoneClearNotes(std::vector<PhoneNote> const& gone);
+
+// A middle click on the phone: a notification or a conversation cleared, as from their menu.
+void PhoneMiddleClick(int hit) {
+    if (hit >= kSmPhoneNote && hit < kSmPhoneConvo && hit - kSmPhoneNote < (int)g_phoneView.notes.size()) {
+        PhoneNote note = g_phoneView.notes[hit - kSmPhoneNote];
+        if (phoneancs::kCanClear && !note.aumid.empty()) PhoneClearNotes({note});
+    } else if (hit >= kSmPhoneConvo && hit < kSmPhoneConvo + 100) {
+        PhoneClearConvoAt(hit - kSmPhoneConvo);
+    }
+}
+
+void PhoneClearNotes(std::vector<PhoneNote> const& gone) {
+    for (auto const& note : gone) {
+        if (note.aumid.empty()) continue;
+        phoneancs::Clear(note.tag, note.group, note.aumid);
+        auto& notes = g_phoneView.notes;
+        for (auto it = notes.begin(); it != notes.end(); ++it)
+            if (it->aumid == note.aumid && it->tag == note.tag && it->group == note.group) {
+                notes.erase(it);
+                if (g_phoneView.unread > 0) g_phoneView.unread--;
+                break;
+            }
+    }
+    if (g_phoneWnd && IsWindowVisible(g_phoneWnd)) InvalidateRect(g_phoneWnd, nullptr, FALSE);
+    if (g_startWnd && IsWindowVisible(g_startWnd) && g_sly.phone) {
+        RECT pane{g_sly.placesRight, 0, g_sly.width, g_sly.body};
+        InvalidateRect(g_startWnd, &pane, FALSE);
+    }
+}
+
+// Right-click on the phone: a notification's Clear (on one), where it's shown, and closing it; Phone Link only
+// while it's what holds the phone.
+void PhoneMenu(HWND owner, int hit) {
+    enum : int { kOpen = 1, kApart, kPinned, kClose, kUndock, kResetSize, kSettings, kClearNote, kClearApp, kClearAll, kClearConvo };
     HMENU menu = CreatePopupMenu();
-    AppendMenuW(menu, MF_STRING, kOpen, L"Open Phone Link");
-    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    int noteAt = hit - kSmPhoneNote;
+    bool onNote = hit >= kSmPhoneNote && hit < kSmPhoneConvo && noteAt < (int)g_phoneView.notes.size();
+    PhoneNote note = onNote ? g_phoneView.notes[noteAt] : PhoneNote{};
+    int convoAt = hit - kSmPhoneConvo;
+    bool onConvo = hit >= kSmPhoneConvo && hit < kSmPhoneConvo + 100 && convoAt < (int)g_phoneConvos.size();
+    if (onConvo) {
+        AppendMenuW(menu, MF_STRING, kClearConvo, L"Clear (back with its next text)");
+        AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    }
+    if (phoneancs::kCanClear && onNote && !note.aumid.empty()) {
+        AppendMenuW(menu, MF_STRING, kClearNote, L"Clear");
+        int fromApp = 0;
+        for (auto const& n : g_phoneView.notes) fromApp += n.aumid == note.aumid;
+        if (fromApp > 1) AppendMenuW(menu, MF_STRING, kClearApp, (L"Clear all from " + note.app).c_str());
+        if ((int)g_phoneView.notes.size() > fromApp || g_phoneView.unread > fromApp)
+            AppendMenuW(menu, MF_STRING, kClearAll, L"Clear all");
+        AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    }
+    if (!PhoneTexting()) {
+        AppendMenuW(menu, MF_STRING, kOpen, L"Open Phone Link");
+        AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    }
     AppendMenuW(menu, MF_STRING, kApart, g_phoneState.apart ? L"Back into Start" : L"Move out of Start");
     if (g_phoneState.apart) {
         AppendMenuW(menu, MF_STRING | (g_phoneState.pinned ? MF_CHECKED : 0), kPinned, L"Keep open");
@@ -53229,6 +60360,22 @@ void PhoneMenu(HWND owner) {
     POINT pt;
     GetCursorPos(&pt);
     int cmd = RunStartMenu(owner, menu, TPM_RIGHTBUTTON, pt.x, pt.y);
+    if (cmd == kClearNote) return PhoneClearNotes({note});
+    if (cmd == kClearConvo) return PhoneClearConvoAt(convoAt);
+    if (cmd == kClearApp || cmd == kClearAll) {
+        // Every one Windows has from that app (or all of the phone's), not only the ones the pane shows.
+        std::vector<PhoneNote> gone;
+        for (auto const& n : g_phoneView.notes)
+            if (cmd == kClearAll || n.aumid == note.aumid) gone.push_back(n);
+        if (cmd == kClearAll) {
+            // (each app's first, which notes them as cleared; HideAll after takes the rest)
+            for (auto const& n : gone) phoneancs::ClearApp(n.aumid);
+            phoneancs::HideAll();
+        } else {
+            phoneancs::ClearApp(note.aumid);
+        }
+        return PhoneClearNotes(gone);
+    }
     if (cmd == kUndock) {
         g_phoneState.dockClass.clear();
         SavePhoneState();
@@ -53340,6 +60487,10 @@ LRESULT CALLBACK PhoneWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                 }
             }
             break;
+        case WM_MOUSEWHEEL:
+            // Over its open conversation: it scrolls.
+            PhoneThreadWheel(wnd, g_phoneWly, POINT{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)}, GET_WHEEL_DELTA_WPARAM(wParam));
+            return 0;
         case WM_MOUSEMOVE: {
             POINT pt{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
             if (g_phoneSizing) {
@@ -53465,12 +60616,15 @@ LRESULT CALLBACK PhoneWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         case WM_RBUTTONUP: {
             bool startOpen = g_startWnd && IsWindowVisible(g_startWnd);
             if (!startOpen) SetForegroundWindow(wnd);
-            PhoneMenu(startOpen ? g_startWnd : wnd);
+            PhoneMenu(startOpen ? g_startWnd : wnd, PhoneHitTest(g_phoneWly, {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)}));
             return 0;
         }
+        case WM_MBUTTONUP:
+            PhoneMiddleClick(PhoneHitTest(g_phoneWly, {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)}));
+            return 0;
         case WM_TIMER:
             if (wParam == kTimerPhoneRead && IsWindowVisible(wnd) && g_startWnd)
-                ReadPhoneSoon(g_startWnd, WM_APP_PHONE, PhoneNotesWanted());
+                PhoneReadAgain();
             return 0;
     }
     return DefWindowProcW(wnd, msg, wParam, lParam);
@@ -53654,11 +60808,13 @@ void ShowStart() {
     StartTakeApps();  // the read that ran in the background, if it has finished
     if (g_startApps.empty() && !StartAppsReading()) ReadStartApps();
     if (!g_placesValid) LoadPlaces();
-    if (PhoneWanted()) {
-        // The phone as last read now, and read again in the background (it comes back as WM_APP_PHONE).
+    if (g_startConfig.phone && !g_phoneState.hidden) {
+        // The phone as last read now, and read again in the background (it comes back as WM_APP_PHONE). Read
+        // even when none was linked last time: one linked since makes its pane come.
         g_phoneView = PhoneNow();
-        ReadPhoneSoon(g_startWnd, WM_APP_PHONE, PhoneNotesWanted());
-        if (phonemap::LinkNow() == phonemap::Link::Away) phonemap::Wake();  // (the phone may be back: try now)
+        PhoneReadAgain();
+        if (PhoneWanted() && phonemap::LinkNow() == phonemap::Link::Away) phonemap::Wake();  // (the phone may be back: try now)
+        if (PhoneWanted() && !g_phoneState.apart) PhoneSeen();
     }
     StartComputeLayout();
     g_startResetting = true;
@@ -53686,10 +60842,12 @@ void ShowStart() {
     StartShape(g_startWnd);
     StartCorners(g_startWnd);
     g_inMenu = true;  // the bar stays out while it's open
+    bool moving = StartMotionOpen();  // (layered at its first frame before it shows)
     ShowWindow(g_startWnd, SW_SHOW);
     StartForeground(g_startWnd);
     SetFocus(g_startEdit);
     InvalidateRect(g_startWnd, nullptr, FALSE);
+    if (moving) UpdateWindow(g_startWnd);  // drawn before its first frame
     if (PhoneWanted() && g_phoneState.apart) ShowPhoneWindow();  // (beside it, or where it was put)
     PrewarmMenus();
 }
@@ -53783,8 +60941,8 @@ void UpdateStartTip(HWND wnd, int hit) {
 // The Start button: ours if it's on (true), else Windows' opens.
 bool ToggleStartMenu() {
     if (!g_startConfig.enabled) return false;
-    if (g_startWnd && IsWindowVisible(g_startWnd)) HideStart();
-    else if (GetTickCount() - g_startHiddenAt > 200) ShowStart();  // not the click that just closed it
+    if (g_startWnd && IsWindowVisible(g_startWnd) && !StartClosing()) HideStart();
+    else if (GetTickCount() - g_startHiddenAt > 200) ShowStart();  // not the click that just closed it (closing, it comes back)
     return true;
 }
 
@@ -53947,6 +61105,13 @@ LRESULT CALLBACK StartWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
         case WM_APP_PHONE_TEXTS:
             PhoneTextsChanged();
+            return 0;
+
+        case WM_APP_PHONE_NOTES:
+            // Read again only while the phone is in sight (else the next time it shows reads it), a moment later:
+            // Windows' notification database takes a little while to have the change.
+            if ((g_phoneWnd && IsWindowVisible(g_phoneWnd)) || (IsWindowVisible(wnd) && g_sly.phone))
+                SetTimer(wnd, kTimerPhoneNotes, 1500, nullptr);
             return 0;
 
 #ifdef TD_PREFIX
@@ -54138,6 +61303,8 @@ LRESULT CALLBACK StartWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                     ScrollCascade(*c, -GET_WHEEL_DELTA_WPARAM(wParam) * Px(60) / WHEEL_DELTA);
                     return 0;
                 }
+            // Over the phone's open conversation: it scrolls.
+            if (g_sly.phone && PhoneThreadWheel(wnd, g_sly.ply, screen, GET_WHEEL_DELTA_WPARAM(wParam))) return 0;
         }
             if (g_startView != kViewHome) {
                 g_scrollPx -= GET_WHEEL_DELTA_WPARAM(wParam) * 3 * g_sly.row / WHEEL_DELTA;
@@ -54211,6 +61378,12 @@ LRESULT CALLBACK StartWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             }
             return 0;
 
+        case WM_MBUTTONUP: {
+            // On the phone's notifications and conversations: cleared.
+            int hit = StartHitTest({GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)});
+            if (IsPhoneHit(hit)) PhoneMiddleClick(hit);
+            return 0;
+        }
         case WM_RBUTTONUP: {
             int hit = StartHitTest({GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)});
             if (hit >= 0 && hit < (int)g_rows.size()) {
@@ -54218,7 +61391,7 @@ LRESULT CALLBACK StartWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             } else if (hit >= kSmPlace && hit < kSmPlace + (int)g_places.size()) {
                 PlaceMenu(wnd, hit - kSmPlace);
             } else if (IsPhoneHit(hit)) {
-                PhoneMenu(wnd);
+                PhoneMenu(wnd, hit);
             } else if (hit == kSmFooter && g_startView == kViewHome) {
                 StartBlankMenu(wnd, true);
             } else if (hit == -1) {
@@ -54229,7 +61402,12 @@ LRESULT CALLBACK StartWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         }
 
         case WM_TIMER:
-            if (wParam == kTimerFlyout) {
+            if (wParam == kTimerStartMotion) {
+                StartMotionFrame();
+            } else if (wParam == kTimerPhoneNotes) {
+                KillTimer(wnd, kTimerPhoneNotes);
+                PhoneReadAgain();
+            } else if (wParam == kTimerFlyout) {
                 KillTimer(wnd, kTimerFlyout);
                 POINT pt;
                 GetCursorPos(&pt);
@@ -54419,6 +61597,8 @@ bool PowerUserMenu(HWND bar) {
 LRESULT CALLBACK StartKeyProc(int code, WPARAM wParam, LPARAM lParam) {
     if (code == HC_ACTION) {
         auto* key = (KBDLLHOOKSTRUCT*)lParam;
+        // The unassigned key another part sends while Win is held (the switcher, taking Win+Tab): Win was used.
+        if ((key->flags & LLKHF_INJECTED) && key->vkCode == 0xE8 && g_winHeld) g_winUsed = true;
         if (!(key->flags & LLKHF_INJECTED)) {
             bool win = key->vkCode == VK_LWIN || key->vkCode == VK_RWIN;
             bool down = wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN;
@@ -54472,6 +61652,7 @@ void StartKeyHook(bool on) {
 void StartBeforeTheme() {
     g_homeValid = g_placesValid = false;
     HideStart();
+    StartMotionEnd();  // (hidden now: its look is about to go)
     CloseStartLook();
     ClearStartIcons();
 }
@@ -54757,7 +61938,7 @@ void StartAfterTheme() {
     if (g_startConfig.enabled && g_startConfig.phone && PhoneTexting() && EnsureStartWindow()) {
         phonemap::Begin(g_startWnd, WM_APP_PHONE_TEXTS);
         SetPropW(g_startWnd, L"TourneHoldsPhone", (HANDLE)1);  // (System Icons' centre opens Tourne's phone then)
-        phoneancs::Begin();
+        phoneancs::Begin(g_startWnd, WM_APP_PHONE_NOTES);
         phoneancs::StartCallsHelper();
 #ifdef TD_PREFIX
         CallsAfterTheme();
@@ -54771,7 +61952,7 @@ void StartAfterTheme() {
     // The phone kept open on its own: up from the start, read now and every minute after.
     if (g_startConfig.enabled && g_phoneState.apart && g_phoneState.pinned && PhoneWanted() && EnsureStartWindow()) {
         g_phoneView = PhoneNow();
-        ReadPhoneSoon(g_startWnd, WM_APP_PHONE, PhoneNotesWanted());
+        PhoneReadAgain();
         ShowPhoneWindow();
     } else {
         HidePhoneWindow();
@@ -54793,9 +61974,11 @@ void DestroyStartMenu() {
     StartKeyHook(false);
     phoneancs::End();
     phonemap::End();
+    PhoneReadWait();  // (a read under way finished before this code goes)
     CloseCascades(0);
     if (g_cascadeClass) UnregisterClassW(kCascadeClass, g_instance);
     g_cascadeClass = false;
+    StartMotionEnd();
     if (g_startWnd) DestroyWindow(g_startWnd);
     g_startWnd = nullptr;
     if (g_phoneWnd) DestroyWindow(g_phoneWnd);
@@ -54840,6 +62023,62 @@ struct TourneMenuItem {
 };
 
 constexpr wchar_t kLiteMenuPackage[] = L"RedBaronDevelopment.PopEx_36fx7gy0frrbc";
+
+// An item may be a Tourne command (command.cpp's language), which the part that
+// runs commands is asked to do.
+////////////////////////////////////////////////////////////////////////////////
+// Asking the part that runs commands ("// @inline tourne-pipe.cpp"): one line
+// to tournectl's pipe for this session, \\.\pipe\tourne-ctl-<session>, and its
+// answer back.
+//
+// The commands live with the key binds (binds.cpp, in the Switcher) because
+// that is where the window and desktop work already is. Everything else that
+// speaks the command language (the Tourne Menu's items, a bar click, the menu
+// editor's help) asks through this pipe, which works whether the Switcher is a
+// thread of the same program or, in the Windhawk suite, another process.
+//
+// An empty answer means nobody was listening: Key binds off, or "Let scripts
+// control Tourne" off. Callers say so rather than failing silently.
+//
+// A fragment, like the other inlined files: whoever inlines it has already
+// included <string> and windows.h.
+
+inline std::string TournePipeUtf8(std::wstring const& s) {
+    if (s.empty()) return {};
+    int n = WideCharToMultiByte(CP_UTF8, 0, s.data(), (int)s.size(), nullptr, 0, nullptr, nullptr);
+    std::string out((size_t)n, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, s.data(), (int)s.size(), out.data(), n, nullptr, nullptr);
+    return out;
+}
+
+inline std::wstring TournePipeWide(std::string const& s) {
+    if (s.empty()) return {};
+    int n = MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), nullptr, 0);
+    std::wstring out((size_t)n, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), out.data(), n);
+    return out;
+}
+
+// The answer, or empty if nothing is listening. Waits at most waitMs for a busy
+// pipe (it serves one caller at a time), so a click never hangs the menu.
+inline std::wstring AskTourne(std::wstring const& line, DWORD waitMs = 250) {
+    DWORD session = 0;
+    ProcessIdToSessionId(GetCurrentProcessId(), &session);
+    std::wstring name = L"\\\\.\\pipe\\tourne-ctl-" + std::to_wstring(session);
+    HANDLE pipe = CreateFileW(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (pipe == INVALID_HANDLE_VALUE && GetLastError() == ERROR_PIPE_BUSY && WaitNamedPipeW(name.c_str(), waitMs))
+        pipe = CreateFileW(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (pipe == INVALID_HANDLE_VALUE) return L"";
+    std::string request = TournePipeUtf8(line) + "\n";
+    DWORD moved = 0;
+    std::string answer;
+    if (WriteFile(pipe, request.data(), (DWORD)request.size(), &moved, nullptr)) {
+        char buf[4096];
+        while (ReadFile(pipe, buf, sizeof(buf), &moved, nullptr) && moved) answer.append(buf, moved);
+    }
+    CloseHandle(pipe);
+    return answer.empty() ? L" " : TournePipeWide(answer);  // (a space: listening, but it said nothing)
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // LiteMenu's config.xml: enough XML for it (elements, quoted attributes, text, the prolog, comments).
@@ -55232,45 +62471,15 @@ void CloseLiteMenu() {
         }
 }
 
-// LiteMenu's tree as the Tourne Menu's rows: its own commands become Tourne's, app ids shell:AppsFolder.
-void TmFlatten(std::vector<TourneMenuItem> const& items, int depth, std::vector<MenuRow>& out) {
-    for (auto const& item : items) {
-        MenuRow row;
-        row.depth = depth;
-        row.name = item.type == 2 ? L"-" : item.name;
-        if (item.type == 1) {
-            row.command = item.command;
-            row.args = item.args;
-            if (row.command == L"<setup-litemenu>") row.command = L"tourne:menu-settings";
-            else if (item.shellApp)
-                row.command = row.command == L"Microsoft.Windows.Shell.RunDialog" ? L"tourne:run" : L"shell:AppsFolder\\" + row.command;
-        }
-        out.push_back(row);
-        if (item.type == 0) TmFlatten(item.items, depth + 1, out);
-    }
-}
-
-// The menu's settings: in Tourne Desktop, Tourne Studio at the Tourne Menu's; the first time, with LiteMenu's
-// menu copied in as its rows so it's edited there (LiteMenu's config.xml isn't read after that). In the suite,
+// The menu's settings: in Tourne Desktop, its own window laid out like LiteMenu's (desktop/host/menu-editor.cpp:
+// the menu as a tree, opening on LiteMenu's menu while there are no rows, which OK copies in). In the suite,
 // Windhawk's window.
 void TmMenuSettings() {
 #ifdef TD_PREFIX
-    if (g_settings.menuRows.empty()) {
-        std::vector<MenuRow> rows;
-        TmFlatten(LiteMenuItems(), 0, rows);
-        std::vector<std::pair<std::wstring, std::wstring>> set;
-        std::wstring base = std::wstring(TD_PREFIX) + L".menu.items[";
-        for (size_t i = 0; i < rows.size(); i++) {
-            std::wstring at = base + std::to_wstring(i) + L"].";
-            set.push_back({at + L"depth", std::to_wstring(rows[i].depth)});
-            set.push_back({at + L"name", rows[i].name});
-            set.push_back({at + L"command", rows[i].command});
-            set.push_back({at + L"args", rows[i].args});
-        }
-        if (!rows.empty()) td::WriteStudioSettings(set, base, L"litemenu-copy");
-    }
-#endif
+    td::OpenMenuEditor();
+#else
     OpenOwnSettings(L"taskbar.menu.");
+#endif
 }
 
 // A tourne: action, or LiteMenu's own command (<lock-computer> and the rest); false when it's neither.
@@ -55283,6 +62492,21 @@ bool TmAction(std::wstring const& command) {
     else if (a == L"<close-litemenu>") a = L"tourne:close-litemenu";
     if (a.rfind(L"tourne:", 0) != 0) return false;
     a = a.substr(7);
+    // "tourne:do <command>": the command language, so a menu item can do what a
+    // key does, several steps and all ("tourne:do workspace 2; wait 200; exec notepad").
+    if (a.rfind(L"do ", 0) == 0 || a == L"do") {
+        std::wstring command = TmTrim(a.size() > 2 ? a.substr(3) : L"");
+        if (command.empty()) {
+            Wh_Log(L"this item says tourne:do with no command after it");
+            return true;
+        }
+        std::wstring answer = AskTourne(L"run " + command);
+        if (answer.empty())
+            Wh_Log(L"\"%s\" needs Key binds on with \"Let scripts control Tourne\"", command.c_str());
+        else if (TmTrim(answer).rfind(L"error", 0) == 0)
+            Wh_Log(L"\"%s\": %s", command.c_str(), TmTrim(answer).c_str());
+        return true;
+    }
     if (a == L"show-desktop") ToggleShowDesktop();
     else if (a == L"run") ShowRunDialog();
     else if (a == L"start") ToggleStartMenu();
@@ -55302,7 +62526,10 @@ bool TmAction(std::wstring const& command) {
     else if (a == L"sign-out") ExitWindowsEx(EWX_LOGOFF, SHTDN_REASON_FLAG_PLANNED);
     else if (a == L"restart") TmPower(true);
     else if (a == L"shutdown") TmPower(false);
-    else if (a == L"desktop-next") PagerGoTo(std::min(g_pagerDesktops.current + 1, g_pagerDesktops.count - 1));
+    else if (a == L"launcher") {
+        if (HWND launcher = FindWindowW(L"TourneLauncher", nullptr))
+            PostMessageW(launcher, RegisterWindowMessageW(L"TourneDesktop.Launcher"), 0, 0);
+    } else if (a == L"desktop-next") PagerGoTo(std::min(g_pagerDesktops.current + 1, g_pagerDesktops.count - 1));
     else if (a == L"desktop-previous") PagerGoTo(std::max(g_pagerDesktops.current - 1, 0));
     else if (a == L"desktop-new") SendKeys({VK_LCONTROL, VK_LWIN, 'D'});
     else if (a == L"desktop-close") SendKeys({VK_LCONTROL, VK_LWIN, VK_F4});
@@ -55348,6 +62575,50 @@ HMENU TmBuild(std::vector<TourneMenuItem> const& items, TourneMenuBuild& b) {
     return menu;
 }
 
+// A click outside the open menu (the desktop's, the Tourne Menu) closes it and still reaches what's under it: a right-click elsewhere
+// opens a new menu there, a middle-click the Tourne Menu (again, where it was clicked), a left-click picks what it's on. (Windows closes a
+// menu only on the left or right button, and keeps that click.)
+struct PassedClick {
+    UINT down = 0;  // the button's down message, while one is waiting
+    POINT at{};
+};
+thread_local PassedClick t_passedClick;
+
+LRESULT CALLBACK PassClickFilter(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == MSGF_MENU && !t_passedClick.down) {
+        MSG const* m = (MSG const*)lParam;
+        UINT down = 0;
+        switch (m->message) {
+            case WM_LBUTTONDOWN: case WM_NCLBUTTONDOWN: down = WM_LBUTTONDOWN; break;
+            case WM_RBUTTONDOWN: case WM_NCRBUTTONDOWN: down = WM_RBUTTONDOWN; break;
+            case WM_MBUTTONDOWN: case WM_NCMBUTTONDOWN: down = WM_MBUTTONDOWN; break;
+        }
+        WCHAR cls[16] = L"";
+        if (down && !(GetClassNameW(WindowFromPoint(m->pt), cls, ARRAYSIZE(cls)) && !wcscmp(cls, L"#32768"))) {
+            t_passedClick = {down, m->pt};
+            EndMenu();
+            return TRUE;  // (taken here, and given again once the menu has gone)
+        }
+    }
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+// The click again, where it was, now nothing holds the mouse; let go too if the button is up by now.
+void PassClickOn() {
+    PassedClick c = t_passedClick;
+    t_passedClick = {};
+    if (!c.down) return;
+    // (input and the keys' state are the physical buttons; the messages, after a left-handed swap)
+    bool physicalLeft = (c.down == WM_LBUTTONDOWN) != (c.down != WM_MBUTTONDOWN && GetSystemMetrics(SM_SWAPBUTTON));
+    DWORD press = c.down == WM_MBUTTONDOWN ? MOUSEEVENTF_MIDDLEDOWN : physicalLeft ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_RIGHTDOWN;
+    int key = c.down == WM_MBUTTONDOWN ? VK_MBUTTON : physicalLeft ? VK_LBUTTON : VK_RBUTTON;
+    INPUT in[2] = {};
+    in[0].type = in[1].type = INPUT_MOUSE;
+    in[0].mi.dwFlags = press;
+    in[1].mi.dwFlags = press << 1;  // (each button's UP flag is its DOWN flag's next bit)
+    SendInput(GetAsyncKeyState(key) & 0x8000 ? 1 : 2, in, sizeof(INPUT));
+}
+
 // The menu at the pointer, from the bar (any of them: it only owns the menu).
 void ShowTourneMenu(HWND wnd) {
     if (!g_settings.menuEnabled) return;
@@ -55356,9 +62627,13 @@ void ShowTourneMenu(HWND wnd) {
     TourneMenuBuild b;
     HMENU menu = TmBuild(items, b);
     g_menuFromButton = false;
+    t_passedClick = {};
+    HHOOK pass = SetWindowsHookExW(WH_MSGFILTER, PassClickFilter, nullptr, GetCurrentThreadId());
     int cmd = RunMenu(wnd, menu);
+    if (pass) UnhookWindowsHookEx(pass);
     DestroyMenu(menu);
     if (cmd > 0 && cmd <= (int)b.actions.size()) b.actions[cmd - 1]();
+    PassClickOn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55369,6 +62644,14 @@ void ShowTourneMenu(HWND wnd) {
 // extensions), with the view's View, Sort by and Refresh first, styled and run here like a button's shell
 // menu. What changes the view goes back to the desktop as DesktopViewMessage, posted, so neither thread
 // waits on the other. Shift + right-click keeps Windows' own menu.
+//
+// Made ahead (taskbar.desktopMenuReady): the empty space's menu is kept built between right-clicks (made
+// again a second after each one, and when the clipboard changes, for Paste); a file's starts building as
+// the button goes down (the desktop posts its request with "prepare=1" then) and is used if the same
+// items are asked for as it comes up; and a few seconds after the bar starts, a thread of its own builds
+// and throws away one menu for each kind of item on the desktop, so their extensions are loaded before
+// the first right-click. The menus shown are made here, on the bar's thread: a shell menu's objects
+// belong to the thread that made them.
 
 UINT DesktopMenuMessage() {
     static UINT msg = RegisterWindowMessageW(L"TourneDesktop.DesktopMenu");
@@ -55398,6 +62681,7 @@ struct DesktopRequest {
     std::wstring wallpaper;              // the picture showing (the empty space's menu only)
     int placement = -1;                  // how (DESKTOP_WALLPAPER_POSITION)
     std::vector<std::wstring> recent;    // the last few others, newest first
+    bool prepare = false;                // the button went down: only build it, for when it comes up
 };
 
 DesktopRequest ParseDesktopRequest(std::wstring const& text) {
@@ -55420,6 +62704,7 @@ DesktopRequest ParseDesktopRequest(std::wstring const& text) {
         else if (key == L"wallpaper") r.wallpaper = value;
         else if (key == L"placement") r.placement = _wtoi(value.c_str());
         else if (key == L"recent") r.recent.push_back(value);
+        else if (key == L"prepare") r.prepare = value == L"1";
     }
     return r;
 }
@@ -55516,22 +62801,166 @@ void AddDesktopViewItems(HMENU popup, DesktopRequest const& r) {
     if (!display || !personalize) AppendMenuW(popup, MF_SEPARATOR, 0, nullptr);
     if (!display) AppendMenuW(popup, MF_STRING, kDvFirstId + 50, L"Display settings");
     if (!personalize) AppendMenuW(popup, MF_STRING, kDvFirstId + 51, L"Personalize");
+    // Tourne's own: its desktop widgets placed and moved in one go (plugin-runtime.cpp's Edit desktop mode).
+    if (FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr)) AppendMenuW(popup, MF_STRING, kDvFirstId + 52, L"Edit desktop");
+}
+
+// The shell's menu for the items (or the empty space), built: false when there's none.
+bool BuildDesktopShellMenu(HWND wnd, std::vector<std::wstring> const& items, bool shift, ShellMenu& out) {
+    ReleaseShellMenu(out);
+    out.menu = DesktopShellMenu(wnd, items);
+    if (!out.menu) return false;
+    out.menu->QueryInterface(IID_PPV_ARGS(&out.menu2));
+    out.menu->QueryInterface(IID_PPV_ARGS(&out.menu3));
+    out.popup = CreatePopupMenu();
+    UINT query = CMF_NORMAL | (shift ? CMF_EXTENDEDVERBS : 0) | (items.empty() ? 0 : CMF_CANRENAME);
+    if (FAILED(out.menu->QueryContextMenu(out.popup, 0, 1, 0x7FFF, query))) {
+        ReleaseShellMenu(out);
+        return false;
+    }
+    return true;
+}
+
+// The one made ahead, and what it's for (the items one to a line; empty: the empty space).
+ShellMenu g_readyMenu;
+std::wstring g_readyKey;
+bool g_readyMade = false;
+DWORD g_readyAt = 0;  // when it was made: a file's is only used for a few seconds
+constexpr UINT_PTR kTimerReadyMenu = 31;  // the empty space's menu, made again once things settle
+
+std::wstring DesktopItemsKey(std::vector<std::wstring> const& items) {
+    std::wstring key;
+    for (auto const& item : items) key += item + L"\n";
+    return key;
+}
+
+void DropReadyMenu() {
+    ReleaseShellMenu(g_readyMenu);
+    g_readyKey.clear();
+    g_readyMade = false;
+}
+
+void MakeReadyMenu(HWND wnd, std::vector<std::wstring> const& items) {
+    if (!g_settings.desktopMenuReady || g_shellMenu.open) return;
+    std::wstring key = DesktopItemsKey(items);
+    if (g_readyMade && g_readyKey == key && (key.empty() || GetTickCount() - g_readyAt < 10000)) return;
+    DropReadyMenu();
+    if (!BuildDesktopShellMenu(wnd, items, false, g_readyMenu)) return;
+    FillShellSubmenus(g_readyMenu, g_readyMenu.popup);
+    g_readyKey = key;
+    g_readyMade = true;
+    g_readyAt = GetTickCount();
+}
+
+// The empty space's, again in a moment (after a menu, the clipboard changing, settings applied).
+void ReadyMenuSoon(HWND wnd, UINT ms) {
+    if (!g_settings.desktopMenuReady) {
+        KillTimer(wnd, kTimerReadyMenu);
+        DropReadyMenu();
+        return;
+    }
+    SetTimer(wnd, kTimerReadyMenu, ms, nullptr);
+}
+
+// The bar's timer (WM_TIMER, kTimerReadyMenu) and the clipboard changing (WM_CLIPBOARDUPDATE).
+void OnReadyMenuTimer(HWND wnd) {
+    KillTimer(wnd, kTimerReadyMenu);
+    if (g_inMenu) {
+        ReadyMenuSoon(wnd, 1000);  // (not while a menu is open)
+        return;
+    }
+    MakeReadyMenu(wnd, {});
+}
+
+void OnClipboardChanged(HWND wnd) {
+    if (!g_readyMade || !g_readyKey.empty()) return;
+    DropReadyMenu();  // (its Paste is as the clipboard was)
+    ReadyMenuSoon(wnd, 300);
+}
+
+// One menu for each kind of item on the desktop, built and thrown away on a thread of its own a few
+// seconds after the bar starts, so the extensions they load are in before the first right-click.
+DWORD WINAPI WarmDesktopMenus(LPVOID) {
+    Sleep(5000);
+    if (FAILED(OleInitialize(nullptr))) return 0;
+    DWORD started = GetTickCount();
+    int built = 0;
+    IShellFolder* desktop = nullptr;
+    IEnumIDList* list = nullptr;
+    if (SUCCEEDED(SHGetDesktopFolder(&desktop)) &&
+        desktop->EnumObjects(nullptr, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, &list) == S_OK && list) {
+        std::vector<std::wstring> kinds;
+        PITEMID_CHILD child = nullptr;
+        while (list->Next(1, &child, nullptr) == S_OK && built < 40) {
+            // Its kind: a folder, a file type, or the item itself (This PC, the Recycle Bin, ...).
+            std::wstring kind;
+            SFGAOF attrs = SFGAO_FOLDER | SFGAO_FILESYSTEM;
+            desktop->GetAttributesOf(1, (PCUITEMID_CHILD_ARRAY)&child, &attrs);
+            STRRET name{};
+            WCHAR path[MAX_PATH] = L"";
+            if (SUCCEEDED(desktop->GetDisplayNameOf(child, SHGDN_FORPARSING, &name))) StrRetToBufW(&name, child, path, ARRAYSIZE(path));
+            if (!(attrs & SFGAO_FILESYSTEM)) kind = path;
+            else if (attrs & SFGAO_FOLDER) kind = L"<folder>";
+            else kind = PathFindExtensionW(path);
+            for (auto& c : kind) c = (wchar_t)towlower(c);
+            if (std::find(kinds.begin(), kinds.end(), kind) == kinds.end()) {
+                kinds.push_back(kind);
+                IContextMenu* menu = nullptr;
+                if (SUCCEEDED(desktop->GetUIObjectOf(nullptr, 1, (PCUITEMID_CHILD_ARRAY)&child, IID_IContextMenu, nullptr, (void**)&menu))) {
+                    HMENU popup = CreatePopupMenu();
+                    if (SUCCEEDED(menu->QueryContextMenu(popup, 0, 1, 0x7FFF, CMF_NORMAL | CMF_CANRENAME))) built++;
+                    DestroyMenu(popup);
+                    menu->Release();
+                }
+            }
+            CoTaskMemFree(child);
+        }
+    }
+    if (list) list->Release();
+    if (desktop) desktop->Release();
+    Wh_Log(L"desktop menus made ahead: %d kinds in %lu ms", built, GetTickCount() - started);
+    OleUninitialize();
+    return 0;
+}
+
+void WarmDesktopMenusOnce() {
+    static bool started;
+    if (started || !g_settings.desktopMenuReady) return;
+    started = true;
+    if (HANDLE thread = CreateThread(nullptr, 0, WarmDesktopMenus, nullptr, 0, nullptr)) CloseHandle(thread);
 }
 
 void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
     DesktopRequest r = ParseDesktopRequest(text);
+    if (r.prepare) {
+        MakeReadyMenu(wnd, r.items);
+        return;
+    }
     CloseShellMenu();
-    g_shellMenu.menu = DesktopShellMenu(wnd, r.items);
-    if (!g_shellMenu.menu) return;
-    g_shellMenu.menu->QueryInterface(IID_PPV_ARGS(&g_shellMenu.menu2));
-    g_shellMenu.menu->QueryInterface(IID_PPV_ARGS(&g_shellMenu.menu3));
-    g_shellMenu.popup = CreatePopupMenu();
-    UINT query = CMF_NORMAL | (r.shift ? CMF_EXTENDEDVERBS : 0) | (r.items.empty() ? 0 : CMF_CANRENAME);
-    if (FAILED(g_shellMenu.menu->QueryContextMenu(g_shellMenu.popup, 0, 1, 0x7FFF, query))) {
-        CloseShellMenu();
+    // The one made ahead when it's for these items, else made now.
+    if (g_readyMade && g_readyKey == DesktopItemsKey(r.items) && !r.shift &&
+        (r.items.empty() || GetTickCount() - g_readyAt < 10000)) {
+        g_shellMenu = g_readyMenu;
+        g_readyMenu = {};
+        g_readyKey.clear();
+        g_readyMade = false;
+    } else if (!BuildDesktopShellMenu(wnd, r.items, r.shift, g_shellMenu)) {
         return;
     }
     if (r.items.empty()) AddDesktopViewItems(g_shellMenu.popup, r);
+    IContextMenu* shell = g_shellMenu.menu;
+    MenuContext context;
+    context.menu = L"desktop";
+    context.app = MenuAppName();
+    context.known = true;
+    context.files = r.items;
+    if (PWSTR desk = nullptr; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Desktop, 0, nullptr, &desk))) {
+        context.folder = desk;
+        CoTaskMemFree(desk);
+    }
+    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules), [&](UINT id) {
+        return id < kDvFirstId ? ShellMenuVerb(shell, id) : std::wstring();
+    });
     GetCursorPos(&g_shellMenu.pt);
 
     // The bar's menu look, as RunMenu sets it.
@@ -55539,20 +62968,32 @@ void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
     if (g_tooltip) SendMessageW(g_tooltip, TTM_POP, 0, 0);
     g_inMenu = true;
     SetForegroundWindow(wnd);
-    auto const& p = g_settings.palette;
-    g_menuLook = {p.ground, p.line, p.edge, p.text, p.accent, p.dim, p.hover, g_tipFont,
-                  g_themed ? g_theme.menu : nullptr, g_scale, !g_settings.menuIcons};
-    if (g_settings.sabBackdrop && g_themed && !g_menuLook.theme) FrameLikeStartAllBack(g_menuLook, MenuIconFont(), StartCapsSetting());
+    g_menuLook = BarMenuLook();
     g_shellMenu.open = true;
+    t_passedClick = {};
+    HHOOK pass = SetWindowsHookExW(WH_MSGFILTER, PassClickFilter, nullptr, GetCurrentThreadId());
     int cmd = (int)TrackStyledMenu(g_shellMenu.popup, TPM_RETURNCMD | TPM_RIGHTBUTTON, g_shellMenu.pt.x, g_shellMenu.pt.y, wnd, true);
+    if (pass) UnhookWindowsHookEx(pass);
     g_shellMenu.open = false;
+    UndoMenuRules(rules);
     PostMessageW(wnd, WM_NULL, 0, 0);
     g_inMenu = false;
+    if (RunMenuRule(rules, (UINT)cmd, context)) cmd = 0;
 
     if (cmd >= (int)kDvFirstId) {
         int view = cmd - (int)kDvFirstId;
         if (view == 50) ShellExecuteW(nullptr, nullptr, L"ms-settings:display", nullptr, nullptr, SW_SHOWNORMAL);
         else if (view == 51) ShellExecuteW(nullptr, nullptr, L"ms-settings:personalization", nullptr, nullptr, SW_SHOWNORMAL);
+        else if (view == 52) {
+            if (HWND plugins = FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr))
+                PostMessageW(plugins, RegisterWindowMessageW(L"TourneDesktop.EditDesktop"), 0, 0);
+        }
+        else if (view >= kDvWallRecent && view < kDvWallRecent + 8 && view - kDvWallRecent < (int)r.recent.size()) {
+            // The picture itself, as listed: the desktop's own list could be in another order by now.
+            std::wstring const& path = r.recent[view - kDvWallRecent];
+            COPYDATASTRUCT cd{0x54445750 /* TDWP */, (DWORD)((path.size() + 1) * sizeof(wchar_t)), (void*)path.c_str()};
+            SendMessageW(desktop, WM_COPYDATA, (WPARAM)wnd, (LPARAM)&cd);
+        }
         else PostMessageW(desktop, DesktopViewMessage(), view, 0);
     } else if (cmd > 0) {
         // Rename is the view's (its label edit); everything else runs through the shell's menu.
@@ -55572,6 +63013,8 @@ void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
         }
     }
     CloseShellMenu();
+    PassClickOn();
+    ReadyMenuSoon(wnd, 1000);
 }
 
 // Blur or acrylic behind a see-through bar (not with segments: the gaps
@@ -55592,8 +63035,10 @@ void SetBarBackdrop(HWND wnd) {
         (SetWindowCompositionAttribute_t)GetProcAddress(GetModuleHandleW(L"user32.dll"), "SetWindowCompositionAttribute");
     if (!set) return;
     int blur = g_settings.coloring && EffSegments() == Segments::Off && !BackdropClear() ? g_settings.blur : 0;
-    // None under the glow at the edge, or under a bar fading (the blur doesn't fade with it).
-    bool away = g_edgeHint || (FadeOn() && (!g_shown || g_slide < 1));
+    // None under the glow at the edge, or under a bar fading (the blur doesn't fade with it), a new screen's
+    // bar coming in faded too.
+    BarArrival const& arrival = g_active->arrive;
+    bool away = g_edgeHint || (FadeOn() && (!g_shown || g_slide < 1)) || arrival.pending || (arrival.running && arrival.fade);
     if (away) blur = 0;
     if (CssActive()) {
         // A YASB theme's bar: acrylic when its config asks for the blur, and its window corners and border.
@@ -55726,8 +63171,30 @@ BYTE ShyAlpha() {
     return (BYTE)std::lround(255 * std::clamp(a, 0.0, 1.0));
 }
 
-// The whole bar's opacity: the hiding animation's, times fading when idle.
-BYTE BarAlpha() { return (BYTE)std::lround(ShyAlpha() * std::clamp(g_idle.level, 0.0, 1.0)); }
+// How much of the bar a screen's arrival shows: none until it sets off, then as it fades in.
+double ArriveAlpha() {
+    BarArrival const& a = g_active->arrive;
+    return a.pending ? 0 : a.running && a.fade ? std::clamp(a.level, 0.0, 1.0) : 1;
+}
+
+// The whole bar's opacity: the hiding animation's, times fading when idle (and a new screen's bar coming in).
+BYTE BarAlpha() { return (BYTE)std::lround(ShyAlpha() * std::clamp(g_idle.level, 0.0, 1.0) * ArriveAlpha()); }
+
+// The bar where its arrival has it: on the way in from its edge, at its opacity, in one compositor update.
+void ArriveApply(HWND wnd) {
+    BarArrival const& a = g_active->arrive;
+    POINT at = a.home;
+    if (a.running && a.slide) {
+        RECT out = BarRect(false);
+        if (CssActive()) out = CssBody(out);
+        double away = 1 - a.level;
+        if (Vertical()) at.x += (LONG)std::lround((out.left - a.home.x) * away);
+        else at.y += (LONG)std::lround((out.top - a.home.y) * away);
+    }
+    g_barAlpha = BarAlpha();
+    BLENDFUNCTION blend{AC_SRC_OVER, 0, g_barAlpha, AC_SRC_ALPHA};
+    UpdateLayeredWindow(wnd, nullptr, a.slide ? &at : nullptr, nullptr, nullptr, nullptr, 0, &blend, ULW_ALPHA);
+}
 
 // While it's away the bar takes no clicks (the pointer at the edge still brings it back).
 void ClickThrough(HWND wnd, bool on) {
@@ -55754,6 +63221,16 @@ void StopPacer(HWND wnd) {
     g_shyRunning = false;
     g_aura.running = false;
     g_idle.running = false;  // (the next idle check picks up where it stopped)
+    if (BarArrival& a = g_active->arrive; a.running) {
+        // Cut short: in place, as it would have ended.
+        a.running = false;
+        a.level = 1;
+        if (IsWindow(wnd)) {
+            ArriveApply(wnd);
+            SetBarBackdrop(wnd);
+        }
+        a.slide = false;
+    }
 }
 
 void StartPacer(HWND wnd) {
@@ -55800,6 +63277,47 @@ void ShyApply(HWND wnd) {
     UpdateLayeredWindow(wnd, nullptr, &at, nullptr, nullptr, nullptr, 0, &blend, ULW_ALPHA);
 }
 
+// A screen just added: its new bar comes in on the "monitorAdded" line once it's set up (ApplySettings),
+// slid in from its edge (no style, or a slide), faded (a bar that hides only fades: its hiding moves it),
+// or both. Bars made at startup, or for screens already there, just appear.
+bool ArriveOn() {
+    auto const& m = g_settings.motionScreenAdded;
+    return m.set && m.on && motion::Ms(m) > 0;
+}
+
+void ArriveStart(HWND wnd) {
+    BarArrival& a = g_active->arrive;
+    if (!a.pending) return;
+    a.pending = false;
+    std::wstring style = motion::StyleWord(g_settings.motionScreenAdded);
+    bool slideOnly = style.empty() || style == L"slide" || style == L"slidevert";
+    a.slide = (slideOnly || style == L"slidefade" || style == L"slidefadevert") && !Hides();
+    a.fade = !(a.slide && slideOnly);
+    RECT wr;
+    GetWindowRect(wnd, &wr);
+    a.home = {wr.left, wr.top};
+    a.level = 0;
+    a.start = NowMs();
+    a.running = ArriveOn();
+    SetBarBackdrop(wnd);  // (the blur only once it's no longer fading)
+    ArriveApply(wnd);
+    if (a.running) StartPacer(wnd);
+    else a.slide = false;
+}
+
+void ArriveFrame(HWND wnd) {
+    BarArrival& a = g_active->arrive;
+    auto const& m = g_settings.motionScreenAdded;
+    double ms = std::min(motion::Ms(m), 3000.0);
+    double t = ms > 0 ? (NowMs() - a.start) / ms : 1;
+    a.level = t >= 1 ? 1 : motion::Ease(m, t);
+    a.running = t < 1;
+    ArriveApply(wnd);
+    if (a.running) return;
+    a.slide = false;
+    SetBarBackdrop(wnd);  // (the blur back, after a fade)
+}
+
 // The slide has ended: in view (the blur back), or away (no clicks, and the hint starts to fade in).
 void ShyArrived(HWND wnd, double now) {
     if (g_shown) {
@@ -55836,7 +63354,7 @@ void ShyFrame(HWND wnd) {
     ShyApply(wnd);
     if (!busy) {
         g_shyRunning = false;
-        if (!g_aura.running && !g_idle.running) StopPacer(wnd);  // (the aura or idle fade may still be using the frame clock)
+        if (!g_aura.running && !g_idle.running && !g_active->arrive.running) StopPacer(wnd);  // (the aura, idle fade or a new screen's bar may still be using the frame clock)
     }
 }
 
@@ -55904,19 +63422,24 @@ void SlideTo(HWND wnd, bool shown) {
 }
 
 // Automatic hiding as set (or as the hotkey turned it), and this bar redone.
+bool FullscreenInFront(HWND bar);
+
 void ApplyHiding(HWND wnd) {
     SetAppBar(wnd, !Hides());
     PerfMark(L"    app bar space");
     StopPacer(wnd);
-    g_shown = true;
-    g_slide = g_slideFrom = 1;
+    // A full-screen program in front: redone out of its way, not shown over it for a moment (the bar flashed on
+    // and off over a full-screen video while something kept redoing it).
+    bool away = FullscreenInFront(wnd);
+    g_shown = !(away && Hides());
+    g_slide = g_slideFrom = g_shown ? 1 : 0;
     g_hint = 0;
     g_wantSince = 0;
     g_edgeHint = false;
     g_idle = {};  // awake
-    g_barAlpha = 255;
-    g_underFullscreen = false;  // back on top (PlaceBar); the next tick drops it again if need be
-    ClickThrough(wnd, false);
+    g_barAlpha = BarAlpha();  // (255, unless a new screen's bar waits to come in)
+    g_underFullscreen = away;  // (on top otherwise: PlaceBar)
+    ClickThrough(wnd, !g_shown);
     if (Hides()) SetTimer(wnd, kTimerAutoHide, 100, nullptr);
     else KillTimer(wnd, kTimerAutoHide);
     SetBarBackdrop(wnd);
@@ -55957,6 +63480,16 @@ BOOL CALLBACK CollectMonitor(HMONITOR monitor, HDC, LPRECT, LPARAM param) {
     return TRUE;
 }
 
+// The screens as SyncBars last saw them, by device name (Windows may give the same screens new handles).
+std::vector<std::wstring> g_screenNames;
+bool g_screensSeen = false;
+
+std::wstring ScreenName(HMONITOR monitor) {
+    MONITORINFOEXW mi{};
+    mi.cbSize = sizeof(mi);
+    return GetMonitorInfoW(monitor, &mi) ? std::wstring(mi.szDevice) : std::wstring();
+}
+
 // One bar for every screen but the main one when there are to be several
 // (the main bar follows the main screen by itself); the ones for screens that
 // are gone, or no longer wanted, are closed.
@@ -55967,6 +63500,14 @@ void SyncBars() {
         SetTimer(g_bars[0]->hwnd, kTimerScreens, 400, nullptr);
         return;
     }
+    // Which screens are new since last time: their bars come in (motion.monitorAdded), not the first time.
+    std::vector<HMONITOR> all;
+    EnumDisplayMonitors(nullptr, nullptr, CollectMonitor, (LPARAM)&all);
+    std::vector<std::wstring> before = std::move(g_screenNames);
+    g_screenNames.clear();
+    for (HMONITOR m : all) g_screenNames.push_back(ScreenName(m));
+    bool seenBefore = g_screensSeen;
+    g_screensSeen = true;
     std::vector<HMONITOR> screens;
     if (g_settings.multiBars) EnumDisplayMonitors(nullptr, nullptr, CollectMonitor, (LPARAM)&screens);
     HMONITOR main = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTOPRIMARY);
@@ -55984,6 +63525,8 @@ void SyncBars() {
         if (have) continue;
         auto* bar = new BarState();
         bar->monitor = screen;
+        std::wstring name = ScreenName(screen);
+        bar->arrive.pending = seenBefore && ArriveOn() && std::find(before.begin(), before.end(), name) == before.end();
         g_bars.push_back(bar);
         HWND wnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_LAYERED | WS_EX_ACCEPTFILES,
                                    kWindowClass, L"Tourne taskbar", WS_POPUP, 0, 0, 1, 1, nullptr, nullptr, g_instance, bar);
@@ -56023,7 +63566,8 @@ std::wstring LookSignature() {
     return s;
 }
 
-void ApplySettings(HWND wnd, bool screensOnly = false) {
+void ApplySettings(HWND wnd, bool screensOnly = false, const wchar_t* why = L"started") {
+    Wh_Log(L"Settings applied: %ls%ls", why, screensOnly ? L" (screens only)" : L"");
     PerfMark(L"(start)");
     g_menuSampled = nullptr;  // the menu theme's colours are sampled again
     int oldIconPx = IconPixels();
@@ -56045,8 +63589,12 @@ void ApplySettings(HWND wnd, bool screensOnly = false) {
     g_iconColors.clear();
     if (!screensOnly) PublishChoices();
     PerfMark(L"choices published");
+    // The Start menu's look can live in the bar's theme file, which this replaces: let it go first, even when
+    // only the screens changed (its handles would point into the closed file, and opening Start crashed).
+    if (screensOnly) CloseStartLook();
     g_themed = !g_settings.style.empty() && g_theme.Load(g_settings.style);
     if (!g_themed) g_theme.Close();
+    if (screensOnly) LoadStartLook();
     PerfMark(L"visual style loaded");
     g_orb.Load(g_settings.orb);
     PerfMark(L"orb loaded");
@@ -56059,6 +63607,18 @@ void ApplySettings(HWND wnd, bool screensOnly = false) {
     g_font = CreateFontIndirectW(&ncm.lfMessageFont);
     MakeTipFont();
     PerfMark(L"fonts");
+    ApplyMenuMotion();
+    if (IsMainBar()) {
+        PublishMenuLook();
+        PublishCorners();
+#ifdef TD_PREFIX
+        // The desktop's menu made ahead (desktop-menu.cpp): Tourne Desktop's desktop only.
+        static bool listening;
+        if (g_settings.desktopMenuReady && !listening) listening = AddClipboardFormatListener(wnd);
+        ReadyMenuSoon(wnd, 2000);
+        WarmDesktopMenusOnce();
+#endif
+    }
     if (!screensOnly) StartAfterTheme();
     PerfMark(L"start menu's style and settings");
     g_lookSignature = LookSignature();
@@ -56126,6 +63686,7 @@ void ApplySettings(HWND wnd, bool screensOnly = false) {
         if (std::find(g_bars.begin(), g_bars.end(), bar) == g_bars.end() || !bar->hwnd) continue;
         BarScope scope(bar);
         applyBar(bar->hwnd);
+        ArriveStart(bar->hwnd);  // (a bar for a screen just added comes in, now it's set up)
     }
     PerfMark(L"bars placed and drawn");
 }
@@ -56135,8 +63696,17 @@ bool WindowTouchesBar() {
     RECT bar = BarRect(true);
     // A window only reaching a little into it (as ones placed for another
     // taskbar do) doesn't count, as set.
-    int tolerance = Px(g_settings.shyTolerance);
-    InflateRect(&bar, -tolerance, -tolerance);
+    // Only from the side facing the screen, and always leaving the outer pixel: taken off every side, a
+    // tolerance past half the bar's thickness left nothing, and no window ever counted (shyTolerance 20 on a
+    // 38 px bar: it never hid after 10-14).
+    int thick = g_settings.edge == Edge::Top || g_settings.edge == Edge::Bottom ? bar.bottom - bar.top : bar.right - bar.left;
+    int tolerance = std::clamp(Px(g_settings.shyTolerance), 0, std::max(0, thick - 1));
+    switch (g_settings.edge) {
+        case Edge::Bottom: bar.top += tolerance; break;
+        case Edge::Top: bar.bottom -= tolerance; break;
+        case Edge::Left: bar.right -= tolerance; break;
+        case Edge::Right: bar.left += tolerance; break;
+    }
     if (IsRectEmpty(&bar)) return false;
     for (auto const& w : g_wins) {
         if (IsIconic(w.hwnd) || !IsWindowVisible(w.hwnd)) continue;
@@ -56210,8 +63780,10 @@ bool FullscreenInFront(HWND bar) {
     RECT wr;
     MONITORINFO mi{sizeof(mi)};
     if (!GetWindowRect(fg, &wr) || !GetMonitorInfoW(screen, &mi)) return false;
-    return wr.left <= mi.rcMonitor.left && wr.top <= mi.rcMonitor.top && wr.right >= mi.rcMonitor.right &&
-           wr.bottom >= mi.rcMonitor.bottom;
+    if (wr.left > mi.rcMonitor.left || wr.top > mi.rcMonitor.top || wr.right < mi.rcMonitor.right || wr.bottom < mi.rcMonitor.bottom)
+        return false;
+    // (a window with a title bar just bigger than its screen, left floating at its size, isn't full screen)
+    return EqualRect(&wr, &mi.rcMonitor) || !(style & WS_CAPTION);
 }
 
 // Behind a full-screen program, or back on top once it's gone.
@@ -56223,6 +63795,12 @@ void SetUnderFullscreen(HWND wnd, bool under) {
 }
 
 void AutoHideTick(HWND wnd) {
+    // In view and still: it takes clicks. (A slide cut short could leave a shown bar letting clicks through to
+    // what's under it, the tray dead until it hid and came back.)
+    if (g_shown && !g_shyRunning && g_slide >= 1 && (GetWindowLongPtrW(wnd, GWL_EXSTYLE) & WS_EX_TRANSPARENT)) {
+        Wh_Log(L"Bar was shown but letting clicks through: fixed");
+        ClickThrough(wnd, false);
+    }
     POINT pt;
     GetCursorPos(&pt);
     // A full-screen program in front: the bar goes and stays away, whatever the
@@ -56347,6 +63925,465 @@ void IdleTick(HWND wnd) {
     g_idle.running = true;
     StartPacer(wnd);
     IdleFrame(wnd);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Resting. Hiding, idle fading and the dynamic look check the pointer and the windows ten (or four)
+// times a second on every bar. Once nothing has been touched for a couple of seconds and every bar
+// has settled (shown or away, faded or not, nothing waiting), those checks stop, so a PC left alone
+// wakes for none of them. The first key or pointer move starts them again, through a low-level hook
+// that exists only while resting (so it costs nothing while the PC is in use, and nothing while
+// nobody touches it), as does any window news from the shell (opened, in front, flashing).
+
+constexpr UINT WM_APP_REST_WAKE = WM_APP + 21;
+constexpr DWORD kRestAfterMs = 2000;
+HHOOK g_restMouse = nullptr, g_restKeys = nullptr;
+bool g_resting = false;
+
+LRESULT CALLBACK RestInputProc(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == HC_ACTION && g_resting && g_wnd) PostMessageW(g_wnd, WM_APP_REST_WAKE, 0, 0);
+    return CallNextHookEx(nullptr, code, wParam, lParam);
+}
+
+// The bars to walk: every screen's, or just the one given when none are registered (a test bar).
+template <typename F>
+void ForEachBar(HWND fallback, F&& f) {
+    if (g_bars.empty()) {
+        if (fallback) f(fallback);
+        return;
+    }
+    std::vector<BarState*> bars = g_bars;
+    for (BarState* bar : bars) {
+        if (!bar->hwnd) continue;
+        BarScope scope(bar);
+        f(bar->hwnd);
+    }
+}
+
+// This bar (in the globals) has nothing under way that a check would move on.
+bool BarSettled() {
+    auto const& s = g_settings;
+    if (g_pacer || g_inMenu || g_pressed != -2 || (g_preview.wnd && IsWindowVisible(g_preview.wnd))) return false;
+    if (Hides() && (g_wantSince || g_shyRunning || g_slide != (g_shown ? 1 : 0))) return false;
+    // Idle fading: only once the fade has been decided (the bar left alone long enough), so it still
+    // happens on time without a check running meanwhile.
+    if (s.idleFade && (g_idle.running || (g_idle.to >= 1 && GetTickCount64() - g_idle.lastActive < (ULONGLONG)s.idleAfter * 1000 + 200)))
+        return false;
+    return true;
+}
+
+void RestTimers(HWND wnd, bool on) {
+    auto const& s = g_settings;
+    if (on && Hides()) SetTimer(wnd, kTimerAutoHide, 100, nullptr);
+    else KillTimer(wnd, kTimerAutoHide);
+    if (on && s.idleFade) SetTimer(wnd, kTimerIdle, 100, nullptr);
+    else KillTimer(wnd, kTimerIdle);
+    if (on && (s.dynamicTransparency || s.dynamicSegments)) SetTimer(wnd, kTimerDynamic, 250, nullptr);
+    else KillTimer(wnd, kTimerDynamic);
+}
+
+void RestUnhook() {
+    if (g_restMouse) UnhookWindowsHookEx(g_restMouse), g_restMouse = nullptr;
+    if (g_restKeys) UnhookWindowsHookEx(g_restKeys), g_restKeys = nullptr;
+}
+
+// After a check: rest if nothing was touched lately and every bar has settled.
+void MaybeRest(HWND wnd) {
+    if (g_resting || !g_wnd) return;
+    LASTINPUTINFO li{sizeof(li)};
+    if (!GetLastInputInfo(&li) || GetTickCount() - li.dwTime < kRestAfterMs) return;
+    bool settled = true;
+    ForEachBar(wnd, [&](HWND) { settled = settled && BarSettled(); });
+    if (!settled) return;
+    g_restMouse = SetWindowsHookExW(WH_MOUSE_LL, RestInputProc, g_instance, 0);
+    g_restKeys = SetWindowsHookExW(WH_KEYBOARD_LL, RestInputProc, g_instance, 0);
+    if (!g_restMouse || !g_restKeys) return RestUnhook();  // (no way to wake: keep checking)
+    g_resting = true;
+    ForEachBar(wnd, [](HWND bar) { RestTimers(bar, false); });
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Drags over the bar, as on Windows' own taskbar: a file (or anything) held over a task button for half a second
+// brings that window up to drop into; held over the rest of the bar (or the show desktop corner) it peeks the
+// desktop: that screen's windows step aside (minimised, tiling or not) so the drop can land on the desktop, and
+// come back when the button is let go. The bar itself takes no drops.
+
+constexpr UINT_PTR kTimerDragHover = 61, kTimerDragEnd = 62, kTimerEmptyMiddle = 63;
+
+// A click (client point) really on this bar: inside it and the window there. HitTest alone answers "nothing there"
+// for any point that isn't on a button, outside the bar too (a click reaching the bar while it holds the mouse),
+// which let middle clicks on the desktop switch desktops.
+bool OnBarItself(HWND wnd, LPARAM lParam) {
+    POINT pt{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+    RECT client;
+    if (!GetClientRect(wnd, &client) || !PtInRect(&client, pt)) return false;
+    ClientToScreen(wnd, &pt);
+    HWND at = WindowFromPoint(pt);
+    return at && GetAncestor(at, GA_ROOT) == wnd;
+}
+bool g_swallowMiddleUp = false;  // the up of a double middle click already handled
+constexpr DWORD kDragHoverMs = 500;
+std::vector<HWND> g_dragPeeked;  // windows the peek put aside, to bring back
+bool g_dragPeeking = false;
+
+struct DragHover {
+    HWND bar = nullptr;
+    int hit = -2;
+    ULONGLONG since = 0;
+    bool acted = false;
+} g_dragHover;
+
+void PeekDesktop(HWND bar, HMONITOR on = nullptr) {
+    if (g_dragPeeking) return;
+    if (!on) on = MonitorFromWindow(bar, MONITOR_DEFAULTTONEAREST);
+    g_dragPeeked.clear();
+    for (HWND h = GetTopWindow(nullptr); h; h = GetWindow(h, GW_HWNDNEXT))
+        if (IsTaskWindow(h) && !IsIconic(h) && MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST) == on) g_dragPeeked.push_back(h);
+    for (HWND h : g_dragPeeked) ShowWindowAsync(h, SW_SHOWMINNOACTIVE);
+    g_dragPeeking = true;
+    SetTimer(bar, kTimerDragEnd, 100, nullptr);  // (watching for the drop)
+}
+
+// The button let go (the drop made, or the drag given up): the windows back as they were, front last.
+void PeekEnd(HWND bar) {
+    KillTimer(bar, kTimerDragEnd);
+    if (!g_dragPeeking) return;
+    g_dragPeeking = false;
+    for (auto it = g_dragPeeked.rbegin(); it != g_dragPeeked.rend(); ++it)
+        if (IsWindow(*it) && IsIconic(*it)) ShowWindowAsync(*it, SW_SHOWNOACTIVATE);
+    g_dragPeeked.clear();
+}
+
+void DragHoverTick(HWND wnd) {
+    KillTimer(wnd, kTimerDragHover);
+    if (g_dragHover.bar != wnd || g_dragHover.acted) return;
+    g_dragHover.acted = true;
+    BarState* bar = BarOf(wnd);
+    if (!bar) return;
+    BarScope scope(bar);
+    int hit = g_dragHover.hit;
+    if (hit >= 0 && hit < (int)g_buttons.size() && !g_buttons[hit].windows.empty()) ActivateWindow(g_buttons[hit].windows.front());
+    else if (hit < 0 || hit == kHitShowDesktop || hit == kHitClock) PeekDesktop(wnd);
+}
+
+class BarDropTarget : public IDropTarget {
+   public:
+    explicit BarDropTarget(HWND wnd) : wnd_(wnd) {}
+    STDMETHODIMP QueryInterface(REFIID riid, void** out) override {
+        if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IDropTarget)) {
+            *out = static_cast<IDropTarget*>(this);
+            AddRef();
+            return S_OK;
+        }
+        *out = nullptr;
+        return E_NOINTERFACE;
+    }
+    STDMETHODIMP_(ULONG) AddRef() override { return ++refs_; }
+    STDMETHODIMP_(ULONG) Release() override {
+        ULONG left = --refs_;
+        if (!left) delete this;
+        return left;
+    }
+    // The cursor keeps the source's own look (a "no" here swaps in Windows' stock cursor); Drop still takes nothing.
+    STDMETHODIMP DragEnter(IDataObject*, DWORD, POINTL pt, DWORD* effect) override {
+        Hover(pt);
+        allowed_ = *effect;
+        *effect = Shown();
+        return S_OK;
+    }
+    STDMETHODIMP DragOver(DWORD, POINTL pt, DWORD* effect) override {
+        Hover(pt);
+        *effect = Shown();
+        return S_OK;
+    }
+    STDMETHODIMP DragLeave() override {
+        KillTimer(wnd_, kTimerDragHover);
+        g_dragHover = {};
+        return S_OK;
+    }
+    STDMETHODIMP Drop(IDataObject*, DWORD, POINTL, DWORD* effect) override {
+        DragLeave();
+        *effect = DROPEFFECT_NONE;
+        return S_OK;
+    }
+
+   private:
+    DWORD Shown() const {
+        return allowed_ & DROPEFFECT_MOVE ? DROPEFFECT_MOVE : allowed_ & DROPEFFECT_COPY ? DROPEFFECT_COPY : allowed_ & DROPEFFECT_LINK;
+    }
+    void Hover(POINTL at) {
+        BarState* bar = BarOf(wnd_);
+        if (!bar) return;
+        int hit;
+        {
+            BarScope scope(bar);
+            POINT p{at.x, at.y};
+            ScreenToClient(wnd_, &p);
+            hit = HitTest(p);
+        }
+        if (g_dragHover.bar == wnd_ && g_dragHover.hit == hit) return;  // (still over the same thing: its timer runs)
+        g_dragHover = {wnd_, hit, GetTickCount64(), false};
+        SetTimer(wnd_, kTimerDragHover, kDragHoverMs, nullptr);
+    }
+    HWND wnd_;
+    DWORD allowed_ = DROPEFFECT_NONE;
+    ULONG refs_ = 1;
+};
+
+// Drags anywhere else: held still for half a second at a screen's edge, or over the desktop showing between two
+// windows, they make room there: the windows beside it slide back from that edge (taskbar.dragRoom pixels, eased)
+// so the drop can land on the desktop, and grow back once the button is let go. Nothing closes or minimises, and
+// the tiling isn't asked (it only answers moves made by hand). Nothing runs between drags: a capture starting (any
+// press in any program) starts a 50 ms check that ends with the button.
+HWND g_dragWatchBar = nullptr;
+UINT_PTR g_dragWatch = 0;
+struct {
+    POINT at{};
+    ULONGLONG since = 0;
+} g_dragRest;
+
+struct RoomSlide {
+    HWND wnd;
+    RECT home;  // where it was (and goes back to)
+    RECT room;  // pulled back
+    RECT from, to;  // this slide
+};
+std::vector<RoomSlide> g_room;
+bool g_roomOpen = false;  // made (or being made) for this drag
+UINT_PTR g_roomTimer = 0;
+ULONGLONG g_roomStart = 0;
+constexpr DWORD kRoomMs = 170;
+constexpr int kRoomNear = 48;  // how close a window's edge must be to the spot to count as beside it
+
+// A window's edges as drawn (its invisible resize border left out: between two tiles the pointer is usually
+// over one of those, not over the desktop).
+RECT SeenRect(HWND h) {
+    RECT r{};
+    if (FAILED(DwmGetWindowAttribute(h, DWMWA_EXTENDED_FRAME_BOUNDS, &r, sizeof(r)))) GetWindowRect(h, &r);
+    return r;
+}
+
+// The gap the pointer is in or near (within pad of it): two windows facing each other across it, one each side
+// of the pointer's line. The seam's middle comes back in at (x for a gap running up and down, y across).
+bool InGap(POINT pt, HMONITOR on, int pad, bool* vertical, LONG* at) {
+    struct Side {
+        LONG edge;
+        bool found = false;
+    } left{LONG_MIN}, right{LONG_MAX}, top{LONG_MIN}, bottom{LONG_MAX};
+    for (HWND h = GetTopWindow(nullptr); h; h = GetWindow(h, GW_HWNDNEXT)) {
+        if (!IsTaskWindow(h) || IsIconic(h) || MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST) != on) continue;
+        RECT r = SeenRect(h);
+        bool rows = pt.y >= r.top && pt.y < r.bottom, cols = pt.x >= r.left && pt.x < r.right;
+        // (an edge counts from pad inside the window to anywhere past it, nearest kept)
+        if (rows && r.right <= pt.x + pad && r.right > left.edge) left = {r.right, true};
+        if (rows && r.left >= pt.x - pad && r.left < right.edge) right = {r.left, true};
+        if (cols && r.bottom <= pt.y + pad && r.bottom > top.edge) top = {r.bottom, true};
+        if (cols && r.top >= pt.y - pad && r.top < bottom.edge) bottom = {r.top, true};
+    }
+    // A gap is narrow (the tiling's spacing); a wide stretch of desktop isn't one, it's already room.
+    constexpr LONG kWidest = 120;
+    bool across = left.found && right.found && right.edge - left.edge <= kWidest;
+    bool down = top.found && bottom.found && bottom.edge - top.edge <= kWidest;
+    if (!across && !down) return false;
+    *vertical = across && (!down || right.edge - left.edge <= bottom.edge - top.edge);
+    *at = *vertical ? (left.edge + right.edge) / 2 : (top.edge + bottom.edge) / 2;
+    return true;
+}
+
+// How long a drag must rest in a gap or at an edge (a pointer passing through doesn't count), and how far off a
+// gap the pointer may be and still be in it.
+// Whether a setting was ever written (Tourne Desktop knows; in the Windhawk suite a 0 is taken as unset).
+bool DragSettingSet(PCWSTR name) {
+#ifdef TD_PREFIX
+    return td::IsSet(TD_PREFIX, name);
+#else
+    (void)name;
+    return false;
+#endif
+}
+
+DWORD DragHoldMs() {
+    int ms = Wh_GetIntSetting(L"taskbar.dragHold");
+    if (!ms && !DragSettingSet(L"dragHold")) ms = 250;
+    return (DWORD)std::clamp(ms, 50, 3000);
+}
+
+int DragGapPad() {
+    int px = Wh_GetIntSetting(L"taskbar.dragGapPad");
+    if (!px && !DragSettingSet(L"dragGapPad")) px = 4;
+    return std::clamp(px, 0, 40);
+}
+
+int DragRoom() {
+    int px = Wh_GetIntSetting(L"taskbar.dragRoom");
+    if (!px && !DragSettingSet(L"dragRoom")) px = 240;  // (never set: its default)
+    return px <= 0 ? 0 : std::clamp(px, 40, 900);
+}
+
+bool DragImageShown() {
+    for (HWND h = FindWindowW(L"SysDragImage", nullptr); h; h = FindWindowExW(nullptr, h, L"SysDragImage", nullptr))
+        if (IsWindowVisible(h)) return true;
+    return false;
+}
+
+// Held while the room is open or closing, so the tiling waits (tiling.cpp, DropRoomOpen).
+void HoldTiling(bool hold) {
+    static HANDLE held = CreateEventW(nullptr, TRUE, FALSE, L"Local\\TourneDropRoom");
+    if (held) hold ? SetEvent(held) : ResetEvent(held);
+}
+
+void CALLBACK RoomTick(HWND, UINT, UINT_PTR, DWORD) {
+    double t = std::min(1.0, (double)(GetTickCount64() - g_roomStart) / kRoomMs);
+    double e = 1 - (1 - t) * (1 - t) * (1 - t);  // (ease out)
+    auto mix = [e](LONG a, LONG b) { return (LONG)std::lround(a + (b - a) * e); };
+    for (auto const& s : g_room) {
+        if (!IsWindow(s.wnd)) continue;
+        RECT r{mix(s.from.left, s.to.left), mix(s.from.top, s.to.top), mix(s.from.right, s.to.right), mix(s.from.bottom, s.to.bottom)};
+        SetWindowPos(s.wnd, nullptr, r.left, r.top, r.right - r.left, r.bottom - r.top,
+                     SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_ASYNCWINDOWPOS);
+    }
+    if (t < 1) return;
+    KillTimer(nullptr, g_roomTimer);
+    g_roomTimer = 0;
+    if (!g_roomOpen) {
+        g_room.clear();
+        HoldTiling(false);
+    }
+}
+
+void SlideRoom(bool open) {
+    for (auto& s : g_room) {
+        if (!IsWindow(s.wnd)) continue;
+        GetWindowRect(s.wnd, &s.from);  // (from wherever it is: a slide cut short turns round smoothly)
+        s.to = open ? s.room : s.home;
+    }
+    g_roomStart = GetTickCount64();
+    if (!g_roomTimer) g_roomTimer = SetTimer(nullptr, 0, 15, RoomTick);
+}
+
+// The windows beside the spot pulled back from it. At a screen's edge: those touching that edge. Over the desktop:
+// the gap's two sides, along whichever way it runs (the nearer edges decide).
+void MakeRoom(POINT pt, HMONITOR on, bool edge, bool vertical, LONG at) {
+    int room = DragRoom();
+    if (!room) return;
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(on, &mi);
+    RECT const& m = mi.rcMonitor;
+    RECT const& work = mi.rcWork;
+    std::vector<std::pair<HWND, RECT>> wins;
+    for (HWND h = GetTopWindow(nullptr); h; h = GetWindow(h, GW_HWNDNEXT)) {
+        RECT r;
+        if (IsTaskWindow(h) && !IsIconic(h) && MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST) == on && GetWindowRect(h, &r))
+            wins.push_back({h, r});
+    }
+    constexpr int kMin = 160;  // (no window made narrower than this)
+    auto add = [](HWND h, RECT const& r, RECT n) {
+        if (n.right - n.left < kMin || n.bottom - n.top < kMin || EqualRect(&r, &n)) return;
+        g_room.push_back({h, r, n, r, r});
+    };
+    g_room.clear();
+    if (edge) {
+        int zone = DragGapPad() + 2;
+        bool left = pt.x < m.left + zone, right = pt.x >= m.right - zone;
+        for (auto const& [h, r] : wins) {
+            RECT n = r;
+            if (left && r.left - work.left < kRoomNear) n.left = std::max(r.left, work.left) + room;
+            else if (right && work.right - r.right < kRoomNear) n.right = std::min(r.right, work.right) - room;
+            else if (!left && !right && r.top - work.top < kRoomNear) n.top = std::max(r.top, work.top) + room;
+            add(h, r, n);
+        }
+    } else {
+        // The gap's two sides, as drawn, pulled back from its middle (the window moved by as much as its drawn
+        // edge has to go, its invisible border going along).
+        int half = room / 2;
+        for (auto const& [h, r] : wins) {
+            RECT v = SeenRect(h), n = r;
+            if (vertical) {
+                if (v.right <= at + kRoomNear / 2 && at - v.right < kRoomNear) n.right -= std::max<LONG>(0, v.right - (at - half));
+                else if (v.left >= at - kRoomNear / 2 && v.left - at < kRoomNear) n.left += std::max<LONG>(0, at + half - v.left);
+            } else {
+                if (v.bottom <= at + kRoomNear / 2 && at - v.bottom < kRoomNear) n.bottom -= std::max<LONG>(0, v.bottom - (at - half));
+                else if (v.top >= at - kRoomNear / 2 && v.top - at < kRoomNear) n.top += std::max<LONG>(0, at + half - v.top);
+            }
+            add(h, r, n);
+        }
+    }
+    if (g_room.empty()) return;
+    g_roomOpen = true;
+    HoldTiling(true);
+    Wh_Log(L"Drag held %s: room made beside %d window(s)", edge ? L"at a screen edge" : L"over the desktop", (int)g_room.size());
+    SlideRoom(true);
+}
+
+void CALLBACK DragWatchTick(HWND, UINT, UINT_PTR, DWORD) {
+    if (!(GetAsyncKeyState(GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON) & 0x8000)) {
+        KillTimer(nullptr, g_dragWatch);
+        g_dragWatch = 0;
+        g_dragRest = {};
+        if (g_roomOpen) {
+            g_roomOpen = false;
+            SlideRoom(false);  // (the drop made, or given up: the windows fill the space again)
+        }
+        return;
+    }
+    if (g_roomOpen || g_dragPeeking || !IsWindow(g_dragWatchBar) || !DragImageShown()) return;
+    POINT pt;
+    GetCursorPos(&pt);
+    HMONITOR on = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(on, &mi);
+    RECT const& m = mi.rcMonitor;
+    // (a few pixels in from the edge count: where a screen meets another the pointer doesn't stop at the edge)
+    int zone = DragGapPad() + 2;
+    bool edge = pt.x < m.left + zone || pt.x >= m.right - zone || pt.y < m.top + zone;
+    bool vertical = false;
+    LONG at = 0;
+    bool gap = !edge && InGap(pt, on, DragGapPad(), &vertical, &at);
+    if (!edge && !gap) return void(g_dragRest = {});
+    // Meant, not passing through: the pointer has to stay put (within a few pixels) for the whole wait; a drag
+    // sweeping across a gap keeps restarting it.
+    ULONGLONG now = GetTickCount64();
+    if (!g_dragRest.since || abs(pt.x - g_dragRest.at.x) > 6 || abs(pt.y - g_dragRest.at.y) > 6)
+        return void(g_dragRest = {pt, now});
+    if (now - g_dragRest.since < DragHoldMs()) return;
+    g_dragRest = {};
+    MakeRoom(pt, on, edge, vertical, at);
+}
+
+void CALLBACK CaptureEventProc(HWINEVENTHOOK, DWORD, HWND, LONG, LONG, DWORD, DWORD) {
+    if (!g_dragWatch) g_dragWatch = SetTimer(nullptr, 0, 50, DragWatchTick);
+}
+
+void DragTargetStart(HWND wnd) {
+    static bool ole = SUCCEEDED(OleInitialize(nullptr));  // (the bars' thread, once)
+    if (!ole) return;
+    if (!g_dragWatchBar) g_dragWatchBar = wnd;
+    static HWINEVENTHOOK hook = SetWinEventHook(EVENT_SYSTEM_CAPTURESTART, EVENT_SYSTEM_CAPTURESTART, nullptr, CaptureEventProc, 0, 0,
+                                                WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+    (void)hook;
+    auto* target = new BarDropTarget(wnd);
+    RegisterDragDrop(wnd, target);
+    target->Release();
+}
+
+void DragTargetStop(HWND wnd) {
+    RevokeDragDrop(wnd);
+    if (g_dragWatchBar == wnd) g_dragWatchBar = nullptr;
+    KillTimer(wnd, kTimerDragHover);
+    PeekEnd(wnd);
+}
+
+// Something happened: the checks run again at once, and from then on as before.
+void RestWake(HWND wnd) {
+    if (!g_resting) return;
+    g_resting = false;
+    RestUnhook();
+    ForEachBar(wnd, [](HWND bar) {
+        RestTimers(bar, true);
+        if (Hides()) AutoHideTick(bar);
+        if (g_settings.idleFade) IdleTick(bar);
+        if (g_settings.dynamicTransparency || g_settings.dynamicSegments) DynamicTick(bar);
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56577,6 +64614,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     BarScope barScope(thisBar);
     if (g_shellHookMessage && msg == g_shellHookMessage) {
+        RestWake(wnd);  // a window opened, came to the front or flashes: the bars may need to move
         HWND h = (HWND)lParam;
         if (wParam == (HSHELL_REDRAW | 0x8000)) {  // HSHELL_FLASH
             if (Win* w = FindWin(h)) w->flashing = true;
@@ -56587,6 +64625,10 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             if (Win* w = FindWin(h)) FetchIcon(*w);
         }
         Refresh(wnd);
+        return 0;
+    }
+    if (msg == WM_APP_REST_WAKE) {
+        RestWake(wnd);
         return 0;
     }
     if (g_msgTrayChanged && msg == g_msgTrayChanged) {
@@ -56655,7 +64697,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     // Tourne Desktop made new theme colours: read again if the bar uses them.
     if (msg == TourneThemeMessage() && msg) {
-        if (IsMainBar() && g_followsTourneTheme) ApplySettings(wnd);
+        if (IsMainBar() && g_followsTourneTheme) ApplySettings(wnd, false, L"new theme colours");
         return 0;
     }
 
@@ -56685,6 +64727,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch (msg) {
         case WM_CREATE:
+            DragTargetStart(wnd);
             // The main bar watches the windows and the tray for all of them; the others only show what it finds.
             if (IsMainBar()) {
                 g_shellHookMessage = RegisterWindowMessageW(L"SHELLHOOK");
@@ -56750,6 +64793,9 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return 0;
 
         case WM_APP_ICONS:
+            ForgetTourneIconsButtons();
+            ClearStartIcons();  // (Start's icons are drawn again too, with the new ones)
+            if (g_msgTrayChanged) PostMessageW(wnd, g_msgTrayChanged, 0, 0);  // (the tray's icons, read again)
             RefreshShortcuts(true);
             for (auto& w : g_wins) FetchIcon(w);
             RelayoutBars(wnd);
@@ -56757,12 +64803,12 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_APP_SETTINGS:
         case WM_DPICHANGED:
-            if (IsMainBar()) ApplySettings(wnd);  // (the others get these too; one reload does for all)
+            if (IsMainBar()) ApplySettings(wnd, false, msg == WM_DPICHANGED ? L"scale changed" : L"settings changed");  // (the others get these too; one reload does for all)
             else if (msg == WM_DPICHANGED && g_wnd) SetTimer(g_wnd, kTimerScreens, 400, nullptr);  // its screen's scale
             return 0;
 
         case WM_THEMECHANGED:  // another visual style: its colours, for the schemes taken from it
-            if (IsMainBar() && LookSignature() != g_lookSignature) ApplySettings(wnd);
+            if (IsMainBar() && LookSignature() != g_lookSignature) ApplySettings(wnd, false, L"visual style changed");
             return 0;
 
         case WM_DISPLAYCHANGE:
@@ -56775,7 +64821,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             // Dark or light mode, or the accent colour, when one of them really changed.
             if (IsMainBar() && lParam && !wcscmp((PCWSTR)lParam, L"ImmersiveColorSet") &&
                 LookSignature() != g_lookSignature)
-                ApplySettings(wnd);
+                ApplySettings(wnd, false, L"colour mode changed");
             break;
 
         case WM_MEASUREITEM:
@@ -56795,8 +64841,13 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return 0;
 
         case WM_INITMENUPOPUP:
-            // A shell submenu ("Send to") filling in, then styled.
+            // A shell submenu ("Send to") filling in, then styled; once: again, it's as it was.
             if (g_shellMenu.open) {
+                if (g_shellMenu.filled.count((HMENU)wParam)) {
+                    StyleMenuItems((HMENU)wParam, true);  // (cheap for items already styled; new ones get styled)
+                    return 0;
+                }
+                g_shellMenu.filled.insert((HMENU)wParam);
                 LRESULT result;
                 ShellMenuMessage(msg, wParam, lParam, &result);
                 StyleMenuItems((HMENU)wParam, true);
@@ -56806,6 +64857,10 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_MENUCHAR:
             if (LRESULT result; g_shellMenu.open && ShellMenuMessage(msg, wParam, lParam, &result)) return result;
+            break;
+
+        case WM_CLIPBOARDUPDATE:
+            OnClipboardChanged(wnd);
             break;
 
         case WM_COPYDATA: {
@@ -56823,7 +64878,10 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     unsigned version = 0;
                     auto items = UnpackPluginBarItems(packed, &version);
                     g_pluginItems = std::move(items);
+                    g_pluginPictures.clear();
+                    for (auto const& item : g_pluginItems) g_pluginPictures.push_back(ReadPluginPicture(item.image));
                     g_pluginVersion = version;
+                    ReadPluginAway(TrayPlaces::Load());
                     Layout(wnd);
                     Redraw(wnd);
                 }
@@ -56870,17 +64928,29 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return 0;
 
         case WM_TIMER:
+            if (wParam == kTimerDragHover) return DragHoverTick(wnd), 0;
+            if (wParam == kTimerEmptyMiddle) {
+                KillTimer(wnd, kTimerEmptyMiddle);  // (no second middle click came: the single one's)
+                TmAction(L"tourne:" + g_settings.emptyMiddleClick);
+                return 0;
+            }
+            if (wParam == kTimerDragEnd) {
+                if (!(GetAsyncKeyState(GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON) & 0x8000)) PeekEnd(wnd);
+                return 0;
+            }
             if (wParam == kTimerScreens) {
                 KillTimer(wnd, kTimerScreens);
                 // Only the bars, unless the main screen's scale changed (then sizes and icons are redone).
                 UINT dpi = GetDpiForWindow(wnd);
-                ApplySettings(wnd, std::max(1, (int)(dpi + 48) / 96) == g_scale);
+                ApplySettings(wnd, std::max(1, (int)(dpi + 48) / 96) == g_scale, L"screens changed");
+            } else if (wParam == kTimerReadyMenu) {
+                OnReadyMenuTimer(wnd);
             } else if (wParam == kTimerBootLog) {
                 KillTimer(wnd, kTimerBootLog);
                 WriteBootLog();
             } else if (wParam == kTimerReload) {
                 KillTimer(wnd, kTimerReload);
-                ApplySettings(wnd);  // a theme or orb file changed, or StartAllBack''s settings: read again
+                ApplySettings(wnd, false, L"a theme file changed");  // a theme or orb file changed, or StartAllBack''s settings: read again
             } else if (wParam == kTimerToast) {
                 KillTimer(wnd, kTimerToast);
                 if (g_toast) {
@@ -56906,17 +64976,24 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     g_barsDrawn = shown;
                 }
             } else if (wParam == kTimerAutoHide) {
+                RestWake(wnd);  // (a bar placed again meanwhile started its checks: all of them run again)
                 AutoHideTick(wnd);
+                MaybeRest(wnd);
             } else if (wParam == kTimerShy) {
                 // The frame clock couldn't start: the same frames, from a timer.
                 if (g_shyRunning) ShyFrame(wnd);
                 if (g_aura.running) AuraFrame(wnd);
                 if (g_idle.running) IdleFrame(wnd);
-                if (!g_shyRunning && !g_aura.running && !g_idle.running) StopPacer(wnd);
+                if (g_active->arrive.running) ArriveFrame(wnd);
+                if (!g_shyRunning && !g_aura.running && !g_idle.running && !g_active->arrive.running) StopPacer(wnd);
             } else if (wParam == kTimerIdle) {
+                RestWake(wnd);
                 IdleTick(wnd);
+                MaybeRest(wnd);
             } else if (wParam == kTimerDynamic) {
+                RestWake(wnd);
                 DynamicTick(wnd);
+                MaybeRest(wnd);
             } else if (wParam == kTimerPreviewShow) {
                 KillTimer(wnd, kTimerPreviewShow);
                 if (g_hot >= 0 && !g_inMenu) ShowPreview(wnd, g_hot);
@@ -57085,12 +65162,28 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             Redraw(wnd);
             return 0;
 
+        case WM_MBUTTONDBLCLK:
+            // On the bar's empty space with a double middle click set: that, and the single one waiting is off.
+            if (HitTest({GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)}) == -2 && OnBarItself(wnd, lParam) &&
+                g_settings.emptyMiddleDoubleClick != L"none") {
+                KillTimer(wnd, kTimerEmptyMiddle);
+                TmAction(L"tourne:" + g_settings.emptyMiddleDoubleClick);
+                g_swallowMiddleUp = true;
+                return 0;
+            }
+            [[fallthrough]];
         case WM_LBUTTONDBLCLK: {
             // On a tray icon the second click of a double click reaches its
             // program as one (the first already went through as a click).
             int at = HitTest({GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)});
-            if (at >= kHitTray && at - kHitTray < (int)g_tray.size()) {
+            if (msg == WM_LBUTTONDBLCLK && at >= kHitTray && at - kHitTray < (int)g_tray.size()) {
                 if (!OpensOnDoubleClick(g_tray[at - kHitTray].icon.owner)) ClickTrayIcon(at - kHitTray, kClickSecondOfDouble);
+                g_swallowUp = true;
+                return 0;
+            }
+            // On the bar's empty space (between segments too): as set, the desktop shown by default.
+            if (msg == WM_LBUTTONDBLCLK && at == -2 && OnBarItself(wnd, lParam) && g_settings.emptyDoubleClick != L"none") {  // (-2: nothing there; -1 is Start)
+                TmAction(L"tourne:" + g_settings.emptyDoubleClick);
                 g_swallowUp = true;
                 return 0;
             }
@@ -57139,10 +65232,18 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             g_trayDragMoved = false;
             bool pluginDragged = g_pluginDrag >= 0 && g_pluginDragMoved;
             if (pluginDragged) {
-                // A plugin item let go: in its new place when on the bar, else back where it was.
+                // A plugin item let go: on the overflow arrow or the open flyout, into the overflow; on the bar,
+                // in its new place; anywhere else, back where it was.
                 RECT client;
                 GetClientRect(wnd, &client);
-                if (PtInRect(&client, {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)})) SaveTrayOrder();  // (as laid out now)
+                POINT pt{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)}, screen = pt;
+                ClientToScreen(wnd, &screen);
+                std::wstring key = g_pluginDrag < (int)g_pluginItems.size() ? L"plugin:" + g_pluginItems[g_pluginDrag].key : L"";
+                HWND flyout = PtInRect(&client, pt) ? nullptr : DropTargetAt(screen, kFlyoutClassPrefix);
+                if (g_trayDragOnArrow && !key.empty()) TrayPlaces::Load().Set(key, kPlaceOverflow);
+                else if (PtInRect(&client, pt)) SaveTrayOrder();  // (as laid out now)
+                else if (flyout && !key.empty()) SendTrayDrop(flyout, wnd, screen, key);
+                BuildTray();  // (left out of the bar when it went to the overflow)
                 g_pluginDrag = -1;  // before ReleaseCapture, so it isn't taken for a cancel
                 ReleaseCapture();
                 EndPluginDrag(wnd, false);
@@ -57186,6 +65287,17 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             // The bar's empty space: the Tourne Menu, when it's set to open there too.
             if (at == -2 && msg == WM_MBUTTONUP && g_settings.menuEnabled && g_settings.menuOnBar && g_settings.menuButton == 1) {
                 ShowTourneMenu(wnd);
+                return 0;
+            }
+            // Else its middle click as set (waiting first when a double one could still come).
+            if (at == -2 && msg == WM_MBUTTONUP && OnBarItself(wnd, lParam)) {
+                if (g_swallowMiddleUp) {
+                    g_swallowMiddleUp = false;
+                } else if (g_settings.emptyMiddleDoubleClick != L"none" && g_settings.emptyMiddleClick != L"none") {
+                    SetTimer(wnd, kTimerEmptyMiddle, GetDoubleClickTime(), nullptr);
+                } else if (g_settings.emptyMiddleClick != L"none") {
+                    TmAction(L"tourne:" + g_settings.emptyMiddleClick);
+                }
                 return 0;
             }
             if (int desktop = PagerIndexOf(at); desktop >= 0) {
@@ -57259,7 +65371,9 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             if (int desktop = PagerIndexOf(at); desktop >= 0) {
                 PagerMenu(desktop, PagerMarkOnScreen(wnd, desktop));
             } else if (int item = PluginIndexOf(at); item >= 0) {
-                PluginEvent(item, kPluginRightClick);
+                // Shift+right-click: where it goes and its icon. Otherwise its own menu.
+                if (GetKeyState(VK_SHIFT) < 0) PluginItemMenu(wnd, item);
+                else PluginEvent(item, kPluginRightClick);
             } else if (at >= kHitCss) {
                 int index = at - kHitCss;
                 if (index < (int)g_cssTargets.size() && !g_cssTargets[index].right.empty()) RunCssAction(wnd, g_cssTargets[index].right, &g_cssTargets[index].rc);
@@ -57297,7 +65411,8 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 if (g_shyRunning) ShyFrame(wnd);
                 if (g_aura.running) AuraFrame(wnd);
                 if (g_idle.running) IdleFrame(wnd);
-                if (!g_shyRunning && !g_aura.running && !g_idle.running) StopPacer(wnd);
+                if (g_active->arrive.running) ArriveFrame(wnd);
+                if (!g_shyRunning && !g_aura.running && !g_idle.running && !g_active->arrive.running) StopPacer(wnd);
             }
             return 0;
 
@@ -57306,6 +65421,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return 0;
 
         case WM_DESTROY:
+            DragTargetStop(wnd);
             if (!IsMainBar()) {
                 // Another screen's bar closing: its own timers, popup and space.
                 for (UINT_PTR timer : {kTimerAutoHide, kTimerDynamic, kTimerGlow, kTimerPreviewShow, kTimerPreviewHide, kTimerIdle})
@@ -57334,6 +65450,8 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             KillTimer(wnd, kTimerRescan);
             KillTimer(wnd, kTimerAutoHide);
             KillTimer(wnd, kTimerIdle);
+            RestUnhook();
+            g_resting = false;
             StopPacer(wnd);
             KillTimer(wnd, kTimerTray);
             KillTimer(wnd, kTimerTrayAgain);
@@ -58597,6 +66715,75 @@ bool ProgramIconMatches(std::wstring const& row, std::wstring const& appId, std:
     return (!path.empty() && row == path) || (!name.empty() && row == name) || (!appId.empty() && row == appId);
 }
 
+// Tourne'Icons' Taskbar buttons rows, which it hands over as "program<tab>icon" lines (newest first) in
+// HKCU\Software\Tourne\Icons: Buttons from its Windhawk mod while that runs, Buttons Kit and Buttons Lasting
+// from the other two. They come before these settings' rows. While the Windhawk mod runs it holds the button
+// icons (it took these settings' rows in), so these settings' rows step aside. Read again whenever the key
+// was written since the last look, so a change shows on the next look at once.
+struct TourneIconsButtons {
+    std::vector<ProgramIcon> rows;
+    bool holds = false;
+};
+
+SRWLOCK g_tourneIconsLock = SRWLOCK_INIT;
+TourneIconsButtons g_tourneIconsButtons;
+FILETIME g_tourneIconsWritten;
+bool g_tourneIconsRead;
+
+void ForgetTourneIconsButtons() {
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    g_tourneIconsRead = false;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+}
+
+TourneIconsButtons ReadTourneIconsButtons() {
+    HKEY key = nullptr;
+    FILETIME written{};
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Icons", 0, KEY_READ, &key) == ERROR_SUCCESS) {
+        RegQueryInfoKeyW(key, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+                         &written);
+    }
+    AcquireSRWLockExclusive(&g_tourneIconsLock);
+    if (!g_tourneIconsRead || CompareFileTime(&written, &g_tourneIconsWritten) != 0) {
+        g_tourneIconsRead = true;
+        g_tourneIconsWritten = written;
+        TourneIconsButtons fresh;
+        for (PCWSTR value : {L"Buttons", L"Buttons Kit", L"Buttons Lasting"}) {
+            DWORD size = 0;
+            if (!key || RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, nullptr, &size) != ERROR_SUCCESS) {
+                continue;
+            }
+            std::vector<WCHAR> text(size / sizeof(WCHAR) + 2, L'\0');
+            DWORD got = (DWORD)(text.size() * sizeof(WCHAR));
+            if (RegGetValueW(key, nullptr, value, RRF_RT_REG_MULTI_SZ, nullptr, text.data(), &got) != ERROR_SUCCESS) {
+                continue;
+            }
+            if (value[7] == L'\0') fresh.holds = true;  // (Buttons: the Windhawk mod's)
+            for (PCWSTR line = text.data(); *line; line += wcslen(line) + 1) {
+                std::wstring_view row = line;
+                size_t tab = row.find(L'\t');
+                if (tab == std::wstring_view::npos) continue;
+                std::wstring program(row.substr(0, tab));
+                CharLowerBuffW(program.data(), (DWORD)program.size());
+                std::wstring icon = ProgramIconPath(std::wstring(row.substr(tab + 1)));
+                if (!program.empty() && !icon.empty()) fresh.rows.push_back({program, icon});
+            }
+        }
+        g_tourneIconsButtons = std::move(fresh);
+    }
+    TourneIconsButtons result = g_tourneIconsButtons;
+    ReleaseSRWLockExclusive(&g_tourneIconsLock);
+    if (key) RegCloseKey(key);
+    return result;
+}
+
+// These settings' rows (own) with Tourne'Icons' ahead of them, or in their place while it holds them.
+std::vector<ProgramIcon> WithTourneIcons(std::vector<ProgramIcon> const& own) {
+    TourneIconsButtons published = ReadTourneIconsButtons();
+    if (!published.holds) published.rows.insert(published.rows.end(), own.begin(), own.end());
+    return std::move(published.rows);
+}
+
 struct CustomHeader {
     std::wstring program;  // lower case: a file name or a full path
     std::wstring name;
@@ -58636,6 +66823,7 @@ struct Settings {
     int showDelay = 0;
     bool peek = false;
     int peekDelay = 500;
+    bool winTab = false;           // Win+Tab opens Mission Control instead of Task view
     bool backtick = false;         // Alt+` is taken at all
     bool backtickSameApp = false;
     bool wheelOpens = false, wheelPages = false, wheelModifierCtrl = false, reverseWheel = false;
@@ -58643,7 +66831,8 @@ struct Settings {
     Minimized minimized = Minimized::InPlace;
     std::wstring excludeTitles, excludeApps;
     std::vector<CustomHeader> headers;
-    int view = 0;  // 0 the list, 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf (switcher-views.cpp)
+    int view = 0;  // 0 the list, 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf (switcher-views.cpp), 7 Canvas
+    int overviewView = 7;  // the overview's (Win+Tab, the overview command): 4 Mission Control or 7 Canvas
     bool viewLive = true;
     int viewDim = 55, viewBlur = 6;
 };
@@ -58830,7 +67019,9 @@ Settings LoadSettings() {
     std::wstring view = TextSetting(L"switcher.view.style");
     s.view = view == L"flip3d" ? 1 : view == L"coverflow" ? 2 : view == L"grid" ? 3 : view == L"mission" ? 4 : view == L"ring" ? 5
            : view == L"shelf"  ? 6
+           : view == L"canvas" ? 7
                                : 0;
+    s.overviewView = TextSetting(L"switcher.view.overview") == L"mission" ? 4 : 7;
     s.viewLive = Wh_GetIntSetting(L"switcher.view.live") != 0;
     s.viewDim = IntSetting(L"switcher.view.dim", 0, 95);
     s.viewBlur = IntSetting(L"switcher.view.blur", 0, 10);
@@ -58899,6 +67090,7 @@ Settings LoadSettings() {
     s.showDelay = IntSetting(L"switcher.keys.showDelay", 0, 2000);
     s.peek = Wh_GetIntSetting(L"switcher.keys.peek") != 0;
     s.peekDelay = IntSetting(L"switcher.keys.peekDelay", 0, 3000);
+    s.winTab = Wh_GetIntSetting(L"switcher.keys.winTab") != 0;
     std::wstring backtick = TextSetting(L"switcher.keys.backtick");
     s.backtick = backtick == L"backward" || backtick == L"sameApp";
     s.backtickSameApp = backtick == L"sameApp";
@@ -59023,7 +67215,7 @@ constexpr UINT WM_APP_LEFTALONE = WM_APP + 12;   // to the hook thread; wParam: 
 constexpr UINT_PTR kTimerShow = 1;
 constexpr UINT_PTR kTimerPeek = 2;
 // STEP's lParam: LOWORD what pressed it, HIWORD flags.
-constexpr WORD kFromTab = 0, kFromBacktick = 1, kFromWheel = 2;
+constexpr WORD kFromTab = 0, kFromBacktick = 1, kFromWheel = 2, kFromWinTab = 3;
 constexpr WORD kFlagSticky = 1, kFlagAllMonitors = 2;
 constexpr WCHAR kWindowClass[] = L"TourneSwitcher_" WH_MOD_ID;
 constexpr WCHAR kOverlayClass[] = L"TourneSwitcherOverlay_" WH_MOD_ID;
@@ -59031,6 +67223,8 @@ constexpr WCHAR kOverlayClass[] = L"TourneSwitcherOverlay_" WH_MOD_ID;
 // Alt tap (which opens the active app's menu bar), and a process that sent
 // the last input may set the foreground window.
 constexpr WORD kDummyKey = 0xE8;
+// The view for this opening only, or -1 for the one set (Win+Tab: Mission Control, 4).
+int g_viewFor = -1;
 
 int Px(int v) { return MulDiv(v, g_dpi, 96); }
 
@@ -59206,12 +67400,14 @@ CustomHeader const* HeaderFor(std::wstring const& program) {
     return nullptr;
 }
 
-// A program's icon from the taskbar's Button icons marked "Use everywhere",
-// matched by its app id, path or file name; the caller destroys it.
+// A program's icon from Tourne'Icons' Taskbar buttons and the taskbar's Button
+// icons marked "Use everywhere", matched by its app id, path or file name; the
+// caller destroys it.
 HICON EverywhereIcon(HWND h, std::wstring const& program) {
-    if (g_settings.programIcons.empty()) return nullptr;
+    std::vector<ProgramIcon> rows = WithTourneIcons(g_settings.programIcons);
+    if (rows.empty()) return nullptr;
     std::wstring path = Lower(program), id = Lower(AppIdOf(h));
-    for (auto const& row : g_settings.programIcons)
+    for (auto const& row : rows)
         if (ProgramIconMatches(row.program, id, path)) return LoadIconSpec(row.icon, Px(std::max(32, g_settings.iconSize)));
     return nullptr;
 }
@@ -59728,6 +67924,57 @@ void RenderOverlay(HWND wnd) {
     SetWindowPos(g_overlay, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 }
 
+// While peeking, a see-through sheet over every screen, just under the switcher: Windows' peek only fades the
+// other windows, which still take the mouse (one could be dragged or resized, unseen, by its edge). A click on
+// it puts the switcher away, as a click outside Windows' own does.
+constexpr WCHAR kPeekSheetClass[] = L"TourneSwitcherPeekSheet_" WH_MOD_ID;
+HWND g_peekSheet;
+
+LRESULT CALLBACK PeekSheetProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+        case WM_MOUSEACTIVATE:
+            return MA_NOACTIVATE;
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+            if (g_wnd) PostMessageW(g_wnd, WM_APP_CANCEL, 0, 0);
+            return 0;
+    }
+    return DefWindowProcW(hwnd, msg, wParam, lParam);
+}
+
+void ShowPeekSheet(HWND above, bool show) {
+    if (!show) {
+        if (g_peekSheet) ShowWindow(g_peekSheet, SW_HIDE);
+        return;
+    }
+    if (!g_peekSheet) {
+        HINSTANCE instance = nullptr;
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           (LPCWSTR)&PeekSheetProc, &instance);
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = PeekSheetProc;
+        wc.hInstance = instance;
+        wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+        wc.lpszClassName = kPeekSheetClass;
+        RegisterClassW(&wc);
+        g_peekSheet = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_LAYERED, kPeekSheetClass, L"",
+                                      WS_POPUP, 0, 0, 1, 1, nullptr, nullptr, instance, nullptr);
+        if (!g_peekSheet) return;
+        SetLayeredWindowAttributes(g_peekSheet, 0, 1, LWA_ALPHA);  // (1 of 255: unseen, but it takes the clicks)
+    }
+    int x = GetSystemMetrics(SM_XVIRTUALSCREEN), y = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    int w = GetSystemMetrics(SM_CXVIRTUALSCREEN), h = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    SetWindowPos(g_peekSheet, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    if (above) SetWindowPos(above, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
+// The switcher's peek: Windows' (live-peek.cpp), with the sheet under the switcher while it lasts.
+void SwitcherPeek(HWND target, HWND above) {
+    LivePeek(target, above, kPeekAltTab);
+    ShowPeekSheet(above, target != nullptr);
+}
+
 // Peeks at the selection once it has rested there a moment, or at once when
 // already peeking.
 HWND g_peekPending;  // the selection the peek timer is for
@@ -59736,7 +67983,7 @@ void SchedulePeek(HWND wnd) {
     if (!g_settings.peek || g_sel < 0 || g_sel >= (int)g_entries.size() || g_entries[g_sel].windows.empty()) return;
     HWND target = g_entries[g_sel].windows[0];
     if (g_peeking) {
-        LivePeek(target, wnd, kPeekAltTab);
+        SwitcherPeek(target, wnd);
     } else if (target != g_peekPending) {
         g_peekPending = target;
         SetTimer(wnd, kTimerPeek, std::max(1, g_settings.peekDelay), nullptr);
@@ -59872,20 +68119,28 @@ void PressDummyKey() {
 }
 
 void Activate(HWND h) {
-    if (IsIconic(h)) ShowWindow(h, SW_RESTORE);
+    // (a minimised admin window ignores the restore, as Windows keeps our messages from it: SwitchToThisWindow
+    // restores it itself)
+    if (IsIconic(h)) {
+        ShowWindow(h, SW_RESTORE);
+        if (IsIconic(h)) SwitchToThisWindow(h, TRUE);
+    }
     PressDummyKey();
-    if (!SetForegroundWindow(h)) SwitchToThisWindow(h, TRUE);
+    if (!SetForegroundWindow(h) || IsIconic(h)) SwitchToThisWindow(h, TRUE);
 }
 
 LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam);
+extern std::atomic<bool> g_mouseBindsOn;  // (binds.cpp)
+int MouseBindsHook(WPARAM wParam, MSLLHOOKSTRUCT const* m);
 
-// The wheel hook, on the hook thread, only while it's wanted.
+// The mouse hook, on the hook thread, only while it's wanted (the wheel, or a mouse bind).
 void WatchWheel(bool on) {
-    if (g_hookThreadId) PostThreadMessageW(g_hookThreadId, WM_APP_WATCHWHEEL, on || g_settings.wheelOpens, 0);
+    if (g_hookThreadId) PostThreadMessageW(g_hookThreadId, WM_APP_WATCHWHEEL, on || g_settings.wheelOpens || g_mouseBindsOn, 0);
 }
 
 // The 3D views (switcher-views.cpp), shown instead of the list when chosen.
 bool ViewOpen();
+int ViewKind();
 bool ViewShown();
 void ViewRefit();
 void ViewClose();
@@ -59896,9 +68151,10 @@ void Hide(HWND wnd) {
     ViewClose();
     KillTimer(wnd, kTimerShow);
     KillTimer(wnd, kTimerPeek);
-    LivePeek(nullptr, nullptr, kPeekAltTab);
+    SwitcherPeek(nullptr, nullptr);
     g_peekPending = nullptr;
     g_open = g_shown = g_sticky = false;
+    g_viewFor = -1;
     g_hover = -1;
     ShowWindow(wnd, SW_HIDE);
     if (g_overlay) ShowWindow(g_overlay, SW_HIDE);
@@ -59939,7 +68195,7 @@ void Begin(HWND wnd, int dir, bool sameApp, bool sticky, bool allMonitors) {
     g_entries = BuildEntries(sameApp ? &key : nullptr);
     if (g_entries.empty()) return;
     g_open = true;
-    g_sticky = sticky;
+    g_sticky = sticky || ViewKind() == 7;  // (the canvas stays until something is picked, as PrinceWM's does)
     g_first = 0;
     int n = (int)g_entries.size();
     g_sel = n > 1 ? (dir > 0 ? 1 : n - 1) : 0;
@@ -60196,7 +68452,7 @@ struct ViewState {
     RECT mon{};
     std::vector<std::unique_ptr<ViewTile>> tiles;
     bool shown = false;
-    int kind = 0;  // 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf
+    int kind = 0;  // 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf, 7 Canvas (switcher-canvas.cpp)
     double pos = 0, from = 0, to = 0;
     ULONGLONG moveStart = 0, openStart = 0;
     int lastSel = 0;
@@ -60208,7 +68464,9 @@ struct ViewState {
 };
 ViewState g_view;
 
-bool ViewWanted() { return g_settings.view != 0; }
+// The view for this opening: Win+Tab's Mission Control (g_viewFor), else the one set.
+int ViewKind() { return g_viewFor >= 0 ? g_viewFor : g_settings.view; }
+bool ViewWanted() { return ViewKind() != 0; }
 
 double ViewMs() {
     if (g_view.anim.set) return motion::Ms(g_view.anim);
@@ -60897,8 +69155,16 @@ void ViewDrawQuad(Mat const& m, float w, float h, float radius, int mode, float 
     g_view.ctx->Draw(4, 0);
 }
 
+bool CanvasShown();
+void CanvasOpen(bool overview);
+void CanvasClose();
+void CanvasRender();
+void CanvasRefit();
+bool CanvasMouse(UINT msg, WPARAM wParam, LPARAM lParam);
+
 void ViewRender() {
     if (!g_view.shown || !g_view.rtv) return;
+    if (g_view.kind == 7) return CanvasRender();
     float W = (float)g_view.chainW, H = (float)g_view.chainH, D = H * 1.15f;
     for (auto& t : g_view.tiles) ViewTakeFrame(*t);
 
@@ -61090,6 +69356,7 @@ int ViewItemAt(POINT pt) {
 }
 
 LRESULT CALLBACK ViewProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (g_view.kind == 7 && g_view.shown && CanvasMouse(msg, wParam, lParam)) return 0;
     switch (msg) {
         case WM_MOUSEACTIVATE:
             return MA_NOACTIVATE;
@@ -61145,12 +69412,12 @@ bool ViewOpen() {
         ViewFree();
         return false;
     }
-    g_view.kind = g_settings.view;
+    g_view.kind = ViewKind();
     ViewRelease(g_view.titleFormat);  // (the font may have changed)
     motion::Forget();
     g_view.anim = motion::Get(L"switcher");
     ViewFreeScene();
-    ViewTakeBackdrop();
+    if (g_view.kind != 7) ViewTakeBackdrop();  // (the canvas has its own ground)
     ViewSync();
     g_view.pos = g_view.from = g_view.to = g_sel;
     g_view.lastSel = g_view.selFrom = g_sel;
@@ -61158,6 +69425,7 @@ bool ViewOpen() {
     g_view.focusSet = g_view.pointer = false;
     g_view.pointerAt = {};
     g_view.shown = true;
+    if (g_view.kind == 7) CanvasOpen(g_viewFor == 7);  // (the overview shows them all; Alt+Tab starts at the window in front)
     SetWindowPos(g_view.wnd, HWND_TOPMOST, g_view.mon.left, g_view.mon.top, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
     ViewRender();
     SetTimer(g_view.wnd, kViewTimerFrame, 15, nullptr);
@@ -61174,6 +69442,15 @@ void ViewPrepare() {
 // The selection or the list changed (Tab, a closed window, Ctrl into an app).
 void ViewRefit() {
     if (!g_view.shown) return;
+    if (g_view.kind == 7) {
+        bool sameTiles = g_view.tiles.size() == g_entries.size();
+        for (size_t i = 0; sameTiles && i < g_entries.size(); i++)
+            sameTiles = !g_entries[i].windows.empty() && g_view.tiles[i]->wnd == g_entries[i].windows[0];
+        if (!sameTiles) ViewSync();
+        CanvasRefit();
+        g_view.lastSel = g_sel;
+        return;
+    }
     bool same = g_view.tiles.size() == g_entries.size();
     for (size_t i = 0; same && i < g_entries.size(); i++)
         same = !g_entries[i].windows.empty() && g_view.tiles[i]->wnd == g_entries[i].windows[0];
@@ -61203,9 +69480,1774 @@ void ViewClose() {
     if (!g_view.wnd) return;
     KillTimer(g_view.wnd, kViewTimerFrame);
     ShowWindow(g_view.wnd, SW_HIDE);
+    if (g_view.kind == 7) CanvasClose();
     g_view.shown = false;
     ViewFreeScene();
 }
+////////////////////////////////////////////////////////////////////////////////
+// Canvas (view 7): every window as a live picture on an infinite canvas you
+// pan, flick and zoom, as PrinceWM does it (Alt+Tab replacement by prince,
+// MIT licence: third_party/PrinceWM-LICENSE.txt; ported from its C# 1.4.1).
+// Tiles keep the places you give them (by app, from one opening to the next);
+// an app's windows make one stack, opened with a middle click; one tile
+// dropped on another puts both windows side by side on the screen. Notes and
+// pasted pictures pin to the canvas (the pinboard), and paint mode draws on it.
+//
+// Inlined into switcher-host.cpp after switcher-views.cpp: the same window,
+// device, captures and tiles (one per entry, as ViewSync makes them), drawn
+// flat with a 2D camera instead of a 3D scene. The switcher stays open until
+// something is picked (sticky), as PrinceWM's canvas does.
+//
+// Mouse: left drag pans (and flicks), the wheel zooms at the pointer, a click
+// switches, middle or Alt+left drag moves a tile (Shift: the tiles touching
+// it too), middle click opens a stack, right click: menus. Keys: arrows move
+// the selection by direction (Shift: the tile), Enter or Space switches, Esc
+// backs out, W fits all, F fills with the chosen one, C centres it, Z or 0
+// zooms to 1:1, + and - zoom, R lays them out again, N a new note, Ctrl+V
+// pastes a picture, D paint mode, Q or Delete closes.
+
+
+void PlaceWindowFrame(HWND h, RECT const& want);  // (binds.cpp, inlined later)
+
+constexpr UINT WM_APP_CANVASKEY = WM_APP + 20;  // wParam: the key; lParam: scan code, Shift (bit 16), Ctrl (bit 17)
+
+namespace canvas {
+
+constexpr float kGap = 56, kMinZoom = 0.12f, kMaxZoom = 8, kHoverLift = 0.03f, kDragThreshold = 6, kNudge = 20;
+constexpr float kCommitSeconds = 0.2f, kOpenSeconds = 0.16f;
+constexpr float kStrokeSizes[] = {2, 4, 8, 16, 28};
+
+struct Vec {
+    float x = 0, y = 0;
+};
+Vec operator+(Vec a, Vec b) { return {a.x + b.x, a.y + b.y}; }
+Vec operator-(Vec a, Vec b) { return {a.x - b.x, a.y - b.y}; }
+Vec operator*(Vec a, float k) { return {a.x * k, a.y * k}; }
+Vec Lerp(Vec a, Vec b, float t) { return {a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t}; }
+float Length2(Vec a) { return a.x * a.x + a.y * a.y; }
+
+// PrinceWM's Camera: where the view looks (world units are the windows' own pixels) and how close.
+struct Camera {
+    Vec view, center, target, vel;
+    float zoom = 1, targetZoom = 1;
+    bool tween = false, easeOut = false;
+    float tweenT = 0, tweenDur = 0, power = 5;
+    Vec fromC, toC;
+    float fromZ = 1, toZ = 1;
+
+    Vec ToScreen(Vec w) const { return (w - center) * zoom + view * 0.5f; }
+    Vec ToWorld(Vec s) const { return (s - view * 0.5f) * (1 / zoom) + center; }
+    Vec ToWorldTarget(Vec s) const { return (s - view * 0.5f) * (1 / targetZoom) + target; }
+    void SnapTo(Vec c, float z) {
+        tween = false;
+        center = target = c;
+        zoom = targetZoom = std::clamp(z, kMinZoom, kMaxZoom);
+        vel = {};
+    }
+    void CancelTween() {
+        if (!tween) return;
+        tween = false;
+        target = center;
+        targetZoom = zoom;
+    }
+    void PanBy(Vec screen) {
+        CancelTween();
+        target = target - screen * (1 / targetZoom);
+        vel = {};
+    }
+    void Flick(Vec screenVel) {
+        CancelTween();
+        vel = screenVel * (-1 / targetZoom);
+    }
+    void ZoomAt(Vec anchor, float factor) {
+        CancelTween();
+        Vec before = ToWorldTarget(anchor);
+        targetZoom = std::clamp(targetZoom * factor, kMinZoom, kMaxZoom);
+        target = target + (before - ToWorldTarget(anchor));
+    }
+    void TweenTo(Vec c, float z, float seconds, bool out = false, float pow = 5) {
+        fromC = center, fromZ = zoom, toC = c, toZ = std::clamp(z, kMinZoom, kMaxZoom);
+        tweenT = 0, tweenDur = std::max(0.0001f, seconds), easeOut = out, power = pow, tween = true;
+        vel = {};
+        target = toC, targetZoom = toZ;
+    }
+    void PanTargetTo(Vec c) {
+        CancelTween();
+        target = c;
+        vel = {};
+    }
+    void Step(float dt) {
+        if (tween) {
+            tweenT += dt;
+            float u = std::clamp(tweenT / tweenDur, 0.f, 1.f);
+            float e = easeOut ? 1 - std::pow(1 - u, power) : u * u * u * (u * (u * 6 - 15) + 10);
+            center = Lerp(fromC, toC, e);
+            zoom = fromZ * std::pow(toZ / fromZ, e);
+            if (u >= 1) tween = false, center = toC, zoom = toZ;
+            return;
+        }
+        if (Length2(vel) > 0.01f) {
+            target = target + vel * dt;
+            vel = vel * std::exp(-dt * 3.2f);
+            if (Length2(vel) < 0.01f) vel = {};
+        }
+        float t = 1 - std::exp(-dt * 16);
+        center = Lerp(center, target, t);
+        zoom *= std::pow(targetZoom / std::max(zoom, 1e-4f), t);
+    }
+};
+
+// One tile: an entry of the switcher (an app's stack, or one window when opened).
+struct Item {
+    int entry = 0;
+    std::wstring key;
+    Vec pos, size;
+    bool sliding = false;
+    Vec slideTo;
+    float spring = 0, springV = 0;  // the hover lift
+    Vec Center() const { return pos + size * 0.5f; }
+    bool Has(Vec p) const { return p.x >= pos.x && p.y >= pos.y && p.x <= pos.x + size.x && p.y <= pos.y + size.y; }
+};
+
+enum class PinKind { Image, Note };
+struct Pin {
+    PinKind kind = PinKind::Note;
+    float x = 0, y = 0, w = 240, h = 180;
+    std::wstring file, text;
+    bool locked = false;
+    ID2D1Bitmap* bitmap = nullptr;
+    Vec Pos() const { return {x, y}; }
+    Vec Size() const { return {w, h}; }
+    bool Has(Vec p) const { return p.x >= x && p.y >= y && p.x <= x + w && p.y <= y + h; }
+};
+
+enum class Tool { Pen, Line, Rect, Ellipse, Fill, Eraser };
+struct Stroke {
+    int kind = 0;  // 0 free, 1 line, 2 rect, 3 ellipse
+    uint32_t color = 0xFFFFFF;
+    float size = 4;
+    int64_t fill = -1;
+    std::vector<Vec> pts;
+};
+
+struct State {
+    bool shown = false, overview = false;
+    std::vector<Item> items;
+    std::map<std::wstring, Vec> places;  // remembered tile places, by app
+    bool placesLoaded = false;
+    Camera cam;
+    LARGE_INTEGER last{};
+    int hover = -1;
+    bool hoverClose = false;
+    // the mouse
+    bool down = false, dragged = false;
+    POINT downAt{}, lastAt{};
+    Vec dragVel;
+    LARGE_INTEGER lastMove{};
+    int tileDrag = -1, drillOnClick = -1, snapTarget = -1;
+    std::vector<int> cluster;
+    POINT tileDownAt{};
+    // opening and switching
+    bool committing = false, opening = false;
+    float commitT = 0, openT = 0;
+    int committed = -1;
+    // drilling into a stack
+    bool drilled = false;
+    Vec drillCenter, returnCenter;
+    float returnZoom = 1;
+    size_t lastCount = 0;
+    std::vector<HWND> lastWindows;
+    // the pinboard
+    std::vector<Pin> pins;
+    bool pinsLoaded = false;
+    int pinDrag = -1, pinHover = -1, pinResize = -1;
+    bool pinHoverClose = false, pinDragged = false;
+    POINT pinDownAt{};
+    Vec pinOffset;
+    int editing = -1;
+    // paint
+    bool draw = false, drawPan = false, erasing = false;
+    Tool tool = Tool::Pen;
+    int colorAt = 0, sizeAt = 1;
+    std::vector<Stroke> strokes;
+    bool strokesLoaded = false;
+    Stroke inProgress;
+    bool stroking = false;
+    int toolHover = -1;
+    // drawing
+    ID2D1SolidColorBrush* brush = nullptr;
+    ID2D1StrokeStyle* round = nullptr;
+    IDWriteTextFormat *titleFmt = nullptr, *noteFmt = nullptr, *hintFmt = nullptr, *badgeFmt = nullptr;
+};
+State g;
+
+////////////////////////////////////////////////////////////////////////////////
+// Kept between openings: the places, the pins and the drawing, in the storage folder.
+
+std::wstring Folder() {
+    WCHAR path[MAX_PATH] = L"";
+    if (!Wh_GetModStoragePath(path, ARRAYSIZE(path))) return L"";
+    std::wstring dir = std::wstring(path) + L"\\canvas";
+    CreateDirectoryW(path, nullptr);
+    CreateDirectoryW(dir.c_str(), nullptr);
+    return dir;
+}
+
+std::vector<std::wstring> ReadLines(std::wstring const& file) {
+    std::vector<std::wstring> out;
+    HANDLE f = CreateFileW(file.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return out;
+    std::string bytes;
+    char buf[8192];
+    DWORD n = 0;
+    while (ReadFile(f, buf, sizeof(buf), &n, nullptr) && n) bytes.append(buf, n);
+    CloseHandle(f);
+    int wide = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+    std::wstring text(wide, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), wide);
+    size_t start = 0;
+    while (start < text.size()) {
+        size_t end = text.find(L'\n', start);
+        if (end == std::wstring::npos) end = text.size();
+        std::wstring line = text.substr(start, end - start);
+        if (!line.empty() && line.back() == L'\r') line.pop_back();
+        if (!line.empty()) out.push_back(line);
+        start = end + 1;
+    }
+    return out;
+}
+
+void WriteLines(std::wstring const& file, std::vector<std::wstring> const& lines) {
+    std::wstring text;
+    for (auto const& l : lines) text += l + L"\n";
+    int n = WideCharToMultiByte(CP_UTF8, 0, text.data(), (int)text.size(), nullptr, 0, nullptr, nullptr);
+    std::string bytes(n, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, text.data(), (int)text.size(), bytes.data(), n, nullptr, nullptr);
+    std::wstring temp = file + L".new";
+    HANDLE f = CreateFileW(temp.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return;
+    DWORD wrote = 0;
+    WriteFile(f, bytes.data(), (DWORD)bytes.size(), &wrote, nullptr);
+    CloseHandle(f);
+    MoveFileExW(temp.c_str(), file.c_str(), MOVEFILE_REPLACE_EXISTING);
+}
+
+std::vector<std::wstring> Fields(std::wstring const& line) {
+    std::vector<std::wstring> out;
+    size_t start = 0;
+    while (true) {
+        size_t tab = line.find(L'\t', start);
+        out.push_back(line.substr(start, tab == std::wstring::npos ? std::wstring::npos : tab - start));
+        if (tab == std::wstring::npos) break;
+        start = tab + 1;
+    }
+    return out;
+}
+
+std::wstring Escape(std::wstring s) {
+    std::wstring out;
+    for (wchar_t c : s) out += c == L'\n' ? L"\\n" : c == L'\t' ? L"\\t" : c == L'\\' ? L"\\\\" : std::wstring(1, c);
+    return out;
+}
+std::wstring Unescape(std::wstring const& s) {
+    std::wstring out;
+    for (size_t i = 0; i < s.size(); i++) {
+        if (s[i] == L'\\' && i + 1 < s.size()) {
+            wchar_t c = s[++i];
+            out += c == L'n' ? L'\n' : c == L't' ? L'\t' : c;
+        } else {
+            out += s[i];
+        }
+    }
+    return out;
+}
+
+void LoadTilePlaces() {
+    if (g.placesLoaded) return;
+    g.placesLoaded = true;
+    for (auto const& line : ReadLines(Folder() + L"\\places.txt")) {
+        auto f = Fields(line);
+        if (f.size() >= 3) g.places[f[0]] = {(float)_wtof(f[1].c_str()), (float)_wtof(f[2].c_str())};
+    }
+}
+void SaveTilePlaces() {
+    std::vector<std::wstring> lines;
+    for (auto const& [key, p] : g.places) {
+        WCHAR buf[64];
+        swprintf_s(buf, L"\t%.1f\t%.1f", p.x, p.y);
+        lines.push_back(key + buf);
+    }
+    WriteLines(Folder() + L"\\places.txt", lines);
+}
+
+void FreePinBitmaps() {
+    for (auto& p : g.pins) ViewRelease(p.bitmap);
+}
+
+void LoadPins() {
+    if (g.pinsLoaded) return;
+    g.pinsLoaded = true;
+    std::wstring dir = Folder();
+    for (auto const& line : ReadLines(dir + L"\\pins.txt")) {
+        auto f = Fields(line);
+        if (f.size() < 8) continue;
+        Pin p;
+        p.kind = f[0] == L"image" ? PinKind::Image : PinKind::Note;
+        p.x = (float)_wtof(f[1].c_str()), p.y = (float)_wtof(f[2].c_str());
+        p.w = (float)_wtof(f[3].c_str()), p.h = (float)_wtof(f[4].c_str());
+        p.locked = f[5] == L"1";
+        p.file = f[6];
+        p.text = Unescape(f[7]);
+        if (p.kind == PinKind::Image && GetFileAttributesW((dir + L"\\" + p.file).c_str()) == INVALID_FILE_ATTRIBUTES) continue;
+        g.pins.push_back(std::move(p));
+    }
+}
+void SavePins() {
+    std::vector<std::wstring> lines;
+    for (auto const& p : g.pins) {
+        WCHAR buf[160];
+        swprintf_s(buf, L"\t%.1f\t%.1f\t%.1f\t%.1f\t%d\t", p.x, p.y, p.w, p.h, p.locked ? 1 : 0);
+        lines.push_back((p.kind == PinKind::Image ? L"image" : L"note") + std::wstring(buf) + p.file + L"\t" + Escape(p.text));
+    }
+    WriteLines(Folder() + L"\\pins.txt", lines);
+}
+
+void LoadStrokes() {
+    if (g.strokesLoaded) return;
+    g.strokesLoaded = true;
+    for (auto const& line : ReadLines(Folder() + L"\\drawing.txt")) {
+        auto f = Fields(line);
+        if (f.size() < 5) continue;
+        Stroke s;
+        s.kind = _wtoi(f[0].c_str());
+        s.color = (uint32_t)wcstoul(f[1].c_str(), nullptr, 16);
+        s.size = (float)_wtof(f[2].c_str());
+        s.fill = _wtoi64(f[3].c_str());
+        for (size_t i = 4; i + 1 < f.size(); i += 2) s.pts.push_back({(float)_wtof(f[i].c_str()), (float)_wtof(f[i + 1].c_str())});
+        if (!s.pts.empty()) g.strokes.push_back(std::move(s));
+    }
+}
+void SaveStrokes() {
+    std::vector<std::wstring> lines;
+    for (auto const& s : g.strokes) {
+        WCHAR buf[96];
+        swprintf_s(buf, L"%d\t%06x\t%.1f\t%lld", s.kind, s.color & 0xFFFFFF, s.size, (long long)s.fill);
+        std::wstring line = buf;
+        for (auto const& p : s.pts) {
+            swprintf_s(buf, L"\t%.1f\t%.1f", p.x, p.y);
+            line += buf;
+        }
+        lines.push_back(line);
+    }
+    WriteLines(Folder() + L"\\drawing.txt", lines);
+}
+
+// A picture pinned: kept as a 32-bit top-down BMP beside the list.
+bool SaveBmp(std::wstring const& file, int w, int h, uint32_t const* px) {
+    BITMAPFILEHEADER fh{};
+    BITMAPINFOHEADER ih{sizeof(ih), w, -h, 1, 32, BI_RGB};
+    DWORD bytes = (DWORD)w * h * 4;
+    fh.bfType = 0x4D42;
+    fh.bfOffBits = sizeof(fh) + sizeof(ih);
+    fh.bfSize = fh.bfOffBits + bytes;
+    HANDLE f = CreateFileW(file.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return false;
+    DWORD n = 0;
+    bool ok = WriteFile(f, &fh, sizeof(fh), &n, nullptr) && WriteFile(f, &ih, sizeof(ih), &n, nullptr) &&
+              WriteFile(f, px, bytes, &n, nullptr);
+    CloseHandle(f);
+    return ok;
+}
+
+bool LoadBmp(std::wstring const& file, int* w, int* h, std::vector<uint32_t>* px) {
+    HANDLE f = CreateFileW(file.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return false;
+    BITMAPFILEHEADER fh{};
+    BITMAPINFOHEADER ih{};
+    DWORD n = 0;
+    bool ok = ReadFile(f, &fh, sizeof(fh), &n, nullptr) && n == sizeof(fh) && ReadFile(f, &ih, sizeof(ih), &n, nullptr) &&
+              n == sizeof(ih) && fh.bfType == 0x4D42 && ih.biBitCount == 32 && ih.biWidth > 0 && ih.biHeight < 0 &&
+              ih.biWidth <= 8192 && -ih.biHeight <= 8192;
+    if (ok) {
+        *w = ih.biWidth, *h = -ih.biHeight;
+        px->resize((size_t)*w * *h);
+        SetFilePointer(f, fh.bfOffBits, nullptr, FILE_BEGIN);
+        ok = ReadFile(f, px->data(), (DWORD)(px->size() * 4), &n, nullptr) && n == px->size() * 4;
+    }
+    CloseHandle(f);
+    return ok;
+}
+
+ID2D1Bitmap* PinBitmap(Pin& p) {
+    if (p.bitmap || !g_view.dc || p.kind != PinKind::Image) return p.bitmap;
+    int w = 0, h = 0;
+    std::vector<uint32_t> px;
+    if (!LoadBmp(Folder() + L"\\" + p.file, &w, &h, &px)) return nullptr;
+    for (auto& c : px) c |= 0xFF000000;
+    D2D1_BITMAP_PROPERTIES1 bp{};
+    bp.pixelFormat = {DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED};
+    bp.dpiX = bp.dpiY = 96;
+    ID2D1Bitmap1* b = nullptr;
+    if (SUCCEEDED(g_view.dc->CreateBitmap(D2D1::SizeU(w, h), px.data(), w * 4, &bp, &b))) p.bitmap = b;
+    return p.bitmap;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The tiles: one per entry, sized as its window is, placed where they were last time.
+
+bool Overlaps(Vec ap, Vec as, Vec bp, Vec bs, float gap) {
+    return ap.x < bp.x + bs.x + gap && ap.x + as.x + gap > bp.x && ap.y < bp.y + bs.y + gap && ap.y + as.y + gap > bp.y;
+}
+
+std::vector<std::pair<Vec, Vec>> Obstacles(int skipItem, int skipPin) {
+    std::vector<std::pair<Vec, Vec>> out;
+    for (int i = 0; i < (int)g.items.size(); i++)
+        if (i != skipItem) out.push_back({g.items[i].pos, g.items[i].size});
+    for (int i = 0; i < (int)g.pins.size(); i++)
+        if (i != skipPin) out.push_back({g.pins[i].Pos(), g.pins[i].Size()});
+    return out;
+}
+
+bool HitsAny(Vec p, Vec s, std::vector<std::pair<Vec, Vec>> const& obstacles, float gap) {
+    for (auto const& [op, os] : obstacles)
+        if (Overlaps(p, s, op, os, gap)) return true;
+    return false;
+}
+
+// The nearest free place to pos (PrinceWM's Collision.Resolve).
+Vec Resolve(Vec pos, Vec size, std::vector<std::pair<Vec, Vec>> const& obstacles, float gap) {
+    if (!HitsAny(pos, size, obstacles, gap)) return pos;
+    float step = std::max(24.f, std::min(size.x, size.y) * 0.35f);
+    for (int ring = 1; ring <= 80; ring++) {
+        float rad = ring * step, best = FLT_MAX;
+        Vec found;
+        for (int a = 0; a < 24; a++) {
+            float ang = a / 24.f * 6.2831853f;
+            Vec c = pos + Vec{std::cos(ang), std::sin(ang)} * rad;
+            if (HitsAny(c, size, obstacles, gap)) continue;
+            float d = Length2(c - pos);
+            if (d < best) best = d, found = c;
+        }
+        if (best < FLT_MAX) return found;
+    }
+    return pos;
+}
+
+// Rows about as wide as the whole is tall, in the order given (PrinceWM's NativeLayout).
+void RowLayout(std::vector<Item*> const& items) {
+    float area = 0;
+    for (auto* it : items) area += (it->size.x + kGap) * (it->size.y + kGap);
+    float rowWidth = std::sqrt(area) * 1.25f, x = 0, y = 0, rowH = 0;
+    for (auto* it : items) {
+        if (x > 0 && x + it->size.x > rowWidth) x = 0, y += rowH + kGap, rowH = 0;
+        it->pos = {x, y};
+        x += it->size.x + kGap;
+        rowH = std::max(rowH, it->size.y);
+    }
+}
+
+// Each tile at its remembered place when that's free, else the nearest free one (PrinceWM's LayoutManager).
+void Arrange() {
+    LoadTilePlaces();
+    std::vector<Item*> placed, toPlace;
+    for (auto& it : g.items) {
+        auto at = g.places.find(it.key);
+        bool free = at != g.places.end();
+        if (free)
+            for (auto* p : placed)
+                if (Overlaps(at->second, it.size, p->pos, p->size, 4)) free = false;
+        if (free) {
+            it.pos = at->second;
+            placed.push_back(&it);
+        } else {
+            toPlace.push_back(&it);
+        }
+    }
+    if (placed.empty()) {
+        std::vector<Item*> all;
+        for (auto& it : g.items) all.push_back(&it);
+        RowLayout(all);
+    } else {
+        for (auto* it : toPlace) {
+            std::vector<std::pair<Vec, Vec>> obstacles;
+            for (auto* p : placed) obstacles.push_back({p->pos, p->size});
+            for (auto const& pin : g.pins) obstacles.push_back({pin.Pos(), pin.Size()});
+            Vec want = placed.back()->pos + Vec{placed.back()->size.x + kGap, 0};
+            if (auto at = g.places.find(it->key); at != g.places.end()) want = at->second;
+            it->pos = Resolve(want, it->size, obstacles, kGap);
+            placed.push_back(it);
+        }
+    }
+    for (auto& it : g.items) g.places[it.key] = it.pos;
+}
+
+// An opened stack: its windows in a grid round where the stack was.
+void ArrangeGrid(Vec center) {
+    int n = (int)g.items.size();
+    if (!n) return;
+    float cw = 0, ch = 0;
+    for (auto& it : g.items) cw = std::max(cw, it.size.x), ch = std::max(ch, it.size.y);
+    int cols = (int)std::ceil(std::sqrt((float)n)), rows = (n + cols - 1) / cols;
+    float y0 = center.y - (rows * ch + (rows - 1) * kGap) / 2;
+    int at = 0;
+    for (int r = 0; r < rows && at < n; r++) {
+        int inRow = std::min(cols, n - at);
+        float x0 = center.x - (inRow * cw + (inRow - 1) * kGap) / 2;
+        for (int c = 0; c < inRow; c++) {
+            Item& it = g.items[at++];
+            Vec cell{x0 + c * (cw + kGap) + cw / 2, y0 + r * (ch + kGap) + ch / 2};
+            it.pos = cell - it.size * 0.5f;
+        }
+    }
+}
+
+// The window's own size (its normal size when minimised).
+Vec WindowSize(HWND h) {
+    RECT r{};
+    if (IsIconic(h)) {
+        WINDOWPLACEMENT wp{sizeof(wp)};
+        if (GetWindowPlacement(h, &wp)) r = wp.rcNormalPosition;
+    } else if (FAILED(DwmGetWindowAttribute(h, DWMWA_EXTENDED_FRAME_BOUNDS, &r, sizeof(r)))) {
+        GetWindowRect(h, &r);
+    }
+    float w = (float)(r.right - r.left), hh = (float)(r.bottom - r.top);
+    if (w < 150 || hh < 120 || w > 16000 || hh > 16000) w = 960, hh = 600;
+    return {w, hh};
+}
+
+void BuildItems() {
+    std::vector<Item> next;
+    for (int i = 0; i < (int)g_entries.size(); i++) {
+        auto const& e = g_entries[i];
+        if (e.windows.empty()) continue;
+        Item it;
+        it.entry = i;
+        it.key = Lower(e.key.empty() ? ProgramOf(e.windows[0]) : e.key);
+        it.size = WindowSize(e.windows[0]);
+        for (auto const& old : g.items)  // (the hover lift carries on)
+            if (old.key == it.key && old.entry < (int)g_entries.size()) it.spring = old.spring;
+        next.push_back(std::move(it));
+    }
+    g.items = std::move(next);
+    if (g.drilled) ArrangeGrid(g.drillCenter);
+    else Arrange();
+    g.lastCount = g_entries.size();
+    g.lastWindows.clear();
+    for (auto const& e : g_entries) g.lastWindows.push_back(e.windows.empty() ? nullptr : e.windows[0]);
+}
+
+int ItemOf(int entry) {
+    for (int i = 0; i < (int)g.items.size(); i++)
+        if (g.items[i].entry == entry) return i;
+    return -1;
+}
+
+void Remember(Item const& it) {
+    if (!g.drilled) g.places[it.key] = it.sliding ? it.slideTo : it.pos;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Camera helpers (PrinceWM's FitAll, FocusZoom, FocusFill and the frame-perfect start).
+
+void FitAll(bool animate) {
+    if (g.items.empty()) {
+        if (animate) g.cam.TweenTo({}, 1, 0.4f);
+        else g.cam.SnapTo({}, 1);
+        return;
+    }
+    float minX = FLT_MAX, minY = FLT_MAX, maxX = -FLT_MAX, maxY = -FLT_MAX;
+    for (auto const& it : g.items) {
+        minX = std::min(minX, it.pos.x), minY = std::min(minY, it.pos.y);
+        maxX = std::max(maxX, it.pos.x + it.size.x), maxY = std::max(maxY, it.pos.y + it.size.y);
+    }
+    Vec c{(minX + maxX) / 2, (minY + maxY) / 2};
+    float pad = 1.24f;
+    float z = std::min(g.cam.view.x / (std::max(1.f, maxX - minX) * pad), g.cam.view.y / (std::max(1.f, maxY - minY) * pad));
+    if (animate) g.cam.TweenTo(c, z, 0.38f);
+    else g.cam.SnapTo(c, z);
+}
+
+float FocusZoom(Item const& it, float pad = 1.6f) {
+    return std::clamp(std::min(g.cam.view.x / (it.size.x * pad), g.cam.view.y / (it.size.y * pad)), kMinZoom, kMaxZoom);
+}
+
+// The camera that shows the tile exactly where its window is on the screen, at its size.
+bool FramePerfect(Item const& it, Vec* center, float* zoom) {
+    HWND h = g_entries[it.entry].windows[0];
+    RECT r{};
+    if (IsIconic(h)) {
+        WINDOWPLACEMENT wp{sizeof(wp)};
+        if (!GetWindowPlacement(h, &wp)) return false;
+        r = wp.rcNormalPosition;
+    } else if (FAILED(DwmGetWindowAttribute(h, DWMWA_EXTENDED_FRAME_BOUNDS, &r, sizeof(r))) && !GetWindowRect(h, &r)) {
+        return false;
+    }
+    float w = (float)(r.right - r.left), hh = (float)(r.bottom - r.top);
+    if (w <= 0 || hh <= 0 || r.left <= -30000) return false;
+    Vec onScreen{(r.left - g_view.mon.left) + w / 2, (r.top - g_view.mon.top) + hh / 2};
+    *zoom = w / std::max(1.f, it.size.x);
+    *center = it.Center() - (onScreen - g.cam.view * 0.5f) * (1 / *zoom);
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Drawing.
+
+float Dpi() { return g_dpi / 96.f; }
+
+D2D1_COLOR_F Color(uint32_t rgb, float a = 1) {
+    return D2D1::ColorF(((rgb >> 16) & 255) / 255.f, ((rgb >> 8) & 255) / 255.f, (rgb & 255) / 255.f, a);
+}
+
+ID2D1SolidColorBrush* Brush(uint32_t rgb, float a = 1) {
+    if (!g.brush) g_view.dc->CreateSolidColorBrush(Color(rgb, a), &g.brush);
+    else g.brush->SetColor(Color(rgb, a));
+    return g.brush;
+}
+
+void MakeFormats() {
+    if (!g_view.dwrite || g.titleFmt) return;
+    std::wstring font = g_settings.font.empty() ? L"Segoe UI" : g_settings.font;
+    float s = Dpi(), base = std::max(11.f, g_settings.fontSize * 1.6f);
+    auto make = [&](float size, DWRITE_FONT_WEIGHT weight, IDWriteTextFormat** out) {
+        g_view.dwrite->CreateTextFormat(font.c_str(), nullptr, weight, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
+                                        size * s, L"", out);
+    };
+    make(base, g_settings.bold ? DWRITE_FONT_WEIGHT_BOLD : DWRITE_FONT_WEIGHT_NORMAL, &g.titleFmt);
+    make(base, DWRITE_FONT_WEIGHT_NORMAL, &g.noteFmt);
+    make(base * 0.9f, DWRITE_FONT_WEIGHT_NORMAL, &g.hintFmt);
+    make(base * 0.9f, DWRITE_FONT_WEIGHT_BOLD, &g.badgeFmt);
+    if (g.titleFmt) g.titleFmt->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+    if (g.hintFmt) g.hintFmt->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+    if (g.badgeFmt) {
+        g.badgeFmt->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+        g.badgeFmt->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    }
+    if (!g.round && g_view.d2d) {
+        D2D1_STROKE_STYLE_PROPERTIES p{D2D1_CAP_STYLE_ROUND, D2D1_CAP_STYLE_ROUND, D2D1_CAP_STYLE_ROUND, D2D1_LINE_JOIN_ROUND};
+        g_view.d2d->CreateStrokeStyle(p, nullptr, 0, &g.round);
+    }
+}
+
+void FreeFormats() {
+    ViewRelease(g.titleFmt);
+    ViewRelease(g.noteFmt);
+    ViewRelease(g.hintFmt);
+    ViewRelease(g.badgeFmt);
+    ViewRelease(g.brush);
+    ViewRelease(g.round);
+}
+
+D2D1_MATRIX_3X2_F WorldMatrix() {
+    return D2D1::Matrix3x2F::Translation(-g.cam.center.x, -g.cam.center.y) * D2D1::Matrix3x2F::Scale(g.cam.zoom, g.cam.zoom) *
+           D2D1::Matrix3x2F::Translation(g.cam.view.x / 2, g.cam.view.y / 2);
+}
+
+// A tile on the screen, with its hover lift.
+D2D1_RECT_F TileRect(Item const& it) {
+    float lift = 1 + kHoverLift * it.spring;
+    Vec grow = it.size * ((lift - 1) / 2);
+    Vec tl = g.cam.ToScreen(it.pos - grow), br = g.cam.ToScreen(it.pos + it.size + grow);
+    return {tl.x, tl.y, br.x, br.y};
+}
+
+D2D1_RECT_F CloseRect(D2D1_RECT_F r) {
+    float s = 22 * Dpi();
+    return {r.right - s, r.top, r.right, r.top + s};
+}
+
+bool In(D2D1_RECT_F r, POINT p) { return p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom; }
+
+// The paint toolbar: pen, line, box, ellipse, fill, eraser, colour, size.
+constexpr int kTools = 8;
+D2D1_RECT_F ToolRect(int i) {
+    float s = Dpi(), size = 40 * s, gap = 8 * s, total = kTools * size + (kTools - 1) * gap;
+    float x = (g.cam.view.x - total) / 2 + i * (size + gap), y = g.cam.view.y - size - 56 * s;
+    return {x, y, x + size, y + size};
+}
+
+uint32_t PaintColor(int at) {
+    auto const& l = g_settings.look;
+    uint32_t colors[] = {l.selectedText, l.highlight, l.highlightBorder, l.count, l.text, 0x15FFA2, 0xFF6F77, 0xFFFFFF};
+    return colors[((at % 8) + 8) % 8];
+}
+
+void StepSprings(float dt) {
+    for (int i = 0; i < (int)g.items.size(); i++) {
+        auto& it = g.items[i];
+        float target = i == g.hover && !g.committing ? 1.f : 0.f;
+        it.springV += ((target - it.spring) * 320 - it.springV * 17) * dt;
+        it.spring += it.springV * dt;
+        if (it.sliding) {
+            float k = 1 - std::exp(-dt * 13);
+            it.pos = Lerp(it.pos, it.slideTo, k);
+            if (Length2(it.slideTo - it.pos) < 0.25f) it.pos = it.slideTo, it.sliding = false;
+        }
+    }
+}
+
+void D3DState(float W, float H) {
+    D3D11_VIEWPORT vp{0, 0, W, H, 0, 1};
+    g_view.ctx->RSSetViewports(1, &vp);
+    g_view.ctx->RSSetState(g_view.raster);
+    g_view.ctx->OMSetRenderTargets(1, &g_view.rtv, nullptr);
+    g_view.ctx->OMSetBlendState(g_view.blend, nullptr, 0xFFFFFFFF);
+    g_view.ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+    g_view.ctx->IASetInputLayout(nullptr);
+    g_view.ctx->VSSetShader(g_view.vs, nullptr, 0);
+    g_view.ctx->PSSetShader(g_view.ps, nullptr, 0);
+    g_view.ctx->VSSetConstantBuffers(0, 1, &g_view.cb);
+    g_view.ctx->PSSetConstantBuffers(0, 1, &g_view.cb);
+    g_view.ctx->PSSetSamplers(0, 1, &g_view.sampler);
+}
+
+void DrawStroke(Stroke const& s, float opacity) {
+    if (s.pts.empty()) return;
+    float w = std::max(0.5f, s.size);
+    auto* b = Brush(s.color, opacity);
+    if (s.kind == 0 || s.kind == 1) {
+        if (s.pts.size() == 1) {
+            g_view.dc->FillEllipse(D2D1::Ellipse({s.pts[0].x, s.pts[0].y}, w / 2, w / 2), b);
+            return;
+        }
+        for (size_t i = 1; i < s.pts.size(); i++)
+            g_view.dc->DrawLine({s.pts[i - 1].x, s.pts[i - 1].y}, {s.pts[i].x, s.pts[i].y}, b, w, g.round);
+        return;
+    }
+    if (s.pts.size() < 2) return;
+    Vec a = s.pts[0], c = s.pts.back();
+    D2D1_RECT_F r{std::min(a.x, c.x), std::min(a.y, c.y), std::max(a.x, c.x), std::max(a.y, c.y)};
+    D2D1_ELLIPSE e = D2D1::Ellipse({(r.left + r.right) / 2, (r.top + r.bottom) / 2}, (r.right - r.left) / 2, (r.bottom - r.top) / 2);
+    if (s.fill >= 0) {
+        auto* f = Brush((uint32_t)s.fill, opacity);
+        if (s.kind == 2) g_view.dc->FillRectangle(r, f);
+        else g_view.dc->FillEllipse(e, f);
+    }
+    b = Brush(s.color, opacity);
+    if (s.kind == 2) g_view.dc->DrawRectangle(r, b, w, g.round);
+    else g_view.dc->DrawEllipse(e, b, w, g.round);
+}
+
+void Text(std::wstring const& text, IDWriteTextFormat* fmt, D2D1_RECT_F r, uint32_t color, float a) {
+    if (!fmt || text.empty()) return;
+    g_view.dc->DrawText(text.c_str(), (UINT32)text.size(), fmt, r, Brush(color, a), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+}
+
+void Render() {
+    float W = (float)g_view.chainW, H = (float)g_view.chainH, D = H * 1.15f;
+    LARGE_INTEGER now, freq;
+    QueryPerformanceCounter(&now);
+    QueryPerformanceFrequency(&freq);
+    float dt = g.last.QuadPart ? std::clamp((float)((now.QuadPart - g.last.QuadPart) / (double)freq.QuadPart), 0.f, 0.05f) : 0.f;
+    g.last = now;
+    g.cam.view = {W, H};
+    for (auto& t : g_view.tiles) ViewTakeFrame(*t);
+
+    bool finish = false;
+    if (g.committing) {
+        g.commitT += dt;
+        if (g.commitT >= kCommitSeconds) finish = true;
+    }
+    float open = 1;
+    if (g.opening) {
+        g.openT += dt;
+        float u = std::clamp(g.openT / kOpenSeconds, 0.f, 1.f);
+        open = 1 - std::pow(1 - u, 3.f);
+        if (u >= 1) g.opening = false;
+    }
+    g.cam.Step(dt);
+    StepSprings(dt);
+    float commit = g.committing ? std::clamp(g.commitT / kCommitSeconds, 0.f, 1.f) : 0.f;
+    float others = (1 - commit) * open;
+    auto const& look = g_settings.look;
+    float s = Dpi();
+    MakeFormats();
+
+    // The ground.
+    D3DState(W, H);
+    float ground[4] = {((look.ground >> 16) & 255) / 255.f, ((look.ground >> 8) & 255) / 255.f, (look.ground & 255) / 255.f, 1};
+    g_view.ctx->ClearRenderTargetView(g_view.rtv, ground);
+
+    // Behind the tiles: the dot grid and the drawing.
+    if (g_view.dc && g_view.target) {
+        g_view.dc->BeginDraw();
+        g_view.dc->SetTransform(D2D1::Matrix3x2F::Identity());
+        float spacing = 80;
+        while (spacing * g.cam.zoom < 26) spacing *= 2;
+        while (spacing * g.cam.zoom > 90) spacing /= 2;
+        Vec tl = g.cam.ToWorld({0, 0}), br = g.cam.ToWorld({W, H});
+        float radius = 1.5f * s;
+        auto* dot = Brush(look.border, 0.55f * (1 - commit * 0.9f) * open);
+        for (float wx = std::floor(tl.x / spacing) * spacing; wx <= br.x; wx += spacing)
+            for (float wy = std::floor(tl.y / spacing) * spacing; wy <= br.y; wy += spacing) {
+                Vec p = g.cam.ToScreen({wx, wy});
+                g_view.dc->FillRectangle({p.x - radius, p.y - radius, p.x + radius, p.y + radius}, dot);  // (square: Tourne's pixels)
+            }
+        if (!g.drilled && (!g.strokes.empty() || g.stroking)) {
+            g_view.dc->SetTransform(WorldMatrix());
+            for (auto const& st : g.strokes) DrawStroke(st, others);
+            if (g.stroking) DrawStroke(g.inProgress, others);
+            g_view.dc->SetTransform(D2D1::Matrix3x2F::Identity());
+        }
+        g_view.dc->EndDraw();
+    }
+
+    // The tiles: the chosen one last (on top), each a shadow, a glow when lit, and its picture.
+    D3DState(W, H);
+    Mat proj = Project(W, H, D);
+    float radius = std::max(0, g_settings.radius) * s * g.cam.zoom;
+    int sel = ItemOf(g_sel), lit = g.hover >= 0 ? g.hover : sel;
+    std::vector<int> order;
+    for (int i = 0; i < (int)g.items.size(); i++)
+        if (i != sel) order.push_back(i);
+    if (sel >= 0) order.push_back(sel);
+    for (int i : order) {
+        Item const& it = g.items[i];
+        if (it.entry >= (int)g_view.tiles.size()) continue;
+        ViewTile& t = *g_view.tiles[it.entry];
+        if (!t.srv) continue;
+        D2D1_RECT_F r = TileRect(it);
+        float sw = r.right - r.left, sh = r.bottom - r.top;
+        if (r.right < 0 || r.bottom < 0 || r.left > W || r.top > H || sw < 1 || sh < 1) continue;
+        float alpha = i == sel ? open : others;
+        float cornerR = i == sel ? radius * (1 - commit) : radius;
+        Mat place = Move((r.left + r.right) / 2 - W / 2, H / 2 - (r.top + r.bottom) / 2, D);
+        float spread = 22 * s;
+        float stint[4] = {0, 0, 0, 0.45f * alpha}, sextra[4] = {spread, 0, 0, 0};
+        Mat shadow = Scale(sw + spread * 2, sh + spread * 2) * Move(0, -spread * 0.35f, 0) * place * proj;
+        ViewDrawQuad(shadow, sw + spread * 2, sh + spread * 2, cornerR, 1, stint, sextra, t.srv, 1, 1);
+        if (i == lit && !g.committing) {
+            float glow = 9 * s;
+            uint32_t c = look.highlightBorder;
+            float gt[4] = {((c >> 16) & 255) / 255.f, ((c >> 8) & 255) / 255.f, (c & 255) / 255.f, 0.85f * alpha};
+            float ge[4] = {glow, 0, 0, 0};
+            Mat ring = Scale(sw + glow * 2, sh + glow * 2) * place * proj;
+            ViewDrawQuad(ring, sw + glow * 2, sh + glow * 2, cornerR + glow, 1, gt, ge, t.srv, 1, 1);
+        }
+        float u1 = (float)t.w / std::max(1, t.texW), v1 = (float)t.h / std::max(1, t.texH);
+        float tint[4] = {1, 1, 1, alpha}, extra[4] = {0, 0, 0, 0};
+        ViewDrawQuad(Scale(sw, sh) * place * proj, sw, sh, cornerR, 0, tint, extra, t.srv, u1, v1);
+    }
+
+    // Over the tiles: their titles and badges, the drop target, the pins, the toolbar and the hints.
+    if (g_view.dc && g_view.target) {
+        g_view.dc->BeginDraw();
+        g_view.dc->SetTransform(D2D1::Matrix3x2F::Identity());
+        float chrome = 1 - commit;
+        for (int i = 0; i < (int)g.items.size(); i++) {
+            Item const& it = g.items[i];
+            D2D1_RECT_F r = TileRect(it);
+            float sw = r.right - r.left, sh = r.bottom - r.top;
+            if (sw < 110 * s || sh < 72 * s || chrome <= 0.01f) continue;
+            auto const& e = g_entries[it.entry];
+            bool chosen = i == sel;
+            // The title above the tile.
+            std::wstring label = e.label.empty() ? Title(e.windows[0]) : e.label;
+            Text(label, g.titleFmt, {r.left, r.top - 22 * s, r.right, r.top - 2 * s}, chosen ? look.selectedText : look.text,
+                     (chosen ? 1.f : 0.75f) * chrome * open);
+            // The stack's count, top left.
+            if (e.windows.size() > 1 && !g.drilled) {
+                std::wstring n = std::to_wstring(e.windows.size());
+                float bw = std::max(24 * s, (14 + n.size() * 9) * s), bh = 24 * s;
+                D2D1_RECT_F b{r.left + 8 * s, r.top + 8 * s, r.left + 8 * s + bw, r.top + 8 * s + bh};
+                g_view.dc->FillRectangle(b, Brush(look.ground, 0.9f * chrome));
+                g_view.dc->DrawRectangle(b, Brush(look.highlightBorder, chrome), 1.4f * s);
+                Text(n, g.badgeFmt, b, look.selectedText, chrome);
+            }
+            // Close, on the one under the pointer.
+            if (i == g.hover) {
+                D2D1_RECT_F c = CloseRect(r);
+                g_view.dc->FillRectangle(c, Brush(g.hoverClose ? 0xE57474 : look.ground, (g.hoverClose ? 1.f : 0.7f) * chrome));
+                float cx = (c.left + c.right) / 2, cy = (c.top + c.bottom) / 2, d = 4 * s;
+                auto* x = Brush(look.selectedText, chrome);
+                g_view.dc->DrawLine({cx - d, cy - d}, {cx + d, cy + d}, x, 1.7f * s, g.round);
+                g_view.dc->DrawLine({cx - d, cy + d}, {cx + d, cy - d}, x, 1.7f * s, g.round);
+            }
+        }
+        // Dropping here puts both side by side: the half each will take.
+        if (g.snapTarget >= 0 && g.snapTarget < (int)g.items.size() && g.tileDrag >= 0) {
+            D2D1_RECT_F r = TileRect(g.items[g.snapTarget]);
+            bool left = g.items[g.tileDrag].Center().x <= g.items[g.snapTarget].Center().x;
+            float mid = (r.left + r.right) / 2;
+            D2D1_RECT_F half = left ? D2D1_RECT_F{r.left, r.top, mid, r.bottom} : D2D1_RECT_F{mid, r.top, r.right, r.bottom};
+            g_view.dc->FillRectangle(half, Brush(look.highlight, 0.3f));
+            g_view.dc->DrawRectangle(r, Brush(look.highlightBorder), 2.5f * s);
+        }
+        // The pinboard.
+        if (!g.drilled && !g.pins.empty()) {
+            g_view.dc->SetTransform(WorldMatrix());
+            float z = std::max(g.cam.zoom, 0.001f);
+            for (int i = 0; i < (int)g.pins.size(); i++) {
+                Pin& p = g.pins[i];
+                D2D1_RECT_F r{p.x, p.y, p.x + p.w, p.y + p.h};
+                if (p.kind == PinKind::Image) {
+                    if (auto* b = PinBitmap(p)) g_view.dc->DrawBitmap(b, r, others, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR);
+                    g_view.dc->DrawRectangle(r, Brush(look.border, 0.8f * others), 1.5f / z);
+                } else {
+                    g_view.dc->FillRectangle(r, Brush(look.iconBack, 0.95f * others));
+                    g_view.dc->DrawRectangle(r, Brush(i == g.editing ? look.highlightBorder : look.border, others), 1.5f / z);
+                    std::wstring text = p.text;
+                    if (i == g.editing && (GetTickCount() / 530) % 2 == 0) text += L"|";
+                    D2D1_RECT_F in{r.left + 12, r.top + 12, r.right - 12, r.bottom - 12};
+                    g_view.dc->SetTransform(D2D1::Matrix3x2F::Identity());
+                    Vec a = g.cam.ToScreen({in.left, in.top}), b = g.cam.ToScreen({in.right, in.bottom});
+                    if (g.noteFmt && b.x - a.x > 20 && b.y - a.y > 12)
+                        g_view.dc->DrawText(text.c_str(), (UINT32)text.size(), g.noteFmt, {a.x, a.y, b.x, b.y},
+                                            Brush(look.selectedText, others), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+                    g_view.dc->SetTransform(WorldMatrix());
+                }
+                if (p.locked) {
+                    float m = 8 / z;
+                    g_view.dc->FillRectangle({r.right - m * 2, r.bottom - m * 2, r.right - m, r.bottom - m}, Brush(look.highlightBorder, others));
+                }
+            }
+            g_view.dc->SetTransform(D2D1::Matrix3x2F::Identity());
+            if (g.pinHover >= 0 && g.pinHover < (int)g.pins.size()) {
+                Pin const& p = g.pins[g.pinHover];
+                Vec a = g.cam.ToScreen(p.Pos()), b = g.cam.ToScreen(p.Pos() + p.Size());
+                D2D1_RECT_F c = CloseRect({a.x, a.y, b.x, b.y});
+                g_view.dc->FillRectangle(c, Brush(g.pinHoverClose ? 0xE57474 : look.ground, g.pinHoverClose ? 1.f : 0.7f));
+                float cx = (c.left + c.right) / 2, cy = (c.top + c.bottom) / 2, d = 4 * s;
+                g_view.dc->DrawLine({cx - d, cy - d}, {cx + d, cy + d}, Brush(look.selectedText), 1.7f * s, g.round);
+                g_view.dc->DrawLine({cx - d, cy + d}, {cx + d, cy - d}, Brush(look.selectedText), 1.7f * s, g.round);
+                if (!p.locked) {  // the corner to size it by
+                    float hs = 12 * s;
+                    g_view.dc->FillRectangle({b.x - hs, b.y - hs, b.x, b.y}, Brush(look.highlightBorder, 0.8f));
+                }
+            }
+        }
+        // Paint's toolbar.
+        if (g.draw) {
+            PCWSTR names[kTools] = {L"PEN", L"LINE", L"BOX", L"OVAL", L"FILL", L"ERASE", L"", L""};
+            for (int i = 0; i < kTools; i++) {
+                D2D1_RECT_F r = ToolRect(i);
+                bool on = i < 6 && (int)g.tool == i;
+                g_view.dc->FillRectangle(r, Brush(on ? look.highlight : look.ground, on ? 0.45f : 0.92f));
+                g_view.dc->DrawRectangle(r, Brush(i == g.toolHover || on ? look.highlightBorder : look.border), 1.5f * s);
+                if (i == 6) {
+                    float m = 10 * s;
+                    g_view.dc->FillRectangle({r.left + m, r.top + m, r.right - m, r.bottom - m}, Brush(PaintColor(g.colorAt)));
+                } else if (i == 7) {
+                    float d = std::min(kStrokeSizes[g.sizeAt], 28.f) * s / 2;
+                    float cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
+                    g_view.dc->FillRectangle({cx - d / 2 - 1, cy - d / 2 - 1, cx + d / 2 + 1, cy + d / 2 + 1}, Brush(look.selectedText));
+                } else if (g.badgeFmt) {
+                    Text(names[i], g.badgeFmt, r, look.selectedText, 1);
+                }
+            }
+        }
+        // What the keys do, at the foot.
+        if (g.hintFmt && chrome > 0.01f) {
+            std::wstring hint = g.draw ? L"PAINT   left: draw   right: pan   wheel: zoom   D or Esc: done"
+                              : g.drilled ? L"Esc: back to the canvas   click: switch   middle-drag: move"
+                                          : L"drag: pan   wheel: zoom   middle-drag: move   middle-click: open a stack   drop on a tile: side by side"
+                                            L"   W fit   R arrange   N note   Ctrl+V paste   D paint";
+            Text(hint, g.hintFmt, {0, H - 34 * s, W, H - 10 * s}, look.text, 0.55f * chrome * open);
+        }
+        g_view.dc->EndDraw();
+    }
+    g_view.chain->Present(1, 0);
+    if (finish) {
+        int idx = g.committed;
+        g.committing = false;
+        if (g_wnd) Commit(g_wnd, idx);  // (Hide closes the view)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// What it does.
+
+void BeginCommit(int item) {
+    if (item < 0 || item >= (int)g.items.size() || g.committing) return;
+    g_sel = g.items[item].entry;
+    g.committed = g_sel;
+    g.committing = true;
+    g.commitT = 0;
+    Vec c;
+    float z;
+    if (FramePerfect(g.items[item], &c, &z)) g.cam.TweenTo(c, z, kCommitSeconds, true);
+    else {
+        Item const& it = g.items[item];
+        g.cam.TweenTo(it.Center(), std::max(g.cam.view.x / it.size.x, g.cam.view.y / it.size.y), kCommitSeconds, true);
+    }
+}
+
+int HitTest(POINT p) {
+    Vec w = g.cam.ToWorld({(float)p.x, (float)p.y});
+    for (int i = (int)g.items.size() - 1; i >= 0; i--)
+        if (g.items[i].Has(w)) return i;
+    return -1;
+}
+
+void UpdateHover(POINT p) {
+    g.hover = -1, g.hoverClose = false;
+    for (int i = (int)g.items.size() - 1; i >= 0; i--) {
+        D2D1_RECT_F r = TileRect(g.items[i]);
+        if (r.right - r.left < 60 || r.bottom - r.top < 40) continue;
+        if (In(CloseRect(r), p)) {
+            g.hover = i, g.hoverClose = true;
+            return;
+        }
+        if (In(r, p)) {
+            g.hover = i;
+            return;
+        }
+    }
+}
+
+void UpdatePinHover(POINT p) {
+    g.pinHover = -1, g.pinHoverClose = false;
+    if (g.drilled) return;
+    for (int i = (int)g.pins.size() - 1; i >= 0; i--) {
+        Vec a = g.cam.ToScreen(g.pins[i].Pos()), b = g.cam.ToScreen(g.pins[i].Pos() + g.pins[i].Size());
+        D2D1_RECT_F r{a.x, a.y, b.x, b.y};
+        if (b.x - a.x < 30 || b.y - a.y < 24) continue;
+        if (In(CloseRect(r), p)) {
+            g.pinHover = i, g.pinHoverClose = true;
+            return;
+        }
+        if (In(r, p)) {
+            g.pinHover = i;
+            return;
+        }
+    }
+}
+
+bool OnResizeCorner(int pin, POINT p) {
+    if (pin < 0 || g.pins[pin].locked) return false;
+    Vec b = g.cam.ToScreen(g.pins[pin].Pos() + g.pins[pin].Size());
+    float hs = 14 * Dpi();
+    return p.x >= b.x - hs && p.y >= b.y - hs && p.x <= b.x && p.y <= b.y;
+}
+
+// The tile dragged lies mostly over another: that one's the drop target (PrinceWM's drag to tile).
+void UpdateSnapTarget() {
+    g.snapTarget = -1;
+    if (g.tileDrag < 0 || !g.cluster.empty() || g.drilled) return;
+    Item const& a = g.items[g.tileDrag];
+    float aArea = std::max(1.f, a.size.x * a.size.y), best = 0;
+    for (int i = 0; i < (int)g.items.size(); i++) {
+        if (i == g.tileDrag) continue;
+        Item const& b = g.items[i];
+        float ox = std::max(0.f, std::min(a.pos.x + a.size.x, b.pos.x + b.size.x) - std::max(a.pos.x, b.pos.x));
+        float oy = std::max(0.f, std::min(a.pos.y + a.size.y, b.pos.y + b.size.y) - std::max(a.pos.y, b.pos.y));
+        float overlap = ox * oy, frac = overlap / std::min(aArea, std::max(1.f, b.size.x * b.size.y));
+        if (frac > 0.4f && overlap > best) best = overlap, g.snapTarget = i;
+    }
+}
+
+// The tiles touching this one, and those touching them (PrinceWM's Snapping.GetCluster).
+std::vector<int> Cluster(int start) {
+    std::vector<int> out{start};
+    for (size_t k = 0; k < out.size(); k++) {
+        Item const& a = g.items[out[k]];
+        for (int i = 0; i < (int)g.items.size(); i++) {
+            if (std::find(out.begin(), out.end(), i) != out.end()) continue;
+            Item const& b = g.items[i];
+            float aL = a.pos.x, aR = aL + a.size.x, aT = a.pos.y, aB = aT + a.size.y;
+            float bL = b.pos.x, bR = bL + b.size.x, bT = b.pos.y, bB = bT + b.size.y;
+            bool yo = aT < bB && aB > bT, xo = aL < bR && aR > bL, eps = 26;
+            if ((yo && (std::fabs(aR - bL) <= eps || std::fabs(aL - bR) <= eps)) ||
+                (xo && (std::fabs(aB - bT) <= eps || std::fabs(aT - bB) <= eps)))
+                out.push_back(i);
+        }
+    }
+    return out;
+}
+
+// Two windows side by side on the screen the tile's window is on, the left half and the right.
+void SideBySide(HWND left, HWND right) {
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(MonitorFromWindow(left, MONITOR_DEFAULTTONEAREST), &mi);
+    RECT wa = mi.rcWork;
+    int half = (wa.right - wa.left) / 2;
+    for (HWND h : {left, right})
+        if (IsIconic(h) || IsZoomed(h)) ShowWindow(h, SW_RESTORE);
+    PlaceWindowFrame(left, {wa.left, wa.top, wa.left + half, wa.bottom});
+    PlaceWindowFrame(right, {wa.left + half, wa.top, wa.right, wa.bottom});
+    Activate(right);
+    Activate(left);
+}
+
+void NewNote(POINT at) {
+    LoadPins();
+    float w = 240, h = 180;
+    Vec wp = g.cam.ToWorld({(float)at.x, (float)at.y});
+    Vec p0 = Resolve(wp - Vec{w / 2, h / 2}, {w, h}, Obstacles(-1, -1), 10);
+    Pin p;
+    p.kind = PinKind::Note, p.x = p0.x, p.y = p0.y, p.w = w, p.h = h;
+    g.pins.push_back(p);
+    g.editing = (int)g.pins.size() - 1;
+    SavePins();
+}
+
+void PasteImage(POINT at) {
+    if (!OpenClipboard(g_view.wnd)) return;
+    HANDLE data = GetClipboardData(CF_DIB);
+    BITMAPINFO* bi = data ? (BITMAPINFO*)GlobalLock(data) : nullptr;
+    if (bi) {
+        int w = bi->bmiHeader.biWidth, h = std::abs(bi->bmiHeader.biHeight);
+        if (w > 0 && h > 0 && w <= 8192 && h <= 8192) {
+            BYTE* bits = (BYTE*)bi + bi->bmiHeader.biSize + bi->bmiHeader.biClrUsed * sizeof(RGBQUAD) +
+                         (bi->bmiHeader.biCompression == BI_BITFIELDS ? 12 : 0);
+            ViewDib dib(w, h);
+            if (dib.bits) {
+                StretchDIBits(dib.dc, 0, 0, w, h, 0, 0, w, h, bits, bi, DIB_RGB_COLORS, SRCCOPY);
+                dib.Opaque();
+                WCHAR name[64];
+                swprintf_s(name, L"pin-%llx.bmp", (unsigned long long)GetTickCount64() ^ ((unsigned long long)GetCurrentThreadId() << 40));
+                if (SaveBmp(Folder() + L"\\" + name, w, h, dib.bits)) {
+                    LoadPins();
+                    float k = std::min(1.f, 520.f / std::max(w, h));
+                    float pw = w * k, ph = h * k;
+                    Vec wp = g.cam.ToWorld({(float)at.x, (float)at.y});
+                    Vec p0 = Resolve(wp - Vec{pw / 2, ph / 2}, {pw, ph}, Obstacles(-1, -1), 10);
+                    Pin p;
+                    p.kind = PinKind::Image, p.x = p0.x, p.y = p0.y, p.w = pw, p.h = ph, p.file = name;
+                    g.pins.push_back(p);
+                    SavePins();
+                }
+            }
+        }
+        GlobalUnlock(data);
+    }
+    CloseClipboard();
+}
+
+void RemovePin(int i) {
+    if (i < 0 || i >= (int)g.pins.size()) return;
+    ViewRelease(g.pins[i].bitmap);
+    if (g.pins[i].kind == PinKind::Image) DeleteFileW((Folder() + L"\\" + g.pins[i].file).c_str());
+    g.pins.erase(g.pins.begin() + i);
+    g.editing = g.pinHover = g.pinDrag = g.pinResize = -1;
+    SavePins();
+}
+
+void GrowNote(int i) {
+    if (i < 0 || i >= (int)g.pins.size() || g.pins[i].kind != PinKind::Note || !g_view.dwrite || !g.noteFmt) return;
+    Pin& p = g.pins[i];
+    std::wstring text = p.text + L"|";
+    IDWriteTextLayout* layout = nullptr;
+    if (SUCCEEDED(g_view.dwrite->CreateTextLayout(text.c_str(), (UINT32)text.size(), g.noteFmt, std::max(10.f, (p.w - 24) * g.cam.zoom),
+                                                  100000, &layout))) {
+        DWRITE_TEXT_METRICS m{};
+        layout->GetMetrics(&m);
+        float need = m.height / std::max(g.cam.zoom, 0.01f) + 24;
+        if (need > p.h) p.h = need;
+        layout->Release();
+    }
+}
+
+void Rearrange() {
+    for (auto const& it : g.items) g.places.erase(it.key);
+    BuildItems();
+    FitAll(true);
+}
+
+void MoveSelection(int dx, int dy) {
+    if (g.items.empty()) return;
+    int at = ItemOf(g_sel);
+    if (at < 0) {
+        g_sel = g.items[0].entry;
+        g.cam.PanTargetTo(g.items[0].Center());
+        return;
+    }
+    Vec from = g.items[at].Center();
+    int best = -1;
+    float bestScore = FLT_MAX;
+    for (int i = 0; i < (int)g.items.size(); i++) {
+        if (i == at) continue;
+        Vec d = g.items[i].Center() - from;
+        bool ok = dx < 0 ? d.x < -1 : dx > 0 ? d.x > 1 : dy < 0 ? d.y < -1 : d.y > 1;
+        if (!ok) continue;
+        float along = dx ? std::fabs(d.x) : std::fabs(d.y), across = dx ? std::fabs(d.y) : std::fabs(d.x);
+        float score = along + across * 2;
+        if (score < bestScore) bestScore = score, best = i;
+    }
+    if (best >= 0) {
+        g_sel = g.items[best].entry;
+        g.cam.PanTargetTo(g.items[best].Center());
+    }
+}
+
+UINT Menu(HMENU menu, POINT screen) {
+    using Styled = UINT (*)(HMENU, UINT, int, int, HWND);
+    static Styled styled = (Styled)GetProcAddress(GetModuleHandleW(nullptr), "TourneStyledMenu");
+    SetForegroundWindow(g_view.wnd);
+    UINT flags = TPM_RETURNCMD | TPM_RIGHTBUTTON;
+    UINT cmd = styled ? styled(menu, flags, screen.x, screen.y, g_view.wnd)
+                      : (UINT)TrackPopupMenuEx(menu, flags, screen.x, screen.y, g_view.wnd, nullptr);
+    DestroyMenu(menu);
+    return cmd;
+}
+
+void ToggleDraw() {
+    g.draw = !g.draw;
+    g.stroking = g.erasing = g.drawPan = false;
+    g.editing = -1;
+    if (g.draw) LoadStrokes();
+}
+
+void RightClick(POINT p) {
+    POINT screen = p;
+    ClientToScreen(g_view.wnd, &screen);
+    UpdatePinHover(p);
+    if (g.pinHover >= 0) {
+        int i = g.pinHover;
+        HMENU m = CreatePopupMenu();
+        if (g.pins[i].kind == PinKind::Note) AppendMenuW(m, MF_STRING, 1, L"Edit note");
+        AppendMenuW(m, MF_STRING, 2, g.pins[i].locked ? L"Let it move" : L"Pin it in place");
+        AppendMenuW(m, MF_SEPARATOR, 0, nullptr);
+        AppendMenuW(m, MF_STRING, 3, L"Remove");
+        UINT cmd = Menu(m, screen);
+        if (cmd == 1) g.editing = i;
+        if (cmd == 2) g.pins[i].locked = !g.pins[i].locked, SavePins();
+        if (cmd == 3) RemovePin(i);
+        return;
+    }
+    int hit = HitTest(p);
+    if (hit >= 0) {
+        auto const& e = g_entries[g.items[hit].entry];
+        size_t n = e.windows.size();
+        HMENU m = CreatePopupMenu();
+        AppendMenuW(m, MF_STRING, 1, L"Switch to");
+        if (n > 1 && !g.drilled) AppendMenuW(m, MF_STRING, 5, L"Show its windows");
+        AppendMenuW(m, MF_STRING, 2, L"Minimise");
+        AppendMenuW(m, MF_SEPARATOR, 0, nullptr);
+        AppendMenuW(m, MF_STRING, 3, n > 1 && !g.drilled ? L"Close the newest" : L"Close");
+        if (n > 1 && !g.drilled) AppendMenuW(m, MF_STRING, 4, (L"Close all (" + std::to_wstring(n) + L")").c_str());
+        int entry = g.items[hit].entry;
+        UINT cmd = Menu(m, screen);
+        if (cmd == 1) BeginCommit(hit);
+        if (cmd == 2) ShowWindow(g_entries[entry].windows[0], SW_MINIMIZE);
+        if ((cmd == 3 || cmd == 4) && g_wnd) {
+            bool all = g_settings.closeAll;
+            g_settings.closeAll = cmd == 4;
+            CloseItem(g_wnd, entry);
+            g_settings.closeAll = all;
+        }
+        if (cmd == 5 && g_wnd) {
+            g_sel = entry;
+            Drill(g_wnd);
+        }
+        return;
+    }
+    HMENU m = CreatePopupMenu();
+    AppendMenuW(m, MF_STRING, 1, L"New note");
+    AppendMenuW(m, MF_STRING | (IsClipboardFormatAvailable(CF_DIB) ? 0 : MF_GRAYED), 2, L"Paste picture");
+    AppendMenuW(m, MF_STRING | (g.draw ? MF_CHECKED : 0), 3, L"Paint");
+    AppendMenuW(m, MF_SEPARATOR, 0, nullptr);
+    AppendMenuW(m, MF_STRING, 4, L"Fit all");
+    AppendMenuW(m, MF_STRING, 5, L"Lay them out again");
+    if (!g.strokes.empty()) AppendMenuW(m, MF_STRING, 6, L"Clear the drawing");
+    UINT cmd = Menu(m, screen);
+    if (cmd == 1) NewNote(p);
+    if (cmd == 2) PasteImage(p);
+    if (cmd == 3) ToggleDraw();
+    if (cmd == 4) FitAll(true);
+    if (cmd == 5) Rearrange();
+    if (cmd == 6) g.strokes.clear(), SaveStrokes();
+}
+
+// Paint: a stroke started, carried on, ended.
+void DrawDown(POINT p, bool right) {
+    for (int i = 0; i < kTools && !right; i++)
+        if (In(ToolRect(i), p)) {
+            if (i < 6) g.tool = (Tool)i;
+            if (i == 6) g.colorAt++;
+            if (i == 7) g.sizeAt = (g.sizeAt + 1) % (int)ARRAYSIZE(kStrokeSizes);
+            return;
+        }
+    g.lastAt = p;
+    if (right) {
+        g.drawPan = true;
+        return;
+    }
+    Vec wp = g.cam.ToWorld({(float)p.x, (float)p.y});
+    if (g.tool == Tool::Fill) {
+        for (int i = (int)g.strokes.size() - 1; i >= 0; i--) {
+            Stroke& s = g.strokes[i];
+            if ((s.kind != 2 && s.kind != 3) || s.pts.size() < 2) continue;
+            Vec a = s.pts[0], c = s.pts.back();
+            float x0 = std::min(a.x, c.x), x1 = std::max(a.x, c.x), y0 = std::min(a.y, c.y), y1 = std::max(a.y, c.y);
+            bool in = s.kind == 2 ? wp.x >= x0 && wp.x <= x1 && wp.y >= y0 && wp.y <= y1 : [&] {
+                float rx = (x1 - x0) / 2, ry = (y1 - y0) / 2;
+                if (rx <= 0 || ry <= 0) return false;
+                float dx = (wp.x - (x0 + rx)) / rx, dy = (wp.y - (y0 + ry)) / ry;
+                return dx * dx + dy * dy <= 1;
+            }();
+            if (in) {
+                s.fill = PaintColor(g.colorAt);
+                SaveStrokes();
+                return;
+            }
+        }
+        return;
+    }
+    if (g.tool == Tool::Eraser) {
+        g.erasing = true;
+        return;
+    }
+    g.inProgress = {};
+    g.inProgress.kind = g.tool == Tool::Line ? 1 : g.tool == Tool::Rect ? 2 : g.tool == Tool::Ellipse ? 3 : 0;
+    g.inProgress.color = PaintColor(g.colorAt);
+    g.inProgress.size = kStrokeSizes[g.sizeAt];
+    g.inProgress.pts = {wp};
+    if (g.inProgress.kind) g.inProgress.pts.push_back(wp);
+    g.stroking = true;
+}
+
+void EraseAt(Vec wp) {
+    float r = std::max(10.f, kStrokeSizes[g.sizeAt] * 2.5f) / std::max(g.cam.zoom, 0.001f);
+    std::erase_if(g.strokes, [&](Stroke const& s) {
+        if (s.kind <= 1) {
+            for (auto const& p : s.pts)
+                if (Length2(p - wp) < r * r) return true;
+            return false;
+        }
+        Vec a = s.pts.front(), c = s.pts.back();
+        return wp.x >= std::min(a.x, c.x) - r && wp.x <= std::max(a.x, c.x) + r && wp.y >= std::min(a.y, c.y) - r &&
+               wp.y <= std::max(a.y, c.y) + r;
+    });
+}
+
+void DrawMove(POINT p) {
+    g.toolHover = -1;
+    for (int i = 0; i < kTools; i++)
+        if (In(ToolRect(i), p)) g.toolHover = i;
+    if (g.drawPan) {
+        g.cam.PanBy({(float)(p.x - g.lastAt.x), (float)(p.y - g.lastAt.y)});
+        g.lastAt = p;
+        return;
+    }
+    Vec wp = g.cam.ToWorld({(float)p.x, (float)p.y});
+    if (g.stroking) {
+        if (g.inProgress.kind == 0) g.inProgress.pts.push_back(wp);
+        else g.inProgress.pts.back() = wp;
+    } else if (g.erasing) {
+        EraseAt(wp);
+    }
+    g.lastAt = p;
+}
+
+void DrawUp() {
+    if (g.drawPan) {
+        g.drawPan = false;
+        return;
+    }
+    if (g.erasing) {
+        g.erasing = false;
+        SaveStrokes();
+        return;
+    }
+    if (!g.stroking) return;
+    g.stroking = false;
+    Stroke s = std::move(g.inProgress);
+    bool keep = s.kind == 0 ? s.pts.size() >= 2
+                            : std::fabs(s.pts.back().x - s.pts[0].x) > 2 || std::fabs(s.pts.back().y - s.pts[0].y) > 2;
+    if (keep) {
+        g.strokes.push_back(std::move(s));
+        SaveStrokes();
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// The canvas as the view's other half (called from switcher-views.cpp and the switcher).
+
+
+// Opened: the tiles laid out, the camera starting where the window in front is (it shrinks into its place),
+// or, for the overview, every tile in sight.
+void OpenCanvas(bool overview) {
+    g.shown = true;
+    g.overview = overview;
+    g.drilled = !g_outer.empty();
+    g.committing = false;
+    g.hover = g.tileDrag = g.pinDrag = g.pinResize = g.editing = g.snapTarget = -1;
+    g.down = g.dragged = false;
+    g.last = {};
+    g.cam.view = {(float)g_view.chainW, (float)g_view.chainH};
+    LoadPins();
+    LoadStrokes();
+    BuildItems();
+    g.opening = true;
+    g.openT = 0;
+    if (g.items.empty()) {
+        FitAll(false);
+        return;
+    }
+    if (overview) {
+        FitAll(false);
+        Vec c = g.cam.center;
+        float z = g.cam.zoom;
+        g.cam.SnapTo(c, z * 1.1f);
+        g.cam.TweenTo(c, z, 0.5f, true);
+        return;
+    }
+    Item const& here = g.items[0];
+    Vec c;
+    float z;
+    if (FramePerfect(here, &c, &z)) {
+        g.cam.SnapTo(c, z);
+        g.cam.TweenTo(here.Center(), FocusZoom(here), 0.52f, true, 3);
+        g.opening = false;
+    } else {
+        g.cam.SnapTo(here.Center(), FocusZoom(here));
+    }
+}
+
+void CloseCanvas() {
+    if (!g.shown) return;
+    g.shown = false;
+    g.draw = g.stroking = false;
+    if (g.editing >= 0) SavePins();
+    g.editing = -1;
+    if (g.placesLoaded) SaveTilePlaces();
+    FreePinBitmaps();
+    FreeFormats();
+}
+
+
+// The entries changed (Tab, a drill, a closed window) or only the selection.
+void RefitCanvas() {
+    if (!g.shown) return;
+    bool drilled = !g_outer.empty();
+    std::vector<HWND> windows;
+    for (auto const& e : g_entries) windows.push_back(e.windows.empty() ? nullptr : e.windows[0]);
+    if (drilled != g.drilled) {
+        if (drilled) {
+            int at = -1;
+            std::wstring key = g_entries.empty() ? L"" : Lower(g_entries[0].key);
+            for (int i = 0; i < (int)g.items.size(); i++)
+                if (g.items[i].key == key) at = i;
+            g.returnCenter = g.cam.target, g.returnZoom = g.cam.targetZoom;
+            g.drillCenter = at >= 0 ? g.items[at].Center() : g.cam.target;
+            g.drilled = true;
+            BuildItems();
+            FitAll(false);
+            Vec c = g.cam.center;
+            float z = g.cam.zoom;
+            g.cam.SnapTo(g.returnCenter, g.returnZoom);
+            g.cam.TweenTo(c, z, 0.44f, true);
+        } else {
+            g.drilled = false;
+            BuildItems();
+            int at = ItemOf(g_sel);
+            if (at >= 0) g.cam.TweenTo(g.items[at].Center(), FocusZoom(g.items[at]), 0.42f, true);
+            else FitAll(true);
+        }
+        return;
+    }
+    if (windows != g.lastWindows) {
+        BuildItems();
+        g.hover = -1;
+    }
+    int at = ItemOf(g_sel);
+    if (at >= 0) g.cam.PanTargetTo(g.items[at].Center());
+}
+
+void MoveKey(int dx, int dy, bool shift) {
+    if (!g.shown || g.committing) return;
+    if (!shift) return MoveSelection(dx, dy);
+    int at = ItemOf(g_sel);
+    if (at < 0 || g.drilled) return;
+    g.items[at].pos = g.items[at].pos + Vec{dx * kNudge, dy * kNudge};
+    Remember(g.items[at]);
+}
+
+void WheelZoom(short delta) {
+    if (!g.shown || g.committing) return;
+    POINT p;
+    GetCursorPos(&p);
+    ScreenToClient(g_view.wnd, &p);
+    g.cam.ZoomAt({(float)p.x, (float)p.y}, std::pow(1.2f, delta / 120.f));
+}
+
+// A key while the canvas is up (the switcher's hook passes them all on).
+void KeyDown(UINT vk, UINT scan, bool shift, bool ctrl) {
+    if (!g.shown || g.committing) return;
+    HWND sw = g_wnd;
+    if (g.editing >= 0 && g.editing < (int)g.pins.size()) {
+        Pin& p = g.pins[g.editing];
+        if (vk == VK_ESCAPE || (vk == VK_RETURN && !shift)) {
+            g.editing = -1;
+            SavePins();
+        } else if (vk == VK_RETURN) {
+            p.text += L"\n";
+        } else if (vk == VK_BACK) {
+            if (!p.text.empty()) p.text.pop_back();
+        } else {
+            BYTE keys[256] = {};
+            if (shift) keys[VK_SHIFT] = 0x80;
+            if (GetKeyState(VK_CAPITAL) & 1) keys[VK_CAPITAL] = 1;
+            if (GetAsyncKeyState(VK_RMENU) < 0) keys[VK_CONTROL] = keys[VK_MENU] = 0x80;  // (AltGr)
+            WCHAR out[4] = {};
+            HKL layout = GetKeyboardLayout(GetWindowThreadProcessId(GetForegroundWindow(), nullptr));
+            int n = ToUnicodeEx(vk, scan, keys, out, 4, 4, layout);
+            for (int i = 0; i < n; i++)
+                if (out[i] >= 32) p.text += out[i];
+        }
+        GrowNote(g.editing);
+        return;
+    }
+    switch (vk) {
+        case VK_ESCAPE:
+            if (g.draw) ToggleDraw();
+            else if (sw) PostMessageW(sw, WM_APP_CANCEL, 0, 0);
+            return;
+        case VK_RETURN:
+        case VK_SPACE:
+            BeginCommit(ItemOf(g_sel));
+            return;
+        case VK_LEFT: return MoveKey(-1, 0, shift);
+        case VK_RIGHT: return MoveKey(1, 0, shift);
+        case VK_UP: return MoveKey(0, -1, shift);
+        case VK_DOWN: return MoveKey(0, 1, shift);
+        case 'W': FitAll(true); return;
+        case 'F':
+        case 'M':
+            if (int at = ItemOf(g_sel); at >= 0)
+                g.cam.TweenTo(g.items[at].Center(), std::max(g.cam.view.x / g.items[at].size.x, g.cam.view.y / g.items[at].size.y), 0.28f, true);
+            return;
+        case 'C':
+            if (int at = ItemOf(g_sel); at >= 0) g.cam.TweenTo(g.items[at].Center(), g.cam.targetZoom, 0.22f);
+            return;
+        case '0':
+        case VK_NUMPAD0:
+        case 'Z': g.cam.TweenTo(g.cam.target, 1, 0.24f); return;
+        case VK_OEM_PLUS:
+        case VK_ADD: g.cam.ZoomAt(g.cam.view * 0.5f, 1.18f); return;
+        case VK_OEM_MINUS:
+        case VK_SUBTRACT: g.cam.ZoomAt(g.cam.view * 0.5f, 1 / 1.18f); return;
+        case 'R': Rearrange(); return;
+        case 'D': ToggleDraw(); return;
+        case 'N': {
+            POINT p;
+            GetCursorPos(&p);
+            ScreenToClient(g_view.wnd, &p);
+            NewNote(p);
+            return;
+        }
+        case 'V':
+            if (ctrl) {
+                POINT p;
+                GetCursorPos(&p);
+                ScreenToClient(g_view.wnd, &p);
+                PasteImage(p);
+            }
+            return;
+        case 'Q':
+        case VK_DELETE:
+            if (sw) CloseItem(sw, g_sel);
+            return;
+    }
+}
+
+// The mouse on the view's window, while it's the canvas.
+bool MouseMsg(UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (!g.shown) return false;
+    POINT p{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+    bool shift = wParam & MK_SHIFT, alt = GetKeyState(VK_MENU) < 0;
+    if (g.committing) return true;
+    switch (msg) {
+        case WM_LBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_RBUTTONDOWN: {
+            SetCapture(g_view.wnd);
+            bool left = msg == WM_LBUTTONDOWN, middle = msg == WM_MBUTTONDOWN;
+            if (g.draw) {
+                if (!middle) DrawDown(p, !left);
+                return true;
+            }
+            if (!left && !middle) return true;  // (the right button acts as it comes up)
+            if (left) {
+                UpdatePinHover(p);
+                if (g.pinHover >= 0) {
+                    int i = g.pinHover;
+                    if (g.pinHoverClose) {
+                        RemovePin(i);
+                        return true;
+                    }
+                    if (OnResizeCorner(i, p)) {
+                        g.pinResize = i;
+                        return true;
+                    }
+                    if (g.editing != i && g.editing >= 0) SavePins();
+                    g.editing = -1;
+                    if (g.pins[i].locked) return true;
+                    g.pinDrag = i, g.pinDragged = false, g.pinDownAt = g.lastAt = p;
+                    g.pinOffset = g.cam.ToWorld({(float)p.x, (float)p.y}) - g.pins[i].Pos();
+                    return true;
+                }
+                if (g.editing >= 0) {
+                    g.editing = -1;
+                    SavePins();
+                }
+            }
+            if (middle || alt) {
+                int hit = HitTest(p);
+                if (hit >= 0) {
+                    g.tileDrag = hit;
+                    g.items[hit].sliding = false;
+                    g_sel = g.items[hit].entry;
+                    g.lastAt = g.tileDownAt = p;
+                    g.drillOnClick = middle && !g.drilled && g_entries[g.items[hit].entry].windows.size() > 1 ? hit : -1;
+                    g.cluster = shift && !g.drilled ? Cluster(hit) : std::vector<int>{};
+                }
+                return true;
+            }
+            g.down = true, g.dragged = false;
+            g.downAt = g.lastAt = p;
+            g.dragVel = {};
+            QueryPerformanceCounter(&g.lastMove);
+            return true;
+        }
+        case WM_MOUSEMOVE: {
+            if (g.draw) {
+                DrawMove(p);
+                return true;
+            }
+            if (g.pinResize >= 0 && g.pinResize < (int)g.pins.size()) {
+                Vec w = g.cam.ToWorld({(float)p.x, (float)p.y});
+                Pin& pin = g.pins[g.pinResize];
+                pin.w = std::max(60.f, w.x - pin.x), pin.h = std::max(40.f, w.y - pin.y);
+                return true;
+            }
+            if (g.pinDrag >= 0 && g.pinDrag < (int)g.pins.size()) {
+                if (std::abs(p.x - g.pinDownAt.x) + std::abs(p.y - g.pinDownAt.y) > kDragThreshold) g.pinDragged = true;
+                if (g.pinDragged) {
+                    Vec w = g.cam.ToWorld({(float)p.x, (float)p.y}) - g.pinOffset;
+                    g.pins[g.pinDrag].x = w.x, g.pins[g.pinDrag].y = w.y;
+                }
+                return true;
+            }
+            if (g.tileDrag >= 0 && g.tileDrag < (int)g.items.size()) {
+                if (std::abs(p.x - g.tileDownAt.x) + std::abs(p.y - g.tileDownAt.y) <= kDragThreshold) {
+                    g.lastAt = p;
+                    return true;
+                }
+                g.drillOnClick = -1;
+                Vec d = Vec{(float)(p.x - g.lastAt.x), (float)(p.y - g.lastAt.y)} * (1 / g.cam.zoom);
+                if (!g.cluster.empty()) {
+                    for (int i : g.cluster) g.items[i].pos = g.items[i].pos + d, Remember(g.items[i]);
+                } else {
+                    g.items[g.tileDrag].pos = g.items[g.tileDrag].pos + d;
+                    Remember(g.items[g.tileDrag]);
+                    UpdateSnapTarget();
+                }
+                g.lastAt = p;
+                return true;
+            }
+            if (!g.down) {
+                UpdateHover(p);
+                UpdatePinHover(p);
+                return true;
+            }
+            if (std::abs(p.x - g.downAt.x) + std::abs(p.y - g.downAt.y) > kDragThreshold) g.dragged = true;
+            if (g.dragged) {
+                Vec delta{(float)(p.x - g.lastAt.x), (float)(p.y - g.lastAt.y)};
+                g.cam.PanBy(delta);
+                LARGE_INTEGER now, freq;
+                QueryPerformanceCounter(&now);
+                QueryPerformanceFrequency(&freq);
+                float dt = (float)((now.QuadPart - g.lastMove.QuadPart) / (double)freq.QuadPart);
+                g.lastMove = now;
+                if (dt > 0.0001f) g.dragVel = Lerp(g.dragVel, delta * (1 / dt), 0.4f);
+            }
+            g.lastAt = p;
+            return true;
+        }
+        case WM_LBUTTONUP:
+        case WM_MBUTTONUP:
+        case WM_RBUTTONUP: {
+            ReleaseCapture();
+            if (g.draw) {
+                DrawUp();
+                return true;
+            }
+            if (msg == WM_RBUTTONUP) {
+                RightClick(p);
+                return true;
+            }
+            if (g.pinResize >= 0) {
+                g.pinResize = -1;
+                SavePins();
+                return true;
+            }
+            if (g.pinDrag >= 0) {
+                if (g.pinDragged && g.pinDrag < (int)g.pins.size()) {
+                    Pin& pin = g.pins[g.pinDrag];
+                    Vec at = Resolve(pin.Pos(), pin.Size(), Obstacles(-1, g.pinDrag), 10);
+                    pin.x = at.x, pin.y = at.y;
+                } else if (g.pinDrag < (int)g.pins.size() && g.pins[g.pinDrag].kind == PinKind::Note) {
+                    g.editing = g.pinDrag;  // (a click on a note writes in it)
+                }
+                g.pinDrag = -1;
+                g.pinDragged = false;
+                SavePins();
+                return true;
+            }
+            if (g.tileDrag >= 0) {
+                int dragged = g.tileDrag;
+                g.tileDrag = -1;
+                if (g.drillOnClick >= 0 && g.drillOnClick < (int)g.items.size()) {
+                    g.drillOnClick = -1;
+                    g.cluster.clear();
+                    if (g_wnd) Drill(g_wnd);  // (g_sel is the stack: Drill opens it)
+                    return true;
+                }
+                if (g.cluster.empty() && g.snapTarget >= 0 && g.snapTarget < (int)g.items.size() && g.snapTarget != dragged) {
+                    Item const& a = g.items[dragged];
+                    Item const& b = g.items[g.snapTarget];
+                    bool aLeft = a.Center().x <= b.Center().x;
+                    HWND left = g_entries[(aLeft ? a : b).entry].windows[0], right = g_entries[(aLeft ? b : a).entry].windows[0];
+                    g.snapTarget = -1;
+                    for (auto& it : g.items) Remember(it);
+                    if (g_wnd) Hide(g_wnd);
+                    SideBySide(left, right);
+                    return true;
+                }
+                if (g.cluster.empty() && dragged < (int)g.items.size()) {
+                    Item& moved = g.items[dragged];
+                    Vec at = Resolve(moved.pos, moved.size, Obstacles(dragged, -1), 12);
+                    if (Length2(at - moved.pos) > 0.5f) moved.slideTo = at, moved.sliding = true;
+                }
+                for (auto& it : g.items) Remember(it);
+                g.cluster.clear();
+                g.snapTarget = -1;
+                g.drillOnClick = -1;
+                return true;
+            }
+            if (msg == WM_MBUTTONUP) return true;
+            bool wasDrag = g.dragged;
+            g.down = g.dragged = false;
+            if (wasDrag) {
+                if (Length2(g.dragVel) > 400) g.cam.Flick(g.dragVel);
+                return true;
+            }
+            UpdateHover(p);
+            if (g.hoverClose && g.hover >= 0 && g.hover < (int)g.items.size()) {
+                if (g_wnd) CloseItem(g_wnd, g.items[g.hover].entry);
+                return true;
+            }
+            if (int hit = HitTest(p); hit >= 0) BeginCommit(hit);
+            return true;
+        }
+    }
+    return false;
+}
+
+}  // namespace canvas
+
+bool CanvasShown() { return canvas::g.shown; }
+void CanvasOpen(bool overview) { canvas::OpenCanvas(overview); }
+void CanvasClose() { canvas::CloseCanvas(); }
+void CanvasRender() { canvas::Render(); }
+void CanvasRefit() { canvas::RefitCanvas(); }
+void CanvasMove(int dx, int dy, bool shift) { canvas::MoveKey(dx, dy, shift); }
+void CanvasWheel(short delta) { canvas::WheelZoom(delta); }
+void CanvasKey(UINT vk, UINT scan, bool shift, bool ctrl) { canvas::KeyDown(vk, scan, shift, ctrl); }
+bool CanvasMouse(UINT msg, WPARAM wParam, LPARAM lParam) { return canvas::MouseMsg(msg, wParam, lParam); }
 ////////////////////////////////////////////////////////////////////////////////
 // Window tiling, in the manner of komorebi ("// @inline tiling.cpp", in the
 // Switcher, whose keyboard hook it shares): the windows on a screen laid out
@@ -61216,6 +71258,15 @@ void ViewClose() {
 //
 // Windows are placed by their visible frames (DWM's extended frame bounds),
 // so the gaps are what the eye sees, not the invisible resize borders.
+
+////////////////////////////////////////////////////////////////////////////////
+// The layouts themselves ("// @inline tiling-geometry.cpp", from tiling.cpp):
+// the list of layouts and the plain geometry that turns one into rectangles.
+// Nothing here touches a window, a screen or a setting, so it builds and runs
+// on its own (tools/tiling/geomtest.cpp checks every layout this way).
+//
+// A fragment, like the other inlined files: whoever inlines it has already
+// included <algorithm>, <cmath>, <utility> and <vector>.
 
 enum class TileLayout {
     Off,
@@ -61228,7 +71279,13 @@ enum class TileLayout {
     UltrawideVerticalStack,
     Grid,
     Bsp,
+    Spiral,       // each window takes a share off one side of what's left, turning a quarter each time
+    ThreeColumn,  // the main window down the middle, the rest in a column each side
+    Slice,        // one window keeps a strip along one edge, another layout takes the rest
+    ScreenSplit,  // the screen cut into named regions, each with its own layout and its own windows
+    Script,       // a layout written in Luau, in the Layouts folder (desktop/host/layout-scripts.cpp)
     Monocle,
+    Layers,  // threes laid over each other: 1 fills, 2 halves, 3 main and two; the 4th starts a layer on top
 };
 
 constexpr TileLayout kLayoutCycle[] = {
@@ -61236,8 +71293,280 @@ constexpr TileLayout kLayoutCycle[] = {
     TileLayout::VerticalStack,  TileLayout::RightMainVerticalStack,
     TileLayout::HorizontalStack, TileLayout::UltrawideVerticalStack,
     TileLayout::Grid,           TileLayout::Bsp,
-    TileLayout::Monocle,
+    TileLayout::Spiral,         TileLayout::ThreeColumn,
+    TileLayout::Slice,          TileLayout::ScreenSplit,
+    TileLayout::Script,         TileLayout::Monocle,
+    TileLayout::Layers,
 };
+
+
+// Slice: one window keeps a strip along an edge of the screen and the rest are
+// laid out by another layout in what's left (qtile's Slice; the Spotify and
+// Discord strip as a layout instead of a rule each). The window with the strip
+// is the first in the screen's order.
+enum { kSliceLeft, kSliceRight, kSliceTop, kSliceBottom };
+
+struct SliceSpec {
+    int edge = kSliceLeft;
+    int percent = 0;                            // of the screen; 0 means the main window's share
+    TileLayout fallback = TileLayout::Columns;  // the rest of the windows
+};
+
+// ScreenSplit: a region's share of the screen, written as percentages of each
+// side, in pixels. Half the gap comes off each side that isn't the screen's own
+// edge, so two regions side by side leave exactly one gap between them.
+RECT RegionArea(RECT screen, int l, int t, int w, int h, int gap) {
+    int sw = screen.right - screen.left, sh = screen.bottom - screen.top;
+    l = std::clamp(l, 0, 100), t = std::clamp(t, 0, 100);
+    w = std::clamp(w, 1, 100 - l), h = std::clamp(h, 1, 100 - t);
+    RECT out{screen.left + sw * l / 100, screen.top + sh * t / 100, screen.left + sw * (l + w) / 100,
+             screen.top + sh * (t + h) / 100};
+    int half = gap / 2, rest = gap - half;
+    if (l > 0) out.left += half;
+    if (t > 0) out.top += half;
+    if (l + w < 100) out.right -= rest;
+    if (t + h < 100) out.bottom -= rest;
+    // A share so small the gap eats it still gets a pixel, taken from inside the
+    // screen: a region with no room would put its windows nowhere.
+    auto room = [](LONG* near_, LONG* far_, LONG edge) {
+        if (*far_ > *near_) return;
+        *far_ = *near_ + 1;
+        if (*far_ > edge) *far_ = edge, *near_ = edge - 1;
+    };
+    room(&out.left, &out.right, screen.right);
+    room(&out.top, &out.bottom, screen.bottom);
+    return out;
+}
+
+// Where a window that has just opened goes in a screen's order (qtile's
+// new_client_position).
+enum { kNewEnd, kNewFirst, kNewAfterFocused, kNewBeforeFocused };
+
+// The place in the order for the windows that have just opened: the end, where
+// they always went, first (the main window in the layouts that have one), or
+// either side of the window that was focused when they opened. A new window is
+// usually in front by now, so the one focused before it stands in; with neither
+// in the order, the end.
+size_t NewWindowAt(std::vector<HWND> const& ordered, std::vector<HWND> const& fresh, int rule, HWND focused,
+                   HWND focusedBefore) {
+    if (rule == kNewFirst) return 0;
+    if (rule != kNewAfterFocused && rule != kNewBeforeFocused) return ordered.size();
+    auto known = [&](HWND h) {
+        return h && std::find(fresh.begin(), fresh.end(), h) == fresh.end() &&
+               std::find(ordered.begin(), ordered.end(), h) != ordered.end();
+    };
+    HWND anchor = known(focused) ? focused : known(focusedBefore) ? focusedBefore : nullptr;
+    if (!anchor) return ordered.size();
+    size_t at = std::find(ordered.begin(), ordered.end(), anchor) - ordered.begin();
+    return rule == kNewAfterFocused ? at + 1 : at;
+}
+
+// A length cut into pieces with gaps between; the odd pixels go to the first.
+// Every piece keeps at least a pixel: on a length too short for the gaps asked
+// for, the gaps give way, so a layout never hands out an empty window.
+std::vector<std::pair<int, int>> Cut(int start, int length, int count, int gap) {
+    std::vector<std::pair<int, int>> pieces;
+    if (count <= 0) return pieces;
+    if (count > 1) gap = std::clamp(gap, 0, std::max(0, (length - count) / (count - 1)));
+    int room = std::max(0, length - gap * (count - 1));
+    int each = room / count, extra = room % count;
+    for (int i = 0, at = start; i < count; i++) {
+        int size = each + (i < extra ? 1 : 0);
+        pieces.push_back({at, at + size});
+        at += size + gap;
+    }
+    return pieces;
+}
+
+// A length cut in two by a share (percent) of it for the first part. Neither
+// part is ever empty: on a short length the gap gives way first, then the share.
+std::pair<std::pair<int, int>, std::pair<int, int>> CutShare(int start, int length, int percent, int gap) {
+    if (length < 2) return {{start, start + length}, {start + length, start + length}};  // no room to cut
+    gap = std::clamp(gap, 0, length - 2);
+    int room = length - gap;
+    int first = std::clamp(room * percent / 100, 1, room - 1);
+    return {{start, start + first}, {start + first + gap, start + length}};
+}
+
+// Out of room: the windows still waiting all get what's left, over each other,
+// the way Monocle does. Only reachable with far more windows than a screen can
+// hold (halving a wide screen a dozen times).
+void NoRoomLeft(RECT area, int count, std::vector<RECT>* out) {
+    for (int i = 0; i < count; i++) out->push_back(area);
+}
+
+void Bsp(RECT area, int count, bool across, int percent, int gap, std::vector<RECT>* out) {
+    if (count == 1) {
+        out->push_back(area);
+        return;
+    }
+    if ((across ? area.right - area.left : area.bottom - area.top) < 2) return NoRoomLeft(area, count, out);
+    RECT a = area, b = area;
+    if (across) {
+        auto [l, r] = CutShare(area.left, area.right - area.left, percent, gap);
+        a.left = l.first, a.right = l.second, b.left = r.first, b.right = r.second;
+    } else {
+        auto [t, u] = CutShare(area.top, area.bottom - area.top, percent, gap);
+        a.top = t.first, a.bottom = t.second, b.top = u.first, b.bottom = u.second;
+    }
+    out->push_back(a);
+    Bsp(b, count - 1, !across, 50, gap, out);
+}
+
+// A spiral: each window takes a share off one side of what's left and the side
+// turns a quarter each time (left, top, right, bottom), so the windows wind
+// inwards. The first window's share is the ratio, the rest halve what's left.
+void Spiral(RECT area, int count, int turn, int percent, int gap, std::vector<RECT>* out) {
+    if (count <= 1) {
+        out->push_back(area);
+        return;
+    }
+    bool across = turn % 2 == 0;  // 0 and 2 cut left to right, 1 and 3 top to bottom
+    if ((across ? area.right - area.left : area.bottom - area.top) < 2) return NoRoomLeft(area, count, out);
+    bool front = turn < 2;        // 0 and 1 take the near side of the cut, 2 and 3 the far side
+    RECT mine = area, rest = area;
+    if (across) {
+        auto [l, r] = CutShare(area.left, area.right - area.left, front ? percent : 100 - percent, gap);
+        auto [take, leave] = front ? std::pair{l, r} : std::pair{r, l};
+        mine.left = take.first, mine.right = take.second;
+        rest.left = leave.first, rest.right = leave.second;
+    } else {
+        auto [t, b] = CutShare(area.top, area.bottom - area.top, front ? percent : 100 - percent, gap);
+        auto [take, leave] = front ? std::pair{t, b} : std::pair{b, t};
+        mine.top = take.first, mine.bottom = take.second;
+        rest.top = leave.first, rest.bottom = leave.second;
+    }
+    out->push_back(mine);
+    Spiral(rest, count - 1, (turn + 1) % 4, 50, gap, out);
+}
+
+std::vector<RECT> LayoutRects(TileLayout layout, RECT area, int n, int gap, int percent, SliceSpec const& slice = {}) {
+    std::vector<RECT> rects;
+    if (n <= 0) return rects;
+    int w = area.right - area.left, h = area.bottom - area.top;
+    auto column = [&](int left, int right, int count) {
+        for (auto [t, b] : Cut(area.top, h, count, gap)) rects.push_back({left, t, right, b});
+    };
+    auto row = [&](int top, int bottom, int count) {
+        for (auto [l, r] : Cut(area.left, w, count, gap)) rects.push_back({l, top, r, bottom});
+    };
+    if (n == 1 || layout == TileLayout::Monocle) {
+        rects.assign(n, area);
+        return rects;
+    }
+    switch (layout) {
+        case TileLayout::Rows:
+            column(area.left, area.right, n);
+            break;
+        case TileLayout::VerticalStack: {
+            auto [main, stack] = CutShare(area.left, w, percent, gap);
+            rects.push_back({main.first, area.top, main.second, area.bottom});
+            column(stack.first, stack.second, n - 1);
+            break;
+        }
+        case TileLayout::RightMainVerticalStack: {
+            auto [stack, main] = CutShare(area.left, w, 100 - percent, gap);
+            rects.push_back({main.first, area.top, main.second, area.bottom});
+            column(stack.first, stack.second, n - 1);
+            break;
+        }
+        case TileLayout::HorizontalStack: {
+            auto [main, stack] = CutShare(area.top, h, percent, gap);
+            rects.push_back({area.left, main.first, area.right, main.second});
+            row(stack.first, stack.second, n - 1);
+            break;
+        }
+        case TileLayout::UltrawideVerticalStack: {
+            if (n == 2) return LayoutRects(TileLayout::VerticalStack, area, n, gap, percent);
+            // The main window in the middle, one to its left, the rest stacked
+            // to its right.
+            int mainW = std::max(0, w - 2 * gap) * percent / 100;
+            int side = std::max(0, w - 2 * gap - mainW) / 2;
+            int mainLeft = area.left + side + gap;
+            rects.push_back({mainLeft, area.top, mainLeft + mainW, area.bottom});
+            rects.push_back({area.left, area.top, area.left + side, area.bottom});
+            column(mainLeft + mainW + gap, area.right, n - 2);
+            break;
+        }
+        case TileLayout::Grid: {
+            int columns = (int)std::ceil(std::sqrt((double)n));
+            auto spans = Cut(area.left, w, columns, gap);
+            for (int c = 0; c < columns; c++) {
+                int count = n / columns + (c < n % columns ? 1 : 0);
+                if (count) column(spans[c].first, spans[c].second, count);
+            }
+            break;
+        }
+        case TileLayout::Bsp:
+            Bsp(area, n, true, percent, gap, &rects);
+            break;
+        case TileLayout::Spiral:
+            Spiral(area, n, 0, percent, gap, &rects);
+            break;
+        case TileLayout::Slice: {
+            int share = slice.percent ? std::clamp(slice.percent, 5, 90) : percent;
+            bool across = slice.edge == kSliceLeft || slice.edge == kSliceRight;
+            bool first = slice.edge == kSliceLeft || slice.edge == kSliceTop;
+            RECT strip = area, rest = area;
+            if (across) {
+                auto [l, r] = CutShare(area.left, w, first ? share : 100 - share, gap);
+                auto [mine, theirs] = first ? std::pair{l, r} : std::pair{r, l};
+                strip.left = mine.first, strip.right = mine.second;
+                rest.left = theirs.first, rest.right = theirs.second;
+            } else {
+                auto [t, b] = CutShare(area.top, h, first ? share : 100 - share, gap);
+                auto [mine, theirs] = first ? std::pair{t, b} : std::pair{b, t};
+                strip.top = mine.first, strip.bottom = mine.second;
+                rest.top = theirs.first, rest.bottom = theirs.second;
+            }
+            rects.push_back(strip);
+            // Another Slice in the rest would want a second window pinned, which
+            // there's no way to name, so it falls back to columns.
+            TileLayout rest_layout = slice.fallback;
+            if (rest_layout == TileLayout::Slice || rest_layout == TileLayout::Off || rest_layout == TileLayout::Same)
+                rest_layout = TileLayout::Columns;
+            for (RECT const& r : LayoutRects(rest_layout, rest, n - 1, gap, percent)) rects.push_back(r);
+            break;
+        }
+        case TileLayout::ThreeColumn: {
+            if (n == 2) return LayoutRects(TileLayout::VerticalStack, area, n, gap, percent);
+            // The main window down the middle, the rest shared between a column
+            // each side (the odd one goes right).
+            int mainW = std::max(0, w - 2 * gap) * percent / 100;
+            int side = std::max(0, w - 2 * gap - mainW) / 2;
+            int mainLeft = area.left + side + gap;
+            rects.push_back({mainLeft, area.top, mainLeft + mainW, area.bottom});
+            int left = (n - 1) / 2;
+            column(area.left, area.left + side, left);
+            column(mainLeft + mainW + gap, area.right, n - 1 - left);
+            break;
+        }
+        case TileLayout::Layers: {
+            // The first three as the vertical stack grows (one fills, two halves, then the main and two
+            // stacked); each three after is a layer over them in the three places, the 4th in the main.
+            for (int at = 0; at < n; at += 3) {
+                int count = at == 0 ? std::min(3, n) : 3;
+                auto layer = LayoutRects(TileLayout::VerticalStack, area, count, gap, percent);
+                for (int i = 0; i < count && at + i < n; i++) rects.push_back(layer[i]);
+            }
+            break;
+        }
+        case TileLayout::ScreenSplit:
+            // The regions and which windows go in them are the tiling's
+            // (SplitGroups in tiling.cpp); with only a count to go on, a grid
+            // is the nearest thing.
+            return LayoutRects(TileLayout::Grid, area, n, gap, percent);
+        case TileLayout::Script:
+            // A script is handed the windows themselves, so it is asked for in
+            // tiling.cpp (RectsIn); columns stand in wherever it can't be.
+            row(area.top, area.bottom, n);
+            break;
+        default:  // Columns
+            row(area.top, area.bottom, n);
+            break;
+    }
+    return rects;
+}
 
 struct TilingSettings {
     UINT leaderMods = 0, leaderVk = 0;  // the tiling key (MOD_ flags and a key); none when 0
@@ -61250,13 +71579,33 @@ struct TilingSettings {
     bool restoreMaximized = true;
     bool tileElevated = false;
     bool keepResized = true;
+    int newWindow = 0;  // kNewEnd, kNewFirst, kNewAfterFocused or kNewBeforeFocused
     bool rememberAll = true;
     int fit = 0;  // kFitForce, kFitOverlap or kFitFloat
     int minWidth = 0, minHeight = 0;
     std::wstring floatApps, floatTitles, floatClasses;
+    // Slice: which window keeps the strip (its program, class or title, with *
+    // and ?; empty: the first window on the screen), which edge, how much of
+    // the screen it takes and what lays out the rest.
+    std::wstring sliceWindow;
+    SliceSpec slice;
+    // ScreenSplit: the screen's regions, from the tiling.split lines.
+    struct Region {
+        std::wstring name, match;              // match: programs, classes or titles; empty: everything left over
+        int l = 0, t = 0, w = 100, h = 100;    // its share of the screen, in percent
+        TileLayout layout = TileLayout::Columns;
+    };
+    std::vector<Region> regions;
+    // Script: a layout of the user's own, from tiling.script ("spread, 3": the
+    // file in the Layouts folder, then whatever the script reads as options).
+    std::wstring script, scriptOptions;
     int focusBorder = 0;        // kBorderNone, kBorderTiled or kBorderAll
     bool focusAccent = true;    // Windows' accent colour, or focusColor
     COLORREF focusColor = 0;
+    motion::Anim move;          // the motion line "windowsMove" (motion.cpp): windows sliding to their places
+    // komorebi's layout_rules: from so many windows on a screen, this layout
+    // (fewest first). Screens whose layout was picked by hand keep theirs.
+    std::vector<std::pair<int, TileLayout>> rules;
 };
 
 enum { kBorderNone, kBorderTiled, kBorderAll };
@@ -61287,6 +71636,7 @@ constexpr UINT_PTR kTimerTile = 3;
 
 // The running state, on the switcher's thread.
 std::vector<HWND> g_tileOrder;  // every tiled window, in its order
+HWND g_focused, g_focusedBefore;  // the window in front, and the one before it (where a new window lands)
 std::vector<HWND> g_floating;   // set floating with the tiling key and Space
 bool g_autoTile = false;
 bool g_userMoving = false;
@@ -61337,8 +71687,40 @@ TileLayout ParseLayout(std::wstring const& v, TileLayout fallback) {
     if (v == L"ultrawideVerticalStack") return TileLayout::UltrawideVerticalStack;
     if (v == L"grid") return TileLayout::Grid;
     if (v == L"bsp") return TileLayout::Bsp;
+    if (v == L"spiral") return TileLayout::Spiral;
+    if (v == L"threeColumn") return TileLayout::ThreeColumn;
+    if (v == L"slice") return TileLayout::Slice;
+    if (v == L"screenSplit") return TileLayout::ScreenSplit;
+    if (v == L"script") return TileLayout::Script;
     if (v == L"monocle") return TileLayout::Monocle;
+    if (v == L"layers") return TileLayout::Layers;
     return fallback;
+}
+
+// "1: bsp, 4: grid" (komorebi's layout_rules; "=" works too, and the
+// names in any case, so "4: Grid" from a komorebi.json reads).
+std::vector<std::pair<int, TileLayout>> ParseLayoutRules(std::wstring const& text) {
+    std::vector<std::pair<int, TileLayout>> rules;
+    size_t at = 0;
+    while (at < text.size()) {
+        size_t end = text.find_first_of(L",;", at);
+        std::wstring item = text.substr(at, end == std::wstring::npos ? std::wstring::npos : end - at);
+        at = end == std::wstring::npos ? text.size() : end + 1;
+        size_t mark = item.find_first_of(L":=");
+        if (mark == std::wstring::npos) continue;
+        int count = _wtoi(item.c_str());
+        std::wstring name;
+        for (wchar_t c : item.substr(mark + 1))
+            if (!iswspace(c)) name += c;
+        TileLayout layout = TileLayout::Same;
+        for (TileLayout l : kLayoutCycle)
+            if (!_wcsicmp(LayoutName(l), name.c_str())) layout = l;
+        if (count < 1 || layout == TileLayout::Same) continue;
+        std::erase_if(rules, [count](auto const& r) { return r.first == count; });
+        rules.push_back({count, layout});
+    }
+    std::sort(rules.begin(), rules.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
+    return rules;
 }
 
 // "alt+win+84": modifiers, then the virtual-key code in decimal (Windhawk's
@@ -61377,6 +71759,59 @@ bool ParseColor(std::wstring v, COLORREF* out) {
 
 void LoadLayoutChoices();
 
+// The ScreenSplit regions, one a line, as the window rules are written:
+//
+//     region = sidebar, 0 0 25 100, verticalStack, Spotify.exe, Discord.exe
+//     region = main, 25 0 75 100, grid
+//
+// The name is for reading, the four numbers are the region's share of the
+// screen in percent (left top width height), then its layout, then the
+// programs, classes or titles whose windows go in it. A region with none named
+// takes everything left over; with no such region, the last one does.
+std::vector<TilingSettings::Region> ReadRegions() {
+    std::vector<TilingSettings::Region> out;
+    // Its own trim: the one in binds.cpp comes after this file.
+    auto trim = [](std::wstring const& text) {
+        size_t a = text.find_first_not_of(L" \t\r\n"), b = text.find_last_not_of(L" \t\r\n");
+        return a == std::wstring::npos ? std::wstring() : text.substr(a, b - a + 1);
+    };
+    int empty = 0;
+    for (int i = 0; i < 64 && empty < 4; i++) {
+        PCWSTR value = Wh_GetStringSetting(L"switcher.tiling.split[%d]", i);
+        std::wstring line = trim(value ? value : L"");
+        Wh_FreeStringSetting(value);
+        if (line.empty() || line[0] == L'#') {
+            empty++;
+            continue;
+        }
+        empty = 0;
+        if (size_t eq = line.find(L'='); eq != std::wstring::npos && Lower(trim(line.substr(0, eq))) == L"region")
+            line = trim(line.substr(eq + 1));
+        std::vector<std::wstring> parts;
+        for (size_t at = 0; at <= line.size();) {
+            size_t comma = line.find(L',', at);
+            parts.push_back(trim(line.substr(at, comma == std::wstring::npos ? comma : comma - at)));
+            if (comma == std::wstring::npos) break;
+            at = comma + 1;
+        }
+        if (parts.size() < 2) {
+            Wh_Log(L"tiling: a region needs a name and its share of the screen: %s", line.c_str());
+            continue;
+        }
+        TilingSettings::Region r;
+        r.name = parts[0];
+        if (swscanf(parts[1].c_str(), L"%d %d %d %d", &r.l, &r.t, &r.w, &r.h) != 4) {
+            Wh_Log(L"tiling: a region's share reads as four numbers, left top width height: %s", parts[1].c_str());
+            continue;
+        }
+        if (parts.size() > 2 && !parts[2].empty()) r.layout = ParseLayout(parts[2], TileLayout::Columns);
+        for (size_t i2 = 3; i2 < parts.size(); i2++)
+            if (!parts[i2].empty()) r.match += (r.match.empty() ? L"" : L",") + parts[i2];
+        out.push_back(std::move(r));
+    }
+    return out;
+}
+
 void LoadTilingSettings() {
     TilingSettings s;
     ParseHotkey(TextSetting(L"switcher.tiling.leader"), &s.leaderMods, &s.leaderVk);
@@ -61384,6 +71819,7 @@ void LoadTilingSettings() {
     s.layout = ParseLayout(TextSetting(L"switcher.tiling.layout"), TileLayout::Columns);
     if (s.layout == TileLayout::Same || s.layout == TileLayout::Off) s.layout = TileLayout::Columns;
     s.otherLayout = ParseLayout(TextSetting(L"switcher.tiling.otherLayout"), TileLayout::Same);
+    s.rules = ParseLayoutRules(TextSetting(L"switcher.tiling.layoutRules"));
     int ratio = Wh_GetIntSetting(L"switcher.tiling.mainRatio");
     s.ratio = ratio > 0 ? std::clamp(ratio, 10, 90) : 50;
     s.gapTop = IntSetting(L"switcher.tiling.gapTop", 0, 400);
@@ -61396,8 +71832,26 @@ void LoadTilingSettings() {
     s.floatApps = TextSetting(L"switcher.tiling.floatApps");
     s.floatTitles = TextSetting(L"switcher.tiling.floatTitles");
     s.floatClasses = TextSetting(L"switcher.tiling.floatClasses");
+    s.sliceWindow = TextSetting(L"switcher.tiling.sliceWindow");
+    std::wstring edge = TextSetting(L"switcher.tiling.sliceEdge");
+    s.slice.edge = edge == L"right" ? kSliceRight : edge == L"top" ? kSliceTop : edge == L"bottom" ? kSliceBottom : kSliceLeft;
+    s.slice.percent = IntSetting(L"switcher.tiling.sliceSize", 0, 90);
+    s.slice.fallback = ParseLayout(TextSetting(L"switcher.tiling.sliceLayout"), TileLayout::VerticalStack);
+    s.regions = ReadRegions();
+    // "spread, 3": the file, then the rest of the line for the script itself.
+    std::wstring script = TextSetting(L"switcher.tiling.script");
+    size_t comma = script.find(L',');
+    s.script = script.substr(0, comma);
+    s.scriptOptions = comma == std::wstring::npos ? L"" : script.substr(comma + 1);
+    while (!s.script.empty() && iswspace(s.script.back())) s.script.pop_back();
+    while (!s.scriptOptions.empty() && iswspace(s.scriptOptions.front())) s.scriptOptions.erase(0, 1);
     s.tileElevated = Wh_GetIntSetting(L"switcher.tiling.tileElevated") != 0;
     s.keepResized = Wh_GetIntSetting(L"switcher.tiling.keepResized") != 0;
+    std::wstring landing = TextSetting(L"switcher.tiling.newWindow");
+    s.newWindow = landing == L"first" ? kNewFirst
+                  : landing == L"afterFocused" ? kNewAfterFocused
+                  : landing == L"beforeFocused" ? kNewBeforeFocused
+                                                 : kNewEnd;
     s.rememberAll = Wh_GetIntSetting(L"switcher.tiling.rememberAll") != 0;
     std::wstring fit = TextSetting(L"switcher.tiling.tooSmall");
     s.fit = fit == L"overlap" ? kFitOverlap : fit == L"float" ? kFitFloat : kFitForce;
@@ -61406,6 +71860,7 @@ void LoadTilingSettings() {
     std::wstring border = TextSetting(L"switcher.tiling.focusBorder");
     s.focusBorder = border == L"tiled" ? kBorderTiled : border == L"all" ? kBorderAll : kBorderNone;
     s.focusAccent = TextSetting(L"switcher.tiling.focusColors") != L"custom" || !ParseColor(TextSetting(L"switcher.tiling.focusColor"), &s.focusColor);
+    s.move = motion::Get(L"windowsMove");
     g_tiling = s;
     g_leaderVk = s.leaderVk;
     g_leaderMods = s.leaderMods;
@@ -61417,10 +71872,34 @@ void LoadTilingSettings() {
 ////////////////////////////////////////////////////////////////////////////////
 // Which windows, and where
 
+// A window's frame as drawn (its invisible resize borders left out). DWM's bounds can still be the old ones for a
+// moment after the window moved or resized (a window just opened, or slow to draw: Discord opened as a small square
+// when its rules moved it to another screen and then sized it, each step reading the frame the last one left). So
+// they're checked against the window's own rect, which is never late: borders that can't be real (more than 40
+// pixels, or the frame outside the window) mean DWM hasn't caught up, and the borders last seen for it are used.
 RECT FrameOf(HWND h) {
-    RECT r{};
-    if (FAILED(DwmGetWindowAttribute(h, DWMWA_EXTENDED_FRAME_BOUNDS, &r, sizeof(r)))) GetWindowRect(h, &r);
-    return r;
+    static std::unordered_map<HWND, RECT> borders;  // (left, top, right, bottom insets, last seen good)
+    static std::mutex lock;  // (the switcher's thread and the binds' both ask)
+    RECT window{}, r{};
+    if (!GetWindowRect(h, &window)) return window;
+    if (FAILED(DwmGetWindowAttribute(h, DWMWA_EXTENDED_FRAME_BOUNDS, &r, sizeof(r)))) return window;
+    RECT in{r.left - window.left, r.top - window.top, window.right - r.right, window.bottom - r.bottom};
+    auto real = [](LONG v) { return v >= 0 && v <= 40; };
+    std::lock_guard<std::mutex> held(lock);
+    if (real(in.left) && real(in.top) && real(in.right) && real(in.bottom)) {
+        if (borders.size() > 512) borders.clear();
+        borders[h] = in;
+        return r;
+    }
+    RECT b{};
+    if (auto it = borders.find(h); it != borders.end()) {
+        b = it->second;
+    } else if (GetWindowLongW(h, GWL_STYLE) & WS_THICKFRAME) {
+        UINT dpi = GetDpiForWindow(h);
+        int edge = GetSystemMetricsForDpi(SM_CXSIZEFRAME, dpi) + GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
+        b = {edge, 0, edge, edge};
+    }
+    return {window.left + b.left, window.top + b.top, window.right - b.right, window.bottom - b.bottom};
 }
 
 bool IsFloating(HWND h) {
@@ -61631,111 +72110,15 @@ TileLayout LayoutFor(HMONITOR monitor) {
     return g_tiling.otherLayout == TileLayout::Same ? g_tiling.layout : g_tiling.otherLayout;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Layouts
-
-// A length cut into pieces with gaps between; the odd pixels go to the first.
-std::vector<std::pair<int, int>> Cut(int start, int length, int count, int gap) {
-    std::vector<std::pair<int, int>> pieces;
-    int room = std::max(0, length - gap * (count - 1));
-    int each = room / count, extra = room % count;
-    for (int i = 0, at = start; i < count; i++) {
-        int size = each + (i < extra ? 1 : 0);
-        pieces.push_back({at, at + size});
-        at += size + gap;
-    }
-    return pieces;
-}
-
-// A length cut in two by a share (percent) of it for the first part.
-std::pair<std::pair<int, int>, std::pair<int, int>> CutShare(int start, int length, int percent, int gap) {
-    int room = std::max(0, length - gap);
-    int first = room * percent / 100;
-    return {{start, start + first}, {start + first + gap, start + length}};
-}
-
-void Bsp(RECT area, int count, bool across, int percent, int gap, std::vector<RECT>* out) {
-    if (count == 1) {
-        out->push_back(area);
-        return;
-    }
-    RECT a = area, b = area;
-    if (across) {
-        auto [l, r] = CutShare(area.left, area.right - area.left, percent, gap);
-        a.left = l.first, a.right = l.second, b.left = r.first, b.right = r.second;
-    } else {
-        auto [t, u] = CutShare(area.top, area.bottom - area.top, percent, gap);
-        a.top = t.first, a.bottom = t.second, b.top = u.first, b.bottom = u.second;
-    }
-    out->push_back(a);
-    Bsp(b, count - 1, !across, 50, gap, out);
-}
-
-std::vector<RECT> LayoutRects(TileLayout layout, RECT area, int n, int gap, int percent) {
-    std::vector<RECT> rects;
-    if (n <= 0) return rects;
-    int w = area.right - area.left, h = area.bottom - area.top;
-    auto column = [&](int left, int right, int count) {
-        for (auto [t, b] : Cut(area.top, h, count, gap)) rects.push_back({left, t, right, b});
-    };
-    auto row = [&](int top, int bottom, int count) {
-        for (auto [l, r] : Cut(area.left, w, count, gap)) rects.push_back({l, top, r, bottom});
-    };
-    if (n == 1 || layout == TileLayout::Monocle) {
-        rects.assign(n, area);
-        return rects;
-    }
-    switch (layout) {
-        case TileLayout::Rows:
-            column(area.left, area.right, n);
-            break;
-        case TileLayout::VerticalStack: {
-            auto [main, stack] = CutShare(area.left, w, percent, gap);
-            rects.push_back({main.first, area.top, main.second, area.bottom});
-            column(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::RightMainVerticalStack: {
-            auto [stack, main] = CutShare(area.left, w, 100 - percent, gap);
-            rects.push_back({main.first, area.top, main.second, area.bottom});
-            column(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::HorizontalStack: {
-            auto [main, stack] = CutShare(area.top, h, percent, gap);
-            rects.push_back({area.left, main.first, area.right, main.second});
-            row(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::UltrawideVerticalStack: {
-            if (n == 2) return LayoutRects(TileLayout::VerticalStack, area, n, gap, percent);
-            // The main window in the middle, one to its left, the rest stacked
-            // to its right.
-            int mainW = std::max(0, w - 2 * gap) * percent / 100;
-            int side = std::max(0, w - 2 * gap - mainW) / 2;
-            int mainLeft = area.left + side + gap;
-            rects.push_back({mainLeft, area.top, mainLeft + mainW, area.bottom});
-            rects.push_back({area.left, area.top, area.left + side, area.bottom});
-            column(mainLeft + mainW + gap, area.right, n - 2);
-            break;
-        }
-        case TileLayout::Grid: {
-            int columns = (int)std::ceil(std::sqrt((double)n));
-            auto spans = Cut(area.left, w, columns, gap);
-            for (int c = 0; c < columns; c++) {
-                int count = n / columns + (c < n % columns ? 1 : 0);
-                if (count) column(spans[c].first, spans[c].second, count);
-            }
-            break;
-        }
-        case TileLayout::Bsp:
-            Bsp(area, n, true, percent, gap, &rects);
-            break;
-        default:  // Columns
-            row(area.top, area.bottom, n);
-            break;
-    }
-    return rects;
+// The layout for n windows: the layout rules' (the last one n reaches),
+// unless the screen's layout was picked by hand or it isn't tiled.
+TileLayout LayoutFor(HMONITOR monitor, int n) {
+    TileLayout layout = LayoutFor(monitor);
+    if (layout == TileLayout::Off || g_tiling.rules.empty()) return layout;
+    if (LayoutChoice const* c = FindLayoutChoice(monitor); c && c->layout != TileLayout::Same) return layout;
+    for (auto const& [count, ruled] : g_tiling.rules)
+        if (n >= count) layout = ruled;
+    return layout;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61760,9 +72143,42 @@ int PlaceThroughAgent(HWND h, RECT const& want, bool force) {
     return -1;
 }
 
+// A window on its way to a place (moved over time: below).
+struct WindowMove {
+    HWND h = nullptr;
+    RECT from{}, to{}, at{};  // its frame when it set off, where it's going, and where it was last put
+    ULONGLONG start = 0;      // 0: sets off at the next step, with the rest of its layout
+    bool tiled = false;       // to a tile (placed as the tiling does), else to a place (MoveFrameTo)
+    bool sized = true;        // resized on the way too (not for a window that can't be)
+};
+std::vector<WindowMove> g_windowMoves;
+constexpr UINT_PTR kTimerWindowMoves = 7;
+
+// Placed at once: any move it was making let go, so it doesn't carry on.
+void ForgetWindowMove(HWND h) {
+    std::erase_if(g_windowMoves, [h](WindowMove const& m) { return m.h == h; });
+}
+
+// Tiles a window wouldn't shrink to (its own minimum size: a window taller than its tile, say), kept so the next
+// tiling leaves it where it settled instead of setting off for the same tile again: it bounced, over and over.
+std::vector<std::pair<HWND, RECT>> g_refusedTiles;
+
+bool RefusedTile(HWND h, RECT const& want) {
+    std::erase_if(g_refusedTiles, [](auto const& r) { return !IsWindow(r.first); });
+    for (auto const& [w, r] : g_refusedTiles)
+        if (w == h) return EqualRect(&r, &want) != 0;
+    return false;
+}
+
+void NoteRefusedTile(HWND h, RECT const& want, bool refused) {
+    std::erase_if(g_refusedTiles, [h](auto const& r) { return r.first == h; });
+    if (refused) g_refusedTiles.push_back({h, want});
+}
+
 // Puts a window's visible frame on a rect. False: it won't shrink to it and
 // is to be left floating.
 bool PlaceFrame(HWND h, RECT const& want) {
+    ForgetWindowMove(h);
     bool force = g_tiling.fit == kFitForce;
     if (IsZoomed(h)) ShowWindow(h, SW_SHOWNOACTIVATE);
     RECT window{}, frame = FrameOf(h);
@@ -61780,15 +72196,141 @@ bool PlaceFrame(HWND h, RECT const& want) {
         }
         return true;
     }
-    RECT now = FrameOf(h);
-    if (EqualRect(&now, &want)) return true;
+    // Where it went, from its window rect less the borders measured above: DWM's frame bounds can still be the
+    // old ones for a moment after a resize, and a window slow to draw (Notepad++) looked too big for its tile.
+    RECT placed{};
+    GetWindowRect(h, &placed);
+    RECT now{placed.left + il, placed.top + it, placed.right - ir, placed.bottom - ib};
+    bool fits = EqualRect(&now, &want) != 0;
     // Bigger than asked: its own minimum size, or the size it was snapped at.
-    bool bigger = now.right - now.left > want.right - want.left || now.bottom - now.top > want.bottom - want.top;
+    bool bigger = !fits && (now.right - now.left > want.right - want.left || now.bottom - now.top > want.bottom - want.top);
+    NoteRefusedTile(h, want, bigger);
+    if (fits) return true;
     if (bigger && g_tiling.fit == kFitFloat) return false;
     if (bigger && g_tiling.fit == kFitOverlap) return true;
     // Placed again without being asked.
     SetWindowPos(h, nullptr, x, y, cx, cy, flags | SWP_NOSENDCHANGING);
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Windows moved over time, when the motion settings have a "windowsMove" line
+// (unset, they jump to their places as before; off, too). The windows of one
+// layout change set off together, on a timer that runs only while one moves,
+// and each one's last step is the placing it would have had at once.
+
+void TileMonitor(HMONITOR monitor, bool byPosition);
+void MoveFrameTo(HWND h, RECT const& want, bool animate);
+
+// A window set off toward a frame. False: it's to be placed at once (no
+// "windowsMove" line, or it's off).
+bool StartWindowMove(HWND h, RECT const& want, bool tiled) {
+    auto it = std::find_if(g_windowMoves.begin(), g_windowMoves.end(), [h](WindowMove const& m) { return m.h == h; });
+    motion::Anim const& line = g_tiling.move;
+    if (line.set && motion::Ms(line) > 0 && g_wnd) {
+        if (it != g_windowMoves.end() && EqualRect(&it->to, &want)) {
+            it->tiled = tiled;  // (on its way there already)
+            return true;
+        }
+        if (IsZoomed(h) || IsIconic(h)) ShowWindow(h, SW_SHOWNOACTIVATE);
+        RECT now = FrameOf(h);
+        if (!EqualRect(&now, &want)) {
+            if (it == g_windowMoves.end()) {
+                if (g_windowMoves.empty()) SetTimer(g_wnd, kTimerWindowMoves, 10, nullptr);
+                it = g_windowMoves.insert(g_windowMoves.end(), WindowMove{h});
+            }
+            // A new place for a window on its way sets it off again from where it is.
+            it->from = it->at = now, it->to = want, it->start = 0, it->tiled = tiled;
+            it->sized = tiled || (GetWindowLongW(h, GWL_STYLE) & WS_THICKFRAME);
+            return true;
+        }
+    }
+    return false;
+}
+
+// Puts a tiled window on its tile: over time if set, else at once. False:
+// it won't shrink to it and is to be left floating (moved over time, that's
+// found at the end, and the screen is tiled again then).
+bool TilePlace(HWND h, RECT const& want) {
+    if (RefusedTile(h, want) && !IsZoomed(h) && !IsIconic(h)) return true;  // (where it settled last time: left there)
+    return StartWindowMove(h, want, true) || PlaceFrame(h, want);
+}
+
+// A frame partway between two (t past 1 or under 0 for a curve that overshoots).
+RECT FrameBetween(RECT const& a, RECT const& b, double t) {
+    auto at = [t](LONG x, LONG y) { return (LONG)std::lround(x + (y - x) * t); };
+    RECT r{at(a.left, b.left), at(a.top, b.top), at(a.right, b.right), at(a.bottom, b.bottom)};
+    r.right = std::max(r.right, r.left + 1), r.bottom = std::max(r.bottom, r.top + 1);
+    return r;
+}
+
+// One step: the window's visible frame put on a rect, its invisible borders
+// measured each time (they change with the screen's DPI on the way). False
+// if Windows refused (a program running as administrator).
+bool StepFrame(WindowMove const& m, RECT const& r) {
+    RECT window{}, frame = FrameOf(m.h);
+    if (!GetWindowRect(m.h, &window)) return true;
+    int il = frame.left - window.left, it = frame.top - window.top;
+    int ir = window.right - frame.right, ib = window.bottom - frame.bottom;
+    UINT flags = SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE | (m.sized ? 0 : SWP_NOSIZE);
+    return SetWindowPos(m.h, nullptr, r.left - il, r.top - it, (r.right - r.left) + il + ir, (r.bottom - r.top) + it + ib,
+                        flags) ||
+           GetLastError() != ERROR_ACCESS_DENIED;
+}
+
+// Its last step: placed as it would have been at once. A tiled window that
+// won't shrink to its tile is left floating, and its screen given back.
+void LandWindowMove(WindowMove const& m, std::vector<HMONITOR>* refit) {
+    if (!IsWindow(m.h)) return;
+    if (!m.tiled) {
+        MoveFrameTo(m.h, m.to, false);
+        return;
+    }
+    if (PlaceFrame(m.h, m.to) || IsFloating(m.h)) return;
+    g_floating.push_back(m.h);
+    if (!refit) return;
+    HMONITOR monitor = MonitorFromWindow(m.h, MONITOR_DEFAULTTONEAREST);
+    if (std::find(refit->begin(), refit->end(), monitor) == refit->end()) refit->push_back(monitor);
+}
+
+// Every window moving a step on (the timer, while any moves).
+void WindowMovesTimer(HWND wnd) {
+    motion::Anim const& line = g_tiling.move;
+    double length = line.set ? motion::Ms(line) : 0;
+    ULONGLONG now = GetTickCount64();
+    std::vector<WindowMove> landed;
+    for (size_t i = 0; i < g_windowMoves.size();) {
+        WindowMove& m = g_windowMoves[i];
+        // Closed, minimised, maximised, taken by hand or not answering: let go where it is.
+        if (!IsWindow(m.h) || IsIconic(m.h) || IsZoomed(m.h) || m.h == g_moving || IsHungAppWindow(m.h)) {
+            g_windowMoves.erase(g_windowMoves.begin() + i);
+            continue;
+        }
+        if (!m.start) m.start = now;
+        double t = length > 0 ? (double)(now - m.start) / length : 1;
+        RECT r = t < 1 ? FrameBetween(m.from, m.to, motion::Ease(line, t)) : m.to;
+        // At the end, or refused (as administrator: placed through the helper at once).
+        if (t >= 1 || (!EqualRect(&r, &m.at) && !StepFrame(m, r))) {
+            landed.push_back(m);
+            g_windowMoves.erase(g_windowMoves.begin() + i);
+            continue;
+        }
+        m.at = r;
+        i++;
+    }
+    std::vector<HMONITOR> refit;
+    for (auto const& m : landed) LandWindowMove(m, &refit);
+    for (HMONITOR monitor : refit) TileMonitor(monitor, false);
+    if (g_windowMoves.empty()) KillTimer(wnd, kTimerWindowMoves);
+}
+
+// The switcher closing: every window still moving put where it was going.
+void EndWindowMoves() {
+    std::vector<WindowMove> moves;
+    moves.swap(g_windowMoves);
+    if (g_wnd) KillTimer(g_wnd, kTimerWindowMoves);
+    for (auto const& m : moves)
+        if (IsWindow(m.h) && !IsHungAppWindow(m.h)) LandWindowMove(m, nullptr);
 }
 
 struct TileScan {
@@ -61807,8 +72349,55 @@ std::vector<std::pair<HWND, HMONITOR>> ScanTileable() {
     return scan.windows;
 }
 
+std::vector<HWND> FoldGroups(std::vector<HWND> const& windows);
+
+// The windows that have just opened, put where tiling.newWindow says
+// (NewWindowAt, in tiling-geometry.cpp, which the order check covers).
+void InsertFresh(std::vector<HWND>* ordered, std::vector<HWND> const& fresh) {
+    if (fresh.empty()) return;
+    size_t at = NewWindowAt(*ordered, fresh, g_tiling.newWindow, g_focused, g_focusedBefore);
+    ordered->insert(ordered->begin() + at, fresh.begin(), fresh.end());
+}
+
+// A window against a list of programs, classes or titles (commas between, * and
+// ? matching any text): what the Slice layout's strip and the ScreenSplit
+// regions name their windows with.
+bool MatchesWindow(std::wstring const& list, HWND h) {
+    if (list.empty()) return false;
+    std::wstring program = ProgramOf(h);
+    if (MatchesList(list, program.substr(program.find_last_of(L'\\') + 1))) return true;
+    WCHAR cls[64] = L"";
+    GetClassNameW(h, cls, ARRAYSIZE(cls));
+    return MatchesList(list, cls) || MatchesList(list, Title(h));
+}
+
+// The windows of each ScreenSplit region, in the regions' own order: a window
+// goes in the first region that names it, and the rest in the first region that
+// names none (the last region if every one of them names something).
+std::vector<std::vector<HWND>> SplitGroups(std::vector<HWND> const& windows) {
+    std::vector<std::vector<HWND>> groups(g_tiling.regions.size());
+    if (groups.empty()) return groups;
+    size_t spare = groups.size() - 1;
+    for (size_t r = 0; r < g_tiling.regions.size(); r++)
+        if (g_tiling.regions[r].match.empty()) {
+            spare = r;
+            break;
+        }
+    for (HWND h : windows) {
+        size_t to = spare;
+        for (size_t r = 0; r < g_tiling.regions.size(); r++)
+            if (MatchesWindow(g_tiling.regions[r].match, h)) {
+                to = r;
+                break;
+            }
+        groups[to].push_back(h);
+    }
+    return groups;
+}
+
 // A screen's tiled windows in their order: the known ones as they were, new
-// ones after them by where they are (or all by where they are, when asked).
+// ones where tiling.newWindow says (the end unless it's changed), sorted among
+// themselves by where they are. byPosition: all of them by where they are.
 std::vector<HWND> WindowsOn(HMONITOR monitor, bool byPosition) {
     std::erase_if(g_tileOrder, [](HWND h) { return !IsWindow(h); });
     std::vector<HWND> here, fresh;
@@ -61820,23 +72409,111 @@ std::vector<HWND> WindowsOn(HMONITOR monitor, bool byPosition) {
             if (std::find(here.begin(), here.end(), h) != here.end()) ordered.push_back(h);
     for (HWND h : here)
         if (std::find(ordered.begin(), ordered.end(), h) == ordered.end()) fresh.push_back(h);
-    bool vertical = LayoutFor(monitor) == TileLayout::Rows;
+    bool vertical = LayoutFor(monitor, (int)here.size()) == TileLayout::Rows;
     std::sort(fresh.begin(), fresh.end(), [vertical](HWND a, HWND b) {
         RECT ra = FrameOf(a), rb = FrameOf(b);
         int ax = (ra.left + ra.right) / 2, ay = (ra.top + ra.bottom) / 2;
         int bx = (rb.left + rb.right) / 2, by = (rb.top + rb.bottom) / 2;
         return vertical ? std::tie(ay, ax) < std::tie(by, bx) : std::tie(ax, ay) < std::tie(bx, by);
     });
-    ordered.insert(ordered.end(), fresh.begin(), fresh.end());
+    InsertFresh(&ordered, fresh);
+    // Slice: the window the strip is for goes first, because the strip is the
+    // layout's first place.
+    if (!g_tiling.sliceWindow.empty() && LayoutFor(monitor, (int)here.size()) == TileLayout::Slice)
+        for (size_t i = 1; i < ordered.size(); i++)
+            if (MatchesWindow(g_tiling.sliceWindow, ordered[i])) {
+                std::rotate(ordered.begin(), ordered.begin() + i, ordered.begin() + i + 1);
+                break;
+            }
+    // ScreenSplit: region by region, so a window and its place in the layout
+    // are the same number along (RectsFor groups them the same way).
+    if (!g_tiling.regions.empty() && LayoutFor(monitor, (int)here.size()) == TileLayout::ScreenSplit) {
+        std::vector<HWND> byRegion;
+        for (auto const& group : SplitGroups(ordered))
+            for (HWND h : group) byRegion.push_back(h);
+        ordered = std::move(byRegion);
+    }
     // The order kept: this screen's, after the others'.
     std::erase_if(g_tileOrder, [&](HWND h) { return std::find(ordered.begin(), ordered.end(), h) != ordered.end(); });
     g_tileOrder.insert(g_tileOrder.end(), ordered.begin(), ordered.end());
-    return ordered;
+    return FoldGroups(ordered);  // (a group of windows takes one tile: tiling-groups.cpp)
+}
+
+// A layout of the user's own: the windows handed to the script in the Layouts
+// folder (layout-scripts.cpp), and what it answered with. Empty when there is
+// no script, when it stopped, or when it answered with something else, and
+// empty in the Windhawk suite, which has no Luau in it.
+std::vector<RECT> ScriptRects(RECT box, std::vector<HWND> const& windows, int gap, int percent) {
+#ifdef TD_PREFIX
+    if (g_tiling.script.empty() || windows.empty()) return {};
+    td::LayoutScriptAsk ask;
+    ask.script = g_tiling.script;
+    ask.options = g_tiling.scriptOptions;
+    ask.screen = box;
+    ask.gap = gap;
+    ask.ratio = percent;
+    HWND front = GetForegroundWindow();
+    for (HWND h : windows) {
+        td::LayoutScriptWindow w;
+        w.rect = FrameOf(h);
+        std::wstring program = ProgramOf(h);
+        w.program = program.substr(program.find_last_of(L'\\') + 1);
+        WCHAR cls[64] = L"";
+        GetClassNameW(h, cls, ARRAYSIZE(cls));
+        w.cls = cls;
+        w.title = Title(h);
+        w.focused = h == front;
+        ask.windows.push_back(std::move(w));
+    }
+    return td::LayoutScriptRects(ask);
+#else
+    (void)box, (void)windows, (void)gap, (void)percent;
+    return {};
+#endif
+}
+
+// A layout's places for these windows in this box. The same as LayoutRects,
+// except that a script layout is handed the windows themselves, and columns
+// stand in for a script that didn't answer.
+std::vector<RECT> RectsIn(TileLayout layout, RECT box, std::vector<HWND> const& windows, int gap, int percent) {
+    if (layout == TileLayout::Script) {
+        std::vector<RECT> out = ScriptRects(box, windows, gap, percent);
+        if (!out.empty()) return out;
+        layout = TileLayout::Columns;
+    }
+    return LayoutRects(layout, box, (int)windows.size(), gap, percent, g_tiling.slice);
 }
 
 std::vector<RECT> RectsFor(HMONITOR monitor, int n) {
     UINT dpi = MonitorDpi(monitor);
-    return LayoutRects(LayoutFor(monitor), TileArea(monitor), n, MulDiv(g_tiling.gapInner, dpi, 96), RatioFor(monitor));
+    return LayoutRects(LayoutFor(monitor, n), TileArea(monitor), n, MulDiv(g_tiling.gapInner, dpi, 96), RatioFor(monitor),
+                       g_tiling.slice);
+}
+
+// With the windows themselves, which is what ScreenSplit needs: each region
+// lays out its own windows in its own share of the screen, in the order
+// WindowsOn put them in. Every other layout only needs the count.
+std::vector<RECT> RectsFor(HMONITOR monitor, std::vector<HWND> const& windows) {
+    int n = (int)windows.size();
+    TileLayout layout = LayoutFor(monitor, n);
+    UINT dpi = MonitorDpi(monitor);
+    int gap = MulDiv(g_tiling.gapInner, dpi, 96), percent = RatioFor(monitor);
+    RECT area = TileArea(monitor);
+    if (layout != TileLayout::ScreenSplit || g_tiling.regions.empty())
+        return RectsIn(layout, area, windows, gap, percent);
+    std::vector<std::vector<HWND>> groups = SplitGroups(windows);
+    std::vector<RECT> out;
+    for (size_t r = 0; r < groups.size(); r++) {
+        if (groups[r].empty()) continue;
+        TilingSettings::Region const& region = g_tiling.regions[r];
+        TileLayout inside = region.layout == TileLayout::ScreenSplit || region.layout == TileLayout::Off ||
+                                    region.layout == TileLayout::Same
+                                ? TileLayout::Columns
+                                : region.layout;
+        RECT box = RegionArea(area, region.l, region.t, region.w, region.h, gap);
+        for (RECT const& rect : RectsIn(inside, box, groups[r], gap, percent)) out.push_back(rect);
+    }
+    return out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61938,16 +72615,19 @@ void PlaceKeptWindows() {
     }
 }
 
+bool PlaceGroupTile(HWND h, RECT const& tile);
+
 void TileMonitor(HMONITOR monitor, bool byPosition) {
     if (!monitor || LayoutFor(monitor) == TileLayout::Off) return;
     // A window that won't fit is left floating and the rest tiled again
     // without it (a few times at most).
     for (int pass = 0; pass < 4; pass++) {
         std::vector<HWND> windows = WindowsOn(monitor, byPosition && pass == 0);
-        std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
+        std::vector<RECT> rects = RectsFor(monitor, windows);
         bool again = false;
         for (size_t i = 0; i < windows.size() && i < rects.size(); i++) {
-            if (!PlaceFrame(windows[i], rects[i])) {
+            if (PlaceGroupTile(windows[i], rects[i])) continue;
+            if (!TilePlace(windows[i], rects[i])) {
                 g_floating.push_back(windows[i]);
                 again = true;
             }
@@ -62014,14 +72694,23 @@ void TileCommandRun(WPARAM command, LPARAM arg) {
         case kTileMove:
         case kTileFocus: {
             std::vector<HWND> windows = WindowsOn(monitor, false);
-            std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
+            std::vector<RECT> rects = RectsFor(monitor, windows);
             int n = (int)windows.size();
             int from = (int)(std::find(windows.begin(), windows.end(), fg) - windows.begin());
-            int to = Neighbour(rects, from, (int)arg);
+            int to = -1;
+            if (LayoutFor(monitor, n) == TileLayout::Layers && from < n) {
+                // Only the windows of its own layer (the others lie under or over them).
+                int first = from / 3 * 3, count = std::min(3, n - first);
+                std::vector<RECT> layer(rects.begin() + first, rects.begin() + first + count);
+                int along = Neighbour(layer, from - first, (int)arg);
+                to = along < 0 ? -1 : first + along;
+            } else {
+                to = Neighbour(rects, from, (int)arg);
+            }
             // Monocle: every window has the whole screen, so none lies any
             // way of another. Left and up go to the one before, right and
             // down to the one after, round and round.
-            if (LayoutFor(monitor) == TileLayout::Monocle && from < n && n > 1)
+            if (LayoutFor(monitor, n) == TileLayout::Monocle && from < n && n > 1)
                 to = (from + (arg == kLeft || arg == kUp ? n - 1 : 1)) % n;
             if (to < 0) break;
             if (command == kTileFocus) {
@@ -62043,9 +72732,20 @@ void TileCommandRun(WPARAM command, LPARAM arg) {
             TileMonitor(monitor, false);
             break;
         case kTileLayout: {
-            TileLayout now = LayoutFor(monitor);
+            TileLayout now = LayoutFor(monitor, (int)WindowsOn(monitor, false).size());
             auto it = std::find(std::begin(kLayoutCycle), std::end(kLayoutCycle), now);
-            TileLayout next = it == std::end(kLayoutCycle) || it + 1 == std::end(kLayoutCycle) ? kLayoutCycle[0] : *(it + 1);
+            TileLayout next = kLayoutCycle[0];
+            // The cycle skips a layout there is nothing to lay out with: the
+            // split screen with no regions written, a script with no file
+            // named. Both would look like columns and leave no way back.
+            for (size_t step = 0; step < std::size(kLayoutCycle); step++) {
+                size_t at = it == std::end(kLayoutCycle) ? step
+                                                         : (size_t)(it - std::begin(kLayoutCycle)) + 1 + step;
+                next = kLayoutCycle[at % std::size(kLayoutCycle)];
+                bool nothingToUse = (next == TileLayout::ScreenSplit && g_tiling.regions.empty()) ||
+                                    (next == TileLayout::Script && g_tiling.script.empty());
+                if (!nothingToUse) break;
+            }
             SetLayoutChoice(monitor, next);
             TileMonitor(monitor, false);
             break;
@@ -62080,13 +72780,15 @@ void DropTiled(HWND h) {
     GetCursorPos(&pt);
     HMONITOR monitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
     std::vector<HWND> windows = WindowsOn(monitor, false);
-    std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
-    for (size_t i = 0; i < rects.size() && i < windows.size(); i++) {
-        if (windows[i] != h && PtInRect(&rects[i], pt)) {
-            SwapInOrder(h, windows[i]);
-            break;
-        }
-    }
+    std::vector<RECT> rects = RectsFor(monitor, windows);
+    // The place under the pointer; where places lie over each other (Layers), the window seen there.
+    std::vector<HWND> under;
+    for (size_t i = 0; i < rects.size() && i < windows.size(); i++)
+        if (windows[i] != h && PtInRect(&rects[i], pt)) under.push_back(windows[i]);
+    HWND target = under.size() == 1 ? under[0] : nullptr;
+    for (HWND z = GetTopWindow(nullptr); !target && z && under.size() > 1; z = GetWindow(z, GW_HWNDNEXT))
+        if (std::find(under.begin(), under.end(), z) != under.end()) target = z;
+    if (target) SwapInOrder(h, target);
 }
 
 // Where windows go when they open and close (tiling-layouts.cpp).
@@ -62144,6 +72846,7 @@ void CALLBACK TileEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LON
     if (!h || object != OBJID_WINDOW || child != CHILDID_SELF) return;
     PlacesEvent(event, h);
     if (event == EVENT_SYSTEM_FOREGROUND) {
+        if (h != g_focused) g_focusedBefore = g_focused, g_focused = h;
         UpdateFocusBorder(h);
         return;
     }
@@ -62188,16 +72891,29 @@ void StartTileEvents() {
         g_tileHooks[1] = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_HIDE, nullptr, TileEventProc, 0, 0, flags);
         g_tileHooks[2] = SetWinEventHook(EVENT_OBJECT_CLOAKED, EVENT_OBJECT_UNCLOAKED, nullptr, TileEventProc, 0, 0, flags);
     }
-    // The focus moving: for the border, and for the places, whose frames are
-    // noted as windows are left (rather than at every move any window makes).
-    if (g_tiling.rememberAll || g_tiling.focusBorder != kBorderNone)
+    // The focus moving: for the border, for the places, whose frames are noted
+    // as windows are left (rather than at every move any window makes), and to
+    // know which window a new one opens beside.
+    bool beside = g_tiling.newWindow == kNewAfterFocused || g_tiling.newWindow == kNewBeforeFocused;
+    if (g_tiling.rememberAll || g_tiling.focusBorder != kBorderNone || (tiling && beside))
         g_tileHooks[3] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, TileEventProc, 0, 0, flags);
     if (g_tiling.rememberAll) TrackOpenWindows();
     UpdateFocusBorder(GetForegroundWindow());
 }
 
+// The taskbar holds this while a drag has windows pulled back to make room for a drop: tiling then would put
+// them straight back. The tiling waits and runs once it's let go.
+bool DropRoomOpen() {
+    static HANDLE held = CreateEventW(nullptr, TRUE, FALSE, L"Local\\TourneDropRoom");
+    return held && WaitForSingleObject(held, 0) == WAIT_OBJECT_0;
+}
+
 void TileTimer(HWND wnd) {
     KillTimer(wnd, kTimerTile);
+    if (DropRoomOpen()) {
+        SetTimer(wnd, kTimerTile, 150, nullptr);
+        return;
+    }
     if (g_autoTile && !g_userMoving) {
         TileAll();
         UpdateFocusBorder(GetForegroundWindow());
@@ -62243,9 +72959,13 @@ bool ForegroundIsFullscreen() {
     if (!fg || fg == GetShellWindow()) return false;
     RECT r;
     MONITORINFO mi{sizeof(mi)};
-    return GetWindowRect(fg, &r) && GetMonitorInfoW(MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST), &mi) &&
-           r.left <= mi.rcMonitor.left && r.top <= mi.rcMonitor.top && r.right >= mi.rcMonitor.right &&
-           r.bottom >= mi.rcMonitor.bottom;
+    if (!GetWindowRect(fg, &r) || !GetMonitorInfoW(MonitorFromWindow(fg, MONITOR_DEFAULTTONEAREST), &mi)) return false;
+    RECT const& m = mi.rcMonitor;
+    if (r.left > m.left || r.top > m.top || r.right < m.right || r.bottom < m.bottom) return false;
+    // Covering the screen isn't enough: a window with a title bar that's simply bigger than the screen (its own
+    // minimum size, left floating) isn't a film or a game, and the binds have to keep working over it.
+    if (EqualRect(&r, &m)) return true;
+    return !(GetWindowLongW(fg, GWL_STYLE) & WS_CAPTION);
 }
 
 bool ChordFor(DWORD vk, WPARAM* command, LPARAM* arg) {
@@ -62482,8 +73202,11 @@ void NoteFrame(HWND h) {
 }
 
 // Puts a window's visible frame on a rect: moved and sized, or only moved if
-// it can't be resized.
-void MoveFrameTo(HWND h, RECT const& want) {
+// it can't be resized. Over time when asked to and the motion settings move
+// windows (StartWindowMove), else at once.
+void MoveFrameTo(HWND h, RECT const& want, bool animate) {
+    if (animate && StartWindowMove(h, want, false)) return;
+    ForgetWindowMove(h);
     if (IsZoomed(h) || IsIconic(h)) ShowWindow(h, SW_SHOWNOACTIVATE);
     RECT window{}, frame = FrameOf(h);
     GetWindowRect(h, &window);
@@ -62516,7 +73239,7 @@ void WindowShown(HWND h) {
                       std::any_of(g_keptPlaces.begin(), g_keptPlaces.end(), [&](KeptPlace const& p) { return p.key == kept; });
     auto place = std::find_if(g_places.begin(), g_places.end(), [&](SavedPlace const& p) { return p.key == key; });
     if (place != g_places.end() && !keptByHand && !WillBeTiled(h) && MonitorFromRect(&place->frame, MONITOR_DEFAULTTONULL)) {
-        MoveFrameTo(h, place->frame);
+        MoveFrameTo(h, place->frame, false);  // (opening: at once, then maximised and noted)
         if (place->maximized && (GetWindowLongW(h, GWL_STYLE) & WS_MAXIMIZEBOX)) ShowWindow(h, SW_MAXIMIZE);
     }
     NoteFrame(h);
@@ -62600,7 +73323,13 @@ constexpr std::pair<TileLayout, PCWSTR> kLayoutNames[] = {
     {TileLayout::UltrawideVerticalStack, L"ultrawideVerticalStack"},
     {TileLayout::Grid, L"grid"},
     {TileLayout::Bsp, L"bsp"},
+    {TileLayout::Spiral, L"spiral"},
+    {TileLayout::ThreeColumn, L"threeColumn"},
+    {TileLayout::Slice, L"slice"},
+    {TileLayout::ScreenSplit, L"screenSplit"},
+    {TileLayout::Script, L"script"},
     {TileLayout::Monocle, L"monocle"},
+    {TileLayout::Layers, L"layers"},
 };
 
 PCWSTR LayoutName(TileLayout layout) {
@@ -62643,7 +73372,9 @@ std::wstring SnapshotLayout() {
     std::wstring text =
         L"# A screen: its edges (left top right bottom) and its tiling layout\r\n"
         L"# (off, columns, rows, verticalStack, rightMainVerticalStack, horizontalStack,\r\n"
-        L"# ultrawideVerticalStack, grid, bsp, monocle).\r\n"
+        L"# ultrawideVerticalStack, grid, bsp, spiral, threeColumn, slice,\r\n"
+        L"# screenSplit, script, monocle,\r\n"
+        L"# layers).\r\n"
         L"# A window: tile or float, its edges, then program|class.\r\n";
     struct Screens {
         std::wstring* text;
@@ -62738,7 +73469,7 @@ bool ApplyLayout(std::wstring const& text) {
             tiledOrder.push_back(c->h);
         } else {
             if (!IsFloating(c->h)) g_floating.push_back(c->h);
-            if (MonitorFromRect(&r, MONITOR_DEFAULTTONULL)) MoveFrameTo(c->h, r);
+            if (MonitorFromRect(&r, MONITOR_DEFAULTTONULL)) MoveFrameTo(c->h, r, true);
         }
     }
     // The tiled ones first, in the layout's order.
@@ -63075,6 +73806,8 @@ struct BorderSettings {
     std::wstring activeText, inactiveText;
     int spinActive = 0, spinInactive = 0;  // 1 clockwise, -1 the other way, 0 none
     int spinMs = 1800;
+    bool spinOnce = true;    // one turn as a window comes to the front or leaves it, then still
+    bool frontMoves = true;  // window moves followed for the window in front only (and drags, and tiling)
     bool fade = false;
     int fadeMs = 200;
     int fps = 60;
@@ -63082,9 +73815,18 @@ struct BorderSettings {
     int glowBlur = 8, glowSpread = 0, glowOpacity = 100;
     int shadowBlur = 8, shadowOpacity = 100, shadowX = 0, shadowY = 0;
     std::wstring skipApps, skipClasses, skipTitles;
+    // Motion lines (motion.cpp) for the fade between the two looks, by part
+    // (kFadeBorder...): eased by the line's curve when one is set. Unset, the
+    // border fades as before, and its glow and shadow with it.
+    motion::Anim fadeLine[3];
+    // "glowangle": the glow (drawn in the border's gradient) turning at its own
+    // speed (glowSpin..., as spinActive and spinInactive); unset, with the border.
+    bool glowTurns = false;
+    int glowSpinActive = 0, glowSpinInactive = 0, glowSpinMs = 1800;
 };
 
 enum { kEffectNone, kEffectActive, kEffectAll };
+enum { kFadeBorder, kFadeGlow, kFadeShadow };
 
 constexpr WCHAR kBorderClass[] = L"TourneBorder_" WH_MOD_ID;
 constexpr UINT_PTR kTimerBorders = 5;  // pending borders and animations
@@ -63092,7 +73834,9 @@ constexpr UINT_PTR kTimerBorderZ = 6;  // windows reordered: borders put back be
 
 BorderSettings g_borderSettings;
 BorderPaint g_activePaint, g_inactivePaint;
-HWINEVENTHOOK g_borderHooks[5];
+HWINEVENTHOOK g_borderHooks[6];
+HWINEVENTHOOK g_borderMoveHook = nullptr;  // moves of the window in front's thread (frontMoves)
+DWORD g_borderMoveThread = 0;
 std::unordered_set<HWND> g_borderSkipped;  // windows left out, not asked again while they're open
 HWND g_borderFront = nullptr;  // the window in front, wearing the active look
 bool g_borderTimer = false;
@@ -63124,6 +73868,13 @@ struct Border {
     float mix = 0, mixTarget = 0;  // 1: the active look, 0: the inactive one
     float appear = 1;              // 0 to 1 as it fades in
     float turn = 0;                // the gradient's turn, 0 to 1
+    float glowTurn = 0;            // the glow's, when it turns on its own
+    float spinLeft = 0, glowSpinLeft = 0;  // turns still to go, with the spin set to once
+    // Each part's share of the active look, while a motion line fades it:
+    // where it is, where it set off from, and how far along (1: there).
+    struct Fade {
+        float shown = 0, from = 0, t = 1;
+    } fades[3];
 };
 
 std::unordered_map<HWND, std::unique_ptr<Border>> g_borders;
@@ -63260,15 +74011,36 @@ void LoadBorderSettings() {
     s.spinActive = spin(TextSetting(L"switcher.borders.activeSpin"));
     s.spinInactive = spin(TextSetting(L"switcher.borders.inactiveSpin"));
     s.spinMs = IntSetting(L"switcher.borders.spinDuration", 100, 60000);
+    s.spinOnce = TextSetting(L"switcher.borders.spinRepeat") != L"always";
+    s.frontMoves = TextSetting(L"switcher.borders.followMoves") != L"all";
     s.fade = Wh_GetIntSetting(L"switcher.borders.fade") != 0;
     s.fadeMs = IntSetting(L"switcher.borders.fadeDuration", 1, 5000);
     // The motion tree's lines, when set (motion.cpp): "border" for the colour
-    // fade, "borderangle" for one turn of the spin.
+    // fade (else "fadeSwitch", the active window changing: "border" is the
+    // colours' own, so it wins), "fadeGlow" and "fadeShadow" for the glow's
+    // and the shadow's, "glowangle" and "borderangle" for one turn of the
+    // glow's gradient and of the border's.
     if (motion::Anim m = motion::Get(L"border"); m.set) {
         s.fade = m.on;
         if (m.on) s.fadeMs = std::clamp((int)motion::Ms(m), 1, 5000);
+        s.fadeLine[kFadeBorder] = m;
+    } else if (motion::Anim m = motion::Get(L"fadeSwitch"); m.set) {
+        s.fade = m.on;
+        if (m.on) s.fadeMs = std::clamp((int)motion::Ms(m), 1, 5000);
+        s.fadeLine[kFadeBorder] = m;
     }
-    if (motion::Anim m = motion::Get(L"borderangle"); m.set && m.on) s.spinMs = std::clamp((int)motion::Ms(m), 100, 60000);
+    s.fadeLine[kFadeGlow] = motion::Get(L"fadeGlow");
+    s.fadeLine[kFadeShadow] = motion::Get(L"fadeShadow");
+    if (motion::Anim m = motion::Get(L"glowangle"); m.set) {
+        s.glowTurns = true;
+        if (m.on) s.glowSpinMs = std::clamp((int)motion::Ms(m), 100, 60000);
+        s.glowSpinActive = m.on ? s.spinActive : 0;
+        s.glowSpinInactive = m.on ? s.spinInactive : 0;
+    }
+    if (motion::Anim m = motion::Get(L"borderangle"); m.set) {
+        if (m.on) s.spinMs = std::clamp((int)motion::Ms(m), 100, 60000);
+        else s.spinActive = s.spinInactive = 0;  // (off, or every animation off: it stands still)
+    }
     s.fps = IntSetting(L"switcher.borders.fps", 1, 240);
     auto effect = [](std::wstring const& v) { return v == L"active" ? kEffectActive : v == L"all" ? kEffectAll : kEffectNone; };
     s.glow = effect(TextSetting(L"switcher.borders.glow"));
@@ -63292,8 +74064,11 @@ void LoadBorderSettings() {
 
 // A window that may wear a border: an app's own top-level window, not a tool
 // window, a menu, the shell's or the suite's, and not left out by the rules.
+std::unordered_set<HWND> g_noBorder;  // windows a window rule (noborder) leaves without one
+
 bool BorderEligible(HWND h) {
     if (!IsWindow(h) || GetAncestor(h, GA_ROOT) != h) return false;
+    if (g_noBorder.contains(h)) return false;
     LONG style = GetWindowLongW(h, GWL_STYLE), ex = GetWindowLongW(h, GWL_EXSTYLE);
     if ((style & WS_CHILD) || (ex & (WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE))) return false;
     DWORD pid = 0;
@@ -63466,14 +74241,31 @@ inline uint32_t PaintAt(BorderPaint const& p, Border const& b, float px, float p
     return p.lut[(int)std::lround(std::clamp(t, 0.0f, 1.0f) * 255)];
 }
 
+// A part's share of the active look now (0 to 1): by its own motion line's
+// fade, else as the border's (by its line, else eased in and out).
+float BorderWeight(Border const& b, int part) {
+    auto const& s = g_borderSettings;
+    if (part != kFadeBorder && !s.fadeLine[part].set) part = kFadeBorder;
+    if (s.fadeLine[part].set) return b.fades[part].shown;
+    float mix = b.mix;
+    return s.fade ? (mix < 0.5f ? 2 * mix * mix : 1 - 2 * (1 - mix) * (1 - mix)) : mix;
+}
+
+// The glow turning on its own ("glowangle"), there being a glow.
+bool GlowTurnsAlone() {
+    auto const& s = g_borderSettings;
+    return s.glowTurns && s.glow != kEffectNone && s.glowOpacity > 0;
+}
+
 // Draws the strips as the border looks now and gives them to DWM (moved and
 // sized too).
 void PaintBorder(Border& b) {
     auto const& s = g_borderSettings;
     HDC screen = GetDC(nullptr);
     float turn = b.turn * 6.28318531f, cosT = std::cos(turn), sinT = std::sin(turn);
-    float mix = b.mix;
-    if (s.fade) mix = mix < 0.5f ? 2 * mix * mix : 1 - 2 * (1 - mix) * (1 - mix);  // ease in and out
+    bool glowAlone = GlowTurnsAlone();
+    float glowTurn = (glowAlone ? b.glowTurn : b.turn) * 6.28318531f, cosG = std::cos(glowTurn), sinG = std::sin(glowTurn);
+    float mixRing = BorderWeight(b, kFadeBorder), mixGlow = BorderWeight(b, kFadeGlow), mixShadow = BorderWeight(b, kFadeShadow);
     bool glowActive = s.glow != kEffectNone, glowInactive = s.glow == kEffectAll;
     bool shadowActive = s.shadow != kEffectNone, shadowInactive = s.shadow == kEffectAll;
     float shadowOpacity = s.shadowOpacity / 100.0f;
@@ -63511,21 +74303,29 @@ void PaintBorder(Border& b) {
                 }
                 float px = strip.rc.left + x + 0.5f;
                 float r = 0, g = 0, bl = 0, a = 0;
-                // One look's pixel, weighted: the border over its glow (both
-                // in its colour) over its shadow (black), premultiplied.
-                auto add = [&](BorderPaint const& p, float weight, bool glows, bool shadows) {
-                    if (weight <= 0) return;
-                    float cover = ring + (glows ? glow * (1 - ring) : 0);
-                    float dark = shadows ? shadow * (1 - cover) : 0;
-                    if (cover > 0) {
-                        uint32_t c = PaintAt(p, b, px, py, cosT, sinT);
-                        float ca = (c >> 24) / 255.0f * cover * weight;
-                        r += ((c >> 16) & 0xFF) * ca, g += ((c >> 8) & 0xFF) * ca, bl += (c & 0xFF) * ca, a += ca;
-                    }
-                    a += dark * weight;
+                auto paint = [&](uint32_t c, float cover, float weight) {
+                    float ca = (c >> 24) / 255.0f * cover * weight;
+                    r += ((c >> 16) & 0xFF) * ca, g += ((c >> 8) & 0xFF) * ca, bl += (c & 0xFF) * ca, a += ca;
                 };
-                add(g_activePaint, mix, glowActive, shadowActive);
-                add(g_inactivePaint, 1 - mix, glowInactive, shadowInactive);
+                // One look's pixel, each part weighted: the border over its
+                // glow (both in its colour) over its shadow (black),
+                // premultiplied.
+                auto add = [&](BorderPaint const& p, float wRing, float wGlow, float wShadow, bool glows, bool shadows) {
+                    if (wRing <= 0 && wGlow <= 0 && wShadow <= 0) return;
+                    float halo = glows ? glow * (1 - ring) : 0, cover = ring + halo;
+                    float dark = shadows ? shadow * (1 - cover) : 0;
+                    if (glowAlone && halo > 0 && p.gradient) {
+                        paint(PaintAt(p, b, px, py, cosT, sinT), ring, wRing);
+                        paint(PaintAt(p, b, px, py, cosG, sinG), halo, wGlow);
+                    } else if (cover > 0) {
+                        uint32_t c = PaintAt(p, b, px, py, cosT, sinT);
+                        if (wGlow == wRing) paint(c, cover, wRing);  // (fading together: as it always was)
+                        else paint(c, ring * wRing + halo * wGlow, 1);
+                    }
+                    a += dark * wShadow;
+                };
+                add(g_activePaint, mixRing, mixGlow, mixShadow, glowActive, shadowActive);
+                add(g_inactivePaint, 1 - mixRing, 1 - mixGlow, 1 - mixShadow, glowInactive, shadowInactive);
                 float k = b.appear;
                 float dither = (kDither[(y & 3) * 4 + (x & 3)] + 0.5f) / 16.0f - 0.5f;
                 uint32_t a8 = (uint32_t)std::clamp((long)std::lround(std::min(a * k, 1.0f) * 255 + dither), 0L, 255L);
@@ -63601,6 +74401,51 @@ void PlaceStrips(Border& b, bool show, bool move) {
 
 void StartBorderTimer();
 
+// Whether a border's gradient turns, or its glow's (which keeps the timer going).
+bool BorderTurns() {
+    auto const& s = g_borderSettings;
+    return s.spinActive || s.spinInactive || (GlowTurnsAlone() && (s.glowSpinActive || s.glowSpinInactive));
+}
+
+// Whether this border has turning to do: always with the spin set to always,
+// else until its one turn is done.
+bool BorderSpinning(Border const& b) {
+    return BorderTurns() && (!g_borderSettings.spinOnce || b.spinLeft > 0 || b.glowSpinLeft > 0);
+}
+
+// The parts with a motion line of their own set off toward the border's new
+// look from where they are (or put there at once, the line being off). True
+// if any fades.
+bool RetargetBorderFades(Border& b) {
+    bool fades = false;
+    for (int part = kFadeBorder; part <= kFadeShadow; part++) {
+        motion::Anim const& line = g_borderSettings.fadeLine[part];
+        if (!line.set) continue;
+        auto& f = b.fades[part];
+        f.from = f.shown, f.t = 0;
+        if (motion::Ms(line) > 0) fades = true;
+        else f.shown = b.mixTarget, f.t = 1;
+    }
+    return fades;
+}
+
+// Those fades a step on (dt in ms), eased by their lines' curves. True while
+// any is still on its way.
+bool StepBorderFades(Border& b, float dt) {
+    bool fading = false;
+    for (int part = kFadeBorder; part <= kFadeShadow; part++) {
+        motion::Anim const& line = g_borderSettings.fadeLine[part];
+        auto& f = b.fades[part];
+        if (!line.set || f.t >= 1) continue;
+        double ms = motion::Ms(line);
+        f.t = ms > 0 ? std::min(1.0f, f.t + (float)(dt / ms)) : 1.0f;
+        float eased = (float)motion::Ease(line, f.t);
+        f.shown = f.t >= 1 ? b.mixTarget : std::clamp(f.from + (b.mixTarget - f.from) * eased, 0.0f, 1.0f);
+        fading = true;
+    }
+    return fading;
+}
+
 // Brought up to date with its window: hidden if it's not to show, else laid
 // out again (drawn again if its shape changed) and put beside it.
 void RefreshBorder(Border& b) {
@@ -63653,10 +74498,13 @@ void ShowBorderFor(HWND h, int delay) {
         for (auto& strip : made->strips) {
             strip.wnd = CreateWindowExW(WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, kBorderClass,
                                         L"", WS_POPUP, 0, 0, 1, 1, nullptr, nullptr, instance, nullptr);
-            if (strip.wnd) KeepOutOfPeek(strip.wnd);
+            // (Not kept out of a peek: a peek fades them with the windows, rather than leaving every hidden
+            // window's outline in view, as Windows' own accent borders were.)
         }
         bool front = h == g_borderFront;
         made->mix = made->mixTarget = front ? 1.0f : 0.0f;
+        if (front) made->spinLeft = made->glowSpinLeft = 1;
+        for (auto& f : made->fades) f.shown = made->mix;
         b = made.get();
         g_borders[h] = std::move(made);
     }
@@ -63669,7 +74517,7 @@ void ShowBorderFor(HWND h, int delay) {
     }
     b->showAt = 0;
     RefreshBorder(*b);
-    if (b->appear < 1 || g_borderSettings.spinActive || g_borderSettings.spinInactive) StartBorderTimer();
+    if (b->appear < 1 || BorderSpinning(*b)) StartBorderTimer();
 }
 
 void HideBorderFor(HWND h) {
@@ -63677,6 +74525,32 @@ void HideBorderFor(HWND h) {
         b->showAt = 0;
         if (b->shown) PlaceStrips(*b, false, false);
     }
+}
+
+void CALLBACK BorderEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LONG child, DWORD, DWORD);
+
+// With frontMoves, window moves are followed for the window in front's thread
+// only (one hook, moved along with the front), rather than every move on the
+// PC, the mouse pointer's included. Drags end with a move-size event, and the
+// tiling refreshes the borders of the windows it moves.
+void FollowFrontMoves(HWND front) {
+    if (!g_borderSettings.frontMoves || !g_borderHooks[0]) return;
+    DWORD pid = 0, tid = front ? GetWindowThreadProcessId(front, &pid) : 0;
+    if (g_borderMoveHook && tid == g_borderMoveThread) return;
+    if (g_borderMoveHook) UnhookWinEvent(g_borderMoveHook);
+    g_borderMoveHook = nullptr;
+    g_borderMoveThread = 0;
+    if (!tid || pid == GetCurrentProcessId()) return;
+    g_borderMoveHook = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, BorderEventProc, pid, tid,
+                                       WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+    if (g_borderMoveHook) g_borderMoveThread = tid;
+}
+
+// Every border brought up to date with its window (after the tiling moved
+// windows, or a reorder, with frontMoves).
+void RefreshAllBorders() {
+    for (auto& [h, b] : g_borders)
+        if (!b->showAt) RefreshBorder(*b);
 }
 
 // The window in front changed: the border that wore the active look takes
@@ -63687,12 +74561,14 @@ void SetBorderFront(HWND h) {
     if (front == g_borderFront) return;
     HWND before = g_borderFront;
     g_borderFront = front;
-    bool fade = g_borderSettings.fade;
+    bool fade = g_borderSettings.fade, partsFade = false;
     for (HWND which : {before, front}) {
         Border* b = which ? FindBorder(which) : nullptr;
         if (!b) continue;
         b->mixTarget = which == front ? 1.0f : 0.0f;
+        b->spinLeft = b->glowSpinLeft = 1;  // (one turn in its new look, with the spin set to once)
         if (!fade) b->mix = b->mixTarget;
+        if (RetargetBorderFades(*b)) partsFade = true;
         if (b->shown) {
             // The glow may differ between the two looks; the window in front
             // also comes up in the z-order, and its border with it.
@@ -63700,7 +74576,8 @@ void SetBorderFront(HWND h) {
             PlaceStrips(*b, true, false);
         }
     }
-    if (fade || g_borderSettings.spinActive || g_borderSettings.spinInactive) StartBorderTimer();
+    FollowFrontMoves(front);
+    if (fade || partsFade || BorderTurns()) StartBorderTimer();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63731,6 +74608,7 @@ void BordersTimer(HWND wnd) {
         }
         if (!b->shown) {
             b->mix = b->mixTarget;  // (no fade to see)
+            for (auto& f : b->fades) f.shown = b->mixTarget, f.t = 1;
             continue;
         }
         bool again = false;
@@ -63739,15 +74617,26 @@ void BordersTimer(HWND wnd) {
             b->mix = b->mix < b->mixTarget ? std::min(b->mixTarget, b->mix + step) : std::max(b->mixTarget, b->mix - step);
             again = true;
         }
+        if (StepBorderFades(*b, dt)) again = true;
         if (b->appear < 1) {
             b->appear = std::min(1.0f, b->appear + step);
             again = true;
         }
-        int spin = b->mixTarget >= 1 ? s.spinActive : s.spinInactive;
-        if (spin) {
-            b->turn = std::fmod(b->turn + spin * dt / s.spinMs + 1.0f, 1.0f);
+        // With the spin set to once, the turn goes on until a whole one is
+        // done (back where it started), then stands still: nothing drawn.
+        auto turnBy = [&](float* turn, float* left, int way, int ms) {
+            if (!way || (s.spinOnce && *left <= 0)) return;
+            float part = dt / ms;
+            if (s.spinOnce) {
+                part = std::min(part, *left);
+                *left -= part;
+            }
+            *turn = std::fmod(*turn + way * part + 1.0f, 1.0f);
             again = true;
-        }
+        };
+        turnBy(&b->turn, &b->spinLeft, b->mixTarget >= 1 ? s.spinActive : s.spinInactive, s.spinMs);
+        turnBy(&b->glowTurn, &b->glowSpinLeft,
+               !GlowTurnsAlone() ? 0 : b->mixTarget >= 1 ? s.glowSpinActive : s.glowSpinInactive, s.glowSpinMs);
         if (again) {
             PaintBorder(*b);
             busy = true;
@@ -63763,6 +74652,10 @@ void BordersTimer(HWND wnd) {
 // window if it was left behind (a little later, once for a burst).
 void BordersReorderTimer(HWND wnd) {
     KillTimer(wnd, kTimerBorderZ);
+    if (g_borderSettings.frontMoves) {
+        RefreshAllBorders();  // (a window behind may have moved too: this catches it up)
+        return;
+    }
     for (auto& [h, b] : g_borders)
         if (b->shown) PlaceStrips(*b, true, false);
 }
@@ -63774,6 +74667,9 @@ void CALLBACK BorderEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, L
             if (object != OBJID_WINDOW || child != CHILDID_SELF || !h) return;
             if (Border* b = FindBorder(h)) RefreshBorder(*b);
             else ShowBorderFor(h, 0);  // (back from full screen, say)
+            return;
+        case EVENT_SYSTEM_MOVESIZEEND:
+            if (Border* b = h ? FindBorder(h) : nullptr) RefreshBorder(*b);
             return;
         case EVENT_OBJECT_REORDER:
             if (object == OBJID_CLIENT && !g_borders.empty() && g_wnd) SetTimer(g_wnd, kTimerBorderZ, 16, nullptr);
@@ -63817,6 +74713,9 @@ void StopBorders() {
         if (hook) UnhookWinEvent(hook);
         hook = nullptr;
     }
+    if (g_borderMoveHook) UnhookWinEvent(g_borderMoveHook);
+    g_borderMoveHook = nullptr;
+    g_borderMoveThread = 0;
     if (g_wnd) {
         KillTimer(g_wnd, kTimerBorders);
         KillTimer(g_wnd, kTimerBorderZ);
@@ -63843,10 +74742,13 @@ void StartBorders() {
     g_borderHooks[0] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, BorderEventProc, 0, 0, flags);
     g_borderHooks[1] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZEEND, nullptr, BorderEventProc, 0, 0, flags);
     g_borderHooks[2] = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_REORDER, nullptr, BorderEventProc, 0, 0, flags);
-    g_borderHooks[3] = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, BorderEventProc, 0, 0, flags);
+    if (!g_borderSettings.frontMoves)
+        g_borderHooks[3] = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, BorderEventProc, 0, 0, flags);
     g_borderHooks[4] = SetWinEventHook(EVENT_OBJECT_CLOAKED, EVENT_OBJECT_UNCLOAKED, nullptr, BorderEventProc, 0, 0, flags);
+    g_borderHooks[5] = SetWinEventHook(EVENT_SYSTEM_MOVESIZEEND, EVENT_SYSTEM_MOVESIZEEND, nullptr, BorderEventProc, 0, 0, flags);
     HWND fg = GetForegroundWindow();
     g_borderFront = fg ? GetAncestor(fg, GA_ROOT) : nullptr;
+    FollowFrontMoves(g_borderFront);
     // The windows open now, at once (no opening animation to wait for).
     std::vector<HWND> open;
     EnumWindows(
@@ -63872,6 +74774,3523 @@ void EndBorders() {
     if (g_borderClass && g_wnd) UnregisterClassW(kBorderClass, (HINSTANCE)GetWindowLongPtrW(g_wnd, GWLP_HINSTANCE));
     g_borderClass = false;
 }
+// Windows' virtual desktops, through the manager Task view uses ("// @inline virtual-desktops.cpp", in
+// desktops-pager.cpp and binds.cpp): switch to one, rename one, send a window to one. Plus the
+// desktops' ids and the current one, as Windows keeps them in the registry.
+
+////////////////////////////////////////////////////////////////////////////////
+// Windows' own desktop manager, the one Task view uses (IVirtualDesktopManagerInternal, undocumented, from
+// the immersive shell). Its layout changes between Windows builds and its id changes with it, so the id
+// here (24H2's and 25H2's, read from twinui.pcshell.dll with the slots below) only answers on a build
+// where those slots are what they say; anywhere else nothing is called.
+
+constexpr CLSID kClsidImmersiveShell = {0xC2F03A33, 0x21F5, 0x47FA, {0xB4, 0xBB, 0x15, 0x63, 0x62, 0xA2, 0xF2, 0x39}};
+constexpr GUID kSidVdmInternal = {0xC5E0CDCA, 0x7B6E, 0x41B2, {0x9F, 0xC4, 0xD9, 0x39, 0x75, 0xCC, 0x46, 0x7B}};
+constexpr IID kIidVdmInternal = {0x53F5CA0B, 0x158F, 0x4124, {0x90, 0x0C, 0x05, 0x71, 0x58, 0x06, 0x0B, 0x27}};
+constexpr int kVdmMoveView = 4, kVdmSwitchDesktop = 9, kVdmSwitchAndMoveForeground = 10, kVdmCreateDesktop = 11,
+              kVdmFindDesktop = 14, kVdmSetDesktopName = 16;
+constexpr int kVdGetId = 4;  // IVirtualDesktop's own, on those builds
+// The shell's windows as it sees them (IApplicationViewCollection, the same on those builds), for a window's view.
+constexpr IID kIidViewCollection = {0x1841C6D7, 0x4F9D, 0x42C0, {0xAF, 0x41, 0x87, 0x47, 0x53, 0x8F, 0x10, 0xE5}};
+constexpr int kViewForHwnd = 6;
+
+template <typename F>
+F VdmSlot(IUnknown* p, int slot) {
+    return (*(F**)p)[slot];
+}
+
+// The desktop with this id and the manager (both released by the caller); false if either isn't there.
+bool VdmFind(GUID const& id, IUnknown** vdm, IUnknown** desktop) {
+    *vdm = *desktop = nullptr;
+    IServiceProvider* shell = nullptr;
+    if (FAILED(CoCreateInstance(kClsidImmersiveShell, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shell)))) return false;
+    shell->QueryService(kSidVdmInternal, kIidVdmInternal, (void**)vdm);
+    shell->Release();
+    if (!*vdm) return false;
+    using Find = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, GUID const*, IUnknown**);
+    if (SUCCEEDED(VdmSlot<Find>(*vdm, kVdmFindDesktop)(*vdm, &id, desktop)) && *desktop) return true;
+    (*vdm)->Release();
+    *vdm = nullptr;
+    return false;
+}
+
+// Straight to a desktop, as Task view goes (no keys pressed for it, so keys held for a hotkey don't matter); VdmSwitchTo
+// (desktop-slide.cpp, below) animates it when a motion line says so.
+bool VdmSwitchNow(GUID const& id) {
+    IUnknown *vdm, *desktop;
+    if (!VdmFind(id, &vdm, &desktop)) return false;
+    using Switch = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown*);
+    bool ok = SUCCEEDED(VdmSlot<Switch>(vdm, kVdmSwitchDesktop)(vdm, desktop));
+    desktop->Release();
+    vdm->Release();
+    return ok;
+}
+
+// A new desktop at the end, as Task view's "New desktop" makes it; its id, or GUID_NULL if Windows didn't make one.
+GUID VdmCreate() {
+    GUID id{};
+    IServiceProvider* shell = nullptr;
+    if (FAILED(CoCreateInstance(kClsidImmersiveShell, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shell)))) return id;
+    IUnknown* vdm = nullptr;
+    shell->QueryService(kSidVdmInternal, kIidVdmInternal, (void**)&vdm);
+    shell->Release();
+    if (!vdm) return id;
+    using Create = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown**);
+    using GetId = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, GUID*);
+    IUnknown* desktop = nullptr;
+    if (SUCCEEDED(VdmSlot<Create>(vdm, kVdmCreateDesktop)(vdm, &desktop)) && desktop) {
+        VdmSlot<GetId>(desktop, kVdGetId)(desktop, &id);
+        desktop->Release();
+    }
+    vdm->Release();
+    return id;
+}
+
+// Renamed as Task view renames it (empty: back to "Desktop N"). The name is an HSTRING, made by combase.
+bool VdmRename(GUID const& id, std::wstring const& name) {
+    using Create = HRESULT(WINAPI*)(PCWSTR, UINT32, void**);
+    using Delete = HRESULT(WINAPI*)(void*);
+    HMODULE combase = GetModuleHandleW(L"combase.dll");
+    auto create = combase ? (Create)(void*)GetProcAddress(combase, "WindowsCreateString") : nullptr;
+    auto destroy = combase ? (Delete)(void*)GetProcAddress(combase, "WindowsDeleteString") : nullptr;
+    IUnknown *vdm, *desktop;
+    if (!create || !destroy || !VdmFind(id, &vdm, &desktop)) return false;
+    void* text = nullptr;
+    using SetName = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown*, void*);
+    bool ok = SUCCEEDED(create(name.c_str(), (UINT32)name.size(), &text)) &&
+              SUCCEEDED(VdmSlot<SetName>(vdm, kVdmSetDesktopName)(vdm, desktop, text));
+    destroy(text);
+    desktop->Release();
+    vdm->Release();
+    return ok;
+}
+
+// A window sent to a desktop, as dragging it there in Task view does; with follow, switched to with it (the window
+// staying in front). False if Windows' manager doesn't answer or won't move it.
+bool VdmSendWindow(HWND h, GUID const& id, bool follow) {
+    IServiceProvider* shell = nullptr;
+    if (FAILED(CoCreateInstance(kClsidImmersiveShell, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shell)))) return false;
+    IUnknown* views = nullptr;
+    shell->QueryService(kIidViewCollection, kIidViewCollection, (void**)&views);
+    shell->Release();
+    if (!views) return false;
+    IUnknown* view = nullptr;
+    using ViewFor = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, HWND, IUnknown**);
+    HRESULT hr = VdmSlot<ViewFor>(views, kViewForHwnd)(views, h, &view);
+    views->Release();
+    if (FAILED(hr) || !view) return false;
+    bool ok = false;
+    IUnknown *vdm, *desktop;
+    if (VdmFind(id, &vdm, &desktop)) {
+        using Along = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown*);
+        using Move = HRESULT(STDMETHODCALLTYPE*)(IUnknown*, IUnknown*, IUnknown*);
+        if (follow && h == GetAncestor(GetForegroundWindow(), GA_ROOTOWNER))
+            ok = SUCCEEDED(VdmSlot<Along>(vdm, kVdmSwitchAndMoveForeground)(vdm, desktop));
+        if (!ok) {
+            ok = SUCCEEDED(VdmSlot<Move>(vdm, kVdmMoveView)(vdm, view, desktop));
+            if (ok && follow) VdmSlot<Along>(vdm, kVdmSwitchDesktop)(vdm, desktop);
+        }
+        desktop->Release();
+        vdm->Release();
+    }
+    view->Release();
+    return ok;
+}
+
+// The desktops' ids (none until a second desktop has ever been made), or the current one's.
+std::vector<GUID> VdReadGuids(wchar_t const* value) {
+    std::vector<GUID> ids;
+    BYTE data[16 * 64];
+    DWORD size = sizeof(data);
+    if (RegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VirtualDesktops", value,
+                     RRF_RT_REG_BINARY, nullptr, data, &size) != ERROR_SUCCESS)
+        return ids;
+    for (DWORD at = 0; at + 16 <= size; at += 16) {
+        GUID g;
+        memcpy(&g, data + at, 16);
+        ids.push_back(g);
+    }
+    return ids;
+}
+
+// The current desktop's place among them (0 when there is only one).
+int VdCurrentIndex(std::vector<GUID> const& ids) {
+    std::vector<GUID> current = VdReadGuids(L"CurrentVirtualDesktop");
+    for (size_t i = 0; i < ids.size() && !current.empty(); i++)
+        if (!memcmp(&ids[i], &current[0], sizeof(GUID))) return (int)i;
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Desktops changing, animated as Hyprland's workspaces ("// @inline desktop-slide.cpp", at the end of
+// virtual-desktops.cpp): the motion lines workspacesIn and workspacesOut (or workspaces, global above them),
+// styles slide, slidevert, fade, slidefade N%, slidefadevert N%. With no line set anywhere up the tree the
+// switch is Windows' plain one, as before.
+//
+// Tourne doesn't draw other programs' windows, so for the length of the move a window of its own covers the
+// screens and shows them through DWM thumbnails: the desktop you leave sliding (or fading) out, the one you go
+// to coming in, and what's on every desktop (the wallpaper, the bar, pinned windows) staying still. Windows'
+// own switch happens under it once it's up; it goes when the move ends, with the real windows already there.
+// A tool window has no place on a desktop, so the cover isn't hidden by the switch itself. Its own thread,
+// so a part's hooks never wait on it.
+
+
+
+struct DesktopSlide {
+    motion::Anim in, out;
+    GUID from, to;
+    int dir;  // 1: to a desktop further right
+    HANDLE ready, go;
+};
+
+HANDLE g_slideThread;
+std::atomic<bool> g_slideCancel;
+
+LRESULT CALLBACK DesktopSlideProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (msg == WM_ERASEBKGND) {
+        PaintDesktop((HDC)wParam);  // (under the thumbnails, in case nothing shows the wallpaper)
+        return 1;
+    }
+    if (msg == WM_NCHITTEST) return HTTRANSPARENT;
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+DWORD WINAPI DesktopSlideThread(void* param) {
+    auto* job = (DesktopSlide*)param;
+    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    IVirtualDesktopManager* vdm = nullptr;
+    CoCreateInstance(CLSID_VirtualDesktopManager, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&vdm));
+
+    enum Kind { Still, Out, In };
+    struct Item {
+        HWND h;
+        RECT r, monitor;
+        Kind kind;
+        bool topmost;
+        HTHUMBNAIL thumb;
+        SIZE source;
+    };
+    struct Walk {
+        std::vector<Item> items;  // frontmost first
+        IVirtualDesktopManager* vdm;
+        DesktopSlide* job;
+    } walk{{}, vdm, job};
+    EnumWindows(
+        [](HWND h, LPARAM p) -> BOOL {
+            auto* w = (Walk*)p;
+            if (w->items.size() >= 80) return FALSE;
+            if (!IsWindowVisible(h) || IsIconic(h)) return TRUE;
+            RECT r;
+            if (!GetWindowRect(h, &r) || r.right - r.left < 8 || r.bottom - r.top < 8) return TRUE;
+            // Overlays that let clicks through or show nothing (NVIDIA's, Tourne's own visualiser): their
+            // thumbnails come out solid (DWM doesn't keep a layered window's see-through), so they're left out.
+            LONG ex = GetWindowLongW(h, GWL_EXSTYLE);
+            BYTE alpha = 255;
+            DWORD how = 0;
+            if ((ex & WS_EX_TRANSPARENT) || ((ex & WS_EX_LAYERED) && GetLayeredWindowAttributes(h, nullptr, &alpha, &how) && (how & LWA_ALPHA) && !alpha))
+                return TRUE;
+            GUID d{};
+            bool onOne = w->vdm && SUCCEEDED(w->vdm->GetWindowDesktopId(h, &d)) && d != GUID{};
+            DWORD cloaked = 0;
+            DwmGetWindowAttribute(h, DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+            Kind kind;
+            if (onOne && d == w->job->from && !cloaked) kind = Out;
+            else if (onOne && d == w->job->to) kind = In;
+            else if (!onOne && !cloaked) kind = Still;
+            else return TRUE;
+            MONITORINFO mi{sizeof(mi)};
+            GetMonitorInfoW(MonitorFromRect(&r, MONITOR_DEFAULTTONEAREST), &mi);
+            bool topmost = GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TOPMOST;
+            w->items.push_back({h, r, mi.rcMonitor, kind, topmost, nullptr, {}});
+            return TRUE;
+        },
+        (LPARAM)&walk);
+    if (vdm) vdm->Release();
+
+    int vx = GetSystemMetrics(SM_XVIRTUALSCREEN), vy = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    int vw = GetSystemMetrics(SM_CXVIRTUALSCREEN), vh = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    WNDCLASSW wc{};
+    wc.lpfnWndProc = DesktopSlideProc;
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = L"TourneDesktopSlide";
+    RegisterClassW(&wc);  // (once a process; a second register fails harmlessly)
+    HWND cover = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT, wc.lpszClassName, L"",
+                                 WS_POPUP, vx, vy, vw, vh, nullptr, nullptr, wc.hInstance, nullptr);
+
+    // Thumbnails are drawn in the order made: what stays below, the desktop coming, the one going, then what's
+    // kept on top.
+    auto& items = walk.items;
+    std::vector<Item*> order;
+    for (int pass = 0; pass < 4; pass++)
+        for (auto it = items.rbegin(); it != items.rend(); ++it) {
+            int at = it->kind == Still ? (it->topmost ? 3 : 0) : it->kind == In ? 1 : 2;
+            if (at == pass) order.push_back(&*it);
+        }
+    for (Item* i : order) {
+        if (!cover || FAILED(DwmRegisterThumbnail(cover, i->h, &i->thumb))) {
+            i->thumb = nullptr;
+            continue;
+        }
+        if (FAILED(DwmQueryThumbnailSourceSize(i->thumb, &i->source)) || !i->source.cx) i->source = {i->r.right - i->r.left, i->r.bottom - i->r.top};
+    }
+
+    auto style = [](motion::Anim const& a) { return motion::StyleWord(a); };
+    std::wstring inStyle = style(job->in), outStyle = style(job->out);
+    // One window at its place for the progress e (0 to 1, or past it on an overshoot) of the move.
+    auto place = [&](Item const& i, double e) {
+        if (!i.thumb) return;
+        std::wstring s = i.kind == In ? inStyle : outStyle;
+        motion::Anim const& a = i.kind == In ? job->in : job->out;
+        bool fade = s == L"fade" || s.rfind(L"slidefade", 0) == 0;
+        bool vert = s == L"slidevert" || s == L"slidefadevert";
+        double share = s == L"fade" ? 0 : s.rfind(L"slidefade", 0) == 0 ? motion::StylePercent(a, 0.2) : 1;
+        RECT const& m = i.monitor;
+        double span = (vert ? m.bottom - m.top : m.right - m.left) * share;
+        double shift = 0, alpha = 1;
+        if (i.kind == Out) shift = -job->dir * span * e, alpha = fade ? 1 - e : 1;
+        if (i.kind == In) shift = job->dir * span * (1 - e), alpha = fade ? e : 1;
+        RECT dest = i.r;
+        OffsetRect(&dest, vert ? 0 : (int)lround(shift), vert ? (int)lround(shift) : 0);
+        RECT seen;
+        DWM_THUMBNAIL_PROPERTIES p{};
+        p.dwFlags = DWM_TNP_VISIBLE | DWM_TNP_RECTDESTINATION | DWM_TNP_RECTSOURCE | DWM_TNP_OPACITY | DWM_TNP_SOURCECLIENTAREAONLY;
+        p.fSourceClientAreaOnly = FALSE;
+        p.opacity = (BYTE)std::clamp(lround(alpha * 255), 0L, 255L);
+        p.fVisible = IntersectRect(&seen, &dest, &m) && p.opacity > 0;
+        if (p.fVisible) {
+            // The part on its own screen only: a window going doesn't slide onto the next screen.
+            double sx = (double)i.source.cx / std::max(1L, i.r.right - i.r.left), sy = (double)i.source.cy / std::max(1L, i.r.bottom - i.r.top);
+            p.rcSource = {(LONG)lround((seen.left - dest.left) * sx), (LONG)lround((seen.top - dest.top) * sy),
+                          (LONG)lround((seen.right - dest.left) * sx), (LONG)lround((seen.bottom - dest.top) * sy)};
+            p.rcDestination = seen;
+            OffsetRect(&p.rcDestination, -vx, -vy);
+        }
+        DwmUpdateThumbnailProperties(i.thumb, &p);
+    };
+    for (Item* i : order) place(*i, 0);
+    if (cover) {
+        SetWindowPos(cover, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        UpdateWindow(cover);
+        DwmFlush();
+        DwmFlush();  // (on screen before anything under it changes)
+    }
+    SetEvent(job->ready);
+    WaitForSingleObject(job->go, 1000);
+
+    double inMs = std::max(1.0, motion::Ms(job->in)), outMs = std::max(1.0, motion::Ms(job->out));
+    ULONGLONG start = GetTickCount64();
+    while (cover && !g_slideCancel) {
+        double t = (double)(GetTickCount64() - start);
+        double ein = motion::Ease(job->in, t / inMs), eout = motion::Ease(job->out, t / outMs);
+        for (Item* i : order) place(*i, i->kind == In ? ein : eout);
+        DwmFlush();
+        MSG msg;
+        while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&msg);
+        if (t >= inMs && t >= outMs) break;
+    }
+
+    for (Item* i : order)
+        if (i->thumb) DwmUnregisterThumbnail(i->thumb);
+    if (cover) DestroyWindow(cover);
+    if (SUCCEEDED(com)) CoUninitialize();
+    CloseHandle(job->ready);
+    CloseHandle(job->go);
+    delete job;
+    return 0;
+}
+
+// To a desktop: animated when a motion line says so, else straight there. False if Windows didn't switch.
+bool VdmSwitchTo(GUID const& id) {
+    std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+    int from = VdCurrentIndex(ids), to = -1;
+    for (size_t i = 0; i < ids.size(); i++)
+        if (ids[i] == id) to = (int)i;
+    motion::Anim in = motion::Get(L"workspacesIn"), out = motion::Get(L"workspacesOut");
+    bool animate = to >= 0 && to != from && in.set && in.on && motion::Ms(in) > 0 && !GetSystemMetrics(SM_REMOTESESSION);
+    if (g_slideThread) {
+        // One still moving: to its end at once, so the next starts from the desktop really shown.
+        g_slideCancel = true;
+        WaitForSingleObject(g_slideThread, 1000);
+        CloseHandle(g_slideThread);
+        g_slideThread = nullptr;
+    }
+    if (!animate) return VdmSwitchNow(id);
+    g_slideCancel = false;
+    auto* job = new DesktopSlide{in, out, ids[from], id, to > from ? 1 : -1, CreateEventW(nullptr, TRUE, FALSE, nullptr),
+                                 CreateEventW(nullptr, TRUE, FALSE, nullptr)};
+    HANDLE ready = job->ready, go = job->go;
+    g_slideThread = CreateThread(nullptr, 0, DesktopSlideThread, job, 0, nullptr);
+    if (!g_slideThread) {
+        CloseHandle(ready);
+        CloseHandle(go);
+        delete job;
+        return VdmSwitchNow(id);
+    }
+    WaitForSingleObject(ready, 250);
+    bool ok = VdmSwitchNow(id);
+    if (!ok) g_slideCancel = true;
+    SetEvent(go);
+    return ok;
+}
+////////////////////////////////////////////////////////////////////////////////
+// Key binds, in the manner of Hyprland's ("// @inline binds.cpp", in the
+// Switcher after the tiling and the borders, whose keyboard hook it shares),
+// and tournectl, the way scripts and pieces control Tourne and hear what
+// happens (Hyprland's hyprctl and its event socket).
+//
+// Binds are written as Hyprland writes them, one a line:
+//
+//     $mod = WIN
+//     bind = $mod, Q, killactive
+//     bind = $mod SHIFT, 2, movetoworkspace, 2
+//     bind = $mod, R, submap, resize
+//     bind = $mod, N, run, workspace 2; wait 200; exec notepad
+//     submap = resize
+//     binde = , right, resizeactive, 20 0
+//     bind = , escape, submap, reset
+//     submap = reset
+//
+// bind takes flags as Hyprland's does: e (repeats while held), r (on
+// release), l (in fullscreen programs too), n (the program in front hears
+// the key as well), d (a description after the key: bindd = MODS, key,
+// what it does, command, argument), and two of Tourne's own: k (a double press: the key twice within
+// binds.doubleMs, 300 ms unless set) and o (held down: o alone for binds.holdMs, 500 ms unless set, or with
+// its own time in ms, as bindo800). A modifier can be the key, tapped on its own (pressed and let go within
+// binds.holdMs with nothing else pressed): bind = SUPER, SUPER_L, launcher (or , WIN / SHIFT_R / ALT_L ...).
+// A Win or Alt tap that runs a bind doesn't open Start or the menu bar. A key may be a combination of keys held together, as Hyprland writes
+// them: escape&end is End pressed while Esc is held (the keys before the last are held, in any order).
+// Plugins' hotkeys come in as binds too (the PluginBinds lines Tourne Desktop's plugin runtime writes,
+// with the plugin dispatcher). Nothing is bound until the user writes a line, and the
+// whole part is off until turned on: a bound key is taken by Tourne, so the
+// program in front never hears it.
+//
+// Off, nothing here runs: the hook returns at once and no pipe is made. With
+// control on, one thread waits on the pipe (no work while no one calls), and
+// events are only watched while a listener is connected.
+
+struct Bind {
+    UINT mods = 0;  // MOD_ flags, exactly these held
+    DWORD vk = 0;
+    bool catchAll = false;  // "catchall": any key not bound otherwise, in a submap
+    bool repeat = false, release = false, locked = false, passThrough = false;
+    std::vector<DWORD> chord;  // other keys held with it (escape&end: escape)
+    bool twice = false;        // k: a double press
+    int holdMs = 0;            // o: held this long
+    int submap = 0;  // 0: the global binds
+    std::wstring dispatcher, arg, line;
+    std::wstring description;  // bindd's: what the bind does, in words (the keybind guide shows it)
+};
+
+struct BindTable {
+    std::vector<Bind> binds;
+    // bindm = MODS, mouse:272, movewindow (or resizewindow): drag a window with a button held with them.
+    struct MouseBind {
+        UINT mods;
+        int button;  // 0 left (mouse:272), 1 right (273), 2 middle (274)
+        bool resize;
+        std::wstring description, line;  // (bindmd's words; the line, for the keybind guide)
+    };
+    std::vector<MouseBind> mouseBinds;
+    std::vector<std::wstring> submaps{L""};
+    std::vector<std::wstring> ruleLines;  // windowrule lines, for rules.cpp
+    // idle = SECONDS, command, argument (hypridle's listeners): run once that long after the last input.
+    struct Idle {
+        int seconds;
+        std::wstring dispatcher, arg;
+    };
+    std::vector<Idle> idle;
+};
+
+constexpr UINT WM_APP_BIND = WM_APP + 40;      // wParam: a bind's index; lParam: the table's generation
+constexpr UINT WM_APP_BINDCALL = WM_APP + 41;  // lParam: a BindCall, sent by the control thread
+constexpr UINT WM_APP_BINDWATCH = WM_APP + 42;  // wParam: listeners there are (watch events or stop)
+constexpr UINT WM_APP_MOUSEDRAG = WM_APP + 43;  // wParam: 0 start (lParam: resize), 1 moved, 2 let go
+constexpr UINT WM_APP_BINDHOLD = WM_APP + 44;   // wParam: a held bind's index; lParam: the table's generation
+constexpr UINT WM_APP_BINDTAP = WM_APP + 45;    // wParam: a key let go before its hold bind's time (pressed again)
+constexpr UINT_PTR kTimerBindHold = 0x4248;
+constexpr UINT_PTR kTimerBindTapLater = 0x4249;  // a tap waiting out the double press's time
+int g_tapLater = -1;                              // that tap's plain bind (switcher thread)
+unsigned g_tapLaterGeneration = 0;
+ULONGLONG g_holdPressedAt = 0;                    // when the held key went down (switcher thread)
+constexpr ULONG_PTR kBindReplayTag = 0x42494E44;  // "BIND": input this sent
+
+std::mutex g_bindsLock;  // g_binds is read by the hook thread
+BindTable g_binds;
+std::atomic<bool> g_bindsOn{false};
+std::atomic<int> g_submap{0};
+std::atomic<unsigned> g_bindsGeneration{0};
+
+// On the hook thread: keys kept back, so their release (and repeats) are kept
+// back too; with the bind to run on release, if it is one.
+struct HeldBind {
+    DWORD vk;
+    int runOnRelease;  // a bind's index, or -1
+    bool passThrough;
+};
+std::vector<HeldBind> g_bindKeysHeld;
+std::vector<DWORD> g_keysDown;  // every key down now but the modifiers (hook thread), for combinations
+// A hold bind waiting for its time: its index (-1: none), the key, whether it ran; the timer is the switcher
+// window's (WM_APP_BINDHOLD starts it).
+std::atomic<int> g_holdBind{-1};
+std::atomic<DWORD> g_holdVk{0};
+std::atomic<bool> g_holdRan{false};
+unsigned g_holdGeneration = 0;  // (the switcher window's thread)
+// Double presses: the last press of each double bind, with the table's generation then (hook thread).
+std::map<int, std::pair<unsigned, ULONGLONG>> g_lastPress;
+int g_doubleMs = 300, g_holdDefaultMs = 500;
+
+////////////////////////////////////////////////////////////////////////////////
+// Reading the lines
+
+std::wstring Trimmed(std::wstring s) {
+    size_t a = s.find_first_not_of(L" \t\r\n");
+    if (a == std::wstring::npos) return L"";
+    size_t b = s.find_last_not_of(L" \t\r\n");
+    return s.substr(a, b - a + 1);
+}
+
+// The command language all four surfaces speak (a key, a menu item, a bar
+// click and tournectl), and its own wait step.
+////////////////////////////////////////////////////////////////////////////////
+// One command language ("// @inline command.cpp", from binds.cpp): the text a
+// key, a menu item, a bar click and tournectl all speak, so the same line means
+// the same thing wherever it is written.
+//
+// A command is one or more steps, separated by semicolons:
+//
+//     workspace 2
+//     togglefloating; centerwindow
+//     workspace 2; wait 200; exec notepad
+//
+// A step is a dispatcher's name and its argument, the same names a bind line
+// uses (the 39 of them Dispatch answers to). Two steps are the language's own:
+//
+//     wait 200      the next step waits that long (200, 200ms and 0.2s all read)
+//     run <command> refused inside a command, so a command can't call itself
+//
+// A semicolon inside an argument is written \; and a backslash \\. Nothing else
+// is escaped, so a path keeps its own backslashes.
+//
+// This file is plain text work with no Windows in it, so tools/binds/cmdtest.cpp
+// builds and runs it anywhere; `tournectl check "<command>"` prints what a
+// command would do without doing any of it.
+//
+// A fragment, like the other inlined files: whoever inlines it has already
+// included <algorithm>, <string> and <vector>, and has Trimmed() and Lower().
+
+constexpr int kCommandMostSteps = 32;      // a command longer than this is refused
+constexpr int kCommandLongestWait = 60000;  // and so is a wait longer than a minute
+
+struct CommandStep {
+    std::wstring name, arg;
+    int waitMs = 0;  // a wait step: how long, and name is "wait"
+};
+
+struct Command {
+    std::vector<CommandStep> steps;
+    std::wstring error;  // what's wrong with it, empty when it reads
+    bool ok() const { return error.empty() && !steps.empty(); }
+};
+
+// "200", "200ms", "0.2s", "2 s": milliseconds, -1 if it isn't a length of time
+// at all, -2 if it is one but longer than a command may wait. A bare number is
+// milliseconds, as Hyprland's own waits are.
+int CommandWaitMs(std::wstring const& text) {
+    std::wstring t = Lower(Trimmed(text));
+    if (t.empty()) return -1;
+    bool seconds = false;
+    if (t.size() > 2 && t.compare(t.size() - 2, 2, L"ms") == 0) {
+        t = Trimmed(t.substr(0, t.size() - 2));
+    } else if (t.back() == L's') {
+        seconds = true;
+        t = Trimmed(t.substr(0, t.size() - 1));
+    }
+    if (t.empty()) return -1;
+    double value = 0, place = 0;
+    for (wchar_t c : t) {
+        if (c == L'.') {
+            if (place) return -1;  // two dots
+            place = 0.1;
+        } else if (c >= L'0' && c <= L'9') {
+            if (place) value += (c - L'0') * place, place /= 10;
+            else value = value * 10 + (c - L'0');
+        } else {
+            return -1;
+        }
+    }
+    double ms = seconds ? value * 1000 : value;
+    if (ms > kCommandLongestWait) return -2;
+    return (int)(ms + 0.5);
+}
+
+// The steps of a command line, or what's wrong with it. Empty steps (";;" or a
+// trailing ";") are dropped rather than refused, so a line stays easy to edit.
+Command ParseCommand(std::wstring const& text) {
+    Command out;
+    std::wstring step;
+    bool escape = false;
+    auto take = [&] {
+        std::wstring one = Trimmed(step);
+        step.clear();
+        if (one.empty()) return;
+        if ((int)out.steps.size() >= kCommandMostSteps) {
+            if (out.error.empty()) out.error = L"more than " + std::to_wstring(kCommandMostSteps) + L" steps";
+            return;
+        }
+        size_t space = one.find_first_of(L" \t");
+        CommandStep s;
+        s.name = Lower(one.substr(0, space));
+        s.arg = space == std::wstring::npos ? L"" : Trimmed(one.substr(space + 1));
+        if (s.name == L"wait" || s.name == L"pause") {
+            s.name = L"wait";
+            s.waitMs = CommandWaitMs(s.arg);
+            if (s.waitMs < 0 && out.error.empty())
+                out.error = s.waitMs == -2 ? L"a command can't wait longer than a minute"
+                            : s.arg.empty() ? L"wait needs a length of time, as wait 200"
+                                            : L"wait doesn't understand \"" + s.arg + L"\" (try 200, 200ms or 0.2s)";
+        } else if (s.name == L"run") {
+            if (out.error.empty()) out.error = L"run can't be a step of a command: write the steps themselves";
+        }
+        out.steps.push_back(std::move(s));
+    };
+    for (wchar_t c : text) {
+        if (escape) {
+            if (c != L';' && c != L'\\') step += L'\\';  // (any other backslash is the path's own)
+            step += c;
+            escape = false;
+        } else if (c == L'\\') {
+            escape = true;
+        } else if (c == L';') {
+            take();
+        } else {
+            step += c;
+        }
+    }
+    if (escape) step += L'\\';
+    take();
+    if (out.error.empty() && out.steps.empty()) out.error = L"nothing to do";
+    // A wait at the end waits for nothing.
+    while (!out.steps.empty() && out.steps.back().name == L"wait") out.steps.pop_back();
+    if (out.error.empty() && out.steps.empty()) out.error = L"only a wait: nothing to do after it";
+    return out;
+}
+
+// What the command would do, a step per line, for `tournectl check`, the menu
+// editor's help and the console check. Nothing is done.
+std::wstring DescribeCommand(Command const& c) {
+    if (!c.error.empty()) return L"error: " + c.error;
+    std::wstring out;
+    int at = 1;
+    for (CommandStep const& s : c.steps) {
+        out += std::to_wstring(at++) + L". ";
+        if (s.name == L"wait") out += L"wait " + std::to_wstring(s.waitMs) + L" ms";
+        else if (s.arg.empty()) out += s.name;
+        else out += s.name + L" (" + s.arg + L")";
+        out += L"\n";
+    }
+    return out.substr(0, out.size() - 1);
+}
+
+UINT ModsByName(std::wstring const& text, bool* ok) {
+    UINT mods = 0;
+    *ok = true;
+    std::wstring part;
+    auto take = [&] {
+        std::wstring p = Lower(part);
+        part.clear();
+        if (p.empty()) return;
+        if (p == L"win" || p == L"super" || p == L"mod4" || p == L"logo" || p == L"meta") mods |= MOD_WIN;
+        else if (p == L"ctrl" || p == L"control") mods |= MOD_CONTROL;
+        else if (p == L"alt" || p == L"mod1") mods |= MOD_ALT;
+        else if (p == L"shift") mods |= MOD_SHIFT;
+        else *ok = false;
+    };
+    for (wchar_t c : text) {
+        if (c == L' ' || c == L'_' || c == L'+' || c == L'\t') take();
+        else part += c;
+    }
+    take();
+    return mods;
+}
+
+// A key by Hyprland's name for it (xkb's), or "code:NN" for Windows' own key
+// code. 0 if it isn't one.
+DWORD KeyByName(std::wstring const& text) {
+    std::wstring n = Lower(Trimmed(text));
+    if (n.size() == 1) {
+        wchar_t c = n[0];
+        if ((c >= L'a' && c <= L'z') || (c >= L'0' && c <= L'9')) return (DWORD)towupper(c);
+        switch (c) {
+            case L'-': return VK_OEM_MINUS;
+            case L'=': return VK_OEM_PLUS;
+            case L',': return VK_OEM_COMMA;
+            case L'.': return VK_OEM_PERIOD;
+            case L'/': return VK_OEM_2;
+            case L';': return VK_OEM_1;
+            case L'\'': return VK_OEM_7;
+            case L'`': return VK_OEM_3;
+            case L'[': return VK_OEM_4;
+            case L']': return VK_OEM_6;
+            case L'\\': return VK_OEM_5;
+        }
+        return 0;
+    }
+    if (n.rfind(L"code:", 0) == 0) {
+        int code = _wtoi(n.c_str() + 5);
+        return code > 0 && code < 0xFF ? (DWORD)code : 0;
+    }
+    if (n.size() <= 3 && n[0] == L'f' && iswdigit(n[1])) {
+        int f = _wtoi(n.c_str() + 1);
+        return f >= 1 && f <= 24 ? (DWORD)(VK_F1 + f - 1) : 0;
+    }
+    static const std::pair<PCWSTR, DWORD> kNames[] = {
+        {L"space", VK_SPACE}, {L"tab", VK_TAB}, {L"return", VK_RETURN}, {L"enter", VK_RETURN},
+        {L"escape", VK_ESCAPE}, {L"esc", VK_ESCAPE}, {L"backspace", VK_BACK}, {L"delete", VK_DELETE},
+        {L"insert", VK_INSERT}, {L"home", VK_HOME}, {L"end", VK_END}, {L"prior", VK_PRIOR},
+        {L"pageup", VK_PRIOR}, {L"next", VK_NEXT}, {L"pagedown", VK_NEXT}, {L"left", VK_LEFT},
+        {L"right", VK_RIGHT}, {L"up", VK_UP}, {L"down", VK_DOWN}, {L"print", VK_SNAPSHOT},
+        {L"pause", VK_PAUSE}, {L"menu", VK_APPS}, {L"minus", VK_OEM_MINUS}, {L"equal", VK_OEM_PLUS},
+        {L"comma", VK_OEM_COMMA}, {L"period", VK_OEM_PERIOD}, {L"slash", VK_OEM_2},
+        {L"semicolon", VK_OEM_1}, {L"apostrophe", VK_OEM_7}, {L"grave", VK_OEM_3},
+        {L"bracketleft", VK_OEM_4}, {L"bracketright", VK_OEM_6}, {L"backslash", VK_OEM_5},
+        {L"xf86audioraisevolume", VK_VOLUME_UP}, {L"xf86audiolowervolume", VK_VOLUME_DOWN},
+        {L"xf86audiomute", VK_VOLUME_MUTE}, {L"xf86audioplay", VK_MEDIA_PLAY_PAUSE},
+        {L"xf86audiopause", VK_MEDIA_PLAY_PAUSE}, {L"xf86audionext", VK_MEDIA_NEXT_TRACK},
+        {L"xf86audioprev", VK_MEDIA_PREV_TRACK}, {L"xf86audiostop", VK_MEDIA_STOP},
+        // Modifiers as the key: tapped on their own (no side named: either side).
+        {L"super_l", VK_LWIN}, {L"super_r", VK_RWIN}, {L"lwin", VK_LWIN}, {L"rwin", VK_RWIN},
+        {L"shift_l", VK_LSHIFT}, {L"shift_r", VK_RSHIFT}, {L"lshift", VK_LSHIFT}, {L"rshift", VK_RSHIFT},
+        {L"control_l", VK_LCONTROL}, {L"control_r", VK_RCONTROL}, {L"lctrl", VK_LCONTROL}, {L"rctrl", VK_RCONTROL},
+        {L"alt_l", VK_LMENU}, {L"alt_r", VK_RMENU}, {L"lalt", VK_LMENU}, {L"ralt", VK_RMENU},
+        {L"win", VK_LWIN | 0x100}, {L"super", VK_LWIN | 0x100}, {L"shift", VK_SHIFT}, {L"ctrl", VK_CONTROL},
+        {L"control", VK_CONTROL}, {L"alt", VK_MENU},
+    };
+    for (auto const& [name, vk] : kNames)
+        if (n == name) return vk;
+    return 0;
+}
+
+// The modifiers, and any other keys named with them (ESCAPE in "ESCAPE, END": held, as escape&end), into keys.
+UINT ModsAndKeysByName(std::wstring const& text, std::vector<DWORD>* keys, bool* ok) {
+    UINT mods = 0;
+    *ok = true;
+    std::wstring part;
+    auto take = [&] {
+        std::wstring p = part;
+        part.clear();
+        if (p.empty()) return;
+        bool one = false;
+        UINT m = ModsByName(p, &one);
+        if (one) {
+            mods |= m;
+            return;
+        }
+        if (DWORD vk = KeyByName(p)) keys->push_back(vk);
+        else *ok = false;
+    };
+    for (wchar_t c : text) {
+        if (c == L' ' || c == L'_' || c == L'+' || c == L'\t' || c == L'&') take();
+        else part += c;
+    }
+    take();
+    return mods;
+}
+
+// The text split at its first commas (at most parts - 1 of them: the last
+// part keeps the rest), each trimmed.
+std::vector<std::wstring> SplitArgs(std::wstring const& text, size_t parts) {
+    std::vector<std::wstring> out;
+    size_t at = 0;
+    while (out.size() + 1 < parts) {
+        size_t comma = text.find(L',', at);
+        if (comma == std::wstring::npos) break;
+        out.push_back(Trimmed(text.substr(at, comma - at)));
+        at = comma + 1;
+    }
+    out.push_back(Trimmed(text.substr(std::min(at, text.size()))));
+    return out;
+}
+
+// The lines read into binds; lines it can't read are logged and left out.
+BindTable ReadBinds(std::vector<std::wstring> const& lines) {
+    BindTable t;
+    std::vector<std::pair<std::wstring, std::wstring>> vars;  // longest name first, when used
+    int submap = 0;
+    for (std::wstring line : lines) {
+        line = Trimmed(line);
+        if (line.empty() || line[0] == L'#') continue;
+        // $name = value, and $name used after it
+        if (line[0] == L'$') {
+            size_t eq = line.find(L'=');
+            if (eq != std::wstring::npos) {
+                vars.push_back({Trimmed(line.substr(0, eq)), Trimmed(line.substr(eq + 1))});
+                std::sort(vars.begin(), vars.end(), [](auto const& a, auto const& b) { return a.first.size() > b.first.size(); });
+            }
+            continue;
+        }
+        for (auto const& [name, value] : vars)
+            for (size_t at = line.find(name); at != std::wstring::npos; at = line.find(name, at + value.size()))
+                line.replace(at, name.size(), value);
+        size_t eq = line.find(L'=');
+        if (eq == std::wstring::npos) {
+            Wh_Log(L"binds: not a line I can read: %s", line.c_str());
+            continue;
+        }
+        std::wstring keyword = Lower(Trimmed(line.substr(0, eq))), rest = Trimmed(line.substr(eq + 1));
+        if (keyword == L"submap") {
+            std::wstring name = Lower(rest);
+            if (name.empty() || name == L"reset") {
+                submap = 0;
+                continue;
+            }
+            auto it = std::find(t.submaps.begin(), t.submaps.end(), name);
+            submap = (int)(it - t.submaps.begin());
+            if (it == t.submaps.end()) t.submaps.push_back(name);
+            continue;
+        }
+        if (keyword == L"idle") {
+            auto parts = SplitArgs(rest, 3);
+            int seconds = _wtoi(parts[0].c_str());
+            if (seconds > 0 && parts.size() > 1)
+                t.idle.push_back({seconds, Lower(parts[1]), parts.size() > 2 ? parts[2] : L""});
+            else
+                Wh_Log(L"binds: idle needs seconds and a command: %s", line.c_str());
+            continue;
+        }
+        if (keyword == L"windowrule" || keyword == L"windowrulev2") {
+            t.ruleLines.push_back(rest);
+            continue;
+        }
+        bool unbind = keyword == L"unbind";
+        if (!unbind && keyword.rfind(L"bind", 0) != 0) {
+            Wh_Log(L"binds: not a bind: %s", line.c_str());
+            continue;
+        }
+        Bind b;
+        b.submap = submap;
+        b.line = line;
+        bool mouse = false, described = false;
+        for (wchar_t f : unbind ? std::wstring() : keyword.substr(4)) {
+            if (f == L'e') b.repeat = true;
+            else if (f == L'r') b.release = true;
+            else if (f == L'l') b.locked = true;
+            else if (f == L'n') b.passThrough = true;
+            else if (f == L'd') described = true;  // bindd: a description after the key
+            else if (f == L'm') mouse = true;
+            else if (f == L'k') b.twice = true;
+            else if (f == L'o') b.holdMs = -1;  // (its time follows, or the default)
+            else if (iswdigit(f) && b.holdMs) b.holdMs = (b.holdMs < 0 ? 0 : b.holdMs) * 10 + (f - L'0');
+            // (others, like i, t, s, have no meaning here and are ignored)
+        }
+        if (b.holdMs < 0) b.holdMs = g_holdDefaultMs;
+        if (b.holdMs) b.holdMs = std::clamp(b.holdMs, 100, 10000);
+        auto parts = SplitArgs(rest, described ? 5 : 4);
+        if (described && parts.size() > 3) {
+            b.description = parts[2];
+            parts.erase(parts.begin() + 2);
+        }
+        if (mouse) {
+            bool modsOk = false;
+            UINT mods = parts.size() >= 3 ? ModsByName(parts[0], &modsOk) : 0;
+            std::wstring button = parts.size() >= 3 ? Lower(Trimmed(parts[1])) : L"", what = parts.size() >= 3 ? Lower(Trimmed(parts[2])) : L"";
+            int which = button == L"mouse:272" ? 0 : button == L"mouse:273" ? 1 : button == L"mouse:274" ? 2 : -1;
+            if (!modsOk || !mods || which < 0 || (what != L"movewindow" && what != L"resizewindow")) {
+                Wh_Log(L"binds: a mouse bind is MODS, mouse:272/273/274, movewindow/resizewindow (with a modifier): %s", line.c_str());
+                continue;
+            }
+            t.mouseBinds.push_back({mods, which, what == L"resizewindow", b.description, line});
+            continue;
+        }
+        if (parts.size() < (unbind ? 2u : 3u)) {
+            Wh_Log(L"binds: needs mods, a key and a command: %s", line.c_str());
+            continue;
+        }
+        bool modsOk = false;
+        b.mods = ModsAndKeysByName(parts[0], &b.chord, &modsOk);
+        if (Lower(parts[1]) == L"catchall") {
+            b.catchAll = true;
+        } else {
+            // escape&end: the keys before the last are held with it
+            std::wstring keys = parts[1];
+            for (size_t at = 0;;) {
+                size_t amp = keys.find(L'&', at);
+                DWORD vk = KeyByName(keys.substr(at, amp == std::wstring::npos ? amp : amp - at));
+                if (!vk) {
+                    b.vk = 0;
+                    break;
+                }
+                if (amp == std::wstring::npos) {
+                    b.vk = vk;
+                    break;
+                }
+                b.chord.push_back(vk);
+                at = amp + 1;
+            }
+        }
+        if (!modsOk || (!b.vk && !b.catchAll)) {
+            Wh_Log(L"binds: unknown modifier or key: %s", line.c_str());
+            continue;
+        }
+        if (unbind) {
+            std::erase_if(t.binds, [&](Bind const& o) {
+                return o.mods == b.mods && o.vk == b.vk && o.catchAll == b.catchAll && o.chord == b.chord;
+            });
+            continue;
+        }
+        b.dispatcher = Lower(parts[2]);
+        b.arg = parts.size() > 3 ? parts[3] : L"";
+        t.binds.push_back(std::move(b));
+    }
+    return t;
+}
+
+std::vector<std::wstring> ReadBindLines() {
+    std::vector<std::wstring> lines;
+    int empty = 0;
+    for (int i = 0; i < 1024 && empty < 8; i++) {
+        PCWSTR value = Wh_GetStringSetting(L"switcher.binds.lines[%d]", i);
+        std::wstring line = value ? value : L"";
+        Wh_FreeStringSetting(value);
+        empty = line.empty() ? empty + 1 : 0;
+        lines.push_back(line);
+    }
+    // And a file of them, written as hyprland.conf's binds are.
+    std::wstring file = TextSetting(L"switcher.binds.file");
+    if (!file.empty()) {
+        WCHAR path[MAX_PATH * 2] = L"";
+        ExpandEnvironmentStringsW(file.c_str(), path, ARRAYSIZE(path));
+        HANDLE h = CreateFileW(path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (h != INVALID_HANDLE_VALUE) {
+            std::string bytes;
+            char buf[8192];
+            DWORD got = 0;
+            while (ReadFile(h, buf, sizeof(buf), &got, nullptr) && got && bytes.size() < (1 << 20)) bytes.append(buf, got);
+            CloseHandle(h);
+            if (bytes.rfind("\xEF\xBB\xBF", 0) == 0) bytes.erase(0, 3);
+            int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+            std::wstring text(n, L'\0');
+            MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), n);
+            size_t at = 0;
+            while (at <= text.size()) {
+                size_t end = text.find(L'\n', at);
+                lines.push_back(text.substr(at, end == std::wstring::npos ? std::wstring::npos : end - at));
+                if (end == std::wstring::npos) break;
+                at = end + 1;
+            }
+        } else {
+            Wh_Log(L"binds: can't read %s", path);
+        }
+    }
+    // Plugins' hotkeys (Tourne Desktop's plugin runtime writes them as bind lines with the plugin dispatcher).
+    HKEY key = nullptr;
+    if (!RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Desktop", 0, KEY_READ, &key)) {
+        DWORD type = 0, size = 0;
+        if (!RegQueryValueExW(key, L"PluginBinds", nullptr, &type, nullptr, &size) && type == REG_MULTI_SZ && size) {
+            std::wstring all(size / sizeof(wchar_t) + 1, L'\0');
+            if (!RegQueryValueExW(key, L"PluginBinds", nullptr, nullptr, (BYTE*)all.data(), &size)) {
+                lines.push_back(L"submap = reset");
+                for (const wchar_t* p = all.c_str(); *p; p += wcslen(p) + 1) lines.push_back(p);
+            }
+        }
+        RegCloseKey(key);
+    }
+    return lines;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The hook (on the hook thread)
+
+bool IsModifierKey(DWORD vk) {
+    switch (vk) {
+        case VK_SHIFT: case VK_LSHIFT: case VK_RSHIFT: case VK_CONTROL: case VK_LCONTROL: case VK_RCONTROL:
+        case VK_MENU: case VK_LMENU: case VK_RMENU: case VK_LWIN: case VK_RWIN:
+            return true;
+    }
+    return false;
+}
+
+// A modifier tapped on its own (hook thread): the one down with nothing else, and since when (0: none).
+DWORD g_loneVk = 0;
+ULONGLONG g_loneAt = 0;
+
+// A bind on this modifier tapped alone: its index, or -1. Its modifiers may be none or the key's own.
+int LoneBind(DWORD vk) {
+    UINT own = vk == VK_LWIN || vk == VK_RWIN ? MOD_WIN : vk == VK_LMENU || vk == VK_RMENU ? MOD_ALT
+             : vk == VK_LCONTROL || vk == VK_RCONTROL ? MOD_CONTROL : MOD_SHIFT;
+    DWORD either = own == MOD_WIN ? (VK_LWIN | 0x100) : own == MOD_ALT ? VK_MENU : own == MOD_CONTROL ? VK_CONTROL : VK_SHIFT;
+    std::lock_guard<std::mutex> lock(g_bindsLock);
+    for (int i = 0; i < (int)g_binds.binds.size(); i++) {
+        Bind const& b = g_binds.binds[i];
+        if (b.submap != g_submap || b.catchAll || b.twice || b.holdMs || !b.chord.empty()) continue;
+        if ((b.vk != vk && b.vk != either) || (b.mods && b.mods != own)) continue;
+        if (!b.locked && ForegroundIsFullscreen()) continue;
+        return i;
+    }
+    return -1;
+}
+
+// A modifier's press or release: a tap on its own runs its bind (-1: passed on; 1: kept back).
+int LoneModifierHook(bool down, DWORD vk) {
+    if (down) {
+        if (g_loneVk == vk) return -1;  // (repeating while held)
+        bool others = !g_keysDown.empty();
+        for (int other : {VK_LSHIFT, VK_RSHIFT, VK_LCONTROL, VK_RCONTROL, VK_LMENU, VK_RMENU, VK_LWIN, VK_RWIN})
+            if ((DWORD)other != vk && GetAsyncKeyState(other) < 0) others = true;
+        g_loneVk = others ? 0 : vk;
+        g_loneAt = GetTickCount64();
+        return -1;
+    }
+    if (g_loneVk != vk) return -1;
+    g_loneVk = 0;
+    if (GetTickCount64() - g_loneAt > (ULONGLONG)g_holdDefaultMs) return -1;
+    int bind = LoneBind(vk);
+    if (bind < 0 || !g_wnd) return -1;
+    PostMessageW(g_wnd, WM_APP_BIND, bind, g_bindsGeneration);
+    if (vk != VK_LWIN && vk != VK_RWIN && vk != VK_LMENU && vk != VK_RMENU) return -1;
+    // Win or Alt let go alone opens Start or the menu bar: the release kept back, a key nothing uses pressed,
+    // then the release sent on (marked as the binds' own, so it passes here).
+    INPUT in[3] = {};
+    for (auto& i : in) i.type = INPUT_KEYBOARD, i.ki.dwExtraInfo = kBindReplayTag;
+    in[0].ki.wVk = in[1].ki.wVk = kDummyKey;
+    in[1].ki.dwFlags = KEYEVENTF_KEYUP;
+    in[2].ki.wVk = (WORD)vk;
+    in[2].ki.dwFlags = KEYEVENTF_KEYUP | (vk == VK_RMENU || vk == VK_RWIN || vk == VK_LWIN ? KEYEVENTF_EXTENDEDKEY : 0);
+    SendInput(3, in, sizeof(INPUT));
+    return 1;
+}
+
+// -1: not the binds' business; 1: the key is kept back.
+int BindsKeyHook(WPARAM wParam, KBDLLHOOKSTRUCT const* k) {
+    if (!g_bindsOn || k->dwExtraInfo == kBindReplayTag) return -1;
+    bool down = wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN;
+    DWORD vk = k->vkCode;
+    if (IsModifierKey(vk)) return LoneModifierHook(down, vk);
+    if (down) g_loneVk = 0;  // (another key pressed: no lone tap)
+    // The keys down now, for combinations (escape&end). A repeat is a key already down; a key whose release
+    // was never seen (taken by another program's hook) is dropped once Windows says it's up.
+    bool again = std::find(g_keysDown.begin(), g_keysDown.end(), vk) != g_keysDown.end();
+    if (down) {
+        std::erase_if(g_keysDown, [&](DWORD other) { return other != vk && GetAsyncKeyState((int)other) >= 0; });
+        if (!again) g_keysDown.push_back(vk);
+    } else {
+        std::erase(g_keysDown, vk);
+    }
+    auto held = std::find_if(g_bindKeysHeld.begin(), g_bindKeysHeld.end(), [&](HeldBind const& h) { return h.vk == vk; });
+    if (!down) {
+        // A hold bind's key let go before its time: a plain press after all (WM_APP_BINDTAP).
+        if (g_holdVk == vk) {
+            int hold = g_holdBind.exchange(-1);
+            g_holdVk = 0;
+            if (hold >= 0 && !g_holdRan && g_wnd) PostMessageW(g_wnd, WM_APP_BINDTAP, hold, g_bindsGeneration);
+        }
+        if (held == g_bindKeysHeld.end()) return -1;
+        HeldBind h = *held;
+        g_bindKeysHeld.erase(held);
+        if (h.runOnRelease >= 0 && g_wnd) PostMessageW(g_wnd, WM_APP_BIND, h.runOnRelease, g_bindsGeneration);
+        return h.passThrough ? -1 : 1;
+    }
+    UINT mods = 0;
+    if (GetAsyncKeyState(VK_SHIFT) < 0) mods |= MOD_SHIFT;
+    if (GetAsyncKeyState(VK_CONTROL) < 0) mods |= MOD_CONTROL;
+    if (k->flags & LLKHF_ALTDOWN) mods |= MOD_ALT;
+    if (GetAsyncKeyState(VK_LWIN) < 0 || GetAsyncKeyState(VK_RWIN) < 0) mods |= MOD_WIN;
+    // The binds for this key with these modifiers, the ones naming the most held keys first: a plain press, a
+    // double press and a hold may share a key.
+    int plain = -1, twice = -1, hold = -1;
+    bool repeat = false, release = false, passThrough = false, twicePasses = false;
+    {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        int submap = g_submap, catchAll = -1;
+        size_t most = 0;
+        bool any = false;
+        for (int i = 0; i < (int)g_binds.binds.size(); i++) {
+            Bind const& b = g_binds.binds[i];
+            if (b.submap != submap || b.mods != mods) continue;
+            if (b.catchAll) {
+                if (catchAll < 0) catchAll = i;
+                continue;
+            }
+            if (b.vk != vk) continue;
+            bool chordHeld = std::all_of(b.chord.begin(), b.chord.end(), [](DWORD c) {
+                return std::find(g_keysDown.begin(), g_keysDown.end(), c) != g_keysDown.end();
+            });
+            if (!chordHeld || (any && b.chord.size() < most)) continue;
+            if (!any || b.chord.size() > most) plain = twice = hold = -1;
+            any = true;
+            most = b.chord.size();
+            int& slot = b.twice ? twice : b.holdMs ? hold : plain;
+            if (slot < 0) slot = i;
+        }
+        if (!any) plain = catchAll;
+        auto usable = [&](int& i) {
+            if (i >= 0 && !g_binds.binds[i].locked && ForegroundIsFullscreen()) i = -1;
+        };
+        usable(plain), usable(twice), usable(hold);
+        if (plain >= 0) {
+            Bind const& b = g_binds.binds[plain];
+            repeat = b.repeat, release = b.release, passThrough = b.passThrough;
+        }
+        if (twice >= 0) twicePasses = g_binds.binds[twice].passThrough;
+    }
+    if (again) {
+        // The key repeating while held: kept back if its press was, and a repeating bind runs again.
+        if (held == g_bindKeysHeld.end()) return -1;
+        if (plain >= 0 && repeat && !release && !held->passThrough && g_holdBind < 0 && g_wnd)
+            PostMessageW(g_wnd, WM_APP_BIND, plain, g_bindsGeneration);
+        return held->passThrough ? -1 : 1;
+    }
+    if (held != g_bindKeysHeld.end()) g_bindKeysHeld.erase(held);  // (its release was missed)
+    // A double press: the second press within the time runs it; the first goes on as below.
+    if (twice >= 0) {
+        ULONGLONG now = GetTickCount64();
+        auto last = g_lastPress.find(twice);
+        if (last != g_lastPress.end() && last->second.first == g_bindsGeneration && now - last->second.second <= (ULONGLONG)g_doubleMs) {
+            g_lastPress.erase(last);
+            g_bindKeysHeld.push_back({vk, -1, twicePasses});
+            if (g_wnd) PostMessageW(g_wnd, WM_APP_BIND, twice, g_bindsGeneration);
+            if (!twicePasses && (mods & (MOD_WIN | MOD_ALT))) PressDummyKey();
+            return twicePasses ? -1 : 1;
+        }
+        g_lastPress[twice] = {g_bindsGeneration.load(), now};
+    }
+    // A hold: the key is kept back; held long enough, the bind runs (the switcher window's timer); let go
+    // sooner, it's a plain press (WM_APP_BINDTAP: the plain bind, or the key itself).
+    if (hold >= 0) {
+        g_holdRan = false;
+        g_holdVk = vk;
+        g_holdBind = hold;
+        g_bindKeysHeld.push_back({vk, -1, false});
+        if (g_wnd) PostMessageW(g_wnd, WM_APP_BINDHOLD, hold, g_bindsGeneration);
+        if (mods & (MOD_WIN | MOD_ALT)) PressDummyKey();
+        return 1;
+    }
+    if (plain < 0) return -1;
+    g_bindKeysHeld.push_back({vk, release ? plain : -1, passThrough});
+    if (!release && g_wnd) PostMessageW(g_wnd, WM_APP_BIND, plain, g_bindsGeneration);
+    // Win or Alt let go after a key kept back would open Start or the
+    // program's menu bar: a key nothing uses is pressed between.
+    if (!passThrough && (mods & (MOD_WIN | MOD_ALT))) PressDummyKey();
+    return passThrough ? -1 : 1;
+}
+
+// Mouse binds, on the hook thread. The mouse hook is only there while a mouse
+// bind is (or the wheel is wanted): a click without the modifiers goes on at once.
+std::atomic<bool> g_mouseBindsOn{false};
+int g_mouseDragButton = -1;               // the button dragging a window (hook thread)
+std::atomic<bool> g_mouseDragPosted{false};  // a "moved" not yet handled: no more are sent till it is
+
+int MouseBindsHook(WPARAM wParam, MSLLHOOKSTRUCT const* m) {
+    if (!g_mouseBindsOn || (m->flags & LLMHF_INJECTED)) return -1;
+    if (wParam == WM_MOUSEMOVE) {
+        if (g_mouseDragButton >= 0 && g_wnd && !g_mouseDragPosted.exchange(true)) PostMessageW(g_wnd, WM_APP_MOUSEDRAG, 1, 0);
+        return -1;
+    }
+    int button = -1;
+    bool down = false;
+    switch (wParam) {
+        case WM_LBUTTONDOWN: down = true; [[fallthrough]];
+        case WM_LBUTTONUP: button = 0; break;
+        case WM_RBUTTONDOWN: down = true; [[fallthrough]];
+        case WM_RBUTTONUP: button = 1; break;
+        case WM_MBUTTONDOWN: down = true; [[fallthrough]];
+        case WM_MBUTTONUP: button = 2; break;
+    }
+    if (button < 0) return -1;
+    if (!down) {
+        if (button != g_mouseDragButton) return -1;
+        g_mouseDragButton = -1;
+        if (g_wnd) PostMessageW(g_wnd, WM_APP_MOUSEDRAG, 2, 0);
+        return 1;  // (its press was kept back too)
+    }
+    if (g_mouseDragButton >= 0) return -1;
+    UINT mods = 0;
+    if (GetAsyncKeyState(VK_SHIFT) < 0) mods |= MOD_SHIFT;
+    if (GetAsyncKeyState(VK_CONTROL) < 0) mods |= MOD_CONTROL;
+    if (GetAsyncKeyState(VK_MENU) < 0) mods |= MOD_ALT;
+    if (GetAsyncKeyState(VK_LWIN) < 0 || GetAsyncKeyState(VK_RWIN) < 0) mods |= MOD_WIN;
+    if (!mods) return -1;
+    int resize = -1;
+    {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        for (auto const& b : g_binds.mouseBinds)
+            if (b.mods == mods && b.button == button) {
+                resize = b.resize;
+                break;
+            }
+    }
+    if (resize < 0 || ForegroundIsFullscreen() || !g_wnd) return -1;
+    g_mouseDragButton = button;
+    g_mouseDragPosted = false;
+    PostMessageW(g_wnd, WM_APP_MOUSEDRAG, 0, resize);
+    if (mods & (MOD_WIN | MOD_ALT)) PressDummyKey();  // (letting go of Win would open Start)
+    return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Windows, for the commands
+
+// A window a person would switch to: in view on this desktop, an app's own.
+bool BindWindow(HWND h) {
+    if (!h || !IsWindowVisible(h) || GetAncestor(h, GA_ROOT) != h) return false;
+    LONG ex = GetWindowLongW(h, GWL_EXSTYLE);
+    if ((ex & WS_EX_TOOLWINDOW) || ((ex & WS_EX_NOACTIVATE) && !(ex & WS_EX_APPWINDOW))) return false;
+    if (GetWindow(h, GW_OWNER) && !(ex & WS_EX_APPWINDOW)) return false;
+    DWORD cloaked = 0;
+    if (SUCCEEDED(DwmGetWindowAttribute(h, DWMWA_CLOAKED, &cloaked, sizeof(cloaked))) && cloaked) return false;
+    WCHAR cls[64] = L"";
+    GetClassNameW(h, cls, ARRAYSIZE(cls));
+    for (PCWSTR shell : {L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd", L"Progman", L"WorkerW"})
+        if (!wcscmp(cls, shell)) return false;
+    if (!wcsncmp(cls, L"Tourne", 6)) return false;
+    return GetWindowTextLengthW(h) > 0;
+}
+
+// Every such window, front first.
+std::vector<HWND> BindWindows() {
+    std::vector<HWND> out;
+    for (HWND h = GetTopWindow(nullptr); h; h = GetWindow(h, GW_HWNDNEXT))
+        if (BindWindow(h)) out.push_back(h);
+    return out;
+}
+
+HWND ActiveWindow() {
+    HWND fg = GetForegroundWindow();
+    return fg ? GetAncestor(fg, GA_ROOTOWNER) : nullptr;
+}
+
+std::wstring ClassOf(HWND h) {
+    WCHAR cls[256] = L"";
+    GetClassNameW(h, cls, ARRAYSIZE(cls));
+    return cls;
+}
+
+std::wstring FileNameOf(HWND h) {
+    std::wstring program = ProgramOf(h);
+    return program.substr(program.find_last_of(L'\\') + 1);
+}
+
+// The window under the pointer: an app's own window (its owner, for one of its popups), not the desktop, a bar
+// or anything else of Tourne's.
+HWND HoveredWindow() {
+    POINT pt;
+    if (!GetCursorPos(&pt)) return nullptr;
+    HWND h = WindowFromPoint(pt);
+    h = h ? GetAncestor(h, GA_ROOTOWNER) : nullptr;
+    if (!h || h == GetShellWindow()) return nullptr;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(h, &pid);
+    if (pid == GetCurrentProcessId()) return nullptr;
+    std::wstring cls = ClassOf(h);
+    for (PCWSTR shell : {L"Progman", L"WorkerW", L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd"})
+        if (cls == shell) return nullptr;
+    return h;
+}
+
+// Hyprland's window argument: class:..., title:..., exe:... (or
+// initialclass:, initialtitle:, pid:, address:0x...), activewindow; * and ?
+// match any text. Without a prefix, the title. Tourne's own: hovered (the window under the pointer).
+HWND WindowBy(std::wstring spec) {
+    spec = Trimmed(spec);
+    if (spec.empty() || Lower(spec) == L"activewindow") return ActiveWindow();
+    if (Lower(spec) == L"hovered" || Lower(spec) == L"mouse") return HoveredWindow();
+    size_t colon = spec.find(L':');
+    std::wstring kind = colon == std::wstring::npos ? L"title" : Lower(spec.substr(0, colon));
+    std::wstring want = colon == std::wstring::npos ? spec : Trimmed(spec.substr(colon + 1));
+    if (kind == L"address") return (HWND)(uintptr_t)wcstoull(want.c_str(), nullptr, 16);
+    for (HWND h : BindWindows()) {
+        if (kind == L"class" || kind == L"initialclass") {
+            if (MatchesList(want, ClassOf(h))) return h;
+        } else if (kind == L"title" || kind == L"initialtitle") {
+            if (MatchesList(want, Title(h))) return h;
+        } else if (kind == L"exe" || kind == L"program") {
+            if (MatchesList(want, FileNameOf(h))) return h;
+        } else if (kind == L"pid") {
+            DWORD pid = 0;
+            GetWindowThreadProcessId(h, &pid);
+            if (pid == (DWORD)_wtoi(want.c_str())) return h;
+        }
+    }
+    return nullptr;
+}
+
+int DirectionByName(std::wstring const& text) {
+    std::wstring d = Lower(Trimmed(text));
+    if (d == L"l" || d == L"left") return kLeft;
+    if (d == L"r" || d == L"right") return kRight;
+    if (d == L"u" || d == L"t" || d == L"up" || d == L"top") return kUp;
+    if (d == L"d" || d == L"b" || d == L"down" || d == L"bottom") return kDown;
+    return -1;
+}
+
+POINT Middle(RECT const& r) {
+    return {(r.left + r.right) / 2, (r.top + r.bottom) / 2};
+}
+
+bool LiesThatWay(POINT a, POINT b, int direction) {
+    int dx = b.x - a.x, dy = b.y - a.y;
+    return direction == kLeft  ? dx < 0 && std::abs(dx) >= std::abs(dy) / 2
+         : direction == kRight ? dx > 0 && std::abs(dx) >= std::abs(dy) / 2
+         : direction == kUp    ? dy < 0 && std::abs(dy) >= std::abs(dx) / 2
+                               : dy > 0 && std::abs(dy) >= std::abs(dx) / 2;
+}
+
+// The window in view nearest that way from this one (on any screen): one
+// whose middle is its own, not covered by another.
+HWND WindowThatWay(HWND from, int direction) {
+    POINT a = Middle(FrameOf(from));
+    HWND best = nullptr;
+    long long bestDistance = 0;
+    for (HWND h : BindWindows()) {
+        if (h == from || IsIconic(h)) continue;
+        POINT b = Middle(FrameOf(h));
+        HWND there = WindowFromPoint(b);
+        if (!there || GetAncestor(there, GA_ROOT) != h || !LiesThatWay(a, b, direction)) continue;
+        long long distance = (long long)(b.x - a.x) * (b.x - a.x) + (long long)(b.y - a.y) * (b.y - a.y);
+        if (!best || distance < bestDistance) best = h, bestDistance = distance;
+    }
+    return best;
+}
+
+std::vector<HMONITOR> Monitors() {
+    std::vector<HMONITOR> out;
+    EnumDisplayMonitors(
+        nullptr, nullptr,
+        [](HMONITOR m, HDC, LPRECT, LPARAM p) __stdcall -> BOOL {
+            ((std::vector<HMONITOR>*)p)->push_back(m);
+            return TRUE;
+        },
+        (LPARAM)&out);
+    std::sort(out.begin(), out.end(), [](HMONITOR a, HMONITOR b) {
+        MONITORINFO ma{sizeof(ma)}, mb{sizeof(mb)};
+        GetMonitorInfoW(a, &ma);
+        GetMonitorInfoW(b, &mb);
+        return ma.rcMonitor.left != mb.rcMonitor.left ? ma.rcMonitor.left < mb.rcMonitor.left : ma.rcMonitor.top < mb.rcMonitor.top;
+    });
+    return out;
+}
+
+// Hyprland's monitor argument: l/r/u/d, +1/-1, or a number from 1 (left to
+// right).
+HMONITOR MonitorBy(std::wstring const& text, HMONITOR from) {
+    std::vector<HMONITOR> all = Monitors();
+    if (all.empty()) return nullptr;
+    int at = (int)(std::find(all.begin(), all.end(), from) - all.begin());
+    if (at >= (int)all.size()) at = 0;
+    std::wstring t = Lower(Trimmed(text));
+    if (t.rfind(L"mon:", 0) == 0) t = t.substr(4);
+    if (int direction = DirectionByName(t); direction >= 0) {
+        MONITORINFO mf{sizeof(mf)};
+        GetMonitorInfoW(from, &mf);
+        POINT a = Middle(mf.rcMonitor);
+        HMONITOR best = nullptr;
+        long long bestDistance = 0;
+        for (HMONITOR m : all) {
+            if (m == from) continue;
+            MONITORINFO mi{sizeof(mi)};
+            GetMonitorInfoW(m, &mi);
+            POINT b = Middle(mi.rcMonitor);
+            if (!LiesThatWay(a, b, direction)) continue;
+            long long distance = (long long)(b.x - a.x) * (b.x - a.x) + (long long)(b.y - a.y) * (b.y - a.y);
+            if (!best || distance < bestDistance) best = m, bestDistance = distance;
+        }
+        return best;
+    }
+    int n = (int)all.size();
+    if (!t.empty() && (t[0] == L'+' || t[0] == L'-')) return all[((at + _wtoi(t.c_str())) % n + n) % n];
+    int index = _wtoi(t.c_str());
+    return index >= 1 && index <= n ? all[index - 1] : nullptr;
+}
+
+// A window put at a place given by its visible frame.
+void PlaceWindowFrame(HWND h, RECT const& want) {
+    if (IsZoomed(h)) ShowWindow(h, SW_RESTORE);
+    RECT frame = FrameOf(h), outer{};
+    GetWindowRect(h, &outer);
+    // The invisible resize borders, kept out of the frame given.
+    RECT r{want.left - (frame.left - outer.left), want.top - (frame.top - outer.top), want.right + (outer.right - frame.right),
+           want.bottom + (outer.bottom - frame.bottom)};
+    SetWindowPos(h, nullptr, r.left, r.top, r.right - r.left, r.bottom - r.top, SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+// The window on another screen, at the same place relative to its work area.
+void SendToMonitor(HWND h, HMONITOR to) {
+    HMONITOR from = MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST);
+    if (!to || to == from) return;
+    MONITORINFO mf{sizeof(mf)}, mt{sizeof(mt)};
+    GetMonitorInfoW(from, &mf);
+    GetMonitorInfoW(to, &mt);
+    bool zoomed = IsZoomed(h);
+    if (zoomed) ShowWindow(h, SW_RESTORE);
+    RECT f = FrameOf(h), a = mf.rcWork, b = mt.rcWork;
+    auto scale = [](int v, int a0, int a1, int b0, int b1) { return a1 == a0 ? b0 : b0 + MulDiv(v - a0, b1 - b0, a1 - a0); };
+    int w = std::min<int>(f.right - f.left, b.right - b.left), hgt = std::min<int>(f.bottom - f.top, b.bottom - b.top);
+    int x = std::clamp(scale(f.left, a.left, a.right, b.left, b.right), (int)b.left, (int)b.right - w);
+    int y = std::clamp(scale(f.top, a.top, a.bottom, b.top, b.bottom), (int)b.top, (int)b.bottom - hgt);
+    PlaceWindowFrame(h, {x, y, x + w, y + hgt});
+    if (zoomed) ShowWindow(h, SW_MAXIMIZE);
+}
+
+// "x y" as numbers (px, or % of the screen with %).
+bool TwoNumbers(std::wstring const& text, HMONITOR monitor, int* x, int* y) {
+    std::wstring t = Trimmed(text);
+    for (auto& c : t)
+        if (c == L',') c = L' ';
+    WCHAR a[32] = L"", b[32] = L"";
+    if (swscanf(t.c_str(), L"%31s %31s", a, b) != 2) return false;
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(monitor, &mi);
+    auto value = [](PCWSTR v, int whole) { return wcschr(v, L'%') ? (int)(_wtof(v) * whole / 100) : _wtoi(v); };
+    *x = value(a, mi.rcWork.right - mi.rcWork.left);
+    *y = value(b, mi.rcWork.bottom - mi.rcWork.top);
+    return true;
+}
+
+bool IsTiled(HWND h) {
+    return std::find(g_tileOrder.begin(), g_tileOrder.end(), h) != g_tileOrder.end();
+}
+
+void SendKeys(UINT mods, DWORD vk) {
+    std::vector<INPUT> in;
+    auto key = [&](WORD k, bool up) {
+        INPUT i{INPUT_KEYBOARD};
+        i.ki.wVk = k;
+        i.ki.dwFlags = up ? KEYEVENTF_KEYUP : 0;
+        i.ki.dwExtraInfo = kBindReplayTag;
+        in.push_back(i);
+    };
+    std::vector<WORD> held;
+    if (mods & MOD_CONTROL) held.push_back(VK_CONTROL);
+    if (mods & MOD_ALT) held.push_back(VK_MENU);
+    if (mods & MOD_SHIFT) held.push_back(VK_SHIFT);
+    if (mods & MOD_WIN) held.push_back(VK_LWIN);
+    for (WORD k : held) key(k, false);
+    key((WORD)vk, false);
+    key((WORD)vk, true);
+    for (auto it = held.rbegin(); it != held.rend(); ++it) key(*it, true);
+    SendInput((UINT)in.size(), in.data(), sizeof(INPUT));
+}
+
+void ExpectWindowRules(DWORD pid, std::wstring const& rules);
+
+bool RunProgram(std::wstring command) {
+    command = Trimmed(command);
+    std::wstring rules;  // Hyprland's [rules; ...] before the command: for the program's first window
+    if (!command.empty() && command[0] == L'[') {
+        size_t close = command.find(L']');
+        rules = command.substr(1, close == std::wstring::npos ? std::wstring::npos : close - 1);
+        command = Trimmed(close == std::wstring::npos ? L"" : command.substr(close + 1));
+    }
+    if (command.empty()) return false;
+    WCHAR expanded[4096] = L"";
+    ExpandEnvironmentStringsW(command.c_str(), expanded, ARRAYSIZE(expanded));
+    std::wstring line = expanded, file, params;
+    if (line[0] == L'"') {
+        size_t close = line.find(L'"', 1);
+        file = line.substr(1, close == std::wstring::npos ? std::wstring::npos : close - 1);
+        params = close == std::wstring::npos ? L"" : Trimmed(line.substr(close + 1));
+    } else {
+        size_t space = line.find(L' ');
+        file = line.substr(0, space);
+        params = space == std::wstring::npos ? L"" : Trimmed(line.substr(space + 1));
+    }
+    SHELLEXECUTEINFOW info{sizeof(info)};
+    info.fMask = SEE_MASK_NOASYNC | SEE_MASK_FLAG_NO_UI | (rules.empty() ? 0 : SEE_MASK_NOCLOSEPROCESS);
+    info.lpFile = file.c_str();
+    info.lpParameters = params.empty() ? nullptr : params.c_str();
+    info.nShow = SW_SHOWNORMAL;
+    if (ShellExecuteExW(&info)) {
+        if (info.hProcess) {
+            ExpectWindowRules(GetProcessId(info.hProcess), rules);
+            CloseHandle(info.hProcess);
+        }
+        return true;
+    }
+    // Not a program of its own (a pipe, a shell built-in...): through cmd, unseen.
+    std::wstring cmd = L"/d /c " + line;
+    info.lpFile = L"cmd.exe";
+    info.lpParameters = cmd.c_str();
+    info.nShow = SW_HIDE;
+    return ShellExecuteExW(&info) != FALSE;
+}
+
+void BindsEmit(std::wstring const& event);
+
+// Scratchpads (Hyprland's special workspaces): windows put away, minimised,
+// and brought back over whatever desktop you're on, floating in the middle of
+// the screen, with togglespecialworkspace. By name; "" is the plain one.
+struct Scratchpad {
+    std::vector<HWND> windows;
+    bool shown = false;
+};
+std::unordered_map<std::wstring, Scratchpad> g_scratchpads;
+
+void ForgetScratch(HWND h) {
+    for (auto& [name, pad] : g_scratchpads) std::erase(pad.windows, h);
+}
+
+std::wstring ScratchName(std::wstring const& arg) {
+    std::wstring a = Lower(Trimmed(arg));
+    return a.rfind(L"special:", 0) == 0 ? a.substr(8) : L"";
+}
+
+void ShowScratchpad(Scratchpad& pad, HMONITOR monitor) {
+    std::erase_if(pad.windows, [](HWND h) { return !IsWindow(h); });
+    std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+    int current = VdCurrentIndex(ids);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(monitor, &mi);
+    RECT work = mi.rcWork;
+    int w = (work.right - work.left) * 4 / 5, h = (work.bottom - work.top) * 4 / 5;
+    int step = MulDiv(24, MonitorDpi(monitor), 96), i = 0;
+    for (HWND win : pad.windows) {
+        if (!ids.empty()) VdmSendWindow(win, ids[current], false);  // (here, whichever desktop it was put away on)
+        ShowWindow(win, SW_RESTORE);
+        int x = work.left + (work.right - work.left - w) / 2 + step * i, y = work.top + (work.bottom - work.top - h) / 2 + step * i;
+        PlaceWindowFrame(win, {x, y, x + w, y + h});
+        i++;
+    }
+    if (!pad.windows.empty()) Activate(pad.windows.back());
+    pad.shown = true;
+}
+
+int g_previousDesktop = -1;  // the desktop Tourne last switched away from ("workspace previous")
+bool g_screensOff = false;
+
+// A desktop by Hyprland's workspace argument: a number from 1, +N / -N (or
+// r+N, e+N, m+N), previous. -1 if there's none such.
+int DesktopBy(std::wstring const& text, int current, int count) {
+    std::wstring t = Lower(Trimmed(text));
+    if (t == L"previous" || t == L"previous_per_monitor") return g_previousDesktop;
+    if (t.size() > 1 && (t[0] == L'r' || t[0] == L'e' || t[0] == L'm')) t = t.substr(1);
+    if (!t.empty() && (t[0] == L'+' || t[0] == L'-')) {
+        int to = current + _wtoi(t.c_str());
+        return to >= 0 && to < count ? to : -1;
+    }
+    int n = _wtoi(t.c_str());
+    return n >= 1 && n <= count ? n - 1 : -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The commands (Hyprland's dispatchers), on the switcher's thread. The answer
+// is "ok", or what went wrong.
+
+std::wstring GroupCommand(std::wstring const& name, std::wstring const& arg, HWND active);
+std::wstring RunCommand(std::wstring const& line);  // several steps with waits between (below)
+
+std::wstring Dispatch(std::wstring const& name, std::wstring const& arg) {
+    HWND active = ActiveWindow();
+    HMONITOR monitor = active ? MonitorFromWindow(active, MONITOR_DEFAULTTONEAREST) : ActiveMonitor();
+    auto needWindow = [&](HWND h) { return h && IsWindow(h) && h != GetShellWindow(); };
+
+    // Several steps in one command, with waits between: "run" is the language's
+    // own, and what a menu item, a bar click and tournectl all end up calling.
+    if (name == L"run") return RunCommand(arg);
+
+    if (name == L"exec" || name == L"execr") return RunProgram(arg) ? L"ok" : L"error: couldn't start it";
+
+    if (name == L"killactive" || name == L"closewindow") {
+        HWND h = name == L"killactive" ? active : WindowBy(arg);
+        if (!needWindow(h)) return L"error: no window";
+        PostMessageW(h, WM_SYSCOMMAND, SC_CLOSE, 0);
+        return L"ok";
+    }
+    if (name == L"forcekillactive" || name == L"killwindow") {
+        HWND h = name == L"forcekillactive" ? active : WindowBy(arg);
+        if (!needWindow(h)) return L"error: no window";
+        DWORD pid = 0;
+        GetWindowThreadProcessId(h, &pid);
+        if (!pid || pid == GetCurrentProcessId() || !_wcsicmp(FileNameOf(h).c_str(), L"explorer.exe"))
+            return L"error: not that one";
+        HANDLE p = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+        bool ok = p && TerminateProcess(p, 1);
+        if (p) CloseHandle(p);
+        return ok ? L"ok" : L"error: couldn't end it";
+    }
+
+    // A plugin's panel (Tourne Desktop's plugin runtime): "author/plugin:panel", opened or closed.
+    if (name == L"plugin") {
+        HWND host = FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr);
+        if (!host) return L"error: the plugins aren't running";
+        ATOM atom = GlobalAddAtomW(arg.substr(0, 250).c_str());
+        if (!atom || !PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.PluginPanel"), atom, 0)) {
+            if (atom) GlobalDeleteAtom(atom);
+            return L"error: couldn't reach the plugins";
+        }
+        return L"ok";
+    }
+
+    // The launcher (Tourne Desktop's launcher.cpp): open, or close when it's open.
+    // Tourne's bar or Explorer's own taskbar in its place (shell mode, Explorer underneath): explorer, tourne, or
+    // nothing to swap. For when something only Explorer's taskbar does is wanted for a moment.
+    if (name == L"explorerbar") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        std::wstring a = Lower(Trimmed(arg));
+        WPARAM to = a == L"explorer" || a == L"on" ? 1 : a == L"tourne" || a == L"off" ? 2 : 0;
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.ExplorerBar"), to, 0);
+        return L"ok";
+    }
+
+    // One of the system icons' flyouts (the per-app volume mixer for Win+A, the notifications, network...):
+    // opened, or closed again if it's open.
+    if (name == L"flyout") {
+        HWND icons = FindWindowW(L"TourneTraySystemIcons_" WH_MOD_ID, nullptr);
+        if (!icons) return L"error: the system icons aren't running";
+        static const std::pair<PCWSTR, int> kKinds[] = {{L"network", 1}, {L"wifi", 1}, {L"power", 2}, {L"battery", 2},
+            {L"brightness", 3}, {L"vpn", 5}, {L"security", 6}, {L"mixer", 7}, {L"volume", 7}, {L"sound", 7},
+            {L"notifications", 8}, {L"notify", 8}, {L"calendar", 8}, {L"bluetooth", 9}, {L"devices", 10}};
+        std::wstring a = Lower(Trimmed(arg));
+        int kind = 0;
+        for (auto const& [n, k] : kKinds)
+            if (a == n) kind = k;
+        if (!kind) return L"error: which flyout? mixer, notifications, network, power, bluetooth, devices, brightness, vpn, security";
+        PostMessageW(icons, RegisterWindowMessageW(L"TourneTray_Flyout"), kind, 0);
+        return L"ok";
+    }
+
+    // Designer Mode: pick a colour off the screen, click a part of Tourne, choose the setting it goes in.
+    if (name == L"designer") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.Designer"), 0, 0);
+        return L"ok";
+    }
+
+    // The look as it is now saved into the look gallery (a pack and its screenshot).
+    if (name == L"looksave") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.LookSave"), 0, 0);
+        return L"ok";
+    }
+
+    // Edit desktop mode (the plugins' desktop widgets placed and moved in one go): on, or off again.
+    if (name == L"editdesktop") {
+        HWND plugins = FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr);
+        if (!plugins) return L"error: the plugins aren't running";
+        PostMessageW(plugins, RegisterWindowMessageW(L"TourneDesktop.EditDesktop"), 0, 0);
+        return L"ok";
+    }
+
+    if (name == L"launcher") {
+        HWND launcher = FindWindowW(L"TourneLauncher", nullptr);
+        if (!launcher) return L"error: the launcher isn't running";
+        PostMessageW(launcher, RegisterWindowMessageW(L"TourneDesktop.Launcher"), 0, 0);
+        return L"ok";
+    }
+
+    if (name == L"togglefloating" || name == L"setfloating" || name == L"settiled") {
+        HWND h = arg.empty() ? active : WindowBy(arg);
+        if (!needWindow(h)) return L"error: no window";
+        bool floating = IsFloating(h);
+        if ((name == L"setfloating" && floating) || (name == L"settiled" && !floating)) return L"ok";
+        if (h != active) Activate(h);
+        TileCommandRun(kTileFloat, 0);
+        return L"ok";
+    }
+    if (name == L"fullscreen" || name == L"maximize") {
+        // (Hyprland's fullscreen takes a mode number; a window is named by anything else)
+        bool named = !arg.empty() && !iswdigit(Trimmed(arg)[0]);
+        HWND h = named ? WindowBy(arg) : active;
+        if (!needWindow(h)) return L"error: no window";
+        ShowWindow(h, IsZoomed(h) ? SW_RESTORE : SW_MAXIMIZE);
+        return L"ok";
+    }
+    // Every window on the screen tiled, none floating, the main share back to half: an even split down the
+    // middle (clear of the taskbar, as the tiling keeps it).
+    if (name == L"tileall") {
+        HMONITOR screen = active ? MonitorFromWindow(active, MONITOR_DEFAULTTONEAREST) : ActiveMonitor();
+        std::erase_if(g_floating, [&](HWND w) { return !IsWindow(w) || MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST) == screen; });
+        LayoutChoice& c = ChoiceFor(screen);
+        c.ratioStep = 50 - g_tiling.ratio;
+        SaveLayoutChoices();
+        TileMonitor(screen, true);
+        return L"ok";
+    }
+    // One window with its screen to itself (Monocle for one), and back: taken out of the tiling while it has it.
+    // "tileothers" after the window (or alone, for the active one): the screen's other windows tiled behind it.
+    if (name == L"monocle") {
+        std::wstring spec = Trimmed(arg);
+        bool tileOthers = false;
+        if (size_t at = Lower(spec).find(L"tileothers"); at != std::wstring::npos) {
+            tileOthers = true;
+            spec = Trimmed(spec.erase(at, 10));
+        }
+        HWND h = spec.empty() ? active : WindowBy(spec);
+        if (!needWindow(h)) return L"error: no window";
+        static struct {
+            HWND h = nullptr;
+            RECT was{};
+            bool tiled = false;
+            std::vector<HWND> order;  // the tiling's order before, so it goes back to its own tile
+        } g_alone;
+        // Back in the tiling at the place it had (a window set floating and back otherwise comes first).
+        auto retile = [](HWND w) {
+            std::vector<HWND> order;
+            for (HWND o : g_alone.order)
+                if (IsWindow(o)) order.push_back(o);
+            for (HWND o : g_tileOrder)
+                if (std::find(order.begin(), order.end(), o) == order.end()) order.push_back(o);
+            g_tileOrder = order;
+            std::erase(g_floating, w);
+            TileMonitor(MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST), false);
+        };
+        HMONITOR screen = MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST);
+        if (g_alone.h == h && IsWindow(h)) {
+            g_alone.h = nullptr;
+            if (g_alone.tiled) {
+                retile(h);
+            } else {
+                PlaceWindowFrame(h, g_alone.was);
+            }
+            return L"ok";
+        }
+        if (g_alone.h && IsWindow(g_alone.h) && g_alone.tiled) retile(g_alone.h);  // (the one before goes back first)
+        if (IsZoomed(h) || IsIconic(h)) ShowWindow(h, SW_RESTORE);
+        g_alone.h = h;
+        g_alone.was = FrameOf(h);
+        g_alone.tiled = IsTiled(h);
+        g_alone.order = g_tileOrder;
+        if (tileOthers)
+            std::erase_if(g_floating, [&](HWND w) { return !IsWindow(w) || (w != h && MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST) == screen); });
+        if (g_alone.tiled) g_floating.push_back(h);  // (out of the tiling while it has the screen; the others close up)
+        if (g_alone.tiled || tileOthers) TileMonitor(screen, false);
+        PlaceWindowFrame(h, TileArea(screen));
+        SetWindowPos(h, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return L"ok";
+    }
+    if (name == L"minimize") {
+        // The window under the pointer: pressed again with the pointer where it was, the one it just put away
+        // comes back (it's no longer under the pointer to be asked for).
+        static HWND s_putAway;
+        static POINT s_putAwayAt;
+        bool hovered = Lower(Trimmed(arg)) == L"hovered" || Lower(Trimmed(arg)) == L"mouse";
+        POINT pt{};
+        GetCursorPos(&pt);
+        if (hovered && s_putAway && IsWindow(s_putAway) && IsIconic(s_putAway) && std::abs(pt.x - s_putAwayAt.x) <= 8 &&
+            std::abs(pt.y - s_putAwayAt.y) <= 8) {
+            Activate(s_putAway);
+            s_putAway = nullptr;
+            return L"ok";
+        }
+        HWND h = arg.empty() ? active : WindowBy(arg);
+        if (!needWindow(h)) return L"error: no window";
+        ShowWindow(h, SW_MINIMIZE);
+        if (hovered) s_putAway = h, s_putAwayAt = pt;
+        return L"ok";
+    }
+    if (name == L"pin") {
+        HWND h = arg.empty() ? active : WindowBy(arg);
+        if (!needWindow(h)) return L"error: no window";
+        bool top = GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TOPMOST;
+        SetWindowPos(h, top ? HWND_NOTOPMOST : HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        return L"ok";
+    }
+
+    if (name == L"movefocus") {
+        int direction = DirectionByName(arg);
+        if (direction < 0) return L"error: give l, r, u or d";
+        if (HWND to = active ? WindowThatWay(active, direction) : nullptr) {
+            Activate(to);
+            return L"ok";
+        }
+        if (active && IsTiled(active)) TileCommandRun(kTileFocus, direction);  // (Monocle: the next one)
+        return L"ok";
+    }
+    if (name == L"movewindow" || name == L"swapwindow") {
+        if (!needWindow(active)) return L"error: no window";
+        int direction = DirectionByName(arg);
+        if (direction >= 0 && IsTiled(active)) {
+            TileCommandRun(kTileMove, direction);
+            return L"ok";
+        }
+        if (name == L"swapwindow") {
+            HWND other = direction >= 0 ? WindowThatWay(active, direction) : nullptr;
+            if (!other) return L"error: nothing that way";
+            RECT a = FrameOf(active), b = FrameOf(other);
+            PlaceWindowFrame(active, b);
+            PlaceWindowFrame(other, a);
+            return L"ok";
+        }
+        HMONITOR to = MonitorBy(arg, monitor);
+        if (!to) return L"error: no screen that way";
+        SendToMonitor(active, to);
+        return L"ok";
+    }
+    if (name == L"resizeactive" || name == L"moveactive" || name == L"resizewindowpixel" || name == L"movewindowpixel") {
+        bool resize = name.rfind(L"resize", 0) == 0;
+        std::wstring numbers = arg;
+        HWND h = active;
+        if (name.find(L"pixel") != std::wstring::npos) {
+            auto parts = SplitArgs(arg, 2);
+            numbers = parts[0];
+            h = parts.size() > 1 ? WindowBy(parts[1]) : nullptr;
+        }
+        if (!needWindow(h)) return L"error: no window";
+        bool exact = Lower(numbers).rfind(L"exact", 0) == 0;
+        if (exact) numbers = numbers.substr(5);
+        int x = 0, y = 0;
+        if (!TwoNumbers(numbers, MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST), &x, &y)) return L"error: give two numbers";
+        RECT f = FrameOf(h);
+        MONITORINFO mi{sizeof(mi)};
+        GetMonitorInfoW(MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST), &mi);
+        if (resize) {
+            int w = std::max(50, exact ? x : (int)(f.right - f.left) + x), hh = std::max(50, exact ? y : (int)(f.bottom - f.top) + y);
+            f.right = f.left + w, f.bottom = f.top + hh;
+        } else {
+            int dx = exact ? mi.rcWork.left + x - f.left : x, dy = exact ? mi.rcWork.top + y - f.top : y;
+            OffsetRect(&f, dx, dy);
+        }
+        PlaceWindowFrame(h, f);
+        return L"ok";
+    }
+    if (name == L"centerwindow") {
+        if (!needWindow(active)) return L"error: no window";
+        MONITORINFO mi{sizeof(mi)};
+        GetMonitorInfoW(monitor, &mi);
+        RECT f = FrameOf(active);
+        int w = f.right - f.left, h = f.bottom - f.top;
+        int x = (mi.rcWork.left + mi.rcWork.right - w) / 2, y = (mi.rcWork.top + mi.rcWork.bottom - h) / 2;
+        PlaceWindowFrame(active, {x, y, x + w, y + h});
+        return L"ok";
+    }
+
+    if (name == L"cyclenext") {
+        // The windows on this screen in reading order (left to right, top to bottom): the next, or with
+        // prev the one before; tiled or floating to only those.
+        std::wstring a = Lower(arg);
+        bool prev = a.find(L"prev") != std::wstring::npos, onlyTiled = a.find(L"tiled") != std::wstring::npos,
+             onlyFloating = a.find(L"floating") != std::wstring::npos;
+        std::vector<HWND> list;
+        for (HWND h : BindWindows())
+            if (!IsIconic(h) && MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST) == monitor && (!onlyTiled || IsTiled(h)) &&
+                (!onlyFloating || !IsTiled(h)))
+                list.push_back(h);
+        if (list.empty()) return L"error: no window";
+        std::sort(list.begin(), list.end(), [](HWND x, HWND y) {
+            RECT a = FrameOf(x), b = FrameOf(y);
+            return a.left != b.left ? a.left < b.left : a.top != b.top ? a.top < b.top : x < y;
+        });
+        int at = (int)(std::find(list.begin(), list.end(), active) - list.begin()), n = (int)list.size();
+        Activate(list[at >= n ? 0 : (at + (prev ? n - 1 : 1)) % n]);
+        return L"ok";
+    }
+    if (name == L"focuswindow") {
+        HWND h = WindowBy(arg);
+        if (!h) return L"error: no such window";
+        Activate(h);
+        return L"ok";
+    }
+    if (name == L"focuscurrentorlast" || name == L"focusurgentorlast") {
+        // The window that was in front before this one: the next in Windows' order.
+        for (HWND h : BindWindows())
+            if (h != active && !IsIconic(h)) {
+                Activate(h);
+                return L"ok";
+            }
+        return L"error: no other window";
+    }
+    if (name == L"focusmonitor") {
+        HMONITOR to = MonitorBy(arg, monitor);
+        if (!to) return L"error: no such screen";
+        for (HWND h : BindWindows())
+            if (!IsIconic(h) && MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST) == to) {
+                Activate(h);
+                return L"ok";
+            }
+        MONITORINFO mi{sizeof(mi)};
+        GetMonitorInfoW(to, &mi);
+        POINT m = Middle(mi.rcWork);
+        SetCursorPos(m.x, m.y);
+        return L"ok";
+    }
+
+    if (name == L"workspace" || name == L"movetoworkspace" || name == L"movetoworkspacesilent" || name == L"renameworkspace") {
+        std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+        int current = VdCurrentIndex(ids), count = std::max(1, (int)ids.size());
+        std::wstring which = arg, rest;
+        if (name == L"renameworkspace") {
+            size_t space = Trimmed(arg).find(L' ');
+            which = Trimmed(arg).substr(0, space);
+            rest = space == std::wstring::npos ? L"" : Trimmed(Trimmed(arg).substr(space + 1));
+        } else if (name != L"workspace") {
+            auto parts = SplitArgs(arg, 2);  // "N, window"
+            which = parts[0];
+            rest = parts.size() > 1 ? parts[1] : L"";
+        }
+        if (Lower(Trimmed(which)).rfind(L"special", 0) == 0 && name != L"workspace" && name != L"renameworkspace") {
+            HWND h = rest.empty() ? active : WindowBy(rest);
+            if (!needWindow(h)) return L"error: no window";
+            ForgetScratch(h);
+            g_scratchpads[ScratchName(which)].windows.push_back(h);
+            if (!IsFloating(h)) {
+                g_floating.push_back(h);
+                if (IsTiled(h)) TileMonitor(monitor, false);
+            }
+            ShowWindow(h, SW_MINIMIZE);
+            return L"ok";
+        }
+        if (name != L"workspace" && name != L"renameworkspace") ForgetScratch(rest.empty() ? active : WindowBy(rest));
+        int to = DesktopBy(which, current, count);
+        // "workspace 5" with fewer desktops: made, as Hyprland makes a workspace on its first visit (up to 20).
+        int wanted = _wtoi(Trimmed(which).c_str());
+        if (to < 0 && name != L"renameworkspace" && wanted > count && wanted <= 20 && iswdigit(Trimmed(which)[0])) {
+            if (ids.empty()) ids.resize(1);  // (the one desktop there is: never named in the registry until a second is made)
+            while ((int)ids.size() < wanted) {
+                GUID made = VdmCreate();
+                if (made == GUID_NULL) return L"error: Windows didn't make a desktop";
+                ids.push_back(made);
+            }
+            to = wanted - 1;
+        }
+        if (to < 0 || ids.empty()) return L"error: no such desktop";
+        if (name == L"renameworkspace") return VdmRename(ids[to], rest) ? L"ok" : L"error: Windows didn't rename it";
+        if (name == L"workspace") {
+            if (to == current) return L"ok";
+            if (!VdmSwitchTo(ids[to])) return L"error: Windows didn't switch";
+        } else {
+            HWND h = rest.empty() ? active : WindowBy(rest);
+            if (!needWindow(h)) return L"error: no window";
+            bool follow = name == L"movetoworkspace";
+            if (!VdmSendWindow(h, ids[to], follow)) return L"error: Windows didn't move it";
+            if (!follow) return L"ok";
+        }
+        g_previousDesktop = current;
+        return L"ok";
+    }
+
+    if (name == L"togglespecialworkspace") {
+        auto it = g_scratchpads.find(Lower(Trimmed(arg)));
+        if (it == g_scratchpads.end() || it->second.windows.empty()) return L"error: nothing put away there";
+        Scratchpad& pad = it->second;
+        if (pad.shown) {
+            std::erase_if(pad.windows, [](HWND h) { return !IsWindow(h); });
+            for (HWND h : pad.windows) ShowWindow(h, SW_MINIMIZE);
+            pad.shown = false;
+        } else {
+            ShowScratchpad(pad, monitor);
+        }
+        return L"ok";
+    }
+
+    if (name == L"layoutmsg") {
+        std::wstring a = Lower(Trimmed(arg));
+        if (a == L"cycle" || a == L"cyclenext" || a == L"next") TileCommandRun(kTileLayout, 0);
+        else if (a == L"tile") TileCommandRun(kTileNow, 0);
+        else if (a == L"auto") TileCommandRun(kTileAuto, 0);
+        else if (a == L"layouts") TileCommandRun(kTileLayouts, 0);
+        else if (a.rfind(L"apply", 0) == 0) TileCommandRun(kTileApplyLayout, std::max(0, _wtoi(a.c_str() + 5) - 1));
+        else if (a.rfind(L"mfact", 0) == 0 || a.rfind(L"ratio", 0) == 0) {
+            double v = _wtof(a.c_str() + 5);
+            TileCommandRun(kTileRatio, (LPARAM)(std::fabs(v) < 1 ? v * 100 : v));
+        } else return L"error: give cycle, tile, auto, layouts, apply N or mfact N";
+        return L"ok";
+    }
+    if (name == L"splitratio") {
+        double v = _wtof(Trimmed(arg).c_str());
+        TileCommandRun(kTileRatio, (LPARAM)(std::fabs(v) < 1 ? v * 100 : v));
+        return L"ok";
+    }
+
+    if (name == L"submap") {
+        std::wstring want = Lower(Trimmed(arg));
+        int to = 0;
+        if (!want.empty() && want != L"reset") {
+            std::lock_guard<std::mutex> lock(g_bindsLock);
+            auto it = std::find(g_binds.submaps.begin(), g_binds.submaps.end(), want);
+            if (it == g_binds.submaps.end()) return L"error: no such submap";
+            to = (int)(it - g_binds.submaps.begin());
+        }
+        g_submap = to;
+        BindsEmit(L"submap>>" + (to ? want : std::wstring()));
+        return L"ok";
+    }
+    if (name == L"sendshortcut") {
+        auto parts = SplitArgs(arg, 3);  // "MODS, key, window"
+        bool ok = false;
+        UINT mods = ModsByName(parts[0], &ok);
+        DWORD vk = parts.size() > 1 ? KeyByName(parts[1]) : 0;
+        if (!ok || !vk) return L"error: unknown modifier or key";
+        if (parts.size() > 2 && !parts[2].empty()) {
+            HWND h = WindowBy(parts[2]);
+            if (!h) return L"error: no such window";
+            Activate(h);
+        }
+        SendKeys(mods, vk);
+        return L"ok";
+    }
+    if (name == L"alterzorder" || name == L"bringactivetotop") {
+        auto parts = SplitArgs(arg, 2);
+        bool bottom = name == L"alterzorder" && Lower(parts[0]) == L"bottom";
+        HWND h = parts.size() > 1 ? WindowBy(parts[1]) : active;
+        if (!needWindow(h)) return L"error: no window";
+        SetWindowPos(h, bottom ? HWND_BOTTOM : HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        return L"ok";
+    }
+    if (name == L"movecursor") {
+        int x = 0, y = 0;
+        if (!TwoNumbers(arg, monitor, &x, &y)) return L"error: give two numbers";
+        SetCursorPos(x, y);
+        return L"ok";
+    }
+    if (name == L"movecursortocorner") {
+        if (!needWindow(active)) return L"error: no window";
+        RECT f = FrameOf(active);
+        int c = _wtoi(arg.c_str());  // 0 bottom left, 1 bottom right, 2 top right, 3 top left
+        SetCursorPos(c == 1 || c == 2 ? f.right - 1 : f.left, c == 0 || c == 1 ? f.bottom - 1 : f.top);
+        return L"ok";
+    }
+    if (name == L"dpms") {
+        std::wstring a = Lower(Trimmed(arg));
+        bool off = a == L"off" || (a == L"toggle" && !g_screensOff) || a.empty();
+        if (off) {
+            g_screensOff = true;
+            DefWindowProcW(g_wnd, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+        } else {
+            g_screensOff = false;
+            INPUT i{INPUT_MOUSE};
+            i.mi.dwFlags = MOUSEEVENTF_MOVE;  // (a move of nothing wakes them)
+            SendInput(1, &i, sizeof(i));
+        }
+        return L"ok";
+    }
+    if (name == L"togglegroup" || name == L"changegroupactive" || name == L"moveintogroup" || name == L"moveoutofgroup")
+        return GroupCommand(name, arg, active);
+    if (name == L"overview" || name == L"hyprexpo:expo") {
+        // Every window on every screen at once (the switcher's Mission Control); again closes it.
+        if (g_open) PostMessageW(g_wnd, WM_APP_CANCEL, 0, 0);
+        else PostMessageW(g_wnd, WM_APP_STEP, 1, MAKELPARAM(kFromWinTab, kFlagSticky));
+        return L"ok";
+    }
+    if (name == L"pickcolor") {
+        // The colour under the pointer, as #rrggbb on the clipboard (hyprpicker's job).
+        POINT pt;
+        GetCursorPos(&pt);
+        HDC screen = GetDC(nullptr);
+        COLORREF c = GetPixel(screen, pt.x, pt.y);
+        ReleaseDC(nullptr, screen);
+        if (c == CLR_INVALID) return L"error: couldn't read the screen there";
+        WCHAR hex[8];
+        swprintf(hex, ARRAYSIZE(hex), L"#%02x%02x%02x", GetRValue(c), GetGValue(c), GetBValue(c));
+        if (OpenClipboard(g_wnd)) {
+            EmptyClipboard();
+            if (HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, sizeof(hex))) {
+                memcpy(GlobalLock(mem), hex, sizeof(hex));
+                GlobalUnlock(mem);
+                if (!SetClipboardData(CF_UNICODETEXT, mem)) GlobalFree(mem);
+            }
+            CloseClipboard();
+        }
+        BindsEmit(std::wstring(L"colorpicked>>") + hex);
+        return hex;
+    }
+    if (name == L"lockscreen") return LockWorkStation() ? L"ok" : L"error: couldn't lock";
+
+    return L"error: unknown command " + name;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A command of several steps, on the switcher's thread. The steps run in order
+// until a wait, which leaves the rest to a timer rather than holding the
+// thread: a key press has to come back at once, and the switcher's thread is
+// the one drawing. A step that answers with an error stops the rest.
+
+constexpr UINT_PTR kTimerCommand = 78;
+constexpr size_t kMostWaitingCommands = 8;
+
+struct WaitingCommand {
+    std::vector<CommandStep> steps;
+    size_t at = 0;
+    ULONGLONG due = 0;
+};
+std::vector<WaitingCommand> g_waiting;  // (the switcher window's thread)
+
+void CommandTimerSet() {
+    if (!g_wnd) {
+        g_waiting.clear();
+        return;
+    }
+    if (g_waiting.empty()) {
+        KillTimer(g_wnd, kTimerCommand);
+        return;
+    }
+    ULONGLONG now = GetTickCount64(), soonest = g_waiting[0].due;
+    for (auto const& w : g_waiting) soonest = std::min(soonest, w.due);
+    SetTimer(g_wnd, kTimerCommand, (UINT)std::max<ULONGLONG>(soonest > now ? soonest - now : 0, 10), nullptr);
+}
+
+// From where it got to, until a wait or the end.
+std::wstring StepsFrom(WaitingCommand& w) {
+    while (w.at < w.steps.size()) {
+        CommandStep const& s = w.steps[w.at++];
+        if (s.name == L"wait") {
+            w.due = GetTickCount64() + (ULONGLONG)s.waitMs;
+            return L"ok";
+        }
+        std::wstring said = Dispatch(s.name, s.arg);
+        if (said.rfind(L"error", 0) == 0) {
+            Wh_Log(L"command stopped at \"%s %s\": %s", s.name.c_str(), s.arg.c_str(), said.c_str());
+            return said;
+        }
+    }
+    return L"ok";
+}
+
+void CommandTimer() {
+    ULONGLONG now = GetTickCount64();
+    for (size_t i = 0; i < g_waiting.size();) {
+        if (g_waiting[i].due > now) {
+            i++;
+            continue;
+        }
+        WaitingCommand w = std::move(g_waiting[i]);
+        g_waiting.erase(g_waiting.begin() + i);
+        std::wstring answer = StepsFrom(w);
+        if (w.at < w.steps.size() && answer.rfind(L"error", 0) != 0) {
+            g_waiting.insert(g_waiting.begin() + i, std::move(w));
+            i++;
+        }
+    }
+    CommandTimerSet();
+}
+
+std::wstring RunCommand(std::wstring const& line) {
+    Command c = ParseCommand(line);
+    if (!c.ok()) return L"error: " + c.error;
+    WaitingCommand w;
+    w.steps = std::move(c.steps);
+    std::wstring answer = StepsFrom(w);
+    if (w.at < w.steps.size() && answer.rfind(L"error", 0) != 0) {
+        if (g_waiting.size() >= kMostWaitingCommands) return L"error: too many commands waiting their turn";
+        g_waiting.push_back(std::move(w));
+        CommandTimerSet();
+    }
+    return answer;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// tournectl: a pipe for this user's session, \\.\pipe\tourne-ctl-<session>.
+// A caller writes one line and reads the answer; "listen" keeps the pipe
+// open and gets events as lines, as Hyprland's event socket gives them.
+
+struct BindCall {
+    std::wstring line, answer;
+};
+
+struct Listener {
+    HANDLE pipe = INVALID_HANDLE_VALUE;
+    OVERLAPPED ov{};
+    bool writing = false;
+    std::string out;
+};
+
+std::mutex g_listenLock;
+std::vector<std::unique_ptr<Listener>> g_listeners;
+std::thread g_controlThread;
+HANDLE g_controlStop = nullptr;
+std::atomic<bool> g_controlOn{false};
+HWINEVENTHOOK g_bindEventHooks[2];
+std::unordered_set<HWND> g_announced;  // windows an openwindow was sent for
+
+std::wstring ControlPipeName() {
+    DWORD session = 0;
+    ProcessIdToSessionId(GetCurrentProcessId(), &session);
+    return L"\\\\.\\pipe\\tourne-ctl-" + std::to_wstring(session);
+}
+
+std::string Utf8(std::wstring const& s) {
+    int n = WideCharToMultiByte(CP_UTF8, 0, s.data(), (int)s.size(), nullptr, 0, nullptr, nullptr);
+    std::string out(n, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, s.data(), (int)s.size(), out.data(), n, nullptr, nullptr);
+    return out;
+}
+
+void DropListener(Listener& l) {
+    if (l.pipe != INVALID_HANDLE_VALUE) {
+        CancelIoEx(l.pipe, nullptr);
+        if (l.writing) {
+            DWORD done = 0;
+            GetOverlappedResult(l.pipe, &l.ov, &done, TRUE);
+        }
+        CloseHandle(l.pipe);
+    }
+    if (l.ov.hEvent) CloseHandle(l.ov.hEvent);
+    l.pipe = INVALID_HANDLE_VALUE;
+    l.ov.hEvent = nullptr;
+}
+
+// An event line to every listener. One that hasn't read the last one yet
+// misses this one; one that's gone is let go.
+void BindsEmit(std::wstring const& event) {
+    if (!g_controlOn) return;
+    std::lock_guard<std::mutex> lock(g_listenLock);
+    if (g_listeners.empty()) return;
+    std::string line = Utf8(event) + "\n";
+    bool dropped = false;
+    for (auto& l : g_listeners) {
+        if (l->writing) {
+            DWORD done = 0;
+            if (!GetOverlappedResult(l->pipe, &l->ov, &done, FALSE)) {
+                if (GetLastError() == ERROR_IO_INCOMPLETE) continue;
+                DropListener(*l);
+                dropped = true;
+                continue;
+            }
+            l->writing = false;
+        }
+        l->out = line;
+        ResetEvent(l->ov.hEvent);
+        if (WriteFile(l->pipe, l->out.data(), (DWORD)l->out.size(), nullptr, &l->ov)) continue;
+        if (GetLastError() == ERROR_IO_PENDING) {
+            l->writing = true;
+            continue;
+        }
+        DropListener(*l);
+        dropped = true;
+    }
+    if (dropped) {
+        std::erase_if(g_listeners, [](auto const& l) { return l->pipe == INVALID_HANDLE_VALUE; });
+        if (g_listeners.empty() && g_wnd) PostMessageW(g_wnd, WM_APP_BINDWATCH, 0, 0);
+    }
+}
+
+std::wstring Hex(HWND h) {
+    WCHAR text[24];
+    swprintf(text, ARRAYSIZE(text), L"%llx", (unsigned long long)(uintptr_t)h);
+    return text;
+}
+
+std::wstring WindowLine(HWND h) {
+    return Hex(h) + L"," + ClassOf(h) + L"," + FileNameOf(h) + L"," + Title(h);
+}
+
+void CALLBACK BindEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !h) return;
+    switch (event) {
+        case EVENT_SYSTEM_FOREGROUND: {
+            HWND a = ActiveWindow();
+            if (!a) return;
+            BindsEmit(L"activewindow>>" + ClassOf(a) + L"," + Title(a));
+            BindsEmit(L"activewindowv2>>" + Hex(a));
+            return;
+        }
+        case EVENT_OBJECT_SHOW:
+            if (!g_announced.contains(h) && BindWindow(h)) {
+                g_announced.insert(h);
+                BindsEmit(L"openwindow>>" + WindowLine(h));
+            }
+            return;
+        case EVENT_OBJECT_DESTROY:
+            if (g_announced.erase(h)) BindsEmit(L"closewindow>>" + Hex(h));
+            return;
+    }
+}
+
+// Events watched only while someone listens (on the switcher's thread).
+void WatchBindEvents(bool on) {
+    for (auto& hook : g_bindEventHooks) {
+        if (hook) UnhookWinEvent(hook);
+        hook = nullptr;
+    }
+    g_announced.clear();
+    if (!on) return;
+    DWORD flags = WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS;
+    g_bindEventHooks[0] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, BindEventProc, 0, 0, flags);
+    g_bindEventHooks[1] = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_SHOW, nullptr, BindEventProc, 0, 0, flags);
+    for (HWND h : BindWindows()) g_announced.insert(h);
+}
+
+// A command line from tournectl, on the switcher's thread.
+std::wstring ControlCommand(std::wstring const& line) {
+    std::wstring text = Trimmed(line);
+    size_t space = text.find(L' ');
+    std::wstring word = Lower(text.substr(0, space)), rest = space == std::wstring::npos ? L"" : Trimmed(text.substr(space + 1));
+    if (word == L"dispatch") {
+        size_t s2 = rest.find(L' ');
+        return Dispatch(Lower(rest.substr(0, s2)), s2 == std::wstring::npos ? L"" : Trimmed(rest.substr(s2 + 1)));
+    }
+    if (word == L"run") return RunCommand(rest);
+    // What a command would do, without doing any of it (the menu editor's help
+    // asks this, and so does tools/binds/cmdtest.cpp).
+    if (word == L"check") return DescribeCommand(ParseCommand(rest));
+    if (word == L"version") return L"Tourne (tournectl 1)";
+    if (word == L"reload") {
+        if (g_wnd) PostMessageW(g_wnd, WM_APP_SETTINGS, 0, 0);
+        return L"ok";
+    }
+    if (word == L"activewindow") {
+        HWND a = ActiveWindow();
+        return a ? WindowLine(a) : L"error: no window";
+    }
+    if (word == L"clients") {
+        std::wstring out;
+        for (HWND h : BindWindows()) out += WindowLine(h) + L"\n";
+        return out.empty() ? L"" : out.substr(0, out.size() - 1);
+    }
+    if (word == L"workspaces" || word == L"activeworkspace") {
+        std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+        int current = VdCurrentIndex(ids), count = std::max(1, (int)ids.size());
+        if (word == L"activeworkspace") return std::to_wstring(current + 1);
+        std::wstring out;
+        for (int i = 0; i < count; i++) out += std::to_wstring(i + 1) + (i == current ? L" (active)\n" : L"\n");
+        return out.substr(0, out.size() - 1);
+    }
+    if (word == L"monitors") {
+        std::wstring out;
+        int i = 1;
+        for (HMONITOR m : Monitors()) {
+            MONITORINFOEXW mi{};
+            mi.cbSize = sizeof(mi);
+            GetMonitorInfoW(m, &mi);
+            WCHAR row[160];
+            swprintf(row, ARRAYSIZE(row), L"%d %s %ldx%ld at %ld,%ld%s\n", i++, mi.szDevice, mi.rcMonitor.right - mi.rcMonitor.left,
+                     mi.rcMonitor.bottom - mi.rcMonitor.top, mi.rcMonitor.left, mi.rcMonitor.top,
+                     (mi.dwFlags & MONITORINFOF_PRIMARY) ? L" (main)" : L"");
+            out += row;
+        }
+        return out.empty() ? L"" : out.substr(0, out.size() - 1);
+    }
+    if (word == L"binds" || word == L"submap") {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        if (word == L"submap") return g_binds.submaps[std::min<size_t>(g_submap, g_binds.submaps.size() - 1)];
+        std::wstring out;
+        for (auto const& b : g_binds.binds) out += b.line + L"\n";
+        return out.empty() ? L"" : out.substr(0, out.size() - 1);
+    }
+    return L"error: unknown request " + word +
+           L" (dispatch, activewindow, clients, workspaces, activeworkspace, monitors, binds, submap, reload, version, listen)";
+}
+
+// Waits on the pipe for a caller, one at a time; nothing runs between calls.
+void ControlThread(HANDLE stop) {
+    std::wstring name = ControlPipeName();
+    HANDLE ev = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    HANDLE regEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    HKEY desktops = nullptr;
+    bool regArmed = false;
+    int lastDesktop = -1;
+    RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VirtualDesktops", 0, KEY_NOTIFY | KEY_READ,
+                  &desktops);
+    for (;;) {
+        HANDLE pipe = CreateNamedPipeW(name.c_str(), PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
+                                       PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
+                                       PIPE_UNLIMITED_INSTANCES, 64 * 1024, 4096, 0, nullptr);
+        if (pipe == INVALID_HANDLE_VALUE) {
+            Wh_Log(L"tournectl: no pipe (%u)", GetLastError());
+            break;
+        }
+        OVERLAPPED ov{};
+        ov.hEvent = ev;
+        ResetEvent(ev);
+        bool connected = ConnectNamedPipe(pipe, &ov) || GetLastError() == ERROR_PIPE_CONNECTED;
+        bool stopping = false;
+        while (!connected && GetLastError() == ERROR_IO_PENDING) {
+            // While someone listens, Windows' desktop switches are watched too (the registry tells, no polling).
+            bool listening;
+            {
+                std::lock_guard<std::mutex> lock(g_listenLock);
+                listening = !g_listeners.empty();
+            }
+            if (listening && desktops && !regArmed) {
+                ResetEvent(regEvent);
+                regArmed = RegNotifyChangeKeyValue(desktops, FALSE, REG_NOTIFY_CHANGE_LAST_SET, regEvent, TRUE) == ERROR_SUCCESS;
+                if (lastDesktop < 0) lastDesktop = VdCurrentIndex(VdReadGuids(L"VirtualDesktopIDs"));
+            }
+            HANDLE waits[3] = {ev, stop, regEvent};
+            DWORD w = WaitForMultipleObjects(regArmed ? 3 : 2, waits, FALSE, regArmed || !listening ? INFINITE : 1000);
+            if (w == WAIT_OBJECT_0 + 1) {
+                stopping = true;
+                break;
+            }
+            if (w == WAIT_OBJECT_0 + 2) {
+                regArmed = false;
+                int now = VdCurrentIndex(VdReadGuids(L"VirtualDesktopIDs"));
+                if (now != lastDesktop) {
+                    lastDesktop = now;
+                    BindsEmit(L"workspace>>" + std::to_wstring(now + 1));
+                }
+                continue;
+            }
+            if (w == WAIT_TIMEOUT) continue;
+            DWORD done = 0;
+            connected = GetOverlappedResult(pipe, &ov, &done, FALSE) != FALSE;
+            break;
+        }
+        if (stopping || !connected) {
+            CancelIoEx(pipe, nullptr);
+            CloseHandle(pipe);
+            if (stopping) break;
+            continue;
+        }
+        // One line, within a moment.
+        std::string got;
+        char buf[1024];
+        while (got.find('\n') == std::string::npos && got.size() < 16384) {
+            ResetEvent(ev);
+            DWORD n = 0;
+            if (!ReadFile(pipe, buf, sizeof(buf), &n, &ov)) {
+                if (GetLastError() != ERROR_IO_PENDING) break;
+                HANDLE waits[2] = {ev, stop};
+                if (WaitForMultipleObjects(2, waits, FALSE, 2000) != WAIT_OBJECT_0) {
+                    CancelIoEx(pipe, nullptr);
+                    GetOverlappedResult(pipe, &ov, &n, TRUE);
+                    break;
+                }
+                if (!GetOverlappedResult(pipe, &ov, &n, FALSE)) break;
+            }
+            if (!n) break;
+            got.append(buf, n);
+        }
+        int wn = MultiByteToWideChar(CP_UTF8, 0, got.data(), (int)got.size(), nullptr, 0);
+        std::wstring line(wn, L'\0');
+        MultiByteToWideChar(CP_UTF8, 0, got.data(), (int)got.size(), line.data(), wn);
+        line = Trimmed(line.substr(0, line.find(L'\n')));
+        if (Lower(line) == L"listen") {
+            auto l = std::make_unique<Listener>();
+            l->pipe = pipe;
+            l->ov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+            size_t count;
+            {
+                std::lock_guard<std::mutex> lock(g_listenLock);
+                g_listeners.push_back(std::move(l));
+                count = g_listeners.size();
+            }
+            if (count == 1 && g_wnd) PostMessageW(g_wnd, WM_APP_BINDWATCH, 1, 0);
+            continue;
+        }
+        BindCall call{line, L""};
+        DWORD_PTR result = 0;
+        if (!g_wnd || !SendMessageTimeoutW(g_wnd, WM_APP_BINDCALL, 0, (LPARAM)&call, SMTO_ABORTIFHUNG, 5000, &result))
+            call.answer = L"error: Tourne didn't answer";
+        std::string answer = Utf8(call.answer) + "\n";
+        ResetEvent(ev);
+        DWORD n = 0;
+        if (!WriteFile(pipe, answer.data(), (DWORD)answer.size(), &n, &ov) && GetLastError() == ERROR_IO_PENDING) {
+            HANDLE waits[2] = {ev, stop};
+            if (WaitForMultipleObjects(2, waits, FALSE, 2000) != WAIT_OBJECT_0) CancelIoEx(pipe, nullptr);
+            GetOverlappedResult(pipe, &ov, &n, TRUE);
+        }
+        FlushFileBuffers(pipe);
+        DisconnectNamedPipe(pipe);
+        CloseHandle(pipe);
+    }
+    if (desktops) RegCloseKey(desktops);
+    CloseHandle(regEvent);
+    CloseHandle(ev);
+}
+
+void StopControl() {
+    if (g_controlThread.joinable()) {
+        SetEvent(g_controlStop);
+        g_controlThread.join();
+    }
+    if (g_controlStop) CloseHandle(g_controlStop);
+    g_controlStop = nullptr;
+    g_controlOn = false;
+    std::lock_guard<std::mutex> lock(g_listenLock);
+    for (auto& l : g_listeners) DropListener(*l);
+    g_listeners.clear();
+}
+
+void StartControl() {
+    g_controlStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_controlOn = true;
+    g_controlThread = std::thread(ControlThread, g_controlStop);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Idle (hypridle): each idle line runs once you've been away that long. One
+// timer, set for the next one due; once all have run, a look every 2 s while
+// you're away, to set them up again when you're back. None without idle lines.
+
+constexpr UINT_PTR kTimerIdle = 77;
+std::vector<bool> g_idleRan;
+
+DWORD IdleMs() {
+    LASTINPUTINFO li{sizeof(li)};
+    GetLastInputInfo(&li);
+    return GetTickCount() - li.dwTime;
+}
+
+void IdleTimer() {
+    std::vector<BindTable::Idle> idle;
+    {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        idle = g_binds.idle;
+    }
+    if (!g_wnd) return;
+    KillTimer(g_wnd, kTimerIdle);
+    if (idle.empty()) return;
+    g_idleRan.resize(idle.size(), false);
+    DWORD away = IdleMs();
+    bool watching = ForegroundIsFullscreen();  // (a film or a game: nothing runs)
+    DWORD next = 0xFFFFFFFF;
+    bool anyRan = false, allRan = true;
+    for (size_t i = 0; i < idle.size(); i++) {
+        DWORD due = (DWORD)idle[i].seconds * 1000;
+        if (away < 1000) g_idleRan[i] = false;  // back: each runs again next time
+        if (!g_idleRan[i] && away >= due && !watching) {
+            g_idleRan[i] = true;
+            std::wstring answer = Dispatch(idle[i].dispatcher, idle[i].arg);
+            if (answer != L"ok") Wh_Log(L"idle %d: %s", idle[i].seconds, answer.c_str());
+        }
+        if (g_idleRan[i]) anyRan = true;
+        else allRan = false, next = std::min(next, due > away ? due - away : 1000);
+    }
+    SetTimer(g_wnd, kTimerIdle, anyRan && (allRan || watching) ? 2000 : anyRan ? std::min<DWORD>(next, 2000) : std::max<DWORD>(next, 250), nullptr);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A window dragged by a mouse bind, on the switcher's thread: it floats (as in
+// Hyprland), comes to the front and follows the pointer; a resize moves the
+// corner nearest to where the drag started.
+
+struct MouseDrag {
+    HWND window = nullptr;
+    bool resize = false, left = false, top = false;
+    POINT start{};
+    RECT frame{};
+};
+MouseDrag g_mouseDrag;
+
+void MouseDragStep(WPARAM what, LPARAM lParam) {
+    POINT pt;
+    GetCursorPos(&pt);
+    if (what == 0) {
+        g_mouseDrag = {};
+        HWND h = GetAncestor(WindowFromPoint(pt), GA_ROOT);
+        if (!BindWindow(h)) return;
+        if (IsZoomed(h)) {
+            // Restored under the pointer, at the same place across it.
+            RECT before = FrameOf(h);
+            ShowWindow(h, SW_RESTORE);
+            RECT after = FrameOf(h);
+            int w = after.right - after.left;
+            double across = before.right > before.left ? (pt.x - before.left) / (double)(before.right - before.left) : 0.5;
+            int x = pt.x - (int)(w * across);
+            PlaceWindowFrame(h, {x, before.top, x + w, before.top + after.bottom - after.top});
+        }
+        if (!IsFloating(h)) {
+            bool tiled = IsTiled(h);
+            g_floating.push_back(h);
+            if (tiled) TileMonitor(MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST), false);
+        }
+        SetForegroundWindow(h);
+        g_mouseDrag.window = h;
+        g_mouseDrag.resize = lParam != 0;
+        g_mouseDrag.start = pt;
+        g_mouseDrag.frame = FrameOf(h);
+        RECT const& f = g_mouseDrag.frame;
+        g_mouseDrag.left = pt.x < (f.left + f.right) / 2;
+        g_mouseDrag.top = pt.y < (f.top + f.bottom) / 2;
+        return;
+    }
+    g_mouseDragPosted = false;
+    MouseDrag const& d = g_mouseDrag;
+    if (!d.window || !IsWindow(d.window)) return;
+    int dx = pt.x - d.start.x, dy = pt.y - d.start.y;
+    RECT r = d.frame;
+    if (!d.resize) {
+        OffsetRect(&r, dx, dy);
+    } else {
+        constexpr int kMin = 120;
+        if (d.left) r.left = std::min(r.left + dx, r.right - kMin);
+        else r.right = std::max(r.right + dx, r.left + kMin);
+        if (d.top) r.top = std::min(r.top + dy, r.bottom - kMin);
+        else r.bottom = std::max(r.bottom + dy, r.top + kMin);
+    }
+    PlaceWindowFrame(d.window, r);
+    if (what == 2) g_mouseDrag = {};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Settings, and the switcher's window's share
+
+// On the switcher's thread, with the other settings.
+void ApplyWindowRules(std::vector<std::wstring> const& lines);
+void EndWindowRules();
+
+void ApplyBindSettings() {
+    bool on = Wh_GetIntSetting(L"switcher.binds.enabled") != 0;
+    int doubleMs = Wh_GetIntSetting(L"switcher.binds.doubleMs"), holdMs = Wh_GetIntSetting(L"switcher.binds.holdMs");
+    g_doubleMs = doubleMs > 0 ? std::clamp(doubleMs, 100, 1000) : 300;
+    g_holdDefaultMs = holdMs > 0 ? std::clamp(holdMs, 100, 10000) : 500;
+    BindTable table = on ? ReadBinds(ReadBindLines()) : BindTable{};
+    {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        g_binds = std::move(table);
+        g_bindsGeneration++;
+        g_submap = 0;
+    }
+    g_bindsOn = on && !g_binds.binds.empty();
+    bool mouse = on && !g_binds.mouseBinds.empty();
+    if (mouse != g_mouseBindsOn) {
+        g_mouseBindsOn = mouse;
+        WatchWheel(g_open);  // (the mouse hook: there while a mouse bind or the wheel wants it)
+    }
+    ApplyWindowRules(g_binds.ruleLines);
+    g_waiting.clear();  // (a command part-way through doesn't carry over a reload)
+    CommandTimerSet();
+    g_idleRan.clear();
+    IdleTimer();
+    if (on) Wh_Log(L"binds: %d read", (int)g_binds.binds.size());
+    bool control = on && Wh_GetIntSetting(L"switcher.binds.control") != 0;
+    if (control != g_controlOn) {
+        WatchBindEvents(false);
+        StopControl();
+        if (control) StartControl();
+    }
+}
+
+void EndBinds() {
+    g_bindsOn = false;
+    g_mouseBindsOn = false;
+    EndWindowRules();
+    WatchBindEvents(false);
+    StopControl();
+}
+
+// A bind run from the switcher's window: its dispatcher, and the borders after it.
+void RunBind(size_t index, unsigned generation) {
+    Bind b;
+    {
+        std::lock_guard<std::mutex> lock(g_bindsLock);
+        if (generation != g_bindsGeneration || index >= g_binds.binds.size()) return;
+        b = g_binds.binds[index];
+    }
+    std::wstring answer = Dispatch(b.dispatcher, b.arg);
+    if (answer != L"ok") Wh_Log(L"binds: %s: %s", b.line.c_str(), answer.c_str());
+    UpdateFocusBorder(GetForegroundWindow());
+    if (g_borderSettings.frontMoves) RefreshAllBorders();
+}
+
+// The switcher's window procedure's share: true if the message was the binds'.
+bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
+    // Tourne Desktop's plugin runtime wrote new PluginBinds: read the binds again.
+    static UINT reload = RegisterWindowMessageW(L"TourneDesktop.BindsReload");
+    if (msg == reload && reload) {
+        ApplyBindSettings();
+        *result = 0;
+        return true;
+    }
+    switch (msg) {
+        case WM_APP_BINDHOLD: {
+            int holdMs = 0;
+            {
+                std::lock_guard<std::mutex> lock(g_bindsLock);
+                if ((unsigned)lParam == g_bindsGeneration && wParam < g_binds.binds.size()) holdMs = g_binds.binds[wParam].holdMs;
+            }
+            g_holdGeneration = (unsigned)lParam;
+            g_holdPressedAt = GetTickCount64();
+            if (holdMs) SetTimer(g_wnd, kTimerBindHold, holdMs, nullptr);
+            *result = 0;
+            return true;
+        }
+        case WM_APP_BINDTAP: {
+            // Let go too soon: the plain bind on that key, if there is one, else the key pressed again for the
+            // program in front.
+            KillTimer(g_wnd, kTimerBindHold);
+            int plain = -1;
+            bool doubled = false;  // a double press on the same key too
+            UINT mods = 0;
+            DWORD vk = 0;
+            {
+                std::lock_guard<std::mutex> lock(g_bindsLock);
+                if ((unsigned)lParam != g_bindsGeneration || wParam >= g_binds.binds.size()) return true;
+                Bind const& h = g_binds.binds[wParam];
+                mods = h.mods, vk = h.vk;
+                for (int i = 0; i < (int)g_binds.binds.size(); i++) {
+                    Bind const& b = g_binds.binds[i];
+                    if (b.submap != h.submap || b.mods != h.mods || b.vk != h.vk || b.chord != h.chord) continue;
+                    if (b.twice) doubled = true;
+                    else if (!b.holdMs && plain < 0) plain = i;
+                }
+            }
+            // With a double press there, the tap waits till a second press can't come any more (binds.doubleMs
+            // from the first press).
+            if (plain >= 0 && doubled) {
+                ULONGLONG since = GetTickCount64() - g_holdPressedAt;
+                g_tapLater = plain;
+                g_tapLaterGeneration = (unsigned)lParam;
+                SetTimer(g_wnd, kTimerBindTapLater, since < (ULONGLONG)g_doubleMs ? (UINT)(g_doubleMs - since) + 10 : 10, nullptr);
+            } else if (plain >= 0) {
+                RunBind(plain, (unsigned)lParam);
+            } else {
+                SendKeys(0, vk);
+            }
+            (void)mods;
+            *result = 0;
+            return true;
+        }
+        case WM_APP_MOUSEDRAG:
+            MouseDragStep(wParam, lParam);
+            return true;
+        case WM_APP_BIND: {
+            bool twice = false;
+            {
+                std::lock_guard<std::mutex> lock(g_bindsLock);
+                twice = (unsigned)lParam == g_bindsGeneration && wParam < g_binds.binds.size() && g_binds.binds[wParam].twice;
+            }
+            if (twice && g_tapLater >= 0) {  // (the double press it was waiting for: no tap)
+                KillTimer(g_wnd, kTimerBindTapLater);
+                g_tapLater = -1;
+            }
+            RunBind(wParam, (unsigned)lParam);
+        }
+            *result = 0;
+            return true;
+        case WM_APP_BINDCALL: {
+            auto* call = (BindCall*)lParam;
+            call->answer = ControlCommand(call->line);
+            UpdateFocusBorder(GetForegroundWindow());
+            if (g_borderSettings.frontMoves) RefreshAllBorders();
+            *result = 1;
+            return true;
+        }
+        case WM_TIMER:
+            if (wParam == kTimerBindHold) {
+                // Held long enough (and still held): the hold bind runs, once.
+                KillTimer(g_wnd, kTimerBindHold);
+                int hold = g_holdBind;
+                DWORD vk = g_holdVk;
+                if (hold >= 0 && vk && GetAsyncKeyState((int)vk) < 0 && !g_holdRan.exchange(true)) RunBind(hold, g_holdGeneration);
+                *result = 0;
+                return true;
+            }
+            if (wParam == kTimerBindTapLater) {
+                KillTimer(g_wnd, kTimerBindTapLater);
+                int tap = std::exchange(g_tapLater, -1);
+                if (tap >= 0) RunBind(tap, g_tapLaterGeneration);
+                *result = 0;
+                return true;
+            }
+            if (wParam == kTimerCommand) {
+                CommandTimer();
+                *result = 0;
+                return true;
+            }
+            if (wParam != kTimerIdle) return false;
+            IdleTimer();
+            *result = 0;
+            return true;
+        case WM_APP_BINDWATCH:
+            WatchBindEvents(wParam != 0);
+            *result = 0;
+            return true;
+    }
+    return false;
+}
+////////////////////////////////////////////////////////////////////////////////
+// Window rules, in the manner of Hyprland's ("// @inline window-rules.cpp", in
+// the Switcher after binds.cpp, whose lines and file they're written in):
+//
+//     windowrule = float, class:^(Calculator)$
+//     windowrule = workspace 2 silent, exe:Discord.exe
+//     windowrule = size 50% 60%, title:Picture-in-Picture
+//     windowrule = center, float, class:Notepad
+//
+// The rules first, then the windows they're for: class:, title:, exe: (or
+// initialClass:, initialTitle:), with * and ? matching any text, several
+// joined by commas all having to match. Hyprland's simple regexes are read
+// too: ^(a|b)$ is "a or b", .* is *.
+//
+// Each rule is for a window as it opens (once). Rules: float, tile, center,
+// size W H, move X Y (px or % of the screen's work area, from its top left),
+// workspace N [silent] (Windows' desktops), monitor N, pin, maximize (and
+// fullscreen), minimize, opacity A (0 to 1), noborder, keep [S]: for S
+// seconds (15 if not given) after it opens, the window's monitor, move, size and
+// center rules are put back whenever the program itself moves or sizes it (as
+// Discord with Vencord does once it's up); a drag of yours ends it.
+//
+// exec's [rule; rule] (in a bind) are rules for the first window the program
+// it starts opens, within 20 seconds.
+//
+// Nothing is watched while there are no rules and no exec waits for a window.
+
+struct WindowRule {
+    std::vector<std::wstring> actions;              // "float", "size 50% 60%"...
+    std::vector<std::pair<std::wstring, std::wstring>> match;  // ("class", "a, b"), ...
+};
+
+struct ExpectedWindow {
+    DWORD pid;
+    ULONGLONG until;
+    std::vector<std::wstring> actions;
+};
+
+std::vector<WindowRule> g_windowRules;
+std::vector<ExpectedWindow> g_expectedWindows;
+std::unordered_set<HWND> g_ruledWindows;  // windows the rules have seen (each is ruled once)
+HWINEVENTHOOK g_ruleHooks[2];
+
+// "^(firefox|Chromium)$" as "firefox, Chromium"; "Code.*" as "Code*".
+std::wstring RulePattern(std::wstring p) {
+    p = Trimmed(p);
+    std::wstring out;
+    for (size_t i = 0; i < p.size(); i++) {
+        wchar_t c = p[i];
+        if (c == L'^' || c == L'$' || c == L'(' || c == L')') continue;
+        if (c == L'|') out += L", ";
+        else if (c == L'.' && i + 1 < p.size() && p[i + 1] == L'*') out += L'*', i++;
+        else if (c == L'\\' && i + 1 < p.size()) out += p[++i];
+        else out += c;
+    }
+    return out;
+}
+
+void ReadWindowRules(std::vector<std::wstring> const& lines) {
+    g_windowRules.clear();
+    for (auto const& line : lines) {
+        WindowRule r;
+        for (auto const& part : SplitArgs(line, 64)) {
+            if (part.empty()) continue;
+            size_t colon = part.find(L':');
+            std::wstring key = colon == std::wstring::npos ? L"" : Lower(Trimmed(part.substr(0, colon)));
+            if (key == L"class" || key == L"title" || key == L"exe" || key == L"initialclass" || key == L"initialtitle")
+                r.match.push_back({key.rfind(L"initial", 0) == 0 ? key.substr(7) : key, RulePattern(part.substr(colon + 1))});
+            else if (colon == std::wstring::npos)
+                r.actions.push_back(part);
+            else
+                Wh_Log(L"rules: %s isn't a match I know (class:, title:, exe:): %s", key.c_str(), line.c_str());
+        }
+        if (r.actions.empty() || r.match.empty()) {
+            Wh_Log(L"rules: needs a rule and a window: %s", line.c_str());
+            continue;
+        }
+        g_windowRules.push_back(std::move(r));
+    }
+}
+
+bool RuleMatches(WindowRule const& r, HWND h) {
+    for (auto const& [key, pattern] : r.match) {
+        std::wstring value = key == L"class" ? ClassOf(h) : key == L"title" ? Title(h) : FileNameOf(h);
+        if (!MatchesList(pattern, value)) return false;
+    }
+    return true;
+}
+
+// One rule's action on a window.
+void RunWindowRule(HWND h, std::wstring const& action) {
+    size_t space = action.find(L' ');
+    std::wstring name = Lower(action.substr(0, space)), arg = space == std::wstring::npos ? L"" : Trimmed(action.substr(space + 1));
+    HMONITOR monitor = MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(monitor, &mi);
+    if (name == L"float") {
+        if (!IsFloating(h)) {
+            g_floating.push_back(h);
+            if (g_autoTile) TileMonitor(monitor, false);  // (in case the tiling placed it first)
+        }
+    } else if (name == L"tile") {
+        if (IsFloating(h)) {
+            std::erase(g_floating, h);
+            if (g_autoTile) TileMonitor(monitor, false);
+        }
+    } else if (name == L"center") {
+        RECT f = FrameOf(h);
+        int w = f.right - f.left, hh = f.bottom - f.top;
+        int x = (mi.rcWork.left + mi.rcWork.right - w) / 2, y = (mi.rcWork.top + mi.rcWork.bottom - hh) / 2;
+        PlaceWindowFrame(h, {x, y, x + w, y + hh});
+    } else if (name == L"size" || name == L"move") {
+        int x = 0, y = 0;
+        if (!TwoNumbers(arg, monitor, &x, &y)) return;
+        RECT f = FrameOf(h);
+        if (name == L"size") f.right = f.left + std::max(50, x), f.bottom = f.top + std::max(50, y);
+        else OffsetRect(&f, mi.rcWork.left + x - f.left, mi.rcWork.top + y - f.top);
+        PlaceWindowFrame(h, f);
+    } else if (name == L"workspace") {
+        bool silent = Lower(arg).find(L"silent") != std::wstring::npos;
+        std::vector<GUID> ids = VdReadGuids(L"VirtualDesktopIDs");
+        int to = _wtoi(arg.c_str()) - 1;
+        if (to >= 0 && to < (int)ids.size() && to != VdCurrentIndex(ids)) VdmSendWindow(h, ids[to], !silent);
+    } else if (name == L"monitor") {
+        SendToMonitor(h, MonitorBy(arg, monitor));
+    } else if (name == L"pin") {
+        SetWindowPos(h, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    } else if (name == L"maximize" || name == L"fullscreen") {
+        ShowWindow(h, SW_MAXIMIZE);
+    } else if (name == L"minimize") {
+        ShowWindow(h, SW_MINIMIZE);
+    } else if (name == L"opacity") {
+        double a = std::clamp(_wtof(arg.c_str()), 0.1, 1.0);
+        LONG ex = GetWindowLongW(h, GWL_EXSTYLE);
+        if (!(ex & WS_EX_LAYERED)) SetWindowLongW(h, GWL_EXSTYLE, ex | WS_EX_LAYERED);
+        SetLayeredWindowAttributes(h, 0, (BYTE)(a * 255), LWA_ALPHA);
+    } else if (name == L"noborder") {
+        g_noBorder.insert(h);
+    } else if (name == L"keep") {
+        // (RuleNewWindow's)
+    } else {
+        Wh_Log(L"rules: unknown rule %s", name.c_str());
+    }
+}
+
+// keep: a window's place rules, put back when its program moves it for a while.
+struct HeldWindow {
+    HWND h;
+    ULONGLONG until;
+    std::vector<std::wstring> actions;  // monitor, move, size, center
+    RECT placed;                        // the frame they gave
+    HWINEVENTHOOK hooks[2];
+};
+std::vector<HeldWindow> g_heldWindows;
+bool g_keeping;  // (putting one back: its own moves aren't the program's)
+
+// Those whose time is up or that are gone, and h's (all with nullptr).
+void EndKeeping(HWND h) {
+    ULONGLONG now = GetTickCount64();
+    for (auto it = g_heldWindows.begin(); it != g_heldWindows.end();) {
+        if (it->h != h && it->until > now && IsWindow(it->h)) {
+            ++it;
+            continue;
+        }
+        for (auto hook : it->hooks)
+            if (hook) UnhookWinEvent(hook);
+        it = g_heldWindows.erase(it);
+    }
+}
+
+void CALLBACK KeepEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !h || g_keeping) return;
+    auto it = std::find_if(g_heldWindows.begin(), g_heldWindows.end(), [&](HeldWindow const& k) { return k.h == h; });
+    if (it == g_heldWindows.end()) return;
+    if (event == EVENT_SYSTEM_MOVESIZESTART || it->until < GetTickCount64()) {
+        if (event == EVENT_SYSTEM_MOVESIZESTART) Wh_Log(L"rules: keep ended by a drag");
+        EndKeeping(h);
+        return;
+    }
+    if (IsIconic(h) || !IsWindowVisible(h)) return;
+    RECT f = FrameOf(h);
+    if (EqualRect(&f, &it->placed)) return;
+    g_keeping = true;
+    for (auto const& a : it->actions) RunWindowRule(h, a);
+    g_keeping = false;
+    it->placed = FrameOf(h);
+    Wh_Log(L"rules: kept in place (it had gone to %d,%d %dx%d)", (int)f.left, (int)f.top, (int)(f.right - f.left), (int)(f.bottom - f.top));
+}
+
+void KeepWindow(HWND h, std::vector<std::wstring> const& actions, std::wstring const& keep) {
+    HeldWindow k{h, 0, {}, FrameOf(h), {}};
+    for (auto const& a : actions)
+        for (const wchar_t* w : {L"monitor", L"move", L"size", L"center"})
+            if (Lower(a).rfind(w, 0) == 0) k.actions.push_back(a);
+    if (k.actions.empty()) return;
+    size_t space = keep.find(L' ');
+    int seconds = space == std::wstring::npos ? 15 : std::clamp(_wtoi(keep.c_str() + space + 1), 1, 600);
+    k.until = GetTickCount64() + seconds * 1000ull;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(h, &pid);
+    DWORD flags = WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS;
+    k.hooks[0] = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, KeepEventProc, pid, 0, flags);
+    k.hooks[1] = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZESTART, nullptr, KeepEventProc, pid, 0, flags);
+    g_heldWindows.push_back(std::move(k));
+    // Over once the time's up, even if the program never moves it again.
+    SetTimer(nullptr, 0, seconds * 1000 + 50, [](HWND, UINT, UINT_PTR id, DWORD) {
+        KillTimer(nullptr, id);
+        EndKeeping(nullptr);
+    });
+}
+
+void WatchNewWindows();
+
+// A window opening: the rules for it, and an exec's that waits for it.
+void RuleNewWindow(HWND h) {
+    if (g_ruledWindows.contains(h) || !BindWindow(h)) return;
+    g_ruledWindows.insert(h);
+    std::vector<std::wstring> actions;
+    for (auto const& r : g_windowRules)
+        if (RuleMatches(r, h)) actions.insert(actions.end(), r.actions.begin(), r.actions.end());
+    if (!g_expectedWindows.empty()) {
+        DWORD pid = 0;
+        GetWindowThreadProcessId(h, &pid);
+        ULONGLONG now = GetTickCount64();
+        for (auto it = g_expectedWindows.begin(); it != g_expectedWindows.end();) {
+            if (it->until < now) {
+                it = g_expectedWindows.erase(it);
+            } else if (it->pid == pid) {
+                actions.insert(actions.end(), it->actions.begin(), it->actions.end());
+                it = g_expectedWindows.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+    // Where it goes before how big, so a size in % is of its own screen.
+    std::stable_sort(actions.begin(), actions.end(), [](std::wstring const& a, std::wstring const& b) {
+        auto rank = [](std::wstring const& x) { return x.rfind(L"monitor", 0) == 0 ? 0 : x.rfind(L"workspace", 0) == 0 ? 2 : 1; };
+        return rank(a) < rank(b);
+    });
+    for (auto const& a : actions) RunWindowRule(h, a);
+    for (auto const& a : actions)
+        if (Lower(a).rfind(L"keep", 0) == 0) {
+            KeepWindow(h, actions, a);
+            break;
+        }
+    WatchNewWindows();  // (an exec's window found, or its wait over: maybe nothing left to watch)
+}
+
+void CALLBACK RuleEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !h) return;
+    if (event == EVENT_OBJECT_DESTROY) {
+        g_ruledWindows.erase(h);
+        g_noBorder.erase(h);
+        if (!g_heldWindows.empty()) EndKeeping(h);
+        return;
+    }
+    RuleNewWindow(h);
+}
+
+void WatchNewWindows() {
+    bool want = !g_windowRules.empty() || !g_expectedWindows.empty();
+    if (want == (g_ruleHooks[0] != nullptr)) return;
+    for (auto& hook : g_ruleHooks) {
+        if (hook) UnhookWinEvent(hook);
+        hook = nullptr;
+    }
+    if (!want) return;
+    DWORD flags = WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS;
+    g_ruleHooks[0] = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_SHOW, nullptr, RuleEventProc, 0, 0, flags);
+    g_ruleHooks[1] = SetWinEventHook(EVENT_OBJECT_UNCLOAKED, EVENT_OBJECT_UNCLOAKED, nullptr, RuleEventProc, 0, 0, flags);
+    // The windows open now aren't new: rules are for windows as they open.
+    for (HWND h : BindWindows()) g_ruledWindows.insert(h);
+}
+
+void ExpectWindowRules(DWORD pid, std::wstring const& rules) {
+    if (!pid || rules.empty()) return;
+    ExpectedWindow e{pid, GetTickCount64() + 20000, {}};
+    size_t at = 0;
+    while (at <= rules.size()) {
+        size_t semi = rules.find(L';', at);
+        std::wstring a = Trimmed(rules.substr(at, semi == std::wstring::npos ? std::wstring::npos : semi - at));
+        if (!a.empty()) e.actions.push_back(a);
+        if (semi == std::wstring::npos) break;
+        at = semi + 1;
+    }
+    if (e.actions.empty()) return;
+    g_expectedWindows.push_back(std::move(e));
+    WatchNewWindows();
+}
+
+void ApplyWindowRules(std::vector<std::wstring> const& lines) {
+    ReadWindowRules(lines);
+    if (!g_windowRules.empty()) Wh_Log(L"rules: %d read", (int)g_windowRules.size());
+    WatchNewWindows();
+}
+
+void EndWindowRules() {
+    g_windowRules.clear();
+    g_expectedWindows.clear();
+    for (auto& k : g_heldWindows) k.until = 0;
+    EndKeeping(nullptr);
+    WatchNewWindows();
+    g_ruledWindows.clear();
+}
+////////////////////////////////////////////////////////////////////////////////
+// Window groups, in the manner of Hyprland's ("// @inline tiling-groups.cpp",
+// in the Switcher after the binds): windows stacked in one place with a bar of
+// tabs over them, one shown at a time. The tiling gives a group one tile.
+//
+// Made and used with the binds' commands: togglegroup (the window in front
+// starts a group, or its group comes apart), changegroupactive f|b|N,
+// moveintogroup l|r|u|d (into the group that way), moveoutofgroup, and
+// lockactivegroup is not there yet. Clicking a tab shows that window.
+//
+// Nothing runs for groups while there are none.
+
+struct WindowGroup {
+    std::vector<HWND> members;
+    int active = 0;
+    HWND bar = nullptr;
+    RECT barRect{};
+};
+
+std::vector<std::unique_ptr<WindowGroup>> g_groups;
+bool g_groupBarClass = false;
+HWINEVENTHOOK g_groupHook = nullptr;  // the window in front, for raising its group's bar (only while groups exist)
+constexpr WCHAR kGroupBarClass[] = L"TourneGroupBar_" WH_MOD_ID;
+
+WindowGroup* GroupOf(HWND h) {
+    for (auto& g : g_groups)
+        if (std::find(g->members.begin(), g->members.end(), h) != g->members.end()) return g.get();
+    return nullptr;
+}
+
+HWND GroupActive(WindowGroup const& g) {
+    return g.members.empty() ? nullptr : g.members[std::clamp(g.active, 0, (int)g.members.size() - 1)];
+}
+
+int GroupBarHeight(HWND where) {
+    return MulDiv(24, MonitorDpi(MonitorFromWindow(where, MONITOR_DEFAULTTONEAREST)), 96);
+}
+
+void PaintGroupBar(HWND wnd, HDC dc) {
+    WindowGroup* group = nullptr;
+    for (auto& g : g_groups)
+        if (g->bar == wnd) group = g.get();
+    RECT rc;
+    GetClientRect(wnd, &rc);
+    HBRUSH back = CreateSolidBrush(RGB(20, 24, 28));
+    FillRect(dc, &rc, back);
+    DeleteObject(back);
+    if (!group || group->members.empty()) return;
+    DWORD color = 0;
+    BOOL opaque = FALSE;
+    COLORREF accent = SUCCEEDED(DwmGetColorizationColor(&color, &opaque))
+                          ? RGB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF)
+                          : RGB(100, 170, 137);
+    int n = (int)group->members.size(), w = rc.right - rc.left;
+    NONCLIENTMETRICSW ncm{sizeof(ncm)};
+    SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0);
+    HFONT font = CreateFontIndirectW(&ncm.lfCaptionFont);
+    HGDIOBJ old = SelectObject(dc, font);
+    SetBkMode(dc, TRANSPARENT);
+    for (int i = 0; i < n; i++) {
+        RECT tab{rc.left + w * i / n + 1, rc.top + 2, rc.left + w * (i + 1) / n - 1, rc.bottom};
+        bool on = i == group->active;
+        HBRUSH fill = CreateSolidBrush(on ? accent : RGB(38, 44, 50));
+        FillRect(dc, &tab, fill);
+        DeleteObject(fill);
+        WCHAR title[256] = L"";
+        GetWindowTextW(group->members[i], title, ARRAYSIZE(title));
+        RECT text = tab;
+        InflateRect(&text, -8, 0);
+        SetTextColor(dc, on ? RGB(12, 14, 16) : RGB(220, 224, 228));
+        DrawTextW(dc, title, -1, &text, DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
+    }
+    SelectObject(dc, old);
+    DeleteObject(font);
+}
+
+void ShowGroupMember(WindowGroup& g, int index);
+
+LRESULT CALLBACK GroupBarProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(wnd, &ps);
+            PaintGroupBar(wnd, dc);
+            EndPaint(wnd, &ps);
+            return 0;
+        }
+        case WM_LBUTTONDOWN:
+            for (auto& g : g_groups)
+                if (g->bar == wnd && !g->members.empty()) {
+                    RECT rc;
+                    GetClientRect(wnd, &rc);
+                    int n = (int)g->members.size(), w = std::max(1, (int)(rc.right - rc.left));
+                    ShowGroupMember(*g, std::clamp(GET_X_LPARAM(lParam) * n / w, 0, n - 1));
+                    break;
+                }
+            return 0;
+        case WM_MOUSEACTIVATE:
+            return MA_NOACTIVATE;
+    }
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+// The bar put over the group's place (bar: its rectangle on the screen), just above the window shown.
+void PlaceGroupBar(WindowGroup& g, RECT const& bar) {
+    if (!g.bar) {
+        HINSTANCE instance = (HINSTANCE)GetWindowLongPtrW(g_wnd, GWLP_HINSTANCE);
+        if (!g_groupBarClass) {
+            WNDCLASSW wc{};
+            wc.lpfnWndProc = GroupBarProc;
+            wc.hInstance = instance;
+            wc.hCursor = LoadCursorW(nullptr, IDC_HAND);
+            wc.lpszClassName = kGroupBarClass;
+            g_groupBarClass = RegisterClassW(&wc) != 0;
+        }
+        g.bar = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, kGroupBarClass, L"", WS_POPUP, 0, 0, 1, 1, nullptr, nullptr,
+                                instance, nullptr);
+    }
+    if (!g.bar) return;
+    g.barRect = bar;
+    HWND shown = GroupActive(g);
+    // Just above the window shown: in front of it, behind whatever covers it.
+    HWND above = shown ? GetWindow(shown, GW_HWNDPREV) : HWND_TOP;
+    SetWindowPos(g.bar, above ? above : HWND_TOP, bar.left, bar.top, bar.right - bar.left, bar.bottom - bar.top,
+                 SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    InvalidateRect(g.bar, nullptr, FALSE);
+}
+
+// A group's windows stacked at a place (frame: where the windows go; the bar above it).
+void ArrangeGroup(WindowGroup& g, RECT frame, bool tiled) {
+    HWND shown = GroupActive(g);
+    for (HWND h : g.members) {
+        if (tiled) TilePlace(h, frame);
+        else PlaceWindowFrame(h, frame);
+    }
+    if (shown) SetWindowPos(shown, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    int barH = GroupBarHeight(shown ? shown : (HWND)g_wnd);
+    PlaceGroupBar(g, {frame.left, frame.top - barH, frame.right, frame.top});
+}
+
+void EndGroup(WindowGroup* g) {
+    if (g->bar) DestroyWindow(g->bar);
+    std::erase_if(g_groups, [&](auto const& p) { return p.get() == g; });
+}
+
+void CALLBACK GroupEventProc(HWINEVENTHOOK, DWORD, HWND h, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !h) return;
+    WindowGroup* g = GroupOf(GetAncestor(h, GA_ROOT));
+    if (!g || !g->bar) return;
+    int at = (int)(std::find(g->members.begin(), g->members.end(), GetAncestor(h, GA_ROOT)) - g->members.begin());
+    if (at != g->active) {  // (another of its windows came to the front: its tab goes with it)
+        g->active = at;
+        InvalidateRect(g->bar, nullptr, FALSE);
+    }
+    SetWindowPos(g->bar, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
+void WatchGroups() {
+    bool want = !g_groups.empty();
+    if (want == (g_groupHook != nullptr)) return;
+    if (g_groupHook) UnhookWinEvent(g_groupHook);
+    g_groupHook = want ? SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, GroupEventProc, 0, 0,
+                                         WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS)
+                       : nullptr;
+}
+
+// Windows gone are let go, and groups left empty end.
+void PruneGroups() {
+    for (auto& g : g_groups) {
+        HWND shown = GroupActive(*g);
+        std::erase_if(g->members, [](HWND h) { return !IsWindow(h); });
+        auto it = std::find(g->members.begin(), g->members.end(), shown);
+        g->active = it == g->members.end() ? 0 : (int)(it - g->members.begin());
+    }
+    std::vector<WindowGroup*> empty;
+    for (auto& g : g_groups)
+        if (g->members.empty()) empty.push_back(g.get());
+    for (auto* g : empty) EndGroup(g);
+    WatchGroups();
+}
+
+// The tiling's list of a screen's windows with each group as one: its shown window.
+std::vector<HWND> FoldGroups(std::vector<HWND> const& windows) {
+    if (g_groups.empty()) return windows;
+    PruneGroups();
+    std::vector<HWND> out;
+    for (HWND h : windows) {
+        WindowGroup* g = GroupOf(h);
+        if (!g) {
+            out.push_back(h);
+            continue;
+        }
+        HWND shown = GroupActive(*g);
+        if (std::find(windows.begin(), windows.end(), shown) == windows.end()) shown = h;  // (its shown one isn't here)
+        if (std::find(out.begin(), out.end(), shown) == out.end()) out.push_back(shown);
+    }
+    return out;
+}
+
+// A tile for a window: true if it's a group's, which takes the tile (the bar
+// at its top) and is put there.
+bool PlaceGroupTile(HWND h, RECT const& tile) {
+    WindowGroup* g = g_groups.empty() ? nullptr : GroupOf(h);
+    if (!g) return false;
+    RECT frame = tile;
+    frame.top += GroupBarHeight(h);
+    ArrangeGroup(*g, frame, true);
+    return true;
+}
+
+void ShowGroupMember(WindowGroup& g, int index) {
+    if (g.members.empty()) return;
+    int n = (int)g.members.size();
+    g.active = ((index % n) + n) % n;
+    HWND shown = GroupActive(g);
+    Activate(shown);
+    if (g.bar) {
+        InvalidateRect(g.bar, nullptr, FALSE);
+        SetWindowPos(g.bar, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+}
+
+// The binds' group commands. The answer is "ok", or what went wrong.
+std::wstring GroupCommand(std::wstring const& name, std::wstring const& arg, HWND active) {
+    PruneGroups();
+    if (!active) return L"error: no window";
+    WindowGroup* g = GroupOf(active);
+    HMONITOR monitor = MonitorFromWindow(active, MONITOR_DEFAULTTONEAREST);
+    auto relayout = [&](WindowGroup* which) {
+        if (IsTiled(active) || (which && IsTiled(GroupActive(*which)))) TileMonitor(monitor, false);
+        else if (which) ArrangeGroup(*which, FrameOf(GroupActive(*which)), false);
+    };
+    if (name == L"togglegroup") {
+        if (g) {
+            EndGroup(g);
+            WatchGroups();
+            relayout(nullptr);
+            return L"ok";
+        }
+        auto made = std::make_unique<WindowGroup>();
+        made->members.push_back(active);
+        g = made.get();
+        g_groups.push_back(std::move(made));
+        WatchGroups();
+        // Floating, the window keeps its place and the bar goes over it.
+        RECT f = FrameOf(active);
+        if (!IsTiled(active)) f.top += GroupBarHeight(active);
+        ArrangeGroup(*g, f, false);
+        relayout(g);
+        return L"ok";
+    }
+    if (name == L"changegroupactive") {
+        if (!g) return L"error: not in a group";
+        std::wstring a = Lower(Trimmed(arg));
+        int to = a == L"b" ? g->active - 1 : a.empty() || a == L"f" ? g->active + 1 : _wtoi(a.c_str()) - 1;
+        ShowGroupMember(*g, to);
+        return L"ok";
+    }
+    if (name == L"moveintogroup") {
+        int direction = DirectionByName(arg);
+        if (direction < 0) return L"error: give l, r, u or d";
+        HWND other = WindowThatWay(active, direction);
+        WindowGroup* into = other ? GroupOf(other) : nullptr;
+        if (!into || into == g) return L"error: no group that way";
+        if (g) std::erase(g->members, active);
+        into->members.push_back(active);
+        into->active = (int)into->members.size() - 1;
+        PruneGroups();
+        relayout(into);
+        ShowGroupMember(*into, into->active);
+        return L"ok";
+    }
+    if (name == L"moveoutofgroup") {
+        if (!g) return L"error: not in a group";
+        std::erase(g->members, active);
+        HWND rest = GroupActive(*g);
+        PruneGroups();
+        relayout(rest ? GroupOf(rest) : nullptr);
+        if (!IsTiled(active)) {
+            RECT f = FrameOf(active);
+            OffsetRect(&f, GroupBarHeight(active), GroupBarHeight(active));
+            PlaceWindowFrame(active, f);
+        }
+        return L"ok";
+    }
+    return L"error: unknown command " + name;
+}
+
+void EndGroups() {
+    while (!g_groups.empty()) EndGroup(g_groups.back().get());
+    WatchGroups();
+    if (g_groupBarClass && g_wnd) UnregisterClassW(kGroupBarClass, (HINSTANCE)GetWindowLongPtrW(g_wnd, GWLP_HINSTANCE));
+    g_groupBarClass = false;
+}
+////////////////////////////////////////////////////////////////////////////////
+// Windows opening, animated as Hyprland's ("// @inline window-motion.cpp", in the Switcher after
+// window-rules.cpp): the motion line windowsIn (or windows, global above it), styles popin N% (the default,
+// 85%), slide [left|right|top|bottom] (from the nearest edge if not said), gnomed, fade; fadeIn, when set,
+// times the fade on its own.
+//
+// Tourne doesn't draw other programs' windows and Windows won't let another program hide one (DWMWA_CLOAK
+// answers access denied), so as a window shows: Windows' own transition for it is turned off
+// (DWMWA_TRANSITIONS_FORCEDISABLED, which it does allow), the window is made see-through (layered, alpha 0;
+// DWM thumbnails still show what it draws), and a click-through cover over its screen moves its thumbnail in.
+// At the end the window gets its own style back, and the cover goes once it has drawn. Windows that are
+// already layered, not normal app windows, the size of the screen (games, video) or Windows' own app frames
+// are left as they are, and so is everything while no line is set. Closing, minimising and maximising stay
+// Windows' own (a window is gone before anything outside it hears it's closing).
+
+
+struct OpeningWindow {
+    HWND h;
+    LONG ex;  // its own extended style, put back at the end
+    motion::Anim in, fade;
+};
+
+HWINEVENTHOOK g_openHook;
+motion::Anim g_openIn, g_openFade;
+std::unordered_map<HWND, ULONGLONG> g_openedAt;  // (a window shown again at once isn't animated twice)
+std::atomic<int> g_openingNow;
+
+LRESULT CALLBACK OpeningCoverProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (msg == WM_ERASEBKGND) {
+        RECT r;
+        GetClientRect(wnd, &r);
+        FillRect((HDC)wParam, &r, (HBRUSH)GetStockObject(BLACK_BRUSH));  // (see-through: the frame covers it all)
+        return 1;
+    }
+    if (msg == WM_NCHITTEST) return HTTRANSPARENT;
+    return DefWindowProcW(wnd, msg, wParam, lParam);
+}
+
+void PutBackOpening(OpeningWindow const& o) {
+    if (!IsWindow(o.h)) return;
+    SetLayeredWindowAttributes(o.h, 0, 255, LWA_ALPHA);
+    SetWindowLongW(o.h, GWL_EXSTYLE, o.ex);
+    RedrawWindow(o.h, nullptr, nullptr, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_FRAME | RDW_UPDATENOW);
+    BOOL off = FALSE;
+    DwmSetWindowAttribute(o.h, DWMWA_TRANSITIONS_FORCEDISABLED, &off, sizeof(off));
+}
+
+DWORD WINAPI OpeningThread(void* param) {
+    auto* o = (OpeningWindow*)param;
+    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    RECT r;
+    GetWindowRect(o->h, &r);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(MonitorFromRect(&r, MONITOR_DEFAULTTONEAREST), &mi);
+    RECT m = mi.rcMonitor;
+
+    WNDCLASSW wc{};
+    wc.lpfnWndProc = OpeningCoverProc;
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = L"TourneOpeningCover";
+    RegisterClassW(&wc);
+    HWND cover = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT, wc.lpszClassName, L"", WS_POPUP,
+                                 m.left, m.top, m.right - m.left, m.bottom - m.top, nullptr, nullptr, wc.hInstance, nullptr);
+    HTHUMBNAIL thumb = nullptr;
+    if (cover) {
+        MARGINS all{-1, -1, -1, -1};
+        DwmExtendFrameIntoClientArea(cover, &all);
+        if (FAILED(DwmRegisterThumbnail(cover, o->h, &thumb))) thumb = nullptr;
+    }
+
+    std::wstring style = motion::StyleWord(o->in);
+    std::wstring rest = Lower(o->in.style);
+    double from = motion::StylePercent(o->in, 0.85);
+    // Which edge a slide comes from: said, or the nearest.
+    int edge = -1;  // 0 left, 1 right, 2 top, 3 bottom
+    if (rest.find(L"left") != std::wstring::npos) edge = 0;
+    else if (rest.find(L"right") != std::wstring::npos) edge = 1;
+    else if (rest.find(L"top") != std::wstring::npos) edge = 2;
+    else if (rest.find(L"bottom") != std::wstring::npos) edge = 3;
+    if (edge < 0) {
+        long d[4] = {(r.left + r.right) / 2 - m.left, m.right - (r.left + r.right) / 2, (r.top + r.bottom) / 2 - m.top,
+                     m.bottom - (r.top + r.bottom) / 2};
+        edge = (int)(std::min_element(d, d + 4) - d);
+    }
+
+    // (at most 1.5 s: the window is see-through until the end)
+    double inMs = std::clamp(motion::Ms(o->in), 1.0, 1500.0), fadeMs = o->fade.set && o->fade.on ? std::clamp(motion::Ms(o->fade), 1.0, 1500.0) : inMs;
+    ULONGLONG start = GetTickCount64();
+    bool shown = false;
+    while (thumb && IsWindow(o->h)) {
+        double t = (double)(GetTickCount64() - start);
+        double e = motion::Ease(o->in, t / inMs);
+        double f = o->fade.set && o->fade.on ? motion::Ease(o->fade, t / fadeMs) : std::clamp(t / (inMs * 0.6), 0.0, 1.0);
+        GetWindowRect(o->h, &r);  // (tiling or a rule may move it while it comes in)
+        double w = r.right - r.left, h = r.bottom - r.top, cx = (r.left + r.right) / 2.0, cy = (r.top + r.bottom) / 2.0;
+        double l = r.left, tp = r.top, rr = r.right, b = r.bottom, alpha = 1;
+        if (style == L"slide") {
+            double dx = 0, dy = 0;
+            if (edge == 0) dx = (m.left - r.right) * (1 - e);
+            if (edge == 1) dx = (m.right - r.left) * (1 - e);
+            if (edge == 2) dy = (m.top - r.bottom) * (1 - e);
+            if (edge == 3) dy = (m.bottom - r.top) * (1 - e);
+            l += dx, rr += dx, tp += dy, b += dy;
+        } else if (style == L"gnomed") {
+            double sh = std::max(0.0, e);
+            tp = cy - h * sh / 2, b = cy + h * sh / 2;
+            alpha = f;
+        } else if (style == L"fade") {
+            alpha = f;
+        } else {  // popin
+            double s = from + (1 - from) * e;
+            l = cx - w * s / 2, rr = cx + w * s / 2, tp = cy - h * s / 2, b = cy + h * s / 2;
+            alpha = f;
+        }
+        DWM_THUMBNAIL_PROPERTIES p{};
+        p.dwFlags = DWM_TNP_VISIBLE | DWM_TNP_RECTDESTINATION | DWM_TNP_OPACITY | DWM_TNP_SOURCECLIENTAREAONLY;
+        p.fSourceClientAreaOnly = FALSE;
+        p.fVisible = TRUE;
+        p.opacity = (BYTE)std::clamp(lround(alpha * 255), 0L, 255L);
+        p.rcDestination = {lround(l) - m.left, lround(tp) - m.top, lround(rr) - m.left, lround(b) - m.top};
+        DwmUpdateThumbnailProperties(thumb, &p);
+        if (!shown) {
+            SetWindowPos(cover, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            shown = true;
+        }
+        DwmFlush();
+        MSG msg;
+        while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) DispatchMessageW(&msg);
+        if (t >= inMs && t >= fadeMs) break;
+    }
+
+    PutBackOpening(*o);
+    DwmFlush();
+    DwmFlush();  // (the window drawn again before the cover goes)
+    if (thumb) DwmUnregisterThumbnail(thumb);
+    if (cover) DestroyWindow(cover);
+    g_openingNow--;
+    delete o;
+    return 0;
+}
+
+// A window worth animating as it opens: a normal app window or its dialog, on screen, not the size of it.
+bool OpensAnimated(HWND h) {
+    if (!h || !IsWindowVisible(h) || IsIconic(h) || IsZoomed(h) || GetAncestor(h, GA_ROOT) != h) return false;
+    LONG style = GetWindowLongW(h, GWL_STYLE), ex = GetWindowLongW(h, GWL_EXSTYLE);
+    if ((ex & (WS_EX_TOOLWINDOW | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOPMOST | WS_EX_NOREDIRECTIONBITMAP)) || (style & WS_CHILD)) return false;
+    if ((ex & WS_EX_NOACTIVATE) && !(ex & WS_EX_APPWINDOW)) return false;
+    if (GetWindow(h, GW_OWNER) && (style & WS_CAPTION) != WS_CAPTION) return false;  // (owned: dialogs only)
+    DWORD cloaked = 0;
+    if (SUCCEEDED(DwmGetWindowAttribute(h, DWMWA_CLOAKED, &cloaked, sizeof(cloaked))) && cloaked) return false;
+    WCHAR cls[64] = L"";
+    GetClassNameW(h, cls, ARRAYSIZE(cls));
+    for (PCWSTR skip : {L"ApplicationFrameWindow", L"Windows.UI.Core.CoreWindow", L"Shell_TrayWnd", L"Progman", L"WorkerW", L"#32768",
+                        L"tooltips_class32", L"ConsoleWindowClass"})
+        if (!wcscmp(cls, skip)) return false;
+    if (!wcsncmp(cls, L"Tourne", 6)) return false;
+    RECT r;
+    GetWindowRect(h, &r);
+    if (r.right - r.left < 120 || r.bottom - r.top < 80) return false;
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(MonitorFromRect(&r, MONITOR_DEFAULTTONEAREST), &mi);
+    RECT both;
+    IntersectRect(&both, &r, &mi.rcMonitor);
+    if (EqualRect(&both, &mi.rcMonitor)) return false;  // (full screen)
+    return true;
+}
+
+void CALLBACK OpenEventProc(HWINEVENTHOOK, DWORD, HWND h, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || g_openingNow >= 6 || !OpensAnimated(h)) return;
+    ULONGLONG now = GetTickCount64();
+    if (auto it = g_openedAt.find(h); it != g_openedAt.end() && now - it->second < 1500) return;
+    if (g_openedAt.size() > 200) g_openedAt.clear();
+    g_openedAt[h] = now;
+    // Hidden at once, here, before the thread is even up: the sooner, the less of it is seen first.
+    auto* o = new OpeningWindow{h, GetWindowLongW(h, GWL_EXSTYLE), g_openIn, g_openFade};
+    BOOL on = TRUE;
+    DwmSetWindowAttribute(h, DWMWA_TRANSITIONS_FORCEDISABLED, &on, sizeof(on));
+    SetWindowLongW(h, GWL_EXSTYLE, o->ex | WS_EX_LAYERED);
+    if (!SetLayeredWindowAttributes(h, 0, 0, LWA_ALPHA)) {
+        PutBackOpening(*o);
+        delete o;
+        return;
+    }
+    g_openingNow++;
+    if (HANDLE t = CreateThread(nullptr, 0, OpeningThread, o, 0, nullptr)) {
+        CloseHandle(t);
+    } else {
+        g_openingNow--;
+        PutBackOpening(*o);
+        delete o;
+    }
+}
+
+// The line read again (settings changed): the hook there only while windows open animated.
+void StartWindowMotion() {
+    g_openIn = motion::Get(L"windowsIn");
+    g_openFade = motion::Get(L"fadeIn");
+    bool want = g_openIn.set && g_openIn.on && motion::Ms(g_openIn) > 0 && !GetSystemMetrics(SM_REMOTESESSION);
+    if (want == (g_openHook != nullptr)) return;
+    if (g_openHook) UnhookWinEvent(g_openHook), g_openHook = nullptr;
+    if (want) {
+        g_openHook = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, nullptr, OpenEventProc, 0, 0,
+                                     WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+        Wh_Log(L"motion: windows open animated (%s)", g_openIn.style.empty() ? L"popin" : g_openIn.style.c_str());
+    }
+}
+
+void EndWindowMotion() {
+    if (g_openHook) UnhookWinEvent(g_openHook), g_openHook = nullptr;
+    // (an animation still running puts its window back itself)
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // The keyboard and the wheel: Alt+Tab and the keys used while switching,
@@ -63888,6 +78307,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
     auto* k = (KBDLLHOOKSTRUCT*)lParam;
     HWND wnd = g_wnd;
     if (!wnd || k->vkCode == kDummyKey) return CallNextHookEx(nullptr, code, wParam, lParam);
+    if (BindsKeyHook(wParam, k) > 0) return 1;
     if (TilingKeyHook(wParam, k) > 0) return 1;
     bool down = wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN;
     bool alt = k->flags & LLKHF_ALTDOWN;
@@ -63896,6 +78316,15 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
     DWORD vk = k->vkCode;
     WORD flags = (ctrl ? kFlagSticky : 0) | (WinDown() ? kFlagAllMonitors : 0);
 
+    // Win+Tab, as set: Mission Control, open until something is picked, instead of Windows' Task view. The
+    // unassigned key goes in so Win let go isn't a lone tap (Start, Windows' or Tourne's).
+    if (vk == VK_TAB && !alt && !g_open && g_settings.winTab && WinDown()) {
+        if (down) {
+            PressDummyKey();
+            PostMessageW(wnd, WM_APP_STEP, 1, MAKELPARAM(kFromWinTab, kFlagSticky));
+        }
+        return 1;
+    }
     if (down && vk == VK_TAB && (alt || g_sticky)) {
         if (g_open) {
             g_tabSteps += shift ? -1 : 1;
@@ -63928,6 +78357,12 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
     if (isAlt || vk == VK_SHIFT || vk == VK_LSHIFT || vk == VK_RSHIFT || vk == VK_LWIN || vk == VK_RWIN)
         return CallNextHookEx(nullptr, code, wParam, lParam);
     g_ctrlTap = false;
+    // Print Screen and Win's keys still reach Windows and the screenshot tools (the canvas can be captured).
+    if (CanvasShown() && (vk == VK_SNAPSHOT || WinDown())) return CallNextHookEx(nullptr, code, wParam, lParam);
+    if (CanvasShown()) {  // (every key: the canvas has its own, and notes are typed into)
+        PostMessageW(wnd, WM_APP_CANVASKEY, vk, (k->scanCode & 0xFFFF) | (shift ? 1 << 16 : 0) | (ctrl ? 1 << 17 : 0));
+        return 1;
+    }
     switch (vk) {
         case VK_ESCAPE: PostMessageW(wnd, WM_APP_CANCEL, 0, 0); break;
         case VK_RETURN:
@@ -63949,6 +78384,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
 // The wheel, anywhere: moves the selection while switching, and (as set)
 // opens the switcher with Alt held.
 LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam) {
+    if (code == HC_ACTION && wParam != WM_MOUSEWHEEL && MouseBindsHook(wParam, (MSLLHOOKSTRUCT const*)lParam) > 0) return 1;
     if (code == HC_ACTION && wParam == WM_MOUSEWHEEL) {
         HWND wnd = g_wnd;
         auto* m = (MSLLHOOKSTRUCT*)lParam;
@@ -64077,6 +78513,8 @@ void ApplySettings(HWND wnd) {
     StartTileEvents();
     LoadBorderSettings();
     StartBorders();
+    ApplyBindSettings();
+    StartWindowMotion();
     PublishChoices();
     SetBackdrop(wnd);
     DWORD corner = g_settings.acrylic && g_settings.radius > 0 ? 2 /* DWMWCP_ROUND */ : 1 /* DWMWCP_DONOTROUND */;
@@ -64092,12 +78530,14 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         if (g_followsTourneTheme) ApplySettings(wnd);
         return 0;
     }
+    if (LRESULT result = 0; BindsMessage(msg, wParam, lParam, &result)) return result;
     switch (msg) {
         case WM_APP_STEP: {
             int dir = (int)(INT_PTR)wParam;
             WORD from = LOWORD(lParam), flags = HIWORD(lParam);
             bool backtick = from == kFromBacktick;
             if (!g_open) {
+                if (from == kFromWinTab) g_viewFor = g_settings.overviewView;  // the canvas, or Mission Control
                 // Alt+`: backwards, or this app's windows only.
                 bool sameApp = backtick && g_settings.backtickSameApp;
                 Begin(wnd, sameApp ? 1 : dir, sameApp, flags & kFlagSticky, flags & kFlagAllMonitors);
@@ -64128,15 +78568,26 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_APP_WHEEL: {
             if (!g_open) return 0;
+            if (CanvasShown()) {
+                CanvasWheel((short)wParam);
+                return 0;
+            }
             int dir = ((short)wParam > 0) != g_settings.reverseWheel ? -1 : 1;
             bool page = g_settings.wheelPages != (lParam != 0);
             Show(wnd);
             Step(wnd, page ? dir * std::max(1, g_m.rows * g_m.columns) : dir);
             return 0;
         }
+        case WM_APP_CANVASKEY:
+            if (g_open) CanvasKey((UINT)wParam, LOWORD(lParam), (lParam >> 16) & 1, (lParam >> 17) & 1);
+            return 0;
         case WM_APP_MOVE: {
             if (!g_open) return 0;
             int dx = (int)(INT_PTR)wParam, dy = (int)lParam;
+            if (CanvasShown()) {
+                CanvasMove(dx, dy, GetAsyncKeyState(VK_SHIFT) < 0);
+                return 0;
+            }
             Step(wnd, g_settings.grid ? dx + dy * std::max(1, g_m.columns) : dx + dy);
             return 0;
         }
@@ -64158,17 +78609,20 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_APP_TILE:
             TileCommandRun(wParam, lParam);
             UpdateFocusBorder(GetForegroundWindow());
+            if (g_borderSettings.frontMoves) RefreshAllBorders();
             return 0;
         case WM_TIMER:
             if (wParam == kTimerTile) TileTimer(wnd);
             if (wParam == kTimerPlaces) PlacesTimer(wnd);
             if (wParam == kTimerBorders) BordersTimer(wnd);
             if (wParam == kTimerBorderZ) BordersReorderTimer(wnd);
+            if (wParam == kTimerWindowMoves) WindowMovesTimer(wnd);
+            if ((wParam == kTimerTile || wParam == kTimerWindowMoves) && g_borderSettings.frontMoves) RefreshAllBorders();
             if (wParam == kTimerShow) Show(wnd);
             if (wParam == kTimerPeek) {
                 KillTimer(wnd, kTimerPeek);
                 if (g_shown && g_sel >= 0 && g_sel < (int)g_entries.size())
-                    LivePeek(g_entries[g_sel].windows[0], wnd, kPeekAltTab);
+                    SwitcherPeek(g_entries[g_sel].windows[0], wnd);
             }
             return 0;
         case WM_MOUSEACTIVATE:
@@ -64221,8 +78675,12 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             BordersAccentChanged();
             return 0;
         case WM_DESTROY:
+            EndWindowMoves();
             StopTileEvents();
             EndBorders();
+            EndBinds();
+            EndWindowMotion();
+            EndGroups();
             if (g_placesDirty) SavePlaces();
             if (g_ly.wnd) DestroyWindow(g_ly.wnd);
             Hide(wnd);
@@ -64281,6 +78739,9 @@ DWORD WINAPI ThreadProc(LPVOID ready) {
     if (g_desktops) g_desktops->Release();
     g_desktops = nullptr;
     g_overlay = nullptr;  // destroyed with its owner
+    if (g_peekSheet) DestroyWindow(g_peekSheet);
+    g_peekSheet = nullptr;
+    UnregisterClassW(kPeekSheetClass, instance);
     UnregisterClassW(kWindowClass, instance);
     UnregisterClassW(kOverlayClass, instance);
     UnregisterClassW(kViewClass, instance);
@@ -65968,6 +80429,8 @@ struct Config {
 
     bool preview = false;
     COLORREF previewColor = 0, previewText = 0;
+
+    bool taskManager = false;
 };
 
 Config ReadConfig() {
@@ -65999,6 +80462,7 @@ Config ReadConfig() {
                     GetBValue(c.previewColor) * 114) / 1000;
         c.previewText = luma <= 128 ? RGB(0xDC, 0xDC, 0xDC) : RGB(0x20, 0x20, 0x20);
     }
+    c.taskManager = Wh_GetIntSetting(L"explorerColors.taskManager") != 0;
     return c;
 }
 
@@ -66009,6 +80473,7 @@ Config g_config;
 // What's on, checked before anything else so other drawing pays one load.
 std::atomic<bool> g_barsOn;
 std::atomic<int> g_selectionOn;
+bool g_inTaskManager;  // fixed when the part starts
 
 void SetConfig(Config const& c) {
     AcquireSRWLockExclusive(&g_lock);
@@ -66031,10 +80496,14 @@ struct Needs {
     bool themeBackground = false;  // Drive bars, navigation pane
     bool themeBackgroundEx = false;  // File list
     bool preview = false;
+    bool heat = false;  // Task Manager's usage cells
     bool operator==(Needs const&) const = default;
 };
 
 Needs NeedsFor(Config const& c) {
+    // Task Manager: its Processes rows come through the plain call, Details' and Services' lists through either.
+    if (g_inTaskManager)
+        return {c.bars != BarMode::Style || c.selection != 0, c.selection != 0, c.preview, c.taskManager};
     return {c.bars != BarMode::Style || (c.selection & kSelectNavigation), (c.selection & kSelectFiles) != 0,
             c.preview};
 }
@@ -66486,6 +80955,16 @@ HRESULT WINAPI DrawThemeBackground_Hook(HTHEME theme, HDC dc, int part, int stat
                     break;
             }
         }
+    } else if (g_inTaskManager && part == LVP_LISTITEM && rect && state >= LISS_HOT && state <= LISS_HOTSELECTED &&
+               state != LISS_DISABLED && (g_selectionOn.load(std::memory_order_relaxed) & kSelectFiles) &&
+               ClassIs(theme, L"ListView")) {
+        // Task Manager's rows, which it draws without the Ex call Explorer's file list uses.
+        Config c = CurrentConfig();
+        Look const& look = state == LISS_SELECTED ? c.selected : state == LISS_SELECTEDNOTFOCUS ? c.unfocused : c.hover;
+        if (look.set) {
+            DrawSelection(dc, *rect, look, c.borderWidth, c.selectionRadius, false, 0, 0);
+            return S_OK;
+        }
     }
     return DrawThemeBackground_Original(theme, dc, part, state, rect, clip);
 }
@@ -66591,6 +81070,98 @@ DWORD WINAPI GetSysColor_Hook(int index) {
 using AllowDarkModeForWindow_t = BOOL(WINAPI*)(HWND, BOOL);
 AllowDarkModeForWindow_t g_allowDarkModeForWindow;  // uxtheme's ordinal 133
 
+// Task Manager's Details and Services tabs are plain list controls, white whatever the style: their background,
+// text and column headers in the Task Manager colours. Their dialog makes them inside user32 (no CreateWindowExW
+// call to catch) and Task Manager sets their colours again itself, so each list is caught as it's made (an
+// in-process window event, as Dark Magic does it), and subclassed so the colours it's given become these.
+COLORREF g_listGround, g_listText;
+bool g_listColours;
+HWINEVENTHOOK g_listHook;
+
+using SetWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR, DWORD_PTR);
+using DefSubclassProc_t = LRESULT(WINAPI*)(HWND, UINT, WPARAM, LPARAM);
+SetWindowSubclass_t g_setWindowSubclass;
+DefSubclassProc_t g_defSubclassProc;
+
+constexpr UINT_PTR kListSubclassId = 0x544D4C53;
+UINT g_removeMessage = RegisterWindowMessageW(L"TourneExplorerColours_Unsubclass");
+SRWLOCK g_listsLock = SRWLOCK_INIT;
+std::vector<HWND> g_lists;  // subclassed, so they're let go when the part stops
+
+LRESULT CALLBACK ListSubclass(HWND list, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    if (message == g_removeMessage && g_removeMessage) {
+        using RemoveWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR);
+        ((RemoveWindowSubclass_t)wParam)(list, ListSubclass, kListSubclassId);
+        return 0;
+    }
+    if (message == LVM_SETBKCOLOR || message == LVM_SETTEXTBKCOLOR) lParam = g_listGround;
+    else if (message == LVM_SETTEXTCOLOR) lParam = g_listText;
+    return g_defSubclassProc(list, message, wParam, lParam);
+}
+
+void ColourList(HWND list) {
+    if (GetPropW(list, L"TourneTaskManagerList")) return;
+    SetPropW(list, L"TourneTaskManagerList", (HANDLE)1);
+    if (g_setWindowSubclass && g_defSubclassProc && g_setWindowSubclass(list, ListSubclass, kListSubclassId, 0)) {
+        AcquireSRWLockExclusive(&g_listsLock);
+        g_lists.push_back(list);
+        ReleaseSRWLockExclusive(&g_listsLock);
+    }
+    SendMessageW(list, LVM_SETBKCOLOR, 0, g_listGround);
+    SendMessageW(list, LVM_SETTEXTBKCOLOR, 0, g_listGround);
+    SendMessageW(list, LVM_SETTEXTCOLOR, 0, g_listText);
+    if (HWND header = (HWND)SendMessageW(list, LVM_GETHEADER, 0, 0))
+        if (Luma(g_listGround) <= 128) SetWindowTheme(header, L"DarkMode_ItemsView", nullptr);
+    InvalidateRect(list, nullptr, TRUE);
+}
+
+bool IsList(HWND wnd) {
+    WCHAR cls[32];
+    return GetClassNameW(wnd, cls, ARRAYSIZE(cls)) && _wcsicmp(cls, WC_LISTVIEWW) == 0;
+}
+
+void CALLBACK ListEvent(HWINEVENTHOOK, DWORD, HWND wnd, LONG object, LONG child, DWORD, DWORD) {
+    if (wnd && object == OBJID_WINDOW && child == CHILDID_SELF && IsList(wnd)) ColourList(wnd);
+}
+
+HMODULE ThisModule() {
+    HMODULE module = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&ThisModule, &module);
+    return module;
+}
+
+void StartListColours() {
+    HMODULE comctl = GetModuleHandleW(L"comctl32.dll");
+    if (!comctl) comctl = LoadLibraryExW(L"comctl32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (comctl) {
+        g_setWindowSubclass = (SetWindowSubclass_t)GetProcAddress(comctl, "SetWindowSubclass");
+        g_defSubclassProc = (DefSubclassProc_t)GetProcAddress(comctl, "DefSubclassProc");
+    }
+    // (its creation and its showing, on the thread that owns it, which subclassing needs; the lists are made
+    // when their tab is first opened, long after this)
+    g_listHook = SetWinEventHook(EVENT_OBJECT_CREATE, EVENT_OBJECT_SHOW, ThisModule(), ListEvent, GetCurrentProcessId(),
+                                 0, WINEVENT_INCONTEXT);
+}
+
+// Before this part's code goes: the lists let go of it.
+void StopListColours() {
+    if (g_listHook) UnhookWinEvent(g_listHook);
+    g_listHook = nullptr;
+    HMODULE comctl = GetModuleHandleW(L"comctl32.dll");
+    using RemoveWindowSubclass_t = BOOL(WINAPI*)(HWND, SUBCLASSPROC, UINT_PTR);
+    auto remove = comctl ? (RemoveWindowSubclass_t)GetProcAddress(comctl, "RemoveWindowSubclass") : nullptr;
+    AcquireSRWLockExclusive(&g_listsLock);
+    std::vector<HWND> lists = std::move(g_lists);
+    ReleaseSRWLockExclusive(&g_listsLock);
+    for (HWND list : lists) {
+        if (!IsWindow(list)) continue;
+        // (on the list's own thread, as subclassing must be)
+        if (remove) SendMessageTimeoutW(list, g_removeMessage, (WPARAM)remove, 0, SMTO_ABORTIFHUNG, 1000, nullptr);
+        RemovePropW(list, L"TourneTaskManagerList");
+    }
+}
+
 using CreateWindowExW_t = decltype(&CreateWindowExW);
 CreateWindowExW_t CreateWindowExW_Original;
 HWND WINAPI CreateWindowExW_Hook(DWORD exStyle, LPCWSTR className, LPCWSTR title, DWORD style, int x, int y,
@@ -66603,6 +81174,127 @@ HWND WINAPI CreateWindowExW_Hook(DWORD exStyle, LPCWSTR className, LPCWSTR title
         SetWindowTheme(wnd, L"Explorer", nullptr);
     }
     return wnd;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Task Manager
+
+// Task Manager's usage cells are brushes DirectUI makes in six fixed shades,
+// lightest for the least use (read off with a probe of its GDI calls). Each
+// becomes a step along the drive bar's colours: the empty part, then the
+// filled part fading to its end, then the nearly full colour at the top.
+constexpr COLORREF kHeatShades[] = {
+    RGB(0xFF, 0xF4, 0xC4), RGB(0xF9, 0xEC, 0xA8), RGB(0xFF, 0xE4, 0x87),
+    RGB(0xFF, 0xD2, 0x64), RGB(0xFC, 0xA7, 0x1D), RGB(0xFC, 0x68, 0x2A),
+};
+COLORREF g_heat[ARRAYSIZE(kHeatShades)];
+bool g_heatSet[ARRAYSIZE(kHeatShades)];
+HMODULE g_dui;
+
+void SetHeat(Config const& c) {
+    COLORREF from = c.fill.from, to = c.fill.to;
+    g_heatSet[0] = c.empty.set, g_heat[0] = c.empty.from;
+    constexpr float kSteps[] = {0.0f, 0.35f, 0.7f, 1.0f};
+    for (int i = 0; i < 4; i++) g_heatSet[i + 1] = c.fill.set, g_heat[i + 1] = Mix(from, to, kSteps[i]);
+    g_heatSet[5] = c.full.set || c.fill.set, g_heat[5] = c.full.set ? c.full.from : to;
+}
+
+// Grouped by type, a group's heading row ("Apps (5)") fills its usage cells with one more shade, a cream; it
+// takes the list's own ground (the cells read as part of the heading), else the drive bar's empty colour.
+constexpr COLORREF kHeatGroupShade = RGB(0xF3, 0xED, 0xD9);
+
+bool HeatShade(COLORREF color, void* returnAddress, COLORREF* out) {
+    color &= 0xFFFFFF;
+    // (from whichever part of Task Manager asks: it isn't DirectUI's own brush, and the shade is used for nothing else)
+    if (color == kHeatGroupShade && (g_listColours || g_heatSet[0])) {
+        *out = g_listColours ? g_listGround : g_heat[0];
+        return true;
+    }
+    for (int i = 0; i < (int)ARRAYSIZE(kHeatShades); i++) {
+        if (color != kHeatShades[i]) continue;
+        if (!g_heatSet[i]) return false;
+        HMODULE caller = nullptr;
+        if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                (LPCWSTR)returnAddress, &caller) ||
+            !caller || caller != g_dui)
+            return false;
+        *out = g_heat[i];
+        return true;
+    }
+    return false;
+}
+
+using CreateSolidBrush_t = decltype(&CreateSolidBrush);
+using SetDCBrushColor_t = decltype(&SetDCBrushColor);
+CreateSolidBrush_t CreateSolidBrush_Original;
+SetDCBrushColor_t SetDCBrushColor_Original;
+
+HBRUSH WINAPI CreateSolidBrush_Hook(COLORREF color) {
+    COLORREF mine;
+    if (HeatShade(color, __builtin_return_address(0), &mine)) color = mine;
+    return CreateSolidBrush_Original(color);
+}
+
+using CreateBrushIndirect_t = decltype(&CreateBrushIndirect);
+using SetBkColor_t = decltype(&SetBkColor);
+CreateBrushIndirect_t CreateBrushIndirect_Original;
+SetBkColor_t SetBkColor_Original;
+
+HBRUSH WINAPI CreateBrushIndirect_Hook(const LOGBRUSH* brush) {
+    COLORREF mine;
+    if (brush && brush->lbStyle == BS_SOLID && HeatShade(brush->lbColor, __builtin_return_address(0), &mine)) {
+        LOGBRUSH b = *brush;
+        b.lbColor = mine;
+        return CreateBrushIndirect_Original(&b);
+    }
+    return CreateBrushIndirect_Original(brush);
+}
+
+// A fill made as text's background (SetBkColor, then ExtTextOut with ETO_OPAQUE): the group rows' cream only.
+COLORREF WINAPI SetBkColor_Hook(HDC dc, COLORREF color) {
+    if ((color & 0xFFFFFF) == kHeatGroupShade && (g_listColours || g_heatSet[0])) color = g_listColours ? g_listGround : g_heat[0];
+    return SetBkColor_Original(dc, color);
+}
+
+// A fill made as a gradient (DirectUI's fills go through GradientFill): each corner in the group rows' cream
+// takes the same colour as the other paths give it. A vertex's channels are 16 bits, the colour in the top 8.
+using GdiGradientFill_t = BOOL(WINAPI*)(HDC, PTRIVERTEX, ULONG, PVOID, ULONG, ULONG);
+GdiGradientFill_t GdiGradientFill_Original;
+
+BOOL WINAPI GdiGradientFill_Hook(HDC dc, PTRIVERTEX vertices, ULONG count, PVOID mesh, ULONG meshCount, ULONG mode) {
+    if (vertices && count && count <= 64 && (g_listColours || g_heatSet[0])) {
+        TRIVERTEX copy[64];
+        bool changed = false;
+        COLORREF to = g_listColours ? g_listGround : g_heat[0];
+        for (ULONG i = 0; i < count; i++) {
+            copy[i] = vertices[i];
+            COLORREF c = RGB(vertices[i].Red >> 8, vertices[i].Green >> 8, vertices[i].Blue >> 8);
+            if (c != kHeatGroupShade) continue;
+            copy[i].Red = (COLOR16)(GetRValue(to) << 8), copy[i].Green = (COLOR16)(GetGValue(to) << 8), copy[i].Blue = (COLOR16)(GetBValue(to) << 8);
+            changed = true;
+        }
+        if (changed) return GdiGradientFill_Original(dc, copy, count, mesh, meshCount, mode);
+    }
+    return GdiGradientFill_Original(dc, vertices, count, mesh, meshCount, mode);
+}
+
+// A see-through fill (DirectUI makes those with GDI+, its colour as ARGB): the group rows' cream band, its alpha kept.
+using GdipCreateSolidFill_t = int(WINAPI*)(DWORD argb, void** brush);
+GdipCreateSolidFill_t GdipCreateSolidFill_Original;
+
+int WINAPI GdipCreateSolidFill_Hook(DWORD argb, void** brush) {
+    COLORREF rgb = RGB((argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF);
+    if (rgb == kHeatGroupShade && (g_listColours || g_heatSet[0])) {
+        COLORREF to = g_listColours ? g_listGround : g_heat[0];
+        argb = (argb & 0xFF000000) | ((DWORD)GetRValue(to) << 16) | ((DWORD)GetGValue(to) << 8) | GetBValue(to);
+    }
+    return GdipCreateSolidFill_Original(argb, brush);
+}
+
+COLORREF WINAPI SetDCBrushColor_Hook(HDC dc, COLORREF color) {
+    COLORREF mine;
+    if (HeatShade(color, __builtin_return_address(0), &mine)) color = mine;
+    return SetDCBrushColor_Original(dc, color);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66642,6 +81334,9 @@ bool ShouldLoadInThisProcess() {
     if (_wcsicmp(name.c_str(), L"explorer.exe") == 0 || _wcsicmp(name.c_str(), L"prevhost.exe") == 0) {
         return true;
     }
+    if (_wcsicmp(name.c_str(), L"taskmgr.exe") == 0 && Wh_GetIntSetting(L"explorerColors.taskManager")) {
+        return true;
+    }
     return !name.empty() && ListedProgram(name);
 }
 
@@ -66659,6 +81354,7 @@ BOOL PartInit() {
     g_host = _wcsicmp(name.c_str(), L"prevhost.exe") == 0   ? Host::Previewer
              : _wcsicmp(name.c_str(), L"explorer.exe") == 0 ? Host::Explorer
                                                             : Host::Dialog;
+    g_inTaskManager = _wcsicmp(name.c_str(), L"taskmgr.exe") == 0;
     HMODULE uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (!uxtheme) {
         return FALSE;
@@ -66675,6 +81371,34 @@ BOOL PartInit() {
     g_previewColor = g_config.previewColor;
     g_previewText = g_config.previewText;
 
+    if (g_needs.heat) {
+        g_listColours = ParseColor(TextSetting(L"explorerColors.taskManagerBackground"), &g_listGround);
+        if (g_listColours && !ParseColor(TextSetting(L"explorerColors.taskManagerText"), &g_listText))
+            g_listText = Luma(g_listGround) <= 128 ? RGB(0xDC, 0xDC, 0xDC) : RGB(0x20, 0x20, 0x20);
+        if (g_listColours) StartListColours();
+        g_dui = LoadLibraryExW(L"dui70.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+        HMODULE gdi = GetModuleHandleW(L"gdi32full.dll");
+        if (!gdi) gdi = GetModuleHandleW(L"gdi32.dll");
+        if (g_dui && gdi) {
+            SetHeat(g_config);
+            SuiteSetFunctionHook((void*)GetProcAddress(gdi, "CreateSolidBrush"), (void*)CreateSolidBrush_Hook,
+                               (void**)&CreateSolidBrush_Original);
+            SuiteSetFunctionHook((void*)GetProcAddress(gdi, "SetDCBrushColor"), (void*)SetDCBrushColor_Hook,
+                               (void**)&SetDCBrushColor_Original);
+            SuiteSetFunctionHook((void*)GetProcAddress(gdi, "CreateBrushIndirect"), (void*)CreateBrushIndirect_Hook,
+                               (void**)&CreateBrushIndirect_Original);
+            SuiteSetFunctionHook((void*)GetProcAddress(gdi, "SetBkColor"), (void*)SetBkColor_Hook, (void**)&SetBkColor_Original);
+            if (void* gradient = (void*)GetProcAddress(gdi, "GdiGradientFill"))
+                SuiteSetFunctionHook(gradient, (void*)GdiGradientFill_Hook, (void**)&GdiGradientFill_Original);
+            // (the GDI+ DirectUI binds to: loaded with it, else loaded now as it would load it, by name)
+            HMODULE gdiplus = GetModuleHandleW(L"gdiplus.dll");
+            if (!gdiplus) gdiplus = LoadLibraryW(L"gdiplus.dll");
+            if (gdiplus)
+                if (void* fill = (void*)GetProcAddress(gdiplus, "GdipCreateSolidFill"))
+                    SuiteSetFunctionHook(fill, (void*)GdipCreateSolidFill_Hook, (void**)&GdipCreateSolidFill_Original);
+        }
+    }
+
     if (g_needs.themeBackground || g_needs.themeBackgroundEx) {
         if (!g_getThemeClass) {
             Wh_Log(L"uxtheme's GetThemeClass wasn't found");
@@ -66684,8 +81408,9 @@ BOOL PartInit() {
                            (void**)&DrawThemeBackground_Original);
     }
     if (g_needs.themeBackgroundEx) {
-        // Without DirectUI's help, a click's stale selection just shows for a moment.
-        HookDirectUi();
+        // Without DirectUI's help, a click's stale selection just shows for a moment. (Not in Task Manager, whose
+        // DirectUI isn't a file list: its clicks would be misread.)
+        if (!g_inTaskManager) HookDirectUi();
         SuiteSetFunctionHook((void*)GetProcAddress(uxtheme, "DrawThemeBackgroundEx"),
                            (void*)DrawThemeBackgroundEx_Hook, (void**)&DrawThemeBackgroundEx_Original);
     }
@@ -66710,6 +81435,7 @@ BOOL PartInit() {
 }
 
 void PartUninit() {
+    StopListColours();
     AcquireSRWLockExclusive(&g_drawLock);
     g_scratch.Free();
     g_overBlack = {};
@@ -66718,6 +81444,7 @@ void PartUninit() {
 
 void PartSettingsChanged() {
     SetConfig(ReadConfig());
+    if (g_inTaskManager) SetHeat(CurrentConfig());
 }
 
 }  // namespace part_explorer_colors
@@ -67989,6 +82716,188 @@ void PartSettingsChanged() {
 
 }  // namespace part_classic_menus
 
+////////////////////////////////////////////////////////////////////////////////
+// Square Corners (from local@tourne-square-corners)
+
+namespace part_square_corners {
+// Windows 11 rounds a window's corners unless the window asks it not to
+// (DWMWA_WINDOW_CORNER_PREFERENCE, which only the window's own program may
+// set). The suite already runs in every program, so each asks for square
+// corners on its own top-level windows: the ones there when it starts, each
+// one made after (tooltips too), each menu as it opens, and any program's own
+// corner choice turned to square. Nothing runs inside dwm.exe. Rounding drawn
+// inside a window (XAML apps' own popups and flyouts) isn't DWM's, so it stays.
+//
+// The switch is Studio's ("Square window corners", Taskbar page): Tourne
+// Desktop writes it to HKCU\Software\Tourne\Corners, Square, and each program
+// waits on that key (a thread-pool wait, no thread of its own, no polling), so
+// turning it on or off squares or rounds every open window at once.
+
+
+
+namespace {
+
+#ifndef DWMWA_WINDOW_CORNER_PREFERENCE
+constexpr DWORD DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+#endif
+constexpr DWORD kSquare = 1, kWindowsChoice = 0;  // DWMWCP_DONOTROUND, DWMWCP_DEFAULT
+constexpr wchar_t kKey[] = L"Software\\Tourne\\Corners";
+
+using DwmSetWindowAttribute_t = decltype(&DwmSetWindowAttribute);
+using CreateWindowExW_t = decltype(&CreateWindowExW);
+using CreateWindowExA_t = decltype(&CreateWindowExA);
+DwmSetWindowAttribute_t DwmSetWindowAttribute_Original;
+CreateWindowExW_t CreateWindowExW_Original;
+CreateWindowExA_t CreateWindowExA_Original;
+std::atomic<bool> g_square{false};
+HKEY g_key = nullptr;
+HANDLE g_changed = nullptr, g_wait = nullptr;
+
+void SetCorners(HWND wnd, DWORD preference) {
+    auto set = DwmSetWindowAttribute_Original ? DwmSetWindowAttribute_Original : DwmSetWindowAttribute;
+    set(wnd, DWMWA_WINDOW_CORNER_PREFERENCE, &preference, sizeof(preference));
+}
+
+// A top-level window of its own (not a child, not message-only).
+bool TopLevel(HWND parent, DWORD style) { return parent != HWND_MESSAGE && !(style & WS_CHILD); }
+
+HRESULT WINAPI DwmSetWindowAttribute_Hook(HWND wnd, DWORD attribute, LPCVOID value, DWORD size) {
+    if (g_square && attribute == DWMWA_WINDOW_CORNER_PREFERENCE && value && size == sizeof(DWORD)) {
+        DWORD square = kSquare;
+        return DwmSetWindowAttribute_Original(wnd, attribute, &square, size);
+    }
+    return DwmSetWindowAttribute_Original(wnd, attribute, value, size);
+}
+
+HWND WINAPI CreateWindowExW_Hook(DWORD exStyle, LPCWSTR className, LPCWSTR name, DWORD style, int x, int y, int w, int h,
+                                 HWND parent, HMENU menu, HINSTANCE instance, LPVOID param) {
+    HWND wnd = CreateWindowExW_Original(exStyle, className, name, style, x, y, w, h, parent, menu, instance, param);
+    if (wnd && g_square && TopLevel(parent, style)) SetCorners(wnd, kSquare);
+    return wnd;
+}
+
+HWND WINAPI CreateWindowExA_Hook(DWORD exStyle, LPCSTR className, LPCSTR name, DWORD style, int x, int y, int w, int h,
+                                 HWND parent, HMENU menu, HINSTANCE instance, LPVOID param) {
+    HWND wnd = CreateWindowExA_Original(exStyle, className, name, style, x, y, w, h, parent, menu, instance, param);
+    if (wnd && g_square && TopLevel(parent, style)) SetCorners(wnd, kSquare);
+    return wnd;
+}
+
+// Menus are made by Windows itself (not through CreateWindowEx), so each is caught as it opens: an in-context
+// event hook for this program's own menus only, called on the menu's own thread, one event a menu.
+HWINEVENTHOOK g_menuHook = nullptr;
+
+void CALLBACK MenuOpened(HWINEVENTHOOK, DWORD, HWND wnd, LONG, LONG, DWORD, DWORD) {
+    if (wnd && g_square) SetCorners(wnd, kSquare);
+}
+
+void WatchMenus() {
+    HMODULE self = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       (LPCWSTR)&MenuOpened, &self);
+    if (self)
+        g_menuHook = SetWinEventHook(EVENT_SYSTEM_MENUPOPUPSTART, EVENT_SYSTEM_MENUPOPUPSTART, self, MenuOpened,
+                                     GetCurrentProcessId(), 0, WINEVENT_INCONTEXT);
+}
+
+BOOL CALLBACK SetOwnCorners(HWND wnd, LPARAM preference) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(wnd, &pid);
+    if (pid == GetCurrentProcessId()) SetCorners(wnd, (DWORD)preference);
+    return TRUE;
+}
+
+// This program's top-level windows, each given the preference.
+void SetAllCorners(DWORD preference) { EnumWindows(SetOwnCorners, preference); }
+
+bool SquareWanted() {
+    DWORD value = 0, size = sizeof(value);
+    return RegGetValueW(HKEY_CURRENT_USER, kKey, L"Square", RRF_RT_REG_DWORD, nullptr, &value, &size) == ERROR_SUCCESS &&
+           value != 0;
+}
+
+// The key changed: watched again, and every window squared or rounded if the switch moved.
+void CALLBACK KeyChanged(PVOID, BOOLEAN) {
+    if (g_key) RegNotifyChangeKeyValue(g_key, FALSE, REG_NOTIFY_CHANGE_LAST_SET, g_changed, TRUE);
+    bool square = SquareWanted();
+    if (square != g_square.exchange(square)) SetAllCorners(square ? kSquare : kWindowsChoice);
+}
+
+void StartWatching() {
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, kKey, 0, nullptr, 0, KEY_NOTIFY | KEY_QUERY_VALUE, nullptr, &g_key, nullptr)) return;
+    g_changed = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+    if (!g_changed || RegNotifyChangeKeyValue(g_key, FALSE, REG_NOTIFY_CHANGE_LAST_SET, g_changed, TRUE)) return;
+    RegisterWaitForSingleObject(&g_wait, g_changed, KeyChanged, nullptr, INFINITE, WT_EXECUTEDEFAULT);
+}
+
+void StopWatching() {
+    if (g_wait) UnregisterWaitEx(g_wait, INVALID_HANDLE_VALUE);  // (waits for a change being handled)
+    g_wait = nullptr;
+    if (g_key) RegCloseKey(g_key);
+    g_key = nullptr;
+    if (g_changed) CloseHandle(g_changed);
+    g_changed = nullptr;
+}
+
+bool Excluded() {
+    WCHAR path[MAX_PATH];
+    DWORD length = GetModuleFileNameW(nullptr, path, ARRAYSIZE(path));
+    if (!length || length >= ARRAYSIZE(path)) return false;
+    PCWSTR slash = wcsrchr(path, L'\\');
+    std::wstring name = slash ? slash + 1 : path;
+    PCWSTR setting = Wh_GetStringSetting(L"squareCorners.excludeApps");
+    std::wstring list = setting ? setting : L"";
+    Wh_FreeStringSetting(setting);
+    size_t start = 0;
+    while (start <= list.size()) {
+        size_t comma = list.find(L',', start);
+        std::wstring item = list.substr(start, comma == std::wstring::npos ? std::wstring::npos : comma - start);
+        item.erase(0, item.find_first_not_of(L" \t"));
+        item.erase(item.find_last_not_of(L" \t") + 1);
+        if (!item.empty() && _wcsicmp(item.c_str(), name.c_str()) == 0) return true;
+        if (comma == std::wstring::npos) break;
+        start = comma + 1;
+    }
+    return false;
+}
+
+}  // namespace
+
+// The suite asks before starting the part here: not in a program left rounded.
+bool ShouldLoadInThisProcess() { return !Excluded(); }
+
+BOOL PartInit() {
+    if (Excluded()) return FALSE;
+    HMODULE dwm = LoadLibraryExW(L"dwmapi.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    HMODULE user = GetModuleHandleW(L"user32.dll");
+    if (!dwm || !user) return FALSE;
+    SuiteSetFunctionHook((void*)GetProcAddress(dwm, "DwmSetWindowAttribute"), (void*)DwmSetWindowAttribute_Hook,
+                       (void**)&DwmSetWindowAttribute_Original);
+    SuiteSetFunctionHook((void*)GetProcAddress(user, "CreateWindowExW"), (void*)CreateWindowExW_Hook,
+                       (void**)&CreateWindowExW_Original);
+    SuiteSetFunctionHook((void*)GetProcAddress(user, "CreateWindowExA"), (void*)CreateWindowExA_Hook,
+                       (void**)&CreateWindowExA_Original);
+    g_square = SquareWanted();
+    if (g_square) SetAllCorners(kSquare);  // the windows already there
+    StartWatching();
+    WatchMenus();
+    return TRUE;
+}
+
+void PartUninit() {
+    if (g_menuHook) UnhookWinEvent(g_menuHook);
+    g_menuHook = nullptr;
+    StopWatching();
+    if (g_square.exchange(false)) SetAllCorners(kWindowsChoice);
+}
+
+// Left rounded now: the suite loads again without the part here.
+bool NeedsReload() { return Excluded(); }
+
+void PartSettingsChanged() {}
+
+}  // namespace part_square_corners
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Explorer relay: the half of System Icons that has to live in Explorer
@@ -68426,10 +83335,10 @@ void ApplyHidingOnTaskbarThread();
 extern UINT g_msgHideNow;
 
 // Shell_NotifyIconGetRect reaches the tray as WM_COPYDATA (dwData 3): a signature, then 1 for an icon's left and
-// right or 2 for its top and bottom (answered packed low and high, as MAKELONG), then the icon (hwnd, id, guid).
+// top or 2 for its width and height (answered packed low and high, as MAKELONG; measured), then the icon (hwnd, id, guid).
 // With a Tourne tray in front, Explorer's own tray is hidden and can't answer, and programs that ask before acting
 // on a click ignore it (Tauri's tray, so Handy: its menu never opened). They get a small box at the pointer then,
-// where the click just was, as systray-util's tray answers.
+// where the click just was.
 LRESULT AnswerIconRect(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     auto* copyData = (const COPYDATASTRUCT*)lParam;
     LRESULT own = DefSubclassProc(hWnd, uMsg, wParam, lParam);
@@ -68444,10 +83353,10 @@ LRESULT AnswerIconRect(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     }
     constexpr int kHalf = 12;
     if (which == 1) {
-        return (LRESULT)(DWORD)MAKELONG((WORD)(SHORT)(pt.x - kHalf), (WORD)(SHORT)(pt.x + kHalf));
+        return (LRESULT)(DWORD)MAKELONG((WORD)(SHORT)(pt.x - kHalf), (WORD)(SHORT)(pt.y - kHalf));
     }
     if (which == 2) {
-        return (LRESULT)(DWORD)MAKELONG((WORD)(SHORT)(pt.y - kHalf), (WORD)(SHORT)(pt.y + kHalf));
+        return (LRESULT)(DWORD)MAKELONG(2 * kHalf, 2 * kHalf);
     }
     return own;
 }
@@ -69389,6 +84298,7 @@ enum SuitePart : int {
     kPartDarkMagic,
     kPartExplorerColors,
     kPartClassicMenus,
+    kPartSquareCorners,
     kPartCount
 };
 
@@ -69398,7 +84308,7 @@ constexpr PCWSTR kPartKeys[kPartCount] = {
     L"menuNoIcons", L"menuNoDuplicates", L"systemIcons", L"clock",
     L"iconRedirect", L"tweaks", L"taskbar", L"switcher",
     L"explorerStyle", L"themeGaps", L"darkMagic", L"explorerColors",
-    L"classicMenus",
+    L"classicMenus", L"squareCorners",
 };
 
 bool g_partEnabled[kPartCount];
@@ -69488,6 +84398,8 @@ void SuiteEvaluate() {
         g_partEnabled[kPartDarkMagic] && part_dark_magic::ShouldLoadInThisProcess();
     g_partWanted[kPartClassicMenus] =
         g_partEnabled[kPartClassicMenus] && part_classic_menus::ShouldLoadInThisProcess();
+    g_partWanted[kPartSquareCorners] =
+        g_partEnabled[kPartSquareCorners] && part_square_corners::ShouldLoadInThisProcess();
     g_partWanted[kPartMenuNoIcons] =
         g_partEnabled[kPartMenuNoIcons] && part_menu_no_icons::ShouldLoadInThisProcess();
     g_partWanted[kPartMenuNoDuplicates] =
@@ -69805,6 +84717,7 @@ BOOL Wh_ModInit() {
     g_partActive[kPartThemeGaps] = SuiteStartPart(kPartThemeGaps, part_theme_gaps::PartInit);
     g_partActive[kPartDarkMagic] = SuiteStartPart(kPartDarkMagic, part_dark_magic::PartInit);
     g_partActive[kPartClassicMenus] = SuiteStartPart(kPartClassicMenus, part_classic_menus::PartInit);
+    g_partActive[kPartSquareCorners] = SuiteStartPart(kPartSquareCorners, part_square_corners::PartInit);
     g_partActive[kPartMenuNoIcons] =
         SuiteStartPart(kPartMenuNoIcons, part_menu_no_icons::PartInit);
     g_partActive[kPartMenuNoDuplicates] =
@@ -69922,6 +84835,9 @@ void Wh_ModUninit() {
     if (g_partActive[kPartDarkMagic]) {
         part_dark_magic::PartUninit();
     }
+    if (g_partActive[kPartSquareCorners]) {
+        part_square_corners::PartUninit();
+    }
     // Stops a theme download and a tweaks pass, which only the launcher starts.
     part_icon_redirect::StopFetch();
     part_tweaks::Stop();
@@ -69956,6 +84872,7 @@ BOOL Wh_ModSettingsChanged(BOOL* bReload) {
         (g_partActive[kPartIconRedirect] && part_icon_redirect::NeedsReload()) ||
         (g_partActive[kPartThemeGaps] && part_theme_gaps::NeedsReload()) ||
         (g_partActive[kPartClassicMenus] && part_classic_menus::NeedsReload()) ||
+        (g_partActive[kPartSquareCorners] && part_square_corners::NeedsReload()) ||
 #ifdef _WIN64
         (g_partActive[kPartExplorerColors] && part_explorer_colors::NeedsReload()) ||
 #endif

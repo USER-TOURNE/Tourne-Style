@@ -9,7 +9,7 @@ Pull a commit, build Tourne Desktop and swap it into the copy running as the she
 The running exe in %LOCALAPPDATA%\Tourne\Desktop\bin is renamed (Windows allows that), the build
 copied in, and only the --shell-child ended, with exit code 3 (kPlannedRestart): the --shell
 watchdog starts the new exe from the same path and counts no crash. Never quit it cleanly (exit 0
-hands the session to Explorer). Every write goes through Invoke-Real: this shell has its
+hands the session to Explorer). Every write goes through Invoke-Real: a packaged app's shell has its
 AppData writes redirected.
 
 A watchdog from before kPlannedRestart (it marks itself in HKCU\Software\Tourne\Desktop\Watchdog)
@@ -98,7 +98,7 @@ if ($child -and $watchdog -and -not $planned) {
 }
 
 # 4. The swap
-$copy = "copy /y `"$src\TourneDesktop.exe`" . && copy /y `"$src\TourneDesktop.symbols.exe`" . && copy /y `"$src\TourneDesktop.exe.manifest`" . && (if exist `"$src\tournectl.exe`" copy /y `"$src\tournectl.exe`" .) && (echo $head)> TourneDesktop.commit.txt"
+$copy = "copy /y `"$src\TourneDesktop.exe`" . && copy /y `"$src\TourneDesktop.symbols.exe`" . && copy /y `"$src\TourneDesktop.exe.manifest`" . && (if exist `"$src\tournectl.exe`" copy /y `"$src\tournectl.exe`" .) && (if exist `"$src\tourne-appstyler-attach.exe`" copy /y `"$src\tourne-appstyler-attach.exe`" .) && (copy /y `"$src\TourneAppStyler.dll`" . || ver>nul) && (echo $head)> TourneDesktop.commit.txt"
 $line = "cd /d `"$bin`" && (if exist TourneDesktop.exe.prev-$old del TourneDesktop.exe.prev-$old) && (if exist TourneDesktop.exe ren TourneDesktop.exe TourneDesktop.exe.prev-$old) && $copy"
 Step "swap: $line"
 if ($child -and $watchdog) { Step "then end shell child $($child.ProcessId) with exit code 3 (planned restart)" }

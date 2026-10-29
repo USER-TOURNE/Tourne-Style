@@ -262,6 +262,11 @@ constexpr std::pair<TileLayout, PCWSTR> kLayoutNames[] = {
     {TileLayout::UltrawideVerticalStack, L"ultrawideVerticalStack"},
     {TileLayout::Grid, L"grid"},
     {TileLayout::Bsp, L"bsp"},
+    {TileLayout::Spiral, L"spiral"},
+    {TileLayout::ThreeColumn, L"threeColumn"},
+    {TileLayout::Slice, L"slice"},
+    {TileLayout::ScreenSplit, L"screenSplit"},
+    {TileLayout::Script, L"script"},
     {TileLayout::Monocle, L"monocle"},
     {TileLayout::Layers, L"layers"},
 };
@@ -306,7 +311,9 @@ std::wstring SnapshotLayout() {
     std::wstring text =
         L"# A screen: its edges (left top right bottom) and its tiling layout\r\n"
         L"# (off, columns, rows, verticalStack, rightMainVerticalStack, horizontalStack,\r\n"
-        L"# ultrawideVerticalStack, grid, bsp, monocle, layers).\r\n"
+        L"# ultrawideVerticalStack, grid, bsp, spiral, threeColumn, slice,\r\n"
+        L"# screenSplit, script, monocle,\r\n"
+        L"# layers).\r\n"
         L"# A window: tile or float, its edges, then program|class.\r\n";
     struct Screens {
         std::wstring* text;

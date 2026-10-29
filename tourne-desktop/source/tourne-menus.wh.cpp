@@ -1,8 +1,8 @@
 // ==WindhawkMod==
 // @id              tourne-menus
 // @name            Tourne Menus
-// @description     Tourne Desktop's menus in File Explorer, the Open and Save dialogs and Windows' own menus: its look, the wheel scrolling long menus, its hide and More options rules and how menus open
-// @version         1.0.6
+// @description     Tourne Desktop's menus in File Explorer, the Open and Save dialogs, Windows' own menus, every program's menus and menu bars: its look, the wheel scrolling long menus, its hide, More options and no-duplicates rules and how menus open
+// @version         1.1.0
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
@@ -30,6 +30,18 @@ way, each with its own switch:
   (Explorer's taskbar and desktop when Explorer is the shell, the volume,
   network, language and Windows Security icons, Task Manager, Store apps'
   title bar menus). They're made plain menus first, as Classic Menus does.
+- **Every program's menus**: right-click and pop-up menus in any program,
+  as the Classic Menus and Dark Menus mods restyle them, but in Tourne's look.
+- **Menu bars**: the File, Edit, View row of programs that have one, in
+  Tourne's colours, as Dark Menus does.
+- **Duplicate items**: items listed by name (Convertify, say) that some
+  menus show twice, kept once, as Menu No Duplicates does.
+
+With these on, Classic Menus, Dark Menus, Eradicate Immersive Menus and
+Tourne'Suite's Classic Menus, Menu No Icons and Menu No Duplicates parts
+have nothing left to do: turn them off, so menus aren't styled twice.
+(Menu No Icons: Tourne Desktop's own "No icons in menus" setting reaches
+every menu drawn here.)
 
 All three start off: turn on the ones you want.
 
@@ -70,6 +82,26 @@ Bolt-Scripts' Custom Cached Context Menu (MIT). No code was copied from either.
     The menus Windows draws as "immersive" menus: Explorer's taskbar and
     desktop (when Explorer is the shell), the volume, network, language and
     Windows Security icons, Task Manager, Store apps' title bar menus.
+- allMenus: false
+  $name: Every program's menus
+  $description: >-
+    Right-click and pop-up menus in every program, as Classic Menus and Dark
+    Menus do, in Tourne's look. Menus a program draws itself stay its own.
+- menuBars: false
+  $name: Menu bars
+  $description: >-
+    The File, Edit, View row of programs that have one, in Tourne's colours
+    (as Dark Menus does).
+- noDuplicates: ''
+  $name: Show these items once
+  $description: >-
+    Item names, separated by commas, like Convertify: when a menu shows one
+    of them more than once, only one stays (as Menu No Duplicates does).
+- noDuplicatesKeep: last
+  $name: Which one stays
+  $options:
+  - first: The first
+  - last: The last
 - excludeApps: ''
   $name: Leave these programs alone
   $description: Program file names, separated by commas, like game.exe.
@@ -156,6 +188,9 @@ struct MenuLook {
 };
 
 MENU_STYLE_STORAGE MenuLook g_menuLook;
+// A foreign menu's items Windows' shell has made owner-drawn for its own look (its immersive menu helper, as
+// in a file dialog with no hook to stop it) taken over too: those with text, and separators. Set for one menu.
+MENU_STYLE_STORAGE bool g_menuTakeOwnerDrawn = false;
 
 // How menus open (taskbar.menuAnimation): at once (none, the default), or with a short animation timed by
 // the motion engine (its popups line), set by whoever opens the menu.
@@ -305,7 +340,11 @@ void StyleMenuItems(HMENU menu, bool foreign = false) {
         info.cch = ARRAYSIZE(text);
         if (!GetMenuItemInfoW(menu, i, TRUE, &info)) continue;
         if (info.hSubMenu) StyleMenuItems(info.hSubMenu, foreign);
-        if (info.fType & MFT_OWNERDRAW) continue;  // styled already, or drawn by its owner
+        if (info.fType & MFT_OWNERDRAW) {  // styled already, or drawn by its owner
+            bool shellDrawn = foreign && g_menuTakeOwnerDrawn && !StyledItemOf(info.dwItemData) &&
+                              (text[0] || (info.fType & MFT_SEPARATOR));
+            if (!shellDrawn) continue;
+        }
         if (g_menuLook.caps && !foreign) CharUpperBuffW(text, (DWORD)wcslen(text));
         auto* item = new StyledMenuItem{text, (info.fType & MFT_SEPARATOR) != 0, info.hSubMenu != nullptr};
         item->type = info.fType;
@@ -1359,14 +1398,27 @@ LRESULT CALLBACK MenuMotionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 // Items taken out of a shell menu, or moved into a "More options" submenu at its end, by their label
 // (without its & and what follows a tab, any case, a trailing "..." optional) or, where the caller can
 // tell, their verb ("cut", "properties", "openas"). Only the menu's own items, not its submenus'. Separators
-// left doubled, first or last go too. UndoMenuRules puts everything back where it was, for a caller that
-// keeps the menu (Explorer's).
+// left doubled, first or last go too. Items can also be renamed, and new ones added that run a command (the
+// menu file, menus.conf, below). UndoMenuRules puts everything back where it was, for a caller that keeps the
+// menu (Explorer's).
 
 struct MenuRules {
     std::vector<std::wstring> hide, more;  // lower case
     std::wstring moreLabel = L"More options";
-    bool Any() const { return !hide.empty() || !more.empty(); }
+    struct Rename {
+        std::wstring from, to;  // from: lower case
+    };
+    std::vector<Rename> rename;
+    struct Add {
+        std::wstring label, command;  // label "-": a separator
+        bool top = false;             // first in the menu, else last (before "More options")
+    };
+    std::vector<Add> add;
+    bool Any() const { return !hide.empty() || !more.empty() || !rename.empty() || !add.empty(); }
 };
+
+// The ids of added items: above the shell's (1 to 0x7FFF) and the desktop menu's own (0x8000 on).
+constexpr UINT kMenuAddFirst = 0xFE00, kMenuAddLast = 0xFEFF;
 
 // "Cast to Device, Give access to" -> {"cast to device", "give access to"}.
 std::vector<std::wstring> MenuRuleList(std::wstring const& text) {
@@ -1404,6 +1456,13 @@ std::wstring MenuRuleLabel(std::wstring const& text) {
 struct MenuRulesUndo {
     HMENU menu = nullptr, more = nullptr;
     bool separator = false;  // a separator was added before the submenu
+    struct Renamed {
+        int at;  // where it was, before anything was taken out
+        std::wstring text;
+    };
+    std::vector<Renamed> renamed;
+    bool added = false;
+    std::vector<std::wstring> commands;  // the added items', by id - kMenuAddFirst (kept after the undo: RunMenuRule)
     struct Taken {
         int at;  // where it was
         MENUITEMINFOW info;
@@ -1450,11 +1509,52 @@ MenuRulesUndo ApplyMenuRules(HMENU menu, MenuRules const& rules, VerbOf&& verbOf
         for (auto& c : verb) c = (wchar_t)towlower(c);
         if (listed(rules.hide, label, verb, greyed)) fate[i] = 1;
         else if (listed(rules.more, label, verb, greyed)) fate[i] = 2;
+        for (auto const& r : rules.rename) {
+            if (r.from != label && (verb.empty() || r.from != verb)) continue;
+            // (what follows a tab, the shortcut shown on the right, stays)
+            std::wstring now = text, to = r.to;
+            if (size_t tab = now.find(L'\t'); tab != std::wstring::npos) to += now.substr(tab);
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)to.c_str();
+            if (SetMenuItemInfoW(menu, i, TRUE, &set)) undo.renamed.push_back({i, now});
+            break;
+        }
     }
+    // The added ones, at the top or the end: separators round them where the menu has items.
+    auto addItems = [&] {
+        for (int pass = 0; pass < 2; pass++) {
+            std::vector<MenuRules::Add const*> list;
+            for (auto const& a : rules.add)
+                if (a.top == (pass == 0)) list.push_back(&a);
+            if (list.empty()) continue;
+            int at = pass == 0 ? 0 : GetMenuItemCount(menu);
+            auto insert = [&](MenuRules::Add const* a) {
+                UINT id = kMenuAddFirst + (UINT)undo.commands.size();
+                if (id > kMenuAddLast) return;
+                undo.commands.push_back(a ? a->command : L"");
+                MENUITEMINFOW info{sizeof(info)};
+                info.fMask = MIIM_FTYPE | MIIM_ID | (a && a->label != L"-" ? MIIM_STRING : 0);
+                info.fType = a && a->label != L"-" ? MFT_STRING : MFT_SEPARATOR;
+                info.wID = id;
+                info.dwTypeData = a ? (LPWSTR)a->label.c_str() : nullptr;
+                if (InsertMenuItemW(menu, at, TRUE, &info)) at++, undo.added = true;
+            };
+            int n = GetMenuItemCount(menu);
+            bool edge = pass == 0 ? n == 0 || (GetMenuState(menu, 0, MF_BYPOSITION) & MF_SEPARATOR)
+                                  : n == 0 || (GetMenuState(menu, n - 1, MF_BYPOSITION) & MF_SEPARATOR);
+            if (pass == 1 && !edge && list.front()->label != L"-") insert(nullptr);
+            for (auto* a : list) insert(a);
+            if (pass == 0 && !edge && list.back()->label != L"-") insert(nullptr);
+        }
+    };
     // Separators that would be first, last or doubled once the rest is gone.
     bool any = false;
     for (int f : fate) any |= f != 0;
-    if (!any) return undo;
+    if (!any) {
+        addItems();
+        return undo;
+    }
     int lastKept = -1;  // the last item staying in the menu, before i
     for (int i = 0; i < count; i++) {
         if (fate[i]) continue;
@@ -1477,6 +1577,7 @@ MenuRulesUndo ApplyMenuRules(HMENU menu, MenuRules const& rules, VerbOf&& verbOf
         taken.insert(taken.begin(), t);
     }
     undo.taken = taken;
+    addItems();
     // The moved ones, in their order, in a submenu at the end (after a separator).
     for (auto& t : undo.taken) {
         if (fate[t.at] != 2) continue;
@@ -1497,7 +1598,24 @@ MenuRulesUndo ApplyMenuRules(HMENU menu, MenuRules const& rules, VerbOf&& verbOf
 }
 
 void UndoMenuRules(MenuRulesUndo& undo) {
-    if (!undo.menu || undo.taken.empty()) return;
+    if (!undo.menu) return;
+    if (undo.added) {
+        for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
+            UINT id = GetMenuItemID(undo.menu, i);
+            if (id >= kMenuAddFirst && id <= kMenuAddLast) RemoveMenu(undo.menu, i, MF_BYPOSITION);
+        }
+        undo.added = false;
+    }
+    auto renameBack = [&] {
+        for (auto& r : undo.renamed) {
+            MENUITEMINFOW set{sizeof(set)};
+            set.fMask = MIIM_STRING;
+            set.dwTypeData = (LPWSTR)r.text.c_str();
+            SetMenuItemInfoW(undo.menu, r.at, TRUE, &set);
+        }
+        undo.renamed.clear();
+    };
+    if (undo.taken.empty()) return renameBack();
     if (undo.more) {
         // The submenu and the separator added before it.
         for (int i = GetMenuItemCount(undo.menu) - 1; i >= 0; i--) {
@@ -1516,6 +1634,316 @@ void UndoMenuRules(MenuRulesUndo& undo) {
         InsertMenuItemW(undo.menu, std::min(t.at, GetMenuItemCount(undo.menu)), TRUE, &info);
     }
     undo.taken.clear();
+    renameBack();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The menu file, %APPDATA%\Tourne\Desktop\menus.conf: what each menu shows, a line each, under sections
+// that say which menus they're for. Read again whenever it changes; what didn't make sense is written to
+// menus.log beside it.
+//
+//   # a note
+//   hide Cast to Device              (a label, any case, or a verb: properties, openas; "Paste (greyed)" too)
+//   more Give access to              (into the "More options" submenu at the end)
+//   more-label More...
+//   rename Copy as path -> Copy path
+//   add Open in Terminal = wt.exe -d %folder%
+//   add top Edit in Notepad = notepad.exe %file%
+//   add separator
+//   [when menu desktop, files *.txt *.md]   (every condition holds; ! before one turns it round)
+//   [all]                                   (back to every menu)
+//
+// Conditions: menu NAME... (desktop, taskbar, explorer, dialog, windows), app NAME.exe..., files PATTERN...
+// (every chosen item's name matches one), folder (every chosen item is a folder), background (nothing
+// chosen: the empty space), shift. Where a menu doesn't know what's chosen (Explorer's, through Tourne Menus),
+// files, folder and background never hold, nor their opposites. In commands: %file% (the first chosen, quoted),
+// %files% (all of them), %folder% (where the menu opened, or the first one's folder), and %VARIABLES%.
+
+struct MenuContext {
+    std::wstring menu;                // desktop, taskbar, explorer, dialog or windows
+    std::wstring app;                 // the program's file name, lower case
+    bool known = false;               // what's chosen is known
+    std::vector<std::wstring> files;  // full paths
+    std::wstring folder;
+};
+
+struct MenuFile {
+    struct Line {
+        std::wstring verb, item, value;
+        bool top = false;
+    };
+    struct Section {
+        std::vector<std::wstring> when;  // lower case, one condition each
+        std::vector<Line> lines;
+    };
+    std::vector<Section> sections;
+};
+
+// "*.txt" against "notes.TXT".
+bool MenuWild(wchar_t const* pattern, wchar_t const* text) {
+    if (!*pattern) return !*text;
+    if (*pattern == L'*') return MenuWild(pattern + 1, text) || (*text && MenuWild(pattern, text + 1));
+    if (!*text) return false;
+    if (*pattern != L'?' && towlower(*pattern) != towlower(*text)) return false;
+    return MenuWild(pattern + 1, text + 1);
+}
+
+std::wstring MenuTrim(std::wstring x) {
+    x.erase(0, x.find_first_not_of(L" \t"));
+    size_t end = x.find_last_not_of(L" \t\r");
+    x.erase(end == std::wstring::npos ? 0 : end + 1);
+    return x;
+}
+
+MenuFile ParseMenuFile(std::wstring const& text, std::wstring* errors) {
+    MenuFile file;
+    file.sections.push_back({});
+    int number = 0;
+    size_t start = 0;
+    auto error = [&](std::wstring const& why) {
+        if (errors) *errors += L"line " + std::to_wstring(number) + L": " + why + L"\r\n";
+    };
+    while (start < text.size()) {
+        size_t end = text.find(L'\n', start);
+        std::wstring line = MenuTrim(text.substr(start, end == std::wstring::npos ? std::wstring::npos : end - start));
+        start = end == std::wstring::npos ? text.size() : end + 1;
+        number++;
+        if (line.empty() || line[0] == L'#') continue;
+        if (line[0] == L'[') {
+            if (line.back() != L']') {
+                error(L"a section needs its closing ]");
+                continue;
+            }
+            std::wstring inner = MenuTrim(line.substr(1, line.size() - 2));
+            for (auto& c : inner) c = (wchar_t)towlower(c);
+            MenuFile::Section section;
+            if (inner != L"all") {
+                if (inner.compare(0, 5, L"when ")) {
+                    error(L"a section is [when ...] or [all]");
+                    continue;
+                }
+                for (auto const& c : MenuRuleList(inner.substr(5))) {
+                    std::wstring key = c[0] == L'!' ? MenuTrim(c.substr(1)) : c;
+                    key = key.substr(0, key.find(L' '));
+                    if (key != L"menu" && key != L"app" && key != L"files" && key != L"folder" && key != L"background" &&
+                        key != L"shift")
+                        error(L"no condition \"" + key + L"\" (menu, app, files, folder, background, shift)");
+                    else section.when.push_back(c);
+                }
+            }
+            file.sections.push_back(section);
+            continue;
+        }
+        size_t space = line.find_first_of(L" \t");
+        MenuFile::Line l;
+        l.verb = line.substr(0, space);
+        for (auto& c : l.verb) c = (wchar_t)towlower(c);
+        std::wstring rest = space == std::wstring::npos ? L"" : MenuTrim(line.substr(space));
+        if (l.verb == L"add") {
+            if (!_wcsnicmp(rest.c_str(), L"top ", 4)) l.top = true, rest = MenuTrim(rest.substr(4));
+            if (!_wcsicmp(rest.c_str(), L"separator") || rest == L"-") {
+                l.item = L"-";
+            } else {
+                size_t eq = rest.find(L'=');
+                if (eq == std::wstring::npos || MenuTrim(rest.substr(0, eq)).empty() || MenuTrim(rest.substr(eq + 1)).empty()) {
+                    error(L"add needs a label and a command: add LABEL = COMMAND");
+                    continue;
+                }
+                l.item = MenuTrim(rest.substr(0, eq));
+                l.value = MenuTrim(rest.substr(eq + 1));
+            }
+        } else if (l.verb == L"rename") {
+            size_t arrow = rest.find(L"->");
+            if (arrow == std::wstring::npos || MenuTrim(rest.substr(0, arrow)).empty() || MenuTrim(rest.substr(arrow + 2)).empty()) {
+                error(L"rename needs both names: rename OLD -> NEW");
+                continue;
+            }
+            l.item = MenuRuleLabel(MenuTrim(rest.substr(0, arrow)));
+            l.value = MenuTrim(rest.substr(arrow + 2));
+        } else if (l.verb == L"hide" || l.verb == L"more" || l.verb == L"more-label") {
+            if (rest.empty()) {
+                error(l.verb + L" needs an item");
+                continue;
+            }
+            l.item = rest;
+            // (as the settings' lists are compared: lower case, " (greyed)" kept)
+            if (l.verb != L"more-label")
+                for (auto& c : l.item) c = (wchar_t)towlower(c);
+        } else {
+            error(L"no verb \"" + l.verb + L"\" (hide, more, more-label, rename, add)");
+            continue;
+        }
+        file.sections.back().lines.push_back(l);
+    }
+    return file;
+}
+
+// 1 holds, 0 doesn't, -1 can't tell (what's chosen isn't known).
+int MenuConditionHolds(std::wstring const& condition, MenuContext const& c) {
+    bool flip = condition[0] == L'!';
+    std::wstring x = flip ? MenuTrim(condition.substr(1)) : condition;
+    size_t space = x.find(L' ');
+    std::wstring key = x.substr(0, space);
+    std::vector<std::wstring> words;
+    for (size_t at = space; at != std::wstring::npos && at < x.size();) {
+        size_t from = x.find_first_not_of(L' ', at);
+        if (from == std::wstring::npos) break;
+        at = x.find(L' ', from);
+        words.push_back(x.substr(from, at == std::wstring::npos ? std::wstring::npos : at - from));
+    }
+    int holds = 0;
+    if (key == L"menu" || key == L"app") {
+        std::wstring const& what = key == L"menu" ? c.menu : c.app;
+        for (auto const& w : words) holds |= MenuWild(w.c_str(), what.c_str());
+    } else if (key == L"shift") {
+        holds = GetKeyState(VK_SHIFT) < 0;
+    } else {
+        if (!c.known) return -1;
+        if (key == L"background") {
+            holds = c.files.empty();
+        } else if (key == L"folder") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                DWORD a = GetFileAttributesW(f.c_str());
+                if (a == INVALID_FILE_ATTRIBUTES || !(a & FILE_ATTRIBUTE_DIRECTORY)) holds = 0;
+            }
+        } else if (key == L"files") {
+            holds = !c.files.empty();
+            for (auto const& f : c.files) {
+                size_t slash = f.find_last_of(L"\\/");
+                std::wstring name = slash == std::wstring::npos ? f : f.substr(slash + 1);
+                bool one = false;
+                for (auto const& w : words) one |= MenuWild(w.c_str(), name.c_str());
+                if (!one) holds = 0;
+            }
+        }
+    }
+    return flip ? !holds : holds;
+}
+
+// The rules a menu gets: the settings' (base), then the file's sections that hold for it, in order.
+MenuRules MenuRulesFor(MenuFile const& file, MenuContext const& c, MenuRules rules) {
+    for (auto const& section : file.sections) {
+        bool holds = true;
+        for (auto const& w : section.when) holds &= MenuConditionHolds(w, c) == 1;
+        if (!holds) continue;
+        for (auto const& l : section.lines) {
+            if (l.verb == L"hide") rules.hide.push_back(l.item);
+            else if (l.verb == L"more") rules.more.push_back(l.item);
+            else if (l.verb == L"more-label") rules.moreLabel = l.item;
+            else if (l.verb == L"rename") rules.rename.push_back({l.item, l.value});
+            else if (l.verb == L"add") rules.add.push_back({l.item, l.value, l.top});
+        }
+    }
+    return rules;
+}
+
+std::wstring MenuFilePath() {
+    WCHAR roaming[MAX_PATH] = L"";  // (from the environment: nothing to link, in any program)
+    DWORD n = GetEnvironmentVariableW(L"APPDATA", roaming, ARRAYSIZE(roaming));
+    return n && n < ARRAYSIZE(roaming) ? std::wstring(roaming) + L"\\Tourne\\Desktop\\menus.conf" : L"";
+}
+
+// The file as it is now: parsed again only when it changed (its time and size), its errors then written down.
+MenuFile const& LoadMenuFile() {
+    static MENU_STYLE_STORAGE MenuFile* s_file;
+    static MENU_STYLE_STORAGE ULONGLONG s_seen;  // its write time, when last read
+    static MENU_STYLE_STORAGE ULONGLONG s_size;
+    static MENU_STYLE_STORAGE DWORD s_checked;
+    if (!s_file) s_file = new MenuFile;
+    if (s_checked && GetTickCount() - s_checked < 500) return *s_file;  // (several menus at once: one look)
+    s_checked = GetTickCount() | 1;
+    std::wstring path = MenuFilePath();
+    WIN32_FILE_ATTRIBUTE_DATA a{};
+    if (path.empty() || !GetFileAttributesExW(path.c_str(), GetFileExInfoStandard, &a)) {
+        if (s_seen) *s_file = {}, s_seen = 0;
+        return *s_file;
+    }
+    ULONGLONG time = ((ULONGLONG)a.ftLastWriteTime.dwHighDateTime << 32) | a.ftLastWriteTime.dwLowDateTime;
+    ULONGLONG size = ((ULONGLONG)a.nFileSizeHigh << 32) | a.nFileSizeLow;
+    if (time == s_seen && size == s_size) return *s_file;
+    s_seen = time, s_size = size;
+    std::wstring text;
+    HANDLE h = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (h != INVALID_HANDLE_VALUE) {
+        std::string bytes((size_t)std::min<ULONGLONG>(size, 1 << 20), '\0');
+        DWORD got = 0;
+        if (!bytes.empty() && ReadFile(h, bytes.data(), (DWORD)bytes.size(), &got, nullptr)) {
+            bytes.resize(got);
+            if (bytes.size() >= 3 && !bytes.compare(0, 3, "\xEF\xBB\xBF")) bytes.erase(0, 3);
+            int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+            text.resize(n);
+            MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), n);
+        }
+        CloseHandle(h);
+    }
+    std::wstring errors;
+    *s_file = ParseMenuFile(text, &errors);
+    // menus.log: what didn't make sense, or that all of it did.
+    std::wstring log = path.substr(0, path.size() - 5) + L".log";
+    std::wstring report = errors.empty() ? L"menus.conf read: every line made sense\r\n" : L"menus.conf: lines left out\r\n" + errors;
+    HANDLE out = CreateFileW(log.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, 0, nullptr);
+    if (out != INVALID_HANDLE_VALUE) {
+        int n = WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), nullptr, 0, nullptr, nullptr);
+        std::string utf8(n, '\0');
+        WideCharToMultiByte(CP_UTF8, 0, report.c_str(), (int)report.size(), utf8.data(), n, nullptr, nullptr);
+        DWORD wrote = 0;
+        WriteFile(out, utf8.data(), (DWORD)utf8.size(), &wrote, nullptr);
+        CloseHandle(out);
+    }
+    return *s_file;
+}
+
+// This program's file name, lower case (for "app" conditions).
+std::wstring MenuAppName(HWND owner = nullptr) {
+    DWORD pid = GetCurrentProcessId();
+    if (owner) GetWindowThreadProcessId(owner, &pid);
+    std::wstring name;
+    if (HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)) {
+        WCHAR path[MAX_PATH];
+        DWORD n = ARRAYSIZE(path);
+        if (QueryFullProcessImageNameW(p, 0, path, &n)) {
+            name = path;
+            name = name.substr(name.find_last_of(L'\\') + 1);
+        }
+        CloseHandle(p);
+    }
+    for (auto& c : name) c = (wchar_t)towlower(c);
+    return name;
+}
+
+// The chosen command, when it's one the rules added: run, and true.
+bool RunMenuRule(MenuRulesUndo const& undo, UINT cmd, MenuContext const& c) {
+    if (cmd < kMenuAddFirst || cmd > kMenuAddLast || cmd - kMenuAddFirst >= undo.commands.size()) return false;
+    std::wstring command = undo.commands[cmd - kMenuAddFirst];
+    if (command.empty()) return true;
+    std::wstring folder = c.folder;
+    if (folder.empty() && !c.files.empty()) folder = c.files[0].substr(0, c.files[0].find_last_of(L"\\/"));
+    auto quoted = [](std::wstring const& x) { return L"\"" + x + L"\""; };
+    std::wstring all;
+    for (auto const& f : c.files) all += (all.empty() ? L"" : L" ") + quoted(f);
+    auto put = [&](std::wstring const& name, std::wstring const& value) {
+        for (size_t at = 0; (at = command.find(name, at)) != std::wstring::npos; at += value.size()) command.replace(at, name.size(), value);
+    };
+    put(L"%files%", all);
+    put(L"%file%", c.files.empty() ? L"" : quoted(c.files[0]));
+    put(L"%folder%", folder.empty() ? L"" : quoted(folder));
+    WCHAR expanded[4096];
+    if (ExpandEnvironmentStringsW(command.c_str(), expanded, ARRAYSIZE(expanded))) command = expanded;
+    // The program (quoted, or up to the first space), then its arguments.
+    std::wstring program, args;
+    command = MenuTrim(command);
+    if (!command.empty() && command[0] == L'"') {
+        size_t close = command.find(L'"', 1);
+        program = command.substr(1, close == std::wstring::npos ? std::wstring::npos : close - 1);
+        args = close == std::wstring::npos ? L"" : MenuTrim(command.substr(close + 1));
+    } else {
+        size_t space = command.find(L' ');
+        program = command.substr(0, space);
+        args = space == std::wstring::npos ? L"" : MenuTrim(command.substr(space));
+    }
+    ShellExecuteW(nullptr, nullptr, program.c_str(), args.empty() ? nullptr : args.c_str(), folder.empty() ? nullptr : folder.c_str(), SW_SHOWNORMAL);
+    return true;
 }
 
 UINT TrackStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner, bool foreign = false, RECT const* from = nullptr) {
@@ -1972,7 +2400,9 @@ inline bool CurveByName(std::wstring const& name, Anim* out) {
 // Which menus are drawn here.
 
 struct Settings {
-    bool explorer = false, dialogs = false, windowsMenus = false;
+    bool explorer = false, dialogs = false, windowsMenus = false, allMenus = false, menuBars = false;
+    std::vector<std::wstring> noDuplicates;  // lower case
+    bool keepLast = true;
 };
 Settings g_settings;
 bool g_inExplorer = false;  // this program is explorer.exe
@@ -2038,7 +2468,41 @@ bool WantMenu(HMENU menu, HWND owner, void* caller) {
     if (g_settings.explorer && g_inExplorer && ClassIs(root, L"CabinetWClass")) return true;
     if (g_settings.dialogs && IsFileDialog(root)) return true;
     if (g_settings.windowsMenus && CalledFromWindows(caller)) return !ClassIs(root, L"CabinetWClass") || g_settings.explorer;
+    if (g_settings.allMenus) return !ClassIs(root, L"CabinetWClass") || g_settings.explorer;
     return false;
+}
+
+// Items named in "Show these items once" kept once (the first or the last), as Menu No Duplicates does;
+// put back with the hide rules' undo when the menu closes, since the menu is the program's.
+MenuRulesUndo DropDuplicates(HMENU menu) {
+    MenuRulesUndo undo;
+    undo.menu = menu;
+    if (g_settings.noDuplicates.empty() || !menu) return undo;
+    int count = GetMenuItemCount(menu);
+    std::vector<std::wstring> labels(std::max(0, count));
+    for (int i = 0; i < count; i++) {
+        WCHAR text[256] = L"";
+        if (GetMenuStringW(menu, i, text, ARRAYSIZE(text), MF_BYPOSITION)) labels[i] = MenuRuleLabel(text);
+    }
+    std::vector<bool> drop(std::max(0, count), false);
+    for (auto const& name : g_settings.noDuplicates) {
+        std::vector<int> at;
+        for (int i = 0; i < count; i++)
+            if (labels[i] == name) at.push_back(i);
+        for (size_t k = 0; k + 1 < at.size(); k++) drop[g_settings.keepLast ? at[k] : at[k + 1]] = true;
+    }
+    for (int i = count - 1; i >= 0; i--) {
+        if (!drop[i]) continue;
+        MenuRulesUndo::Taken t{i, {sizeof(MENUITEMINFOW)}, {}};
+        WCHAR text[256] = L"";
+        t.info.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_ID | MIIM_SUBMENU | MIIM_STRING | MIIM_DATA | MIIM_BITMAP | MIIM_CHECKMARKS;
+        t.info.dwTypeData = text;
+        t.info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &t.info)) continue;
+        t.text = text;
+        if (RemoveMenu(menu, i, MF_BYPOSITION)) undo.taken.insert(undo.taken.begin(), t);
+    }
+    return undo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2284,12 +2748,27 @@ LRESULT CALLBACK OwnerProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UI
 UINT TrackHere(HMENU menu, UINT flags, int x, int y, HWND owner, RECT const* exclude) {
     t_busy = true;
     MenuRules rules = LoadMenuLook(owner);
+    // The menu file's sections for this program's menus (what's chosen isn't known here).
+    MenuContext context;
+    context.app = MenuAppName();
+    context.menu = context.app == L"explorer.exe" ? L"explorer" : L"windows";
+    rules = MenuRulesFor(LoadMenuFile(), context, rules);
+    MenuRulesUndo once = DropDuplicates(menu);
     MenuRulesUndo undo = ApplyMenuRules(menu, rules, [](UINT) { return std::wstring(); });
     SetWindowSubclass(owner, OwnerProc, 0, 0);
-    UINT result = TrackStyledMenu(menu, flags, x, y, owner, true, exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
+    // With items of ours, the choice comes back here first; one of theirs then goes on as Windows would send it.
+    bool ours = !rules.add.empty() && !(flags & TPM_RETURNCMD);
+    UINT result = TrackStyledMenu(menu, flags | (ours ? TPM_RETURNCMD : 0), x, y, owner, true,
+                                  exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
     RemoveWindowSubclass(owner, OwnerProc, 0);
     UndoMenuRules(undo);
+    UndoMenuRules(once);
     t_busy = false;
+    if (RunMenuRule(undo, result, context)) return ours ? TRUE : 0;
+    if (ours) {
+        if (result && !(flags & TPM_NONOTIFY)) PostMessageW(owner, WM_COMMAND, result, 0);
+        return result != 0;
+    }
     return result;
 }
 
@@ -2409,6 +2888,106 @@ HRESULT WINAPI IUnknown_QueryService_Hook(IUnknown* object, REFGUID service, REF
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Menu bars (Menu bars on): Windows asks the window's default procedure to draw the bar (WM_UAHDRAWMENU)
+// and each of its items (WM_UAHDRAWMENUITEM) before drawing them itself; they're drawn here instead, in
+// Tourne's colours, and the light line Windows leaves under the bar is painted over.
+constexpr UINT kUahDrawMenu = 0x91, kUahDrawMenuItem = 0x92;
+struct UahMenu {
+    HMENU menu;
+    HDC dc;
+    DWORD flags;
+};
+struct UahMenuItem {
+    int position;
+    DWORD metrics[8];  // (sizes Windows keeps for the bar and its popups)
+    DWORD popupWidths[4];
+    DWORD updateWidths;
+};
+struct UahDrawMenuItem {
+    DRAWITEMSTRUCT draw;
+    UahMenu menu;
+    UahMenuItem item;
+};
+
+COLORREF Rgb(uint32_t c) { return RGB((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF); }
+
+bool BarRect(HWND wnd, RECT* bar) {
+    MENUBARINFO info{sizeof(info)};
+    if (!GetMenuBarInfo(wnd, OBJID_MENU, 0, &info)) return false;
+    RECT window;
+    GetWindowRect(wnd, &window);
+    *bar = info.rcBar;
+    OffsetRect(bar, -window.left, -window.top);
+    return true;
+}
+
+bool DrawMenuBarHere(HWND wnd, UINT msg, LPARAM lp) {
+    if (msg == kUahDrawMenu) {
+        auto* m = (UahMenu*)lp;
+        RECT bar;
+        if (!m || !BarRect(wnd, &bar)) return false;
+        LoadMenuLook(wnd);
+        HBRUSH ground = CreateSolidBrush(Rgb(g_menuLook.ground));
+        FillRect(m->dc, &bar, ground);
+        DeleteObject(ground);
+        return true;
+    }
+    auto* d = (UahDrawMenuItem*)lp;
+    if (!d) return false;
+    LoadMenuLook(wnd);
+    MenuLook const& look = g_menuLook;
+    WCHAR text[256] = L"";
+    MENUITEMINFOW info{sizeof(info)};
+    info.fMask = MIIM_STRING;
+    info.dwTypeData = text;
+    info.cch = ARRAYSIZE(text);
+    GetMenuItemInfoW(d->menu.menu, d->item.position, TRUE, &info);
+    UINT state = d->draw.itemState;
+    bool hot = state & (ODS_HOTLIGHT | ODS_SELECTED), off = state & (ODS_INACTIVE | ODS_DISABLED | ODS_GRAYED);
+    HBRUSH back = CreateSolidBrush(Rgb(hot ? look.hover : look.ground));
+    FillRect(d->menu.dc, &d->draw.rcItem, back);
+    DeleteObject(back);
+    HGDIOBJ old = look.font ? SelectObject(d->menu.dc, look.font) : nullptr;
+    SetBkMode(d->menu.dc, TRANSPARENT);
+    SetTextColor(d->menu.dc, Rgb(off ? look.dim : hot ? look.accent : look.text));
+    RECT r = d->draw.rcItem;
+    DrawTextW(d->menu.dc, text, -1, &r,
+              DT_CENTER | DT_SINGLELINE | DT_VCENTER | ((state & ODS_NOACCEL) ? DT_HIDEPREFIX : 0));
+    if (old) SelectObject(d->menu.dc, old);
+    return true;
+}
+
+// The one-pixel line Windows draws under the bar, in the menus' ground.
+void CoverBarLine(HWND wnd) {
+    RECT bar;
+    if (!BarRect(wnd, &bar)) return;
+    RECT line = {bar.left, bar.bottom, bar.right, bar.bottom + 1};
+    HDC dc = GetWindowDC(wnd);
+    if (!dc) return;
+    LoadMenuLook(wnd);
+    HBRUSH ground = CreateSolidBrush(Rgb(g_menuLook.ground));
+    FillRect(dc, &line, ground);
+    DeleteObject(ground);
+    ReleaseDC(wnd, dc);
+}
+
+using DefWindowProcW_t = decltype(&DefWindowProcW);
+DefWindowProcW_t DefWindowProcW_Original, DefWindowProcA_Original;
+LRESULT MenuBarProc(DefWindowProcW_t original, HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    if ((msg == kUahDrawMenu || msg == kUahDrawMenuItem) && DrawMenuBarHere(wnd, msg, lp)) return 0;
+    LRESULT result = original(wnd, msg, wp, lp);
+    if (msg == WM_NCPAINT || msg == WM_NCACTIVATE) CoverBarLine(wnd);
+    return result;
+}
+LRESULT WINAPI DefWindowProcW_Hook(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    return MenuBarProc(DefWindowProcW_Original, wnd, msg, wp, lp);
+}
+LRESULT WINAPI DefWindowProcA_Hook(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    return MenuBarProc(DefWindowProcA_Original, wnd, msg, wp, lp);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 // Programs Windows' own menus aren't in, or where hooking isn't wanted, and the ones set here.
 bool ShouldRunHere(std::wstring const& name) {
     for (PCWSTR skip : {L"dwm.exe", L"ShellExperienceHost.exe", L"wlanext.exe", L"svchost.exe",
@@ -2433,9 +3012,22 @@ BOOL Wh_ModInit() {
     g_settings.explorer = Wh_GetIntSetting(L"explorer") != 0;
     g_settings.dialogs = Wh_GetIntSetting(L"fileDialogs") != 0;
     g_settings.windowsMenus = Wh_GetIntSetting(L"windowsMenus") != 0 && !inWindhawk;
-    // Nothing to do in this program for now: no hooks, but still loaded, so a switch turned on later
+    g_settings.allMenus = Wh_GetIntSetting(L"allMenus") != 0 && !inWindhawk;
+    g_settings.menuBars = Wh_GetIntSetting(L"menuBars") != 0;
+    PCWSTR once = Wh_GetStringSetting(L"noDuplicates");
+    g_settings.noDuplicates = MenuRuleList(once ? once : L"");
+    Wh_FreeStringSetting(once);
+    PCWSTR keep = Wh_GetStringSetting(L"noDuplicatesKeep");
+    g_settings.keepLast = !keep || _wcsicmp(keep, L"first") != 0;
+    Wh_FreeStringSetting(keep);
+    if (g_settings.menuBars) {
+        WindhawkUtils::SetFunctionHook(DefWindowProcW, DefWindowProcW_Hook, &DefWindowProcW_Original);
+        WindhawkUtils::SetFunctionHook((DefWindowProcW_t)DefWindowProcA, DefWindowProcA_Hook, &DefWindowProcA_Original);
+    }
+    // Nothing more to do in this program for now: no hooks, but still loaded, so a switch turned on later
     // reaches programs already running (one whose init said no would need restarting).
-    if (!(g_settings.explorer && g_inExplorer) && !g_settings.dialogs && !g_settings.windowsMenus) return TRUE;
+    if (!(g_settings.explorer && g_inExplorer) && !g_settings.dialogs && !g_settings.windowsMenus && !g_settings.allMenus)
+        return TRUE;
 
     WindhawkUtils::SetFunctionHook(TrackPopupMenuEx, TrackPopupMenuEx_Hook, &TrackPopupMenuEx_Original);
     WindhawkUtils::SetFunctionHook(TrackPopupMenu, TrackPopupMenu_Hook, &TrackPopupMenu_Original);

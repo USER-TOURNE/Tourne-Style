@@ -219,6 +219,53 @@ double Contrast(uint32_t a, uint32_t b) {
     return (x + 0.05) / (y + 0.05);
 }
 
+uint32_t Stepped(uint32_t colour, int steps) {
+    Lab c = ToLab(colour & 0xFFFFFF);
+    return FromLch(c.L + steps * 0.05, Chroma(c), Hue(c));
+}
+
+uint32_t Mixed(uint32_t a, uint32_t b, double towardsB) {
+    double t = std::clamp(towardsB, 0.0, 1.0);
+    Lab x = ToLab(a & 0xFFFFFF), y = ToLab(b & 0xFFFFFF);
+    Lab m{x.L + (y.L - x.L) * t, x.a + (y.a - x.a) * t, x.b + (y.b - x.b) * t};
+    return FromLch(m.L, Chroma(m), Hue(m));
+}
+
+Steps StepsFor(uint32_t role, uint32_t ground, bool light) {
+    Lab c = ToLab(role & 0xFFFFFF);
+    double ch = Chroma(c);
+    int away = light ? -1 : 1;  // away from the ground
+    // The steps go away from the ground, unless that runs off the end of the
+    // lightness range or washes the colour out: a screen can't hold much colour
+    // at either end, so a role that is already bright (a teal accent on a dark
+    // theme) steps towards the ground instead and keeps its colour. The
+    // direction is the role's, the same for every step of it, so hover and
+    // pressed stay in order.
+    auto keeps = [&](int dir) {
+        Lab two = ToLab(Stepped(role, dir * 2));
+        return std::fabs(two.L - c.L) > 0.07 &&                 // the range had room for both steps
+               (ch <= 0.02 || Chroma(two) >= ch * 0.7);         // and the colour came through them
+    };
+    int side = keeps(away) || !keeps(-away) ? away : -away;
+    auto step = [&](int n) { return Stepped(role, side * n); };
+    Steps s{};
+    s.hover = step(1);
+    s.press = step(2);
+    s.off = Mixed(role, ground, 0.65);
+    Lab o = ToLab(s.off);
+    s.off = FromLch(o.L, Chroma(o) * 0.5, Hue(o));
+    // A line around it has to be seen against it, so it keeps stepping until it
+    // is; a role at one end of the range (text on either theme) has nowhere to
+    // go that way, so the other way is tried too.
+    s.edge = role;
+    for (int dir : {side, -side}) {
+        for (int i = 1; i <= 8 && Contrast(s.edge, role) < 1.4; i++) s.edge = Stepped(role, dir * i);
+        if (Contrast(s.edge, role) >= 1.4) break;
+    }
+    s.on = Contrast(role, 0xFFFFFF) >= Contrast(role, 0x101010) ? 0xFFFFFF : 0x101010;
+    return s;
+}
+
 Roles PaletteFromPixels(const std::vector<uint32_t>& pixels, const PaletteRequest& request) {
     auto clusters = Clusters(pixels, 8);
     if (clusters.empty()) return PaletteFromSeed(0x808080, request);

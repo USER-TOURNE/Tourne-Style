@@ -7,7 +7,7 @@ redirect mod, which stays installed but off.
 
 A separate test build: the split test build plus Icon Redirect, our own
 replacement for the Resource Redirect mod, as a part in the suite's settings.
-The split build in ..\tourne-suite-split and the mod I have installed from
+The split build in ..\tourne-suite-split and the mod you have installed from
 it are untouched; this one has its own id (tourne-suite-redirect).
 
 tourne-suite-redirect-branch-wintweaks.wh.cpp  The test mod. Generated; don't edit it.
@@ -15,7 +15,7 @@ tourne-icon-redirect.wh.cpp   Icon Redirect's source (MIT, written from
                               scratch). Also works as a mod on its own.
 suite-redirect.template.cpp   The suite code, with Icon Redirect wired in.
 Build-TourneSuiteRedirect.ps1 Regenerates the mod. Icon Redirect's defaults
-                              are Resource Redirect's current settings (my
+                              are Resource Redirect's current settings (your
                               Bouquet theme, 4 theme paths and 71 rows), the
                               other parts' are the installed split build's.
 tourne-suite-redirect-branch-wintweaks-settings.reg
@@ -34,7 +34,7 @@ the replacement files first (newest rule first), then the file itself.
   * "All resource types" off limits it to icons, cursors and images.
 Icon themes picked from the list download once, in Windhawk's own process,
 into the mod's storage. A theme Resource Redirect already downloaded is copied
-from its folder instead, so my Bouquet theme needs no download.
+from its folder instead, so your Bouquet theme needs no download.
 
 Trying it
 ---------

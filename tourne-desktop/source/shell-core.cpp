@@ -173,10 +173,12 @@ RECT ShellRoomBesideBar(ShellBar const& bar) {
     HWND root = GetAncestor(w, GA_ROOTOWNER);
     HWND popup = GetLastActivePopup(root ? root : w);
     HWND target = popup && IsWindowVisible(popup) && IsWindowEnabled(popup) ? popup : w;
-    if (IsIconic(w)) PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0);
+    // (a minimised admin window never gets the restore message: Windows keeps it from us; SwitchToThisWindow
+    // restores it itself)
+    if (IsIconic(w) && !PostMessageW(w, WM_SYSCOMMAND, SC_RESTORE, 0)) SwitchToThisWindow(w, TRUE);
     auto inFront = [&] {
         HWND fg = GetForegroundWindow();
-        return fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w));
+        return !IsIconic(w) && (fg == target || fg == w || (fg && GetAncestor(fg, GA_ROOTOWNER) == (root ? root : w)));
     };
     if (SetForegroundWindow(target) && inFront()) return true;
     // Windows lets the process that had the last input event take the front:

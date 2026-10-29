@@ -17,6 +17,8 @@ New-Item -ItemType Directory -Force $objDir | Out-Null
 $includes = foreach ($d in 'Common', 'Ast', 'Bytecode', 'Compiler', 'VM') { "-I$(Join-Path $luau "$d\include")" }
 $includes += "-I$(Join-Path $luau 'VM\src')"
 $flags = @('-std=c++17', '-w') + $Target + $(if ($Symbols) { @('-O0', '-g') } else { @('-O2') })
+# Source paths in asserts are written from the repo's root, so the build folder isn't in the program.
+$flags += "-ffile-prefix-map=$(Split-Path $PSScriptRoot -Parent)\="
 
 $todo = New-Object System.Collections.Generic.List[object]
 $objects = foreach ($src in Get-ChildItem -Recurse -Filter *.cpp -Path (Join-Path $luau '*\src')) {

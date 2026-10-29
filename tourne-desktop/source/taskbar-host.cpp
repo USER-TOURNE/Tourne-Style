@@ -62,6 +62,12 @@ Not yet: progress bars, and recent and frequent items in jump lists.
     Its tray keeps working behind the scenes, and turning this or the
     Taskbar part off (or this bar closing for any reason) brings it back as
     it was.
+- squareCorners: false
+  $name: Square window corners
+  $description: >-
+    Windows 11's rounded window corners made square, in every program the
+    suite runs in (the suite's Square Corners part, on from b64). Windows'
+    own menus and tooltips keep theirs. Off puts every window back.
 - noSystemTaskbarContent: false
   $name: Don't load Windows' taskbar (test)
   $description: >-
@@ -1018,6 +1024,12 @@ Not yet: progress bars, and recent and frequent items in jump lists.
   - follow: false
     $name: Go along with a window sent
     $description: Switch to the desktop a window was sent to, the window still in front.
+  - dropOnPager: false
+    $name: Send a window by dropping it on the pager
+    $description: >-
+      Drag a window by its title bar onto a desktop's mark in the pager and
+      let go: it goes back where it was and is sent to that desktop. The mark
+      under the pointer lights while you drag.
   $name: Desktop keys
   $description: >-
     Your own keys for switching Windows' desktops and sending windows to
@@ -1981,6 +1993,8 @@ struct Settings {
     UINT moveNextMods = 0, moveNextVk = 0, movePrevMods = 0, movePrevVk = 0;
     UINT moveToDesktopMods = 0;         // with 1 to 9: the window in front sent there; 0 for none
     bool followMoved = false;           // and switched to that desktop with it
+    bool dropOnPager = false;           // a window dragged by its title bar onto a mark is sent to that desktop
+    bool squareCorners = false;         // windows' corners square (published for the suite's Square Corners)
     bool sabBackdrop = true;  // StartAllBack's own bar gradient behind clear styles
     bool coloring = false;    // custom background colour
     COLORREF tint = 0;
@@ -2365,6 +2379,8 @@ Settings LoadSettings() {
     s.goToDesktopMods = numberMods(TextSetting(L"desktopKeys.goTo"));
     s.moveToDesktopMods = numberMods(TextSetting(L"desktopKeys.moveTo"));
     s.followMoved = Wh_GetIntSetting(L"desktopKeys.follow") != 0;
+    s.dropOnPager = Wh_GetIntSetting(L"desktopKeys.dropOnPager") != 0;
+    s.squareCorners = Wh_GetIntSetting(L"squareCorners") != 0;
     s.sabBackdrop = TextSetting(L"barBackground") != L"scheme";
     std::wstring coloring = TextSetting(L"coloring");
     if (coloring == L"custom") {
@@ -4353,18 +4369,20 @@ void Layout(HWND wnd) {
 }
 
 // The gaps between segments take clicks as the bar's empty space (drawn at alpha 1), except over windows of
-// Tourne's own that sit in the bar under it (Tourne'Table's media strip, its quick settings on a right click):
-// there they stay see-through, so those still get their clicks. In the bar's own terms (client pixels).
+// Tourne's own that sit in the bar under it (Tourne'Table's media strip, also from windhawk-mod.exe when the Table
+// runs as a mod, so known by its class there; its quick settings on a right click): there they stay see-through,
+// so those still get their clicks. In the bar's own terms (client pixels).
 std::vector<RECT> BarPassThrough(HWND wnd) {
     std::vector<RECT> out;
     RECT bar;
     if (!GetWindowRect(wnd, &bar)) return out;
     for (HWND h = GetWindow(wnd, GW_HWNDNEXT); h; h = GetWindow(h, GW_HWNDNEXT)) {
-        DWORD pid = 0;
-        GetWindowThreadProcessId(h, &pid);
-        if (pid != GetCurrentProcessId() || !IsWindowVisible(h) || (GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TRANSPARENT)) continue;
+        if (!IsWindowVisible(h) || (GetWindowLongW(h, GWL_EXSTYLE) & WS_EX_TRANSPARENT)) continue;
         wchar_t cls[64] = L"";
         GetClassNameW(h, cls, 64);
+        DWORD pid = 0;
+        GetWindowThreadProcessId(h, &pid);
+        if (pid != GetCurrentProcessId() && wcsncmp(cls, L"DesktopAudioVis", 15)) continue;  // (the Table's, as a mod)
         if (!wcscmp(cls, L"Progman") || !wcsncmp(cls, L"TourneTaskbar", 13)) continue;
         RECT r, in;
         if (!GetWindowRect(h, &r) || !IntersectRect(&in, &r, &bar)) continue;
@@ -5559,8 +5577,14 @@ int HitTest(POINT pt) {
 // Actions and menus
 
 void ActivateWindow(HWND h) {
-    if (IsIconic(h)) ShowWindowAsync(h, SW_RESTORE);
-    if (!SetForegroundWindow(h)) SwitchToThisWindow(h, TRUE);
+    // A minimised admin window (Task Manager) never hears the restore: Windows keeps a program's messages from
+    // one running as admin. SwitchToThisWindow restores it itself, so it goes too while the window is down
+    // (and SetForegroundWindow alone would "succeed" with it still minimised).
+    if (IsIconic(h)) {
+        ShowWindowAsync(h, SW_RESTORE);
+        SwitchToThisWindow(h, TRUE);
+    }
+    if (!SetForegroundWindow(h) || IsIconic(h)) SwitchToThisWindow(h, TRUE);
 }
 
 void ClickWindow(HWND h) {
@@ -6034,6 +6058,14 @@ void ApplyMenuMotion() {
     }
 }
 
+// Square window corners, for the suite's Square Corners part (square-corners.cpp), which watches the value.
+// Written only when it changes, so the programs it runs in aren't woken for nothing.
+void PublishCorners() {
+    DWORD now = g_settings.squareCorners, was = 2, size = sizeof(was);
+    RegGetValueW(HKEY_CURRENT_USER, L"Software\\Tourne\\Corners", L"Square", RRF_RT_REG_DWORD, nullptr, &was, &size);
+    if (was != now) RegSetKeyValueW(HKEY_CURRENT_USER, L"Software\\Tourne\\Corners", L"Square", REG_DWORD, &now, sizeof(now));
+}
+
 // The bar's menus as Tourne Menus draws them in Explorer, the file dialogs and Windows' own menus
 // (tourne-menus.wh.cpp): their look, how they open and the rules, in HKCU\Software\Tourne\Menus.
 // Written by the main bar as its settings apply; Tourne Menus reads it as each menu opens.
@@ -6135,6 +6167,157 @@ int RunMenu(HWND wnd, HMENU menu, UINT flags = TPM_RIGHTBUTTON | TPM_NONOTIFY) {
     g_inMenu = false;
     DestroyMenu(menu);
     return cmd;
+}
+
+// Tourne's menu look for the other parts of the same program (Tourne'Table, built into Tourne Desktop), which
+// find this by name. A part running in Windhawk finds no such export in its host and keeps Windows' own menu.
+// Their owner window doesn't pass the items' measuring and drawing on, so it's done here while the menu is up.
+LRESULT CALLBACK StyledMenuOwnerProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    if (msg == WM_MEASUREITEM && MenuMeasureItem((MEASUREITEMSTRUCT*)lParam)) return TRUE;
+    if (msg == WM_DRAWITEM && MenuDrawItem((DRAWITEMSTRUCT*)lParam)) return TRUE;
+    return DefSubclassProc(wnd, msg, wParam, lParam);
+}
+
+extern "C" __declspec(dllexport) UINT TourneStyledMenu(HMENU menu, UINT flags, int x, int y, HWND owner) {
+    g_menuLook = BarMenuLook();
+    bool forwarded = SetWindowSubclass(owner, StyledMenuOwnerProc, 0x7D4E, 0);
+    UINT result = TrackStyledMenu(menu, flags, x, y, owner);
+    if (forwarded) RemoveWindowSubclass(owner, StyledMenuOwnerProc, 0x7D4E);
+    return result;
+}
+
+// The same look for a window a part draws itself (Tourne'Table's quick-settings panel): the menus' colours, font,
+// scale and capitals (layout must match TourneMenuLookC in tourne-table.wh.cpp; size is its sizeof, checked),
+// and their frame painted round a window's whole client area, giving back where the rows go inside it.
+struct TourneMenuLookC {
+    uint32_t ground, line, edge, text, accent, dim, hover, hoverText, band;
+    HFONT font;
+    int scale, frame, caps;
+    uint32_t frameLine;  // the frame's line (where a colour gradient ends), 0xFFFFFFFF when there is no frame
+};
+
+extern "C" __declspec(dllexport) BOOL TourneMenuLookFor(TourneMenuLookC* out, int size) {
+    if (!out || size != (int)sizeof(TourneMenuLookC)) return FALSE;
+    MenuLook look = BarMenuLook();
+    *out = {look.ground, look.line, look.edge, look.text, look.accent, look.dim, look.hover, look.hoverText, look.band,
+            look.font, std::max(1, look.scale), look.frame ? 1 : 0, look.caps ? 1 : 0,
+            !look.frame ? 0xFFFFFFFFu : look.frameStopCount > 0 ? look.frameStops[look.frameStopCount - 1] : look.frameLine};
+    return TRUE;
+}
+
+// The menus' frame colours for Tourne Studio's borders: up to max, top left to bottom right (one: a plain line);
+// 0 when the menus have no frame.
+extern "C" __declspec(dllexport) int TourneMenuFrameStops(uint32_t* stops, int max) {
+    MenuLook look = BarMenuLook();
+    if (!stops || max <= 0 || !look.frame) return 0;
+    if (look.frameStopCount <= 0) return stops[0] = look.frameLine, 1;
+    int n = std::min(look.frameStopCount, max);
+    for (int i = 0; i < n; i++) stops[i] = look.frameStops[i];
+    return n;
+}
+
+extern "C" __declspec(dllexport) void TourneMenuPaintFrame(HDC dc, int w, int h, RECT* inner) {
+    g_menuLook = BarMenuLook();
+    auto const& look = g_menuLook;
+    int s = std::max(1, look.scale);
+    RECT all{0, 0, w, h};
+    SetDCBrushColor(dc, MenuRgb(look.frame ? look.band : look.ground));
+    FillRect(dc, &all, (HBRUSH)GetStockObject(DC_BRUSH));
+    if (!look.frame) {
+        SetDCBrushColor(dc, MenuRgb(look.edge));
+        FrameRect(dc, &all, (HBRUSH)GetStockObject(DC_BRUSH));
+        if (inner) *inner = {1, 1, w - 1, h - 1};
+        return;
+    }
+    // As StyledMenuWindowProc draws a menu's: the band, the outer line, the inner line, the items' ground inside.
+    int q = FrameInnerAt(s);
+    RECT in{q + 1, q + 1, w - q - 1, h - q - 1};
+    SetDCBrushColor(dc, MenuRgb(look.ground));
+    FillRect(dc, &in, (HBRUSH)GetStockObject(DC_BRUSH));
+    POINT at{0, 0};
+    SIZE wh{w, h};
+    for (int pass : {1, 2}) {
+        FrameLine(dc, 0, 0, w, true, at, wh, look.band, look.band, false, true, pass);
+        FrameLine(dc, 0, h - 1, w, true, at, wh, look.band, look.band, true, false, pass);
+        FrameLine(dc, 0, 0, h, false, at, wh, look.band, look.band, false, true, pass);
+        FrameLine(dc, w - 1, 0, h, false, at, wh, look.band, look.band, true, false, pass);
+        FrameLine(dc, q, q, w - 2 * q, true, at, wh, look.band, look.ground, true, true, pass);
+        FrameLine(dc, q, h - 1 - q, w - 2 * q, true, at, wh, look.ground, look.band, true, true, pass);
+        FrameLine(dc, q, q, h - 2 * q, false, at, wh, look.band, look.ground, true, true, pass);
+        FrameLine(dc, w - 1 - q, q, h - 2 * q, false, at, wh, look.ground, look.band, true, true, pass);
+    }
+    if (inner) *inner = in;
+}
+
+// The same for a menu of Windows' own in Tourne Desktop's Open and Save dialogs (desktop/host/dialog-look.cpp),
+// drawn as Tourne Menus draws them in other programs: the published look, the menu rules, and submenus
+// ("Send to", "Open with") styled as the shell fills them in.
+// The look exactly as published for Tourne Menus (PublishMenuLook), so these menus match File Explorer's: its
+// colours and switches over the bar's, and no visual style unless one was published.
+void PublishedMenuLook(MenuLook& look) {
+    HKEY key = nullptr;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Tourne\\Menus", 0, KEY_READ, &key)) return;
+    auto dword = [&](PCWSTR name, uint32_t fallback) {
+        DWORD v = 0, size = sizeof(v);
+        return RegQueryValueExW(key, name, nullptr, nullptr, (BYTE*)&v, &size) ? fallback : (uint32_t)v;
+    };
+    look.ground = dword(L"Ground", look.ground), look.line = dword(L"Line", look.line), look.edge = dword(L"Edge", look.edge);
+    look.text = dword(L"Text", look.text), look.accent = dword(L"Accent", look.accent), look.dim = dword(L"Dim", look.dim);
+    look.hover = dword(L"Hover", look.hover), look.hoverText = dword(L"HoverText", look.hoverText);
+    look.arrow = dword(L"Arrow", look.arrow), look.frameLine = dword(L"FrameLine", look.frameLine), look.band = dword(L"Band", look.band);
+    look.native = dword(L"Native", look.native), look.classic = dword(L"Classic", look.classic);
+    look.ownText = dword(L"OwnText", look.ownText), look.frame = dword(L"Frame", look.frame), look.caps = dword(L"Caps", look.caps);
+    look.noIcons = dword(L"NoIcons", look.noIcons), look.windows = dword(L"Windows", look.windows);
+    look.frameGap = (int)dword(L"FrameGap", look.frameGap), look.frameGlow = (int)dword(L"FrameGlow", look.frameGlow);
+    look.frameStopCount = std::clamp((int)dword(L"FrameStopCount", look.frameStopCount), 0, 3);
+    DWORD size = sizeof(look.frameStops);
+    if (RegQueryValueExW(key, L"FrameStops", nullptr, nullptr, (BYTE*)look.frameStops, &size)) look.frameStopCount = 0;
+    WCHAR theme[8] = L"";
+    DWORD chars = sizeof(theme);
+    LSTATUS got = RegQueryValueExW(key, L"Theme", nullptr, nullptr, (BYTE*)theme, &chars);
+    if ((got == ERROR_SUCCESS && !theme[0])) look.theme = nullptr;
+    RegCloseKey(key);
+}
+
+LRESULT CALLBACK ShellMenuOwnerProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+    switch (msg) {
+        case WM_MEASUREITEM:
+            if (MenuMeasureItem((MEASUREITEMSTRUCT*)lParam)) return TRUE;
+            break;
+        case WM_DRAWITEM:
+            if (MenuDrawItem((DRAWITEMSTRUCT*)lParam)) return TRUE;
+            break;
+        case WM_INITMENUPOPUP: {
+            LRESULT result = DefSubclassProc(wnd, msg, wParam, lParam);
+            StyleMenuItems((HMENU)wParam, true);
+            return result;
+        }
+    }
+    return DefSubclassProc(wnd, msg, wParam, lParam);
+}
+
+extern "C" __declspec(dllexport) UINT TourneStyledShellMenu(HMENU menu, UINT flags, int x, int y, HWND owner, RECT const* exclude) {
+    g_menuLook = BarMenuLook();
+    PublishedMenuLook(g_menuLook);
+    MenuContext context;
+    context.menu = L"dialog";
+    context.app = MenuAppName(owner);
+    MenuRules with = MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules);
+    MenuRulesUndo rules = ApplyMenuRules(menu, with, [](UINT) { return std::wstring(); });
+    bool forwarded = SetWindowSubclass(owner, ShellMenuOwnerProc, 0x7D4F, 0);
+    g_menuTakeOwnerDrawn = true;  // (the dialog's folder view has made its items owner-drawn in Windows' look)
+    bool ours = !with.add.empty() && !(flags & TPM_RETURNCMD);  // (as Tourne Menus does: see its TrackHere)
+    UINT result = TrackStyledMenu(menu, flags | (ours ? TPM_RETURNCMD : 0), x, y, owner, true,
+                                  exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
+    g_menuTakeOwnerDrawn = false;
+    if (forwarded) RemoveWindowSubclass(owner, ShellMenuOwnerProc, 0x7D4F);
+    UndoMenuRules(rules);
+    if (RunMenuRule(rules, result, context)) return ours ? TRUE : 0;
+    if (ours) {
+        if (result && !(flags & TPM_NONOTIFY)) PostMessageW(owner, WM_COMMAND, result, 0);
+        return result != 0;
+    }
+    return result;
 }
 
 // A group with several windows: a list to pick one from, until thumbnails.
@@ -6377,12 +6560,19 @@ void OpenShellMenu(HWND wnd, std::wstring const& path) {
     }
     GetCursorPos(&g_shellMenu.pt);
     IContextMenu* shell = g_shellMenu.menu;
-    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, g_settings.menuRules, [&](UINT id) { return ShellMenuVerb(shell, id); });
+    MenuContext context;
+    context.menu = L"taskbar";
+    context.app = MenuAppName();
+    context.known = true;
+    context.files = {path};
+    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules),
+                                         [&](UINT id) { return ShellMenuVerb(shell, id); });
     g_shellMenu.open = true;
     int cmd = (int)TrackStyledMenu(g_shellMenu.popup, TPM_RECURSE | TPM_RETURNCMD | TPM_RIGHTBUTTON,
                                    g_shellMenu.pt.x, g_shellMenu.pt.y, wnd, true);
     g_shellMenu.open = false;
     UndoMenuRules(rules);
+    if (RunMenuRule(rules, (UINT)cmd, context)) cmd = 0;
     if (cmd > 0) {
         g_shellMenu.command = cmd;
         EndMenu();  // the jump list too
@@ -9474,6 +9664,7 @@ void ApplySettings(HWND wnd, bool screensOnly = false, const wchar_t* why = L"st
     ApplyMenuMotion();
     if (IsMainBar()) {
         PublishMenuLook();
+        PublishCorners();
 #ifdef TD_PREFIX
         // The desktop's menu made ahead (desktop-menu.cpp): Tourne Desktop's desktop only.
         static bool listening;
@@ -9559,8 +9750,17 @@ bool WindowTouchesBar() {
     RECT bar = BarRect(true);
     // A window only reaching a little into it (as ones placed for another
     // taskbar do) doesn't count, as set.
-    int tolerance = Px(g_settings.shyTolerance);
-    InflateRect(&bar, -tolerance, -tolerance);
+    // Only from the side facing the screen, and always leaving the outer pixel: taken off every side, a
+    // tolerance past half the bar's thickness left nothing, and no window ever counted (shyTolerance 20 on a
+    // 38 px bar: it never hid after 10-14).
+    int thick = g_settings.edge == Edge::Top || g_settings.edge == Edge::Bottom ? bar.bottom - bar.top : bar.right - bar.left;
+    int tolerance = std::clamp(Px(g_settings.shyTolerance), 0, std::max(0, thick - 1));
+    switch (g_settings.edge) {
+        case Edge::Bottom: bar.top += tolerance; break;
+        case Edge::Top: bar.bottom -= tolerance; break;
+        case Edge::Left: bar.right -= tolerance; break;
+        case Edge::Right: bar.left += tolerance; break;
+    }
     if (IsRectEmpty(&bar)) return false;
     for (auto const& w : g_wins) {
         if (IsIconic(w.hwnd) || !IsWindowVisible(w.hwnd)) continue;
@@ -10046,21 +10246,31 @@ bool InGap(POINT pt, HMONITOR on, int pad, bool* vertical, LONG* at) {
 
 // How long a drag must rest in a gap or at an edge (a pointer passing through doesn't count), and how far off a
 // gap the pointer may be and still be in it.
+// Whether a setting was ever written (Tourne Desktop knows; in the Windhawk suite a 0 is taken as unset).
+bool DragSettingSet(PCWSTR name) {
+#ifdef TD_PREFIX
+    return td::IsSet(TD_PREFIX, name);
+#else
+    (void)name;
+    return false;
+#endif
+}
+
 DWORD DragHoldMs() {
     int ms = Wh_GetIntSetting(L"dragHold");
-    if (!ms && !td::IsSet(TD_PREFIX, L"dragHold")) ms = 250;
+    if (!ms && !DragSettingSet(L"dragHold")) ms = 250;
     return (DWORD)std::clamp(ms, 50, 3000);
 }
 
 int DragGapPad() {
     int px = Wh_GetIntSetting(L"dragGapPad");
-    if (!px && !td::IsSet(TD_PREFIX, L"dragGapPad")) px = 4;
+    if (!px && !DragSettingSet(L"dragGapPad")) px = 4;
     return std::clamp(px, 0, 40);
 }
 
 int DragRoom() {
     int px = Wh_GetIntSetting(L"dragRoom");
-    if (!px && !td::IsSet(TD_PREFIX, L"dragRoom")) px = 240;  // (never set: its default)
+    if (!px && !DragSettingSet(L"dragRoom")) px = 240;  // (never set: its default)
     return px <= 0 ? 0 : std::clamp(px, 40, 900);
 }
 
@@ -10638,6 +10848,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_APP_ICONS:
             ForgetTourneIconsButtons();
+            ClearStartIcons();  // (Start's icons are drawn again too, with the new ones)
             if (g_msgTrayChanged) PostMessageW(wnd, g_msgTrayChanged, 0, 0);  // (the tray's icons, read again)
             RefreshShortcuts(true);
             for (auto& w : g_wins) FetchIcon(w);

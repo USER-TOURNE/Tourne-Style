@@ -1,8 +1,6 @@
 # Tourne Hooks: the classic look without Windhawk
 
-*October 7, 2026.*
-
-I'm not going ahead with this one. The hook parts stay in Windhawk (the suite with only them on, `tools/windhawk/Set-SuiteParts.ps1`). I'm keeping the plan here for the record.
+Status: not going ahead (2026-10-07). I stopped partway through building the loader and won't build it, with or without exclusions. The hook parts stay in Windhawk (b53 with only them on, `tools/windhawk/Set-SuiteParts.ps1`), and the Studio shows their settings read-only. Kept for the record.
 
 ## The problem
 
@@ -19,7 +17,7 @@ Tourne Desktop draws its own taskbar, tray, clock, switcher and flyouts, so thos
 | iconRedirect | Themed icons in Explorer, Start and apps | explorer.exe and others |
 | tweaks | Winaero Tweaker options | explorer.exe |
 
-Target look: my screenshots of 2026-10-02 and 2026-10-04 (Explorer with the Windows 7 navigation pane and command bar, drive bars and text in the palette's green, the pixel font; Task Manager and Chrome in the same colours; Explorer with glass).
+Target look: Tourne's screenshots of 2026-10-02 and 2026-10-04 (Explorer with the Windows 7 navigation pane and command bar, drive bars and text in the palette's green, the pixel font; Task Manager and Chrome in the same colours; Explorer with glass).
 
 ## The plan
 
@@ -45,14 +43,14 @@ A DLL of Tourne's own, `tourne-hooks.dll`, that Tourne Desktop loads into the pr
 2. textColor and the menu parts in their listed programs.
 3. iconRedirect and tweaks.
 
-Each step is swapped in and checked on its own. After step 3, Windhawk isn't needed for the suite (other Windhawk mods I use are separate).
+Each step is swapped in and checked on its own. After step 3, Windhawk isn't needed for the suite (other Windhawk mods Tourne uses are separate).
 
 ## Meanwhile
 
 b53 can run again with only the hook parts on (its taskbar, switcher, system icons, tray, clock and Start off), so the Explorer look is back today while Tourne Desktop does the rest. Each step above then turns its parts off in b53.
 
-## What I had to decide
+## Decisions for Tourne
 
-1. Go ahead with Tourne Hooks, in the order above? (I didn't, see the top.)
+1. Go on Tourne Hooks, in the order above?
 2. Programs run as administrator: leave them out for now, or plan the elevated helper too?
 3. Turn b53 back on with only the hook parts for now?

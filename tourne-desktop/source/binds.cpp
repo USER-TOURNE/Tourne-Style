@@ -10,6 +10,7 @@
 //     bind = $mod, Q, killactive
 //     bind = $mod SHIFT, 2, movetoworkspace, 2
 //     bind = $mod, R, submap, resize
+//     bind = $mod, N, run, workspace 2; wait 200; exec notepad
 //     submap = resize
 //     binde = , right, resizeactive, 20 0
 //     bind = , escape, submap, reset
@@ -20,7 +21,9 @@
 // the key as well), d (a description after the key: bindd = MODS, key,
 // what it does, command, argument), and two of Tourne's own: k (a double press: the key twice within
 // binds.doubleMs, 300 ms unless set) and o (held down: o alone for binds.holdMs, 500 ms unless set, or with
-// its own time in ms, as bindo800). A key may be a combination of keys held together, as Hyprland writes
+// its own time in ms, as bindo800). A modifier can be the key, tapped on its own (pressed and let go within
+// binds.holdMs with nothing else pressed): bind = SUPER, SUPER_L, launcher (or , WIN / SHIFT_R / ALT_L ...).
+// A Win or Alt tap that runs a bind doesn't open Start or the menu bar. A key may be a combination of keys held together, as Hyprland writes
 // them: escape&end is End pressed while Esc is held (the keys before the last are held, in any order).
 // Plugins' hotkeys come in as binds too (the PluginBinds lines Tourne Desktop's plugin runtime writes,
 // with the plugin dispatcher). Nothing is bound until the user writes a line, and the
@@ -71,6 +74,10 @@ constexpr UINT WM_APP_MOUSEDRAG = WM_APP + 43;  // wParam: 0 start (lParam: resi
 constexpr UINT WM_APP_BINDHOLD = WM_APP + 44;   // wParam: a held bind's index; lParam: the table's generation
 constexpr UINT WM_APP_BINDTAP = WM_APP + 45;    // wParam: a key let go before its hold bind's time (pressed again)
 constexpr UINT_PTR kTimerBindHold = 0x4248;
+constexpr UINT_PTR kTimerBindTapLater = 0x4249;  // a tap waiting out the double press's time
+int g_tapLater = -1;                              // that tap's plain bind (switcher thread)
+unsigned g_tapLaterGeneration = 0;
+ULONGLONG g_holdPressedAt = 0;                    // when the held key went down (switcher thread)
 constexpr ULONG_PTR kBindReplayTag = 0x42494E44;  // "BIND": input this sent
 
 std::mutex g_bindsLock;  // g_binds is read by the hook thread
@@ -107,6 +114,10 @@ std::wstring Trimmed(std::wstring s) {
     size_t b = s.find_last_not_of(L" \t\r\n");
     return s.substr(a, b - a + 1);
 }
+
+// The command language all four surfaces speak (a key, a menu item, a bar
+// click and tournectl), and its own wait step.
+// @inline command.cpp
 
 UINT ModsByName(std::wstring const& text, bool* ok) {
     UINT mods = 0;
@@ -174,6 +185,13 @@ DWORD KeyByName(std::wstring const& text) {
         {L"xf86audiomute", VK_VOLUME_MUTE}, {L"xf86audioplay", VK_MEDIA_PLAY_PAUSE},
         {L"xf86audiopause", VK_MEDIA_PLAY_PAUSE}, {L"xf86audionext", VK_MEDIA_NEXT_TRACK},
         {L"xf86audioprev", VK_MEDIA_PREV_TRACK}, {L"xf86audiostop", VK_MEDIA_STOP},
+        // Modifiers as the key: tapped on their own (no side named: either side).
+        {L"super_l", VK_LWIN}, {L"super_r", VK_RWIN}, {L"lwin", VK_LWIN}, {L"rwin", VK_RWIN},
+        {L"shift_l", VK_LSHIFT}, {L"shift_r", VK_RSHIFT}, {L"lshift", VK_LSHIFT}, {L"rshift", VK_RSHIFT},
+        {L"control_l", VK_LCONTROL}, {L"control_r", VK_RCONTROL}, {L"lctrl", VK_LCONTROL}, {L"rctrl", VK_RCONTROL},
+        {L"alt_l", VK_LMENU}, {L"alt_r", VK_RMENU}, {L"lalt", VK_LMENU}, {L"ralt", VK_RMENU},
+        {L"win", VK_LWIN | 0x100}, {L"super", VK_LWIN | 0x100}, {L"shift", VK_SHIFT}, {L"ctrl", VK_CONTROL},
+        {L"control", VK_CONTROL}, {L"alt", VK_MENU},
     };
     for (auto const& [name, vk] : kNames)
         if (n == name) return vk;
@@ -419,12 +437,63 @@ bool IsModifierKey(DWORD vk) {
     return false;
 }
 
+// A modifier tapped on its own (hook thread): the one down with nothing else, and since when (0: none).
+DWORD g_loneVk = 0;
+ULONGLONG g_loneAt = 0;
+
+// A bind on this modifier tapped alone: its index, or -1. Its modifiers may be none or the key's own.
+int LoneBind(DWORD vk) {
+    UINT own = vk == VK_LWIN || vk == VK_RWIN ? MOD_WIN : vk == VK_LMENU || vk == VK_RMENU ? MOD_ALT
+             : vk == VK_LCONTROL || vk == VK_RCONTROL ? MOD_CONTROL : MOD_SHIFT;
+    DWORD either = own == MOD_WIN ? (VK_LWIN | 0x100) : own == MOD_ALT ? VK_MENU : own == MOD_CONTROL ? VK_CONTROL : VK_SHIFT;
+    std::lock_guard<std::mutex> lock(g_bindsLock);
+    for (int i = 0; i < (int)g_binds.binds.size(); i++) {
+        Bind const& b = g_binds.binds[i];
+        if (b.submap != g_submap || b.catchAll || b.twice || b.holdMs || !b.chord.empty()) continue;
+        if ((b.vk != vk && b.vk != either) || (b.mods && b.mods != own)) continue;
+        if (!b.locked && ForegroundIsFullscreen()) continue;
+        return i;
+    }
+    return -1;
+}
+
+// A modifier's press or release: a tap on its own runs its bind (-1: passed on; 1: kept back).
+int LoneModifierHook(bool down, DWORD vk) {
+    if (down) {
+        if (g_loneVk == vk) return -1;  // (repeating while held)
+        bool others = !g_keysDown.empty();
+        for (int other : {VK_LSHIFT, VK_RSHIFT, VK_LCONTROL, VK_RCONTROL, VK_LMENU, VK_RMENU, VK_LWIN, VK_RWIN})
+            if ((DWORD)other != vk && GetAsyncKeyState(other) < 0) others = true;
+        g_loneVk = others ? 0 : vk;
+        g_loneAt = GetTickCount64();
+        return -1;
+    }
+    if (g_loneVk != vk) return -1;
+    g_loneVk = 0;
+    if (GetTickCount64() - g_loneAt > (ULONGLONG)g_holdDefaultMs) return -1;
+    int bind = LoneBind(vk);
+    if (bind < 0 || !g_wnd) return -1;
+    PostMessageW(g_wnd, WM_APP_BIND, bind, g_bindsGeneration);
+    if (vk != VK_LWIN && vk != VK_RWIN && vk != VK_LMENU && vk != VK_RMENU) return -1;
+    // Win or Alt let go alone opens Start or the menu bar: the release kept back, a key nothing uses pressed,
+    // then the release sent on (marked as the binds' own, so it passes here).
+    INPUT in[3] = {};
+    for (auto& i : in) i.type = INPUT_KEYBOARD, i.ki.dwExtraInfo = kBindReplayTag;
+    in[0].ki.wVk = in[1].ki.wVk = kDummyKey;
+    in[1].ki.dwFlags = KEYEVENTF_KEYUP;
+    in[2].ki.wVk = (WORD)vk;
+    in[2].ki.dwFlags = KEYEVENTF_KEYUP | (vk == VK_RMENU || vk == VK_RWIN || vk == VK_LWIN ? KEYEVENTF_EXTENDEDKEY : 0);
+    SendInput(3, in, sizeof(INPUT));
+    return 1;
+}
+
 // -1: not the binds' business; 1: the key is kept back.
 int BindsKeyHook(WPARAM wParam, KBDLLHOOKSTRUCT const* k) {
     if (!g_bindsOn || k->dwExtraInfo == kBindReplayTag) return -1;
     bool down = wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN;
     DWORD vk = k->vkCode;
-    if (IsModifierKey(vk)) return -1;
+    if (IsModifierKey(vk)) return LoneModifierHook(down, vk);
+    if (down) g_loneVk = 0;  // (another key pressed: no lone tap)
     // The keys down now, for combinations (escape&end). A repeat is a key already down; a key whose release
     // was never seen (taken by another program's hook) is dropped once Windows says it's up.
     bool again = std::find(g_keysDown.begin(), g_keysDown.end(), vk) != g_keysDown.end();
@@ -628,12 +697,30 @@ std::wstring FileNameOf(HWND h) {
     return program.substr(program.find_last_of(L'\\') + 1);
 }
 
+// The window under the pointer: an app's own window (its owner, for one of its popups), not the desktop, a bar
+// or anything else of Tourne's.
+HWND HoveredWindow() {
+    POINT pt;
+    if (!GetCursorPos(&pt)) return nullptr;
+    HWND h = WindowFromPoint(pt);
+    h = h ? GetAncestor(h, GA_ROOTOWNER) : nullptr;
+    if (!h || h == GetShellWindow()) return nullptr;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(h, &pid);
+    if (pid == GetCurrentProcessId()) return nullptr;
+    std::wstring cls = ClassOf(h);
+    for (PCWSTR shell : {L"Progman", L"WorkerW", L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd"})
+        if (cls == shell) return nullptr;
+    return h;
+}
+
 // Hyprland's window argument: class:..., title:..., exe:... (or
 // initialclass:, initialtitle:, pid:, address:0x...), activewindow; * and ?
-// match any text. Without a prefix, the title.
+// match any text. Without a prefix, the title. Tourne's own: hovered (the window under the pointer).
 HWND WindowBy(std::wstring spec) {
     spec = Trimmed(spec);
     if (spec.empty() || Lower(spec) == L"activewindow") return ActiveWindow();
+    if (Lower(spec) == L"hovered" || Lower(spec) == L"mouse") return HoveredWindow();
     size_t colon = spec.find(L':');
     std::wstring kind = colon == std::wstring::npos ? L"title" : Lower(spec.substr(0, colon));
     std::wstring want = colon == std::wstring::npos ? spec : Trimmed(spec.substr(colon + 1));
@@ -916,11 +1003,16 @@ int DesktopBy(std::wstring const& text, int current, int count) {
 // is "ok", or what went wrong.
 
 std::wstring GroupCommand(std::wstring const& name, std::wstring const& arg, HWND active);
+std::wstring RunCommand(std::wstring const& line);  // several steps with waits between (below)
 
 std::wstring Dispatch(std::wstring const& name, std::wstring const& arg) {
     HWND active = ActiveWindow();
     HMONITOR monitor = active ? MonitorFromWindow(active, MONITOR_DEFAULTTONEAREST) : ActiveMonitor();
     auto needWindow = [&](HWND h) { return h && IsWindow(h) && h != GetShellWindow(); };
+
+    // Several steps in one command, with waits between: "run" is the language's
+    // own, and what a menu item, a bar click and tournectl all end up calling.
+    if (name == L"run") return RunCommand(arg);
 
     if (name == L"exec" || name == L"execr") return RunProgram(arg) ? L"ok" : L"error: couldn't start it";
 
@@ -956,6 +1048,58 @@ std::wstring Dispatch(std::wstring const& name, std::wstring const& arg) {
     }
 
     // The launcher (Tourne Desktop's launcher.cpp): open, or close when it's open.
+    // Tourne's bar or Explorer's own taskbar in its place (shell mode, Explorer underneath): explorer, tourne, or
+    // nothing to swap. For when something only Explorer's taskbar does is wanted for a moment.
+    if (name == L"explorerbar") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        std::wstring a = Lower(Trimmed(arg));
+        WPARAM to = a == L"explorer" || a == L"on" ? 1 : a == L"tourne" || a == L"off" ? 2 : 0;
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.ExplorerBar"), to, 0);
+        return L"ok";
+    }
+
+    // One of the system icons' flyouts (the per-app volume mixer for Win+A, the notifications, network...):
+    // opened, or closed again if it's open.
+    if (name == L"flyout") {
+        HWND icons = FindWindowW(L"TourneTraySystemIcons_" WH_MOD_ID, nullptr);
+        if (!icons) return L"error: the system icons aren't running";
+        static const std::pair<PCWSTR, int> kKinds[] = {{L"network", 1}, {L"wifi", 1}, {L"power", 2}, {L"battery", 2},
+            {L"brightness", 3}, {L"vpn", 5}, {L"security", 6}, {L"mixer", 7}, {L"volume", 7}, {L"sound", 7},
+            {L"notifications", 8}, {L"notify", 8}, {L"calendar", 8}, {L"bluetooth", 9}, {L"devices", 10}};
+        std::wstring a = Lower(Trimmed(arg));
+        int kind = 0;
+        for (auto const& [n, k] : kKinds)
+            if (a == n) kind = k;
+        if (!kind) return L"error: which flyout? mixer, notifications, network, power, bluetooth, devices, brightness, vpn, security";
+        PostMessageW(icons, RegisterWindowMessageW(L"TourneTray_Flyout"), kind, 0);
+        return L"ok";
+    }
+
+    // Designer Mode: pick a colour off the screen, click a part of Tourne, choose the setting it goes in.
+    if (name == L"designer") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.Designer"), 0, 0);
+        return L"ok";
+    }
+
+    // The look as it is now saved into the look gallery (a pack and its screenshot).
+    if (name == L"looksave") {
+        HWND host = FindWindowW(L"TourneDesktop_Host", nullptr);
+        if (!host) return L"error: Tourne Desktop isn't running";
+        PostMessageW(host, RegisterWindowMessageW(L"TourneDesktop.LookSave"), 0, 0);
+        return L"ok";
+    }
+
+    // Edit desktop mode (the plugins' desktop widgets placed and moved in one go): on, or off again.
+    if (name == L"editdesktop") {
+        HWND plugins = FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr);
+        if (!plugins) return L"error: the plugins aren't running";
+        PostMessageW(plugins, RegisterWindowMessageW(L"TourneDesktop.EditDesktop"), 0, 0);
+        return L"ok";
+    }
+
     if (name == L"launcher") {
         HWND launcher = FindWindowW(L"TourneLauncher", nullptr);
         if (!launcher) return L"error: the launcher isn't running";
@@ -973,14 +1117,94 @@ std::wstring Dispatch(std::wstring const& name, std::wstring const& arg) {
         return L"ok";
     }
     if (name == L"fullscreen" || name == L"maximize") {
-        if (!needWindow(active)) return L"error: no window";
-        ShowWindow(active, IsZoomed(active) ? SW_RESTORE : SW_MAXIMIZE);
+        // (Hyprland's fullscreen takes a mode number; a window is named by anything else)
+        bool named = !arg.empty() && !iswdigit(Trimmed(arg)[0]);
+        HWND h = named ? WindowBy(arg) : active;
+        if (!needWindow(h)) return L"error: no window";
+        ShowWindow(h, IsZoomed(h) ? SW_RESTORE : SW_MAXIMIZE);
+        return L"ok";
+    }
+    // Every window on the screen tiled, none floating, the main share back to half: an even split down the
+    // middle (clear of the taskbar, as the tiling keeps it).
+    if (name == L"tileall") {
+        HMONITOR screen = active ? MonitorFromWindow(active, MONITOR_DEFAULTTONEAREST) : ActiveMonitor();
+        std::erase_if(g_floating, [&](HWND w) { return !IsWindow(w) || MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST) == screen; });
+        LayoutChoice& c = ChoiceFor(screen);
+        c.ratioStep = 50 - g_tiling.ratio;
+        SaveLayoutChoices();
+        TileMonitor(screen, true);
+        return L"ok";
+    }
+    // One window with its screen to itself (Monocle for one), and back: taken out of the tiling while it has it.
+    // "tileothers" after the window (or alone, for the active one): the screen's other windows tiled behind it.
+    if (name == L"monocle") {
+        std::wstring spec = Trimmed(arg);
+        bool tileOthers = false;
+        if (size_t at = Lower(spec).find(L"tileothers"); at != std::wstring::npos) {
+            tileOthers = true;
+            spec = Trimmed(spec.erase(at, 10));
+        }
+        HWND h = spec.empty() ? active : WindowBy(spec);
+        if (!needWindow(h)) return L"error: no window";
+        static struct {
+            HWND h = nullptr;
+            RECT was{};
+            bool tiled = false;
+            std::vector<HWND> order;  // the tiling's order before, so it goes back to its own tile
+        } g_alone;
+        // Back in the tiling at the place it had (a window set floating and back otherwise comes first).
+        auto retile = [](HWND w) {
+            std::vector<HWND> order;
+            for (HWND o : g_alone.order)
+                if (IsWindow(o)) order.push_back(o);
+            for (HWND o : g_tileOrder)
+                if (std::find(order.begin(), order.end(), o) == order.end()) order.push_back(o);
+            g_tileOrder = order;
+            std::erase(g_floating, w);
+            TileMonitor(MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST), false);
+        };
+        HMONITOR screen = MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST);
+        if (g_alone.h == h && IsWindow(h)) {
+            g_alone.h = nullptr;
+            if (g_alone.tiled) {
+                retile(h);
+            } else {
+                PlaceWindowFrame(h, g_alone.was);
+            }
+            return L"ok";
+        }
+        if (g_alone.h && IsWindow(g_alone.h) && g_alone.tiled) retile(g_alone.h);  // (the one before goes back first)
+        if (IsZoomed(h) || IsIconic(h)) ShowWindow(h, SW_RESTORE);
+        g_alone.h = h;
+        g_alone.was = FrameOf(h);
+        g_alone.tiled = IsTiled(h);
+        g_alone.order = g_tileOrder;
+        if (tileOthers)
+            std::erase_if(g_floating, [&](HWND w) { return !IsWindow(w) || (w != h && MonitorFromWindow(w, MONITOR_DEFAULTTONEAREST) == screen); });
+        if (g_alone.tiled) g_floating.push_back(h);  // (out of the tiling while it has the screen; the others close up)
+        if (g_alone.tiled || tileOthers) TileMonitor(screen, false);
+        PlaceWindowFrame(h, TileArea(screen));
+        SetWindowPos(h, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return L"ok";
     }
     if (name == L"minimize") {
+        // The window under the pointer: pressed again with the pointer where it was, the one it just put away
+        // comes back (it's no longer under the pointer to be asked for).
+        static HWND s_putAway;
+        static POINT s_putAwayAt;
+        bool hovered = Lower(Trimmed(arg)) == L"hovered" || Lower(Trimmed(arg)) == L"mouse";
+        POINT pt{};
+        GetCursorPos(&pt);
+        if (hovered && s_putAway && IsWindow(s_putAway) && IsIconic(s_putAway) && std::abs(pt.x - s_putAwayAt.x) <= 8 &&
+            std::abs(pt.y - s_putAwayAt.y) <= 8) {
+            Activate(s_putAway);
+            s_putAway = nullptr;
+            return L"ok";
+        }
         HWND h = arg.empty() ? active : WindowBy(arg);
         if (!needWindow(h)) return L"error: no window";
         ShowWindow(h, SW_MINIMIZE);
+        if (hovered) s_putAway = h, s_putAwayAt = pt;
         return L"ok";
     }
     if (name == L"pin") {
@@ -1294,6 +1518,85 @@ std::wstring Dispatch(std::wstring const& name, std::wstring const& arg) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A command of several steps, on the switcher's thread. The steps run in order
+// until a wait, which leaves the rest to a timer rather than holding the
+// thread: a key press has to come back at once, and the switcher's thread is
+// the one drawing. A step that answers with an error stops the rest.
+
+constexpr UINT_PTR kTimerCommand = 78;
+constexpr size_t kMostWaitingCommands = 8;
+
+struct WaitingCommand {
+    std::vector<CommandStep> steps;
+    size_t at = 0;
+    ULONGLONG due = 0;
+};
+std::vector<WaitingCommand> g_waiting;  // (the switcher window's thread)
+
+void CommandTimerSet() {
+    if (!g_wnd) {
+        g_waiting.clear();
+        return;
+    }
+    if (g_waiting.empty()) {
+        KillTimer(g_wnd, kTimerCommand);
+        return;
+    }
+    ULONGLONG now = GetTickCount64(), soonest = g_waiting[0].due;
+    for (auto const& w : g_waiting) soonest = std::min(soonest, w.due);
+    SetTimer(g_wnd, kTimerCommand, (UINT)std::max<ULONGLONG>(soonest > now ? soonest - now : 0, 10), nullptr);
+}
+
+// From where it got to, until a wait or the end.
+std::wstring StepsFrom(WaitingCommand& w) {
+    while (w.at < w.steps.size()) {
+        CommandStep const& s = w.steps[w.at++];
+        if (s.name == L"wait") {
+            w.due = GetTickCount64() + (ULONGLONG)s.waitMs;
+            return L"ok";
+        }
+        std::wstring said = Dispatch(s.name, s.arg);
+        if (said.rfind(L"error", 0) == 0) {
+            Wh_Log(L"command stopped at \"%s %s\": %s", s.name.c_str(), s.arg.c_str(), said.c_str());
+            return said;
+        }
+    }
+    return L"ok";
+}
+
+void CommandTimer() {
+    ULONGLONG now = GetTickCount64();
+    for (size_t i = 0; i < g_waiting.size();) {
+        if (g_waiting[i].due > now) {
+            i++;
+            continue;
+        }
+        WaitingCommand w = std::move(g_waiting[i]);
+        g_waiting.erase(g_waiting.begin() + i);
+        std::wstring answer = StepsFrom(w);
+        if (w.at < w.steps.size() && answer.rfind(L"error", 0) != 0) {
+            g_waiting.insert(g_waiting.begin() + i, std::move(w));
+            i++;
+        }
+    }
+    CommandTimerSet();
+}
+
+std::wstring RunCommand(std::wstring const& line) {
+    Command c = ParseCommand(line);
+    if (!c.ok()) return L"error: " + c.error;
+    WaitingCommand w;
+    w.steps = std::move(c.steps);
+    std::wstring answer = StepsFrom(w);
+    if (w.at < w.steps.size() && answer.rfind(L"error", 0) != 0) {
+        if (g_waiting.size() >= kMostWaitingCommands) return L"error: too many commands waiting their turn";
+        g_waiting.push_back(std::move(w));
+        CommandTimerSet();
+    }
+    return answer;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // tournectl: a pipe for this user's session, \\.\pipe\tourne-ctl-<session>.
 // A caller writes one line and reads the answer; "listen" keeps the pipe
 // open and gets events as lines, as Hyprland's event socket gives them.
@@ -1434,6 +1737,10 @@ std::wstring ControlCommand(std::wstring const& line) {
         size_t s2 = rest.find(L' ');
         return Dispatch(Lower(rest.substr(0, s2)), s2 == std::wstring::npos ? L"" : Trimmed(rest.substr(s2 + 1)));
     }
+    if (word == L"run") return RunCommand(rest);
+    // What a command would do, without doing any of it (the menu editor's help
+    // asks this, and so does tools/binds/cmdtest.cpp).
+    if (word == L"check") return DescribeCommand(ParseCommand(rest));
     if (word == L"version") return L"Tourne (tournectl 1)";
     if (word == L"reload") {
         if (g_wnd) PostMessageW(g_wnd, WM_APP_SETTINGS, 0, 0);
@@ -1750,6 +2057,8 @@ void ApplyBindSettings() {
         WatchWheel(g_open);  // (the mouse hook: there while a mouse bind or the wheel wants it)
     }
     ApplyWindowRules(g_binds.ruleLines);
+    g_waiting.clear();  // (a command part-way through doesn't carry over a reload)
+    CommandTimerSet();
     g_idleRan.clear();
     IdleTimer();
     if (on) Wh_Log(L"binds: %d read", (int)g_binds.binds.size());
@@ -1800,6 +2109,7 @@ bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
                 if ((unsigned)lParam == g_bindsGeneration && wParam < g_binds.binds.size()) holdMs = g_binds.binds[wParam].holdMs;
             }
             g_holdGeneration = (unsigned)lParam;
+            g_holdPressedAt = GetTickCount64();
             if (holdMs) SetTimer(g_wnd, kTimerBindHold, holdMs, nullptr);
             *result = 0;
             return true;
@@ -1809,6 +2119,7 @@ bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
             // program in front.
             KillTimer(g_wnd, kTimerBindHold);
             int plain = -1;
+            bool doubled = false;  // a double press on the same key too
             UINT mods = 0;
             DWORD vk = 0;
             {
@@ -1816,13 +2127,25 @@ bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
                 if ((unsigned)lParam != g_bindsGeneration || wParam >= g_binds.binds.size()) return true;
                 Bind const& h = g_binds.binds[wParam];
                 mods = h.mods, vk = h.vk;
-                for (int i = 0; i < (int)g_binds.binds.size() && plain < 0; i++) {
+                for (int i = 0; i < (int)g_binds.binds.size(); i++) {
                     Bind const& b = g_binds.binds[i];
-                    if (b.submap == h.submap && b.mods == h.mods && b.vk == h.vk && b.chord == h.chord && !b.twice && !b.holdMs) plain = i;
+                    if (b.submap != h.submap || b.mods != h.mods || b.vk != h.vk || b.chord != h.chord) continue;
+                    if (b.twice) doubled = true;
+                    else if (!b.holdMs && plain < 0) plain = i;
                 }
             }
-            if (plain >= 0) RunBind(plain, (unsigned)lParam);
-            else SendKeys(0, vk);
+            // With a double press there, the tap waits till a second press can't come any more (binds.doubleMs
+            // from the first press).
+            if (plain >= 0 && doubled) {
+                ULONGLONG since = GetTickCount64() - g_holdPressedAt;
+                g_tapLater = plain;
+                g_tapLaterGeneration = (unsigned)lParam;
+                SetTimer(g_wnd, kTimerBindTapLater, since < (ULONGLONG)g_doubleMs ? (UINT)(g_doubleMs - since) + 10 : 10, nullptr);
+            } else if (plain >= 0) {
+                RunBind(plain, (unsigned)lParam);
+            } else {
+                SendKeys(0, vk);
+            }
             (void)mods;
             *result = 0;
             return true;
@@ -1830,8 +2153,18 @@ bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
         case WM_APP_MOUSEDRAG:
             MouseDragStep(wParam, lParam);
             return true;
-        case WM_APP_BIND:
+        case WM_APP_BIND: {
+            bool twice = false;
+            {
+                std::lock_guard<std::mutex> lock(g_bindsLock);
+                twice = (unsigned)lParam == g_bindsGeneration && wParam < g_binds.binds.size() && g_binds.binds[wParam].twice;
+            }
+            if (twice && g_tapLater >= 0) {  // (the double press it was waiting for: no tap)
+                KillTimer(g_wnd, kTimerBindTapLater);
+                g_tapLater = -1;
+            }
             RunBind(wParam, (unsigned)lParam);
+        }
             *result = 0;
             return true;
         case WM_APP_BINDCALL: {
@@ -1849,6 +2182,18 @@ bool BindsMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT* result) {
                 int hold = g_holdBind;
                 DWORD vk = g_holdVk;
                 if (hold >= 0 && vk && GetAsyncKeyState((int)vk) < 0 && !g_holdRan.exchange(true)) RunBind(hold, g_holdGeneration);
+                *result = 0;
+                return true;
+            }
+            if (wParam == kTimerBindTapLater) {
+                KillTimer(g_wnd, kTimerBindTapLater);
+                int tap = std::exchange(g_tapLater, -1);
+                if (tap >= 0) RunBind(tap, g_tapLaterGeneration);
+                *result = 0;
+                return true;
+            }
+            if (wParam == kTimerCommand) {
+                CommandTimer();
                 *result = 0;
                 return true;
             }

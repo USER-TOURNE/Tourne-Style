@@ -10,6 +10,7 @@
 #include <d2d1.h>
 #include <dwmapi.h>
 #include <dwrite.h>
+#include <wincodec.h>
 #include <wrl/client.h>
 
 #include <algorithm>
@@ -25,6 +26,7 @@
 #include "plugins.h"
 #include "extensions.h"
 #include "dots.h"
+#include "theme-engine.h"
 #include "presets.h"
 #include "menu-editor.h"
 #include "binds-editor.h"
@@ -41,6 +43,13 @@
 #endif
 
 using Microsoft::WRL::ComPtr;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc23-extensions"
+const char kMenusStarter[] = {  // the menu file the first time it's opened (every line commented out)
+#embed "../presets/menus.conf"
+    , 0};
+#pragma clang diagnostic pop
 
 namespace td {
 
@@ -183,6 +192,8 @@ PickInfo PickOf(const std::wstring& key) {
         {L"switcher.tiling.floatApps", Pick::Programs, L", "},
         {L"switcher.windows.excludeApps", Pick::Programs, L", "},
         {L"systemIcons.doubleClickApps", Pick::Programs, L", "},
+        {L"glass.yours.programs", Pick::Programs, L", "},
+        {L"inject.yours.programs", Pick::Programs, L", "},
         {L"switcher.borders.skipTitles", Pick::Titles, L", "},
         {L"switcher.tiling.floatTitles", Pick::Titles, L", "},
         {L"switcher.windows.excludeTitles", Pick::Titles, L", "},
@@ -411,6 +422,8 @@ void MakePages() {
     g_pages.push_back(described(L"shader", L"Screen shader"));
     g_pages.push_back(described(L"capture", L"Capture"));
     g_pages.push_back(described(L"launcher", L"Launcher"));
+    g_pages.push_back(described(L"flyouts", L"Flyouts"));
+    g_pages.push_back(described(L"appStyler", L"App styler"));
     g_pages.push_back(described(L"sounds", L"Sounds"));
     g_pages.push_back(described(L"inject", L"Style apps"));
     g_pages.push_back(described(L"shell", L"Shell mode"));
@@ -570,7 +583,7 @@ ComPtr<ID2D1SolidColorBrush> g_brush;
 ComPtr<IDWriteTextFormat> g_fTitle, g_fSection, g_fName, g_fBody, g_fSmall, g_fItem, g_fApp;
 
 // Where the pointer is, and what it's on.
-enum class Part { None, Item, Control, Reset, Track, ScrollThumb, Undo, Redo, Discard, Save, TestWindow, Compare, Filter, Tile, TileButton, ChipSet, ViewCard, AddExtension, ImportLook, ExportLook };
+enum class Part { None, Item, Control, Reset, Track, ScrollThumb, Undo, Redo, Discard, Save, TestWindow, Compare, Filter, Tile, TileButton, ChipSet, ViewCard, AddExtension, ImportLook, ExportLook, SaveToGallery, MenuFile, MenuLog, RestoreWindows };
 struct Hit {
     Part part = Part::None;
     int index = -1;  // a row, or a sidebar item
@@ -593,7 +606,20 @@ bool WindowsLight() {
     return v != 0;
 }
 
-// The Studio wears the Tourne theme when there is one.
+void MakeFormats();
+void MakeEditFont();
+std::wstring g_face = L"Segoe UI";  // the text's font: the menus' when they have one of their own
+
+// Tourne's menus as the bar draws them (taskbar-host.cpp's TourneMenuLookFor; the layout must match its
+// TourneMenuLookC).
+struct MenuLookC {
+    uint32_t ground, line, edge, text, accent, dim, hover, hoverText, band;
+    HFONT font;
+    int scale, frame, caps;
+    uint32_t frameLine;
+};
+
+// The Studio wears the Tourne theme when there is one, as Tourne's menus wear it: their colours and font.
 void LoadColours() {
     auto role = [](const wchar_t* token, uint32_t fallback) {
         for (int i = 0; i < kThemeRoleCount; i++)
@@ -619,6 +645,31 @@ void LoadColours() {
         g_c.hover = Mix(g_c.raised, g_c.text, 0.05f);
         g_c.onAccent = Luma(g_c.accent) > 0.55 ? 0x0B0F0D : 0xFFFFFF;
     }
+    using LookFn = BOOL (*)(MenuLookC*, int);
+    static auto menuLook = (LookFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuLookFor");
+    MenuLookC m{};
+    if (menuLook && menuLook(&m, (int)sizeof(m))) {
+        // The menus' ground, their text, their dim for what's said about a setting, their hover and accent; cards
+        // a step off the ground toward the menus' line, as a menu's band sits off it.
+        g_c.ground = m.ground;
+        g_c.raised = Mix(m.ground, m.line, 0.45f);
+        g_c.hover = m.hover;
+        g_c.line = m.line;
+        g_c.text = m.text;
+        g_c.muted = m.dim;
+        g_c.dim = Mix(m.dim, m.ground, 0.35f);
+        g_c.accent = m.accent;
+        g_c.light = Luma(m.ground) > 0.5;
+        g_c.onAccent = Luma(g_c.accent) > 0.55 ? 0x0B0F0D : 0xFFFFFF;
+        std::wstring face = L"Segoe UI";
+        LOGFONTW lf{};
+        if (m.font && GetObjectW(m.font, sizeof(lf), &lf) && lf.lfFaceName[0]) face = lf.lfFaceName;
+        if (face != g_face) {
+            g_face = face;
+            if (g_dw) MakeFormats();
+            if (g_wnd) MakeEditFont();
+        }
+    }
     if (g_editBrush) DeleteObject(g_editBrush);
     g_editBrush = CreateSolidBrush(RGB(g_c.raised >> 16, (g_c.raised >> 8) & 255, g_c.raised & 255));
     if (g_wnd) {
@@ -629,6 +680,15 @@ void LoadColours() {
         COLORREF text = RGB(g_c.text >> 16, (g_c.text >> 8) & 255, g_c.text & 255);
         DwmSetWindowAttribute(g_wnd, 35 /* DWMWA_CAPTION_COLOR */, &caption, sizeof(caption));
         DwmSetWindowAttribute(g_wnd, 36 /* DWMWA_TEXT_COLOR */, &text, sizeof(text));
+        DWORD square = 1;  // DWMWCP_DONOTROUND: square, as the menus are
+        DwmSetWindowAttribute(g_wnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &square, sizeof(square));
+        using StopsFn = int (*)(uint32_t*, int);
+        static auto stops = (StopsFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuFrameStops");
+        uint32_t f[3]{};
+        if (stops && stops(f, 3) > 0) {
+            COLORREF border = RGB(f[0] >> 16, (f[0] >> 8) & 255, f[0] & 255);
+            DwmSetWindowAttribute(g_wnd, 34 /* DWMWA_BORDER_COLOR */, &border, sizeof(border));
+        }
     }
 }
 
@@ -653,9 +713,44 @@ ID2D1SolidColorBrush* Brush(uint32_t c, float a = 1) {
     return g_brush.Get();
 }
 
+// Tourne's menus: square corners everywhere (what was rounded is drawn square), and their frame's colours on
+// every border, as a gradient from each box's top left to its bottom right as a menu's runs.
+D2D1_ROUNDED_RECT Square(const D2D1_RECT_F& r, float, float) { return D2D1::RoundedRect(r, 0, 0); }
+
+uint32_t g_frame[3]{};
+int g_frameCount = 0;
+ComPtr<ID2D1GradientStopCollection> g_frameStops;
+
+// The menus' frame now (taskbar.menuFrameColors), for this paint; no frame: the theme's line.
+void ReadMenuFrame() {
+    using StopsFn = int (*)(uint32_t*, int);
+    static auto stops = (StopsFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuFrameStops");
+    int n = stops ? stops(g_frame, 3) : 0;
+    if (n <= 0) g_frame[0] = g_c.line, n = 1;
+    g_frameCount = n;
+    g_frameStops.Reset();
+    if (n < 2) return;
+    D2D1_GRADIENT_STOP st[3];
+    for (int i = 0; i < n; i++) st[i] = {(float)i / (n - 1), Color(g_frame[i])};
+    g_rt->CreateGradientStopCollection(st, n, &g_frameStops);
+}
+
+// A border in the menus' frame line, just inside r.
+void FrameEdge(const D2D1_RECT_F& r, float a = 1) {
+    D2D1_RECT_F in{r.left + .5f, r.top + .5f, r.right - .5f, r.bottom - .5f};
+    if (!g_frameStops) {
+        g_rt->DrawRectangle(in, Brush(g_frame[0], a), 1);
+        return;
+    }
+    ComPtr<ID2D1LinearGradientBrush> b;
+    g_rt->CreateLinearGradientBrush(D2D1::LinearGradientBrushProperties({r.left, r.top}, {r.right, r.bottom}),
+                                    D2D1::BrushProperties(a), g_frameStops.Get(), &b);
+    if (b) g_rt->DrawRectangle(in, b.Get(), 1);
+}
+
 ComPtr<IDWriteTextFormat> Format(float size, DWRITE_FONT_WEIGHT weight, bool wrap = false) {
     ComPtr<IDWriteTextFormat> f;
-    g_dw->CreateTextFormat(L"Segoe UI", nullptr, weight, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"", &f);
+    g_dw->CreateTextFormat(g_face.c_str(), nullptr, weight, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"", &f);
     if (!f) return f;
     f->SetWordWrapping(wrap ? DWRITE_WORD_WRAPPING_WRAP : DWRITE_WORD_WRAPPING_NO_WRAP);
     f->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
@@ -718,9 +813,11 @@ float HeaderHeight() { return g_header; }
 
 bool g_queryPresets = false;  // the search box filters the presets (it was started on their page)
 int g_filter = 0;             // (each tile page starts on its first: set back when the page changes)
-const wchar_t* const kPresetFilters[] = {L"All", L"Identities", L"Picks", L"Dark", L"Light", L"Full looks"};
+const wchar_t* const kPresetFilters[] = {L"All", L"Identities", L"Picks", L"Dark", L"Light", L"Full looks", L"Gallery"};
 const wchar_t* const kPluginFilters[] = {L"All", L"Installed", L"Bar", L"Panel", L"Desktop", L"Launcher"};
-constexpr int kFilterCount = 6;   // (both have six)
+constexpr int kGalleryFilter = 6;  // the presets' last: your saved looks (dots.h's gallery)
+bool ExtensionsPage();
+int FilterCount() { return ExtensionsPage() ? 6 : 7; }
 std::vector<int> g_tiles;     // the presets or plugins shown, by index
 
 bool PresetSearchFoundNothing() {
@@ -742,6 +839,42 @@ bool ExtensionsPage() {
 }
 
 bool TilesPage() { return PresetsPage() || ExtensionsPage(); }
+bool GalleryShown() { return PresetsPage() && g_filter == kGalleryFilter; }
+// The theme's page, with Restore my Windows colours while Tourne has a copy of them (theme-engine.h).
+bool ThemePage() { return g_query.empty() && g_page < (int)g_pages.size() && g_pages[g_page].prefix == L"theme."; }
+bool RestoreShown() { return ThemePage() && WindowsAccentSaved(); }
+bool TaskbarPage() { return g_query.empty() && g_page < (int)g_pages.size() && g_pages[g_page].prefix == L"taskbar."; }
+
+// The look gallery as tiles: each pack with the screenshot saved beside it, newest first.
+struct GalleryLook {
+    std::wstring name, pack, picture;
+    ComPtr<ID2D1Bitmap> bitmap;  // (made as it's first drawn)
+    bool tried = false;
+};
+std::vector<GalleryLook> g_gallery;
+
+void ReadGallery() {
+    std::vector<std::pair<ULONGLONG, GalleryLook>> found;
+    std::wstring folder = DotsGalleryFolder();
+    WIN32_FIND_DATAW fd;
+    HANDLE find = FindFirstFileW((folder + L"\\*.tournelook").c_str(), &fd);
+    if (find != INVALID_HANDLE_VALUE) {
+        do {
+            GalleryLook g;
+            g.name = fd.cFileName;
+            g.name = g.name.substr(0, g.name.rfind(L'.'));
+            g.pack = folder + L"\\" + fd.cFileName;
+            g.picture = folder + L"\\" + g.name + L".png";
+            for (auto& old : g_gallery)  // (the pictures already made stay)
+                if (old.pack == g.pack) g.bitmap = old.bitmap, g.tried = old.tried;
+            found.push_back({((ULONGLONG)fd.ftLastWriteTime.dwHighDateTime << 32) | fd.ftLastWriteTime.dwLowDateTime, g});
+        } while (FindNextFileW(find, &fd));
+        FindClose(find);
+    }
+    std::sort(found.begin(), found.end(), [](auto const& a, auto const& b) { return a.first > b.first; });
+    g_gallery.clear();
+    for (auto& f : found) g_gallery.push_back(f.second);
+}
 const wchar_t* FilterName(int i) { return ExtensionsPage() ? kPluginFilters[i] : kPresetFilters[i]; }
 float TileH() { return ExtensionsPage() ? kPluginTileH : kTileH; }
 
@@ -783,6 +916,12 @@ void BuildTiles() {
     if (ExtensionsPage()) return BuildPluginTiles();
     g_tiles.clear();
     std::wstring query = Lower(g_query);
+    if (g_filter == kGalleryFilter) {
+        ReadGallery();
+        for (int i = 0; i < (int)g_gallery.size(); i++)
+            if (query.empty() || Lower(g_gallery[i].name).find(query) != std::wstring::npos) g_tiles.push_back(i);
+        return;
+    }
     auto const& all = Presets();
     for (int i = 0; i < (int)all.size(); i++) {
         Preset const& p = all[i];
@@ -1146,7 +1285,17 @@ D2D1_RECT_F ResetRect(const Row& r) {
     return {left, c.top + (c.bottom - c.top) / 2 - 12, left + 52, c.top + (c.bottom - c.top) / 2 + 12};
 }
 
-D2D1_RECT_F ItemRect(int i) { return {12, 104 + i * (kItem + 2), kSidebar - 12, 104 + i * (kItem + 2) + kItem}; }
+// The sidebar's list scrolls on its own when the pages don't fit under the search box.
+constexpr float kNavTop = 96;
+float g_navScroll = 0;
+float NavContentHeight();
+float NavMaxScroll() { return std::max(0.f, NavContentHeight() - (ClientSize().height - kNavTop)); }
+void NavScrollTo(float y) { g_navScroll = std::clamp(y, 0.f, NavMaxScroll()); }
+
+D2D1_RECT_F ItemRect(int i) {
+    float top = 104 + i * (kItem + 2) - g_navScroll;
+    return {12, top, kSidebar - 12, top + kItem};
+}
 
 D2D1_RECT_F BarButton(Part p) {
     D2D1_SIZE_F s = ClientSize();
@@ -1203,9 +1352,25 @@ D2D1_RECT_F TileButtonRect(int n) {
 }
 
 int SidebarCount() { return (int)g_pages.size() + (Pending() ? 1 : 0); }
+float NavContentHeight() { return 8 + SidebarCount() * (kItem + 2) + 12; }
+
+// Brings sidebar item i into view (after a page change from search or the keyboard).
+void NavReveal(int i) {
+    float top = 104 + i * (kItem + 2), view = ClientSize().height;
+    if (top - 8 < kNavTop + g_navScroll) NavScrollTo(top - 8 - kNavTop);
+    else if (top + kItem + 12 > view + g_navScroll) NavScrollTo(top + kItem + 12 - view);
+}
+
+D2D1_RECT_F NavThumb() {
+    float view = ClientSize().height - kNavTop, content = NavContentHeight();
+    if (content <= view) return {};
+    float h = std::max(32.f, view * view / content), y = kNavTop + (view - h) * (g_navScroll / NavMaxScroll());
+    return {kSidebar - 8, y + 4, kSidebar - 4, y + h - 4};
+}
 
 Hit HitTest(float x, float y) {
     if (x < kSidebar) {
+        if (y < kNavTop) return {};
         for (int i = 0; i < SidebarCount(); i++)
             if (In(ItemRect(i), x, y)) return {Part::Item, i};
         return {};
@@ -1220,7 +1385,10 @@ Hit HitTest(float x, float y) {
             if (In(HeaderButton(p), x, y)) return {p};
     if (ExtensionsPage() && In(HeaderButton(Part::Compare), x, y)) return {Part::AddExtension};
     if (PresetsPage() && In(HeaderButton(Part::Compare), x, y)) return {Part::ImportLook};
-    if (PresetsPage() && In(HeaderButton(Part::TestWindow), x, y)) return {Part::ExportLook};
+    if (PresetsPage() && In(HeaderButton(Part::TestWindow), x, y)) return {GalleryShown() ? Part::SaveToGallery : Part::ExportLook};
+    if (RestoreShown() && In(HeaderButton(Part::Compare), x, y)) return {Part::RestoreWindows};
+    if (TaskbarPage() && In(HeaderButton(Part::Compare), x, y)) return {Part::MenuLog};
+    if (TaskbarPage() && In(HeaderButton(Part::TestWindow), x, y)) return {Part::MenuFile};
     D2D1_RECT_F thumb = ScrollThumb();
     if (thumb.right > 0 && x >= thumb.left - 4 && y >= thumb.top - 4 && y < thumb.bottom + 4) return {Part::ScrollThumb};
     if (auto sets = PageSets())
@@ -1230,7 +1398,7 @@ Hit HitTest(float x, float y) {
         for (int i = 0; i < kViewCount; i++)
             if (In(ViewRect(i), x, y)) return {Part::ViewCard, i};
     if (TilesPage()) {
-        for (int i = 0; i < kFilterCount; i++)
+        for (int i = 0; i < FilterCount(); i++)
             if (In(FilterRect(i), x, y)) return {Part::Filter, i};
         float top = g_tilesTop - g_scroll;
         if (y < top || x < ContentLeft()) return {};
@@ -1260,7 +1428,7 @@ Hit HitTest(float x, float y) {
 // Drawing
 
 void RoundRect(const D2D1_RECT_F& r, float radius, uint32_t c, float a = 1) {
-    g_rt->FillRoundedRectangle(D2D1::RoundedRect(r, radius, radius), Brush(c, a));
+    g_rt->FillRectangle(r, Brush(c, a));  // (square, as the menus are; radius kept for the callers)
 }
 
 void Text(const std::wstring& s, IDWriteTextFormat* f, const D2D1_RECT_F& r, uint32_t c, float a = 1) {
@@ -1472,14 +1640,13 @@ std::wstring PickLabel(const std::wstring& key, const std::wstring& value) {
 
 void Box(const D2D1_RECT_F& r, bool hover) {
     RoundRect(r, 6, hover ? Mix(g_c.ground, g_c.text, 0.10f) : Mix(g_c.ground, g_c.text, 0.05f));
-    g_rt->DrawRoundedRectangle(D2D1::RoundedRect({r.left + .5f, r.top + .5f, r.right - .5f, r.bottom - .5f}, 6, 6),
-                               Brush(g_c.line), 1);
+    FrameEdge(r);
 }
 
 // The box a text box is open in: the colour the text box has, an accent edge.
 void EditingBox(const D2D1_RECT_F& r) {
     RoundRect(r, 6, Mix(g_c.ground, g_c.text, 0.05f));
-    g_rt->DrawRoundedRectangle(D2D1::RoundedRect({r.left + .5f, r.top + .5f, r.right - .5f, r.bottom - .5f}, 6, 6), Brush(g_c.accent), 1.5f);
+    g_rt->DrawRoundedRectangle(Square({r.left + .5f, r.top + .5f, r.right - .5f, r.bottom - .5f}, 6, 6), Brush(g_c.accent), 1.5f);
 }
 
 void DrawControl(const Row& r, int index) {
@@ -1492,7 +1659,7 @@ void DrawControl(const Row& r, int index) {
             bool on = IsOn(v);
             RoundRect(c, 12, on ? g_c.accent : Mix(g_c.raised, g_c.text, hover ? 0.28f : 0.2f));
             float cx = on ? c.right - 12 : c.left + 12, cy = (c.top + c.bottom) / 2;
-            g_rt->FillEllipse(D2D1::Ellipse({cx, cy}, 8, 8), Brush(on ? g_c.onAccent : g_c.text));
+            g_rt->FillRectangle({cx - 7, cy - 7, cx + 7, cy + 7}, Brush(on ? g_c.onAccent : g_c.text));
             break;
         }
         case Kind::Choice: {
@@ -1526,8 +1693,9 @@ void DrawControl(const Row& r, int index) {
             float x = hi > lo ? t.left + (float)((at - lo) / (hi - lo)) * (t.right - t.left) : t.left;
             RoundRect({t.left, cy - 2, t.right, cy + 2}, 2, Mix(g_c.raised, g_c.text, 0.18f));
             RoundRect({t.left, cy - 2, x, cy + 2}, 2, g_c.accent);
-            g_rt->FillEllipse(D2D1::Ellipse({x, cy}, hover ? 9.f : 8.f, hover ? 9.f : 8.f), Brush(g_c.accent));
-            g_rt->FillEllipse(D2D1::Ellipse({x, cy}, 3.5f, 3.5f), Brush(g_c.onAccent));
+            float k = hover ? 8.f : 7.f;
+            g_rt->FillRectangle({x - k, cy - k, x + k, cy + k}, Brush(g_c.accent));
+            g_rt->FillRectangle({x - 3, cy - 3, x + 3, cy + 3}, Brush(g_c.onAccent));
             if (g_editing != r.key) {
                 D2D1_RECT_F b = ValueBox(r);
                 Box(b, false);
@@ -1545,7 +1713,7 @@ void DrawControl(const Row& r, int index) {
                 Box(sw, false);
                 g_rt->DrawLine({sw.left + 8, sw.bottom - 8}, {sw.right - 8, sw.top + 8}, Brush(g_c.dim), 1.5f);
             }
-            g_rt->DrawRoundedRectangle(D2D1::RoundedRect({sw.left + .5f, sw.top + .5f, sw.right - .5f, sw.bottom - .5f}, 6, 6),
+            g_rt->DrawRoundedRectangle(Square({sw.left + .5f, sw.top + .5f, sw.right - .5f, sw.bottom - .5f}, 6, 6),
                                        Brush(g_c.text, 0.18f), 1);
             if (g_editing != r.key) {
                 D2D1_RECT_F b = ValueBox(r);
@@ -1649,6 +1817,7 @@ void DrawMotionHeader(float cardA) {
     float left = ContentLeft(), width = ContentWidth(), top = g_curveTop - g_scroll;
     D2D1_RECT_F card{left, top, left + width, top + kCurveH};
     RoundRect(card, 10, g_c.raised, cardA);
+    FrameEdge(card);
     motion::Anim a = MotionOf(g_motionLeaf);
     float t = MotionPhase(a);
     D2D1_RECT_F plot{left + 24, top + 22, left + 24 + 200, top + kCurveH - 22};
@@ -1851,7 +2020,8 @@ void DrawViews(float cardA) {
         bool on = chosen == kViewCards[i].id || (chosen.empty() && i == 0), hot = g_hover == Hit{Part::ViewCard, i};
         RoundRect(c, 10, g_c.raised, cardA);
         if (hot) RoundRect(c, 10, g_c.text, 0.05f);
-        if (on) g_rt->DrawRoundedRectangle(D2D1::RoundedRect({c.left + 1, c.top + 1, c.right - 1, c.bottom - 1}, 10, 10), Brush(g_c.accent), 2);
+        FrameEdge(c);
+        if (on) g_rt->DrawRoundedRectangle(Square({c.left + 1, c.top + 1, c.right - 1, c.bottom - 1}, 10, 10), Brush(g_c.accent), 2);
         DrawViewPreview(i, {c.left + 10, c.top + 10, c.right - 10, c.top + 112}, t + i * 0.37f);
         Text(kViewCards[i].name, g_fItem.Get(), {c.left + 12, c.top + 120, c.right - 12, c.top + 140}, on ? g_c.accent : g_c.text);
         Text(kViewCards[i].about, g_fSmall.Get(), {c.left + 12, c.top + 140, c.right - 12, c.top + 160}, g_c.muted);
@@ -1859,7 +2029,7 @@ void DrawViews(float cardA) {
 }
 
 void DrawFilters(float cardA) {
-    for (int i = 0; i < kFilterCount; i++) {
+    for (int i = 0; i < FilterCount(); i++) {
         D2D1_RECT_F r = FilterRect(i);
         bool on = i == g_filter, hot = g_hover == Hit{Part::Filter, i};
         RoundRect(r, kFilterH / 2, on ? g_c.accent : g_c.raised, on ? 1 : cardA);
@@ -1873,7 +2043,8 @@ void DrawExtension(int n, const Extension& e, D2D1_RECT_F r, float cardA) {
     bool on = ExtensionOn(e);
     float left = r.left + 14, right = r.right - 14;
     RoundRect(r, 10, g_c.raised, cardA);
-    if (on) g_rt->DrawRoundedRectangle(D2D1::RoundedRect({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 1.5f);
+    FrameEdge(r);
+    if (on) g_rt->DrawRoundedRectangle(Square({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 1.5f);
     D2D1_RECT_F b = TileButtonRect(n);
     bool hot = g_hover == Hit{Part::TileButton, n};
     if (on) {
@@ -1929,8 +2100,9 @@ void DrawPlugins(float view, float cardA) {
         PluginState state = PluginStateOf(p);
         float left = r.left + 14, right = r.right - 14;
         RoundRect(r, 10, g_c.raised, cardA);
+        FrameEdge(r);
         if (state == PluginState::Installed)
-            g_rt->DrawRoundedRectangle(D2D1::RoundedRect({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 1.5f);
+            g_rt->DrawRoundedRectangle(Square({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 1.5f);
 
         D2D1_RECT_F b = TileButtonRect(n);
         bool hot = g_hover == Hit{Part::TileButton, n};
@@ -1976,13 +2148,70 @@ void DrawPlugins(float view, float cardA) {
     }
 }
 
+// A saved look's screenshot as a bitmap (WIC), or null.
+ComPtr<ID2D1Bitmap> GalleryBitmap(GalleryLook& g) {
+    if (g.tried) return g.bitmap;
+    g.tried = true;
+    IWICImagingFactory* f = nullptr;
+    if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&f)))) return nullptr;
+    IWICBitmapDecoder* dec = nullptr;
+    IWICBitmapFrameDecode* frame = nullptr;
+    IWICFormatConverter* conv = nullptr;
+    if (SUCCEEDED(f->CreateDecoderFromFilename(g.picture.c_str(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &dec)) &&
+        SUCCEEDED(dec->GetFrame(0, &frame)) && SUCCEEDED(f->CreateFormatConverter(&conv)) &&
+        SUCCEEDED(conv->Initialize(frame, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeCustom)))
+        g_rt->CreateBitmapFromWicBitmap(conv, nullptr, &g.bitmap);
+    if (conv) conv->Release();
+    if (frame) frame->Release();
+    if (dec) dec->Release();
+    f->Release();
+    return g.bitmap;
+}
+
+void DrawGallery(float view, float cardA) {
+    if (g_tiles.empty()) {
+        float top = g_tilesTop - g_scroll;
+        auto l = Layout(g_query.empty() ? L"No looks saved yet. Save to gallery keeps your look as saved, with the screen as it is "
+                                          L"now; the tray menu's Save my look to the gallery does the same from anywhere."
+                                        : L"No saved look matches.",
+                        g_fBody.Get(), ContentWidth());
+        g_rt->DrawTextLayout({ContentLeft(), top}, l.Get(), Brush(g_c.muted));
+        return;
+    }
+    int first = std::max(0, (int)((g_scroll - g_tilesTop) / (kTileH + kTileGap)) * g_columns);
+    for (int n = first; n < (int)g_tiles.size(); n++) {
+        D2D1_RECT_F r = TileRect(n);
+        if (r.top > view) break;
+        GalleryLook& g = g_gallery[g_tiles[n]];
+        bool hot = g_hover == Hit{Part::Tile, n};
+        RoundRect(r, 10, g_c.raised, cardA);
+        // The screenshot filling the tile (cut to its shape), the name on a band along the bottom.
+        if (auto bmp = GalleryBitmap(g)) {
+            D2D1_SIZE_F size = bmp->GetSize();
+            float tw = r.right - r.left, th = r.bottom - r.top, k = std::max(tw / size.width, th / size.height);
+            float w = size.width * k, h = size.height * k, cx = (r.left + r.right) / 2;
+            g_rt->PushAxisAlignedClip(r, D2D1_ANTIALIAS_MODE_ALIASED);
+            g_rt->DrawBitmap(bmp.Get(), {cx - w / 2, r.top, cx + w / 2, r.top + h}, 1, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR);
+            g_rt->PopAxisAlignedClip();
+        }
+        D2D1_RECT_F band{r.left, r.bottom - 26, r.right, r.bottom};
+        RoundRect(band, 0, g_c.ground, 0.85f);
+        Text(g.name, g_fSmall.Get(), {band.left + 10, band.top + 5, band.right - 10, band.bottom}, hot ? g_c.accent : g_c.text);
+        FrameEdge(r);
+        if (hot) g_rt->DrawRoundedRectangle(Square({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 1.5f);
+    }
+}
+
 void DrawPresets(float view, float cardA) {
     DrawFilters(cardA);
-    for (auto [part, label] : {std::pair{Part::ImportLook, L"Import a look…"}, std::pair{Part::ExportLook, L"Export my look…"}}) {
+    bool gallery = GalleryShown();
+    for (auto [part, label] : {std::pair{Part::ImportLook, L"Import a look…"},
+                               gallery ? std::pair{Part::SaveToGallery, L"Save to gallery"} : std::pair{Part::ExportLook, L"Export my look…"}}) {
         D2D1_RECT_F b = HeaderButton(part == Part::ImportLook ? Part::Compare : Part::TestWindow);
         Box(b, g_hover.part == part);
         TextCentred(label, g_fItem.Get(), b, g_c.text);
     }
+    if (gallery) return DrawGallery(view, cardA);
     if (g_tiles.empty()) return;
     int first = std::max(0, (int)((g_scroll - g_tilesTop) / (kTileH + kTileGap)) * g_columns);
     auto const& all = Presets();
@@ -1995,9 +2224,9 @@ void DrawPresets(float view, float cardA) {
         RoundRect(r, 10, p.roles[Ground]);
         D2D1_RECT_F inner{r.left + .5f, r.top + .5f, r.right - .5f, r.bottom - .5f};
         if (chosen) {
-            g_rt->DrawRoundedRectangle(D2D1::RoundedRect({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 2.5f);
+            g_rt->DrawRoundedRectangle(Square({r.left + 1, r.top + 1, r.right - 1, r.bottom - 1}, 9, 9), Brush(g_c.accent), 2.5f);
         } else {
-            g_rt->DrawRoundedRectangle(D2D1::RoundedRect(inner, 10, 10), Brush(hot ? p.roles[Accent] : p.roles[Line]), hot ? 1.5f : 1);
+            g_rt->DrawRoundedRectangle(Square(inner, 10, 10), Brush(hot ? p.roles[Accent] : p.roles[Line]), hot ? 1.5f : 1);
         }
         // A bar of its raised colour, like a panel, with its accent as the "active" mark.
         RoundRect({r.left + 12, r.top + 12, r.right - 12, r.top + 22}, 4, p.roles[Raised]);
@@ -2026,6 +2255,7 @@ void Paint() {
     g_rt->BeginDraw();
     g_rt->SetTransform(D2D1::Matrix3x2F::Identity());
     g_rt->Clear(Color(g_c.ground));
+    ReadMenuFrame();
     // In glass, the panels let it show through.
     bool glassy = GlassBackground();
     float cardA = 1, sideA = 1, barA = 1;
@@ -2055,6 +2285,18 @@ void Paint() {
         button(Part::Compare, L"Hold to compare", g_pressed.part == Part::Compare);
     }
     if (PresetsPage()) DrawPresets(view, cardA);
+    if (RestoreShown()) {
+        D2D1_RECT_F b = HeaderButton(Part::Compare);
+        b.left -= 80;  // (a longer label)
+        Box(b, g_hover.part == Part::RestoreWindows);
+        TextCentred(L"Restore my Windows colours", g_fItem.Get(), b, g_c.text);
+    }
+    if (TaskbarPage())  // the menu file (menus.conf), beside the menu settings it adds to
+        for (auto [part, label] : {std::pair{Part::MenuLog, L"What it read"}, std::pair{Part::MenuFile, L"Edit the menu file…"}}) {
+            D2D1_RECT_F b = HeaderButton(part == Part::MenuLog ? Part::Compare : Part::TestWindow);
+            Box(b, g_hover.part == part);
+            TextCentred(label, g_fItem.Get(), b, g_c.text);
+        }
     if (ExtensionsPage()) DrawPlugins(view, cardA);
     if (MotionPage()) DrawMotionHeader(cardA);
     if (ViewsPage()) DrawViews(cardA);
@@ -2065,7 +2307,10 @@ void Paint() {
         size_t last = i;
         while (last + 1 < g_rows.size() && !g_rows[last].last) last++;
         float top = g_rows[i].y - g_scroll, bottom = g_rows[last].y - g_scroll + g_rows[last].h;
-        if (bottom >= 0 && top <= view) RoundRect({left, top, left + width, bottom}, 10, g_c.raised, cardA);
+        if (bottom >= 0 && top <= view) {
+            RoundRect({left, top, left + width, bottom}, 10, g_c.raised, cardA);
+            FrameEdge({left, top, left + width, bottom});
+        }
     }
     for (size_t i = 0; i < g_rows.size(); i++) {
         Row const& r = g_rows[i];
@@ -2108,11 +2353,14 @@ void Paint() {
     Text(L"Tourne Studio", g_fApp.Get(), {24, 20, kSidebar - 12, 48}, g_c.text);
     D2D1_RECT_F sr{12, 56, kSidebar - 12, 88};
     RoundRect(sr, 6, g_c.raised);
-    g_rt->DrawRoundedRectangle(D2D1::RoundedRect({sr.left + .5f, sr.top + .5f, sr.right - .5f, sr.bottom - .5f}, 6, 6),
-                               Brush(GetFocus() == g_search ? g_c.accent : g_c.line), 1);
+    if (GetFocus() == g_search) g_rt->DrawRectangle({sr.left + .5f, sr.top + .5f, sr.right - .5f, sr.bottom - .5f}, Brush(g_c.accent), 1);
+    else FrameEdge(sr);
     bool searching = !g_query.empty() && !g_queryPresets;
+    NavScrollTo(g_navScroll);  // the window or the page list may have changed size
+    g_rt->PushAxisAlignedClip({0, kNavTop, kSidebar - 1, s.height}, D2D1_ANTIALIAS_MODE_ALIASED);
     for (int i = 0; i < SidebarCount(); i++) {
         D2D1_RECT_F ir = ItemRect(i);
+        if (ir.bottom < kNavTop || ir.top > s.height) continue;
         bool selected = !searching && i == g_page, hot = g_hover == Hit{Part::Item, i};
         if (selected) RoundRect(ir, 8, g_c.accent, 0.16f);
         else if (hot) RoundRect(ir, 8, g_c.text, 0.06f);
@@ -2121,6 +2369,9 @@ void Paint() {
         TextMiddle(label, g_fItem.Get(), {ir.left + 14, ir.top, ir.right - 8, ir.bottom},
                    i == PendingPage() ? g_c.accent : selected ? g_c.text : g_c.muted);
     }
+    D2D1_RECT_F navThumb = NavThumb();
+    if (navThumb.right > 0) RoundRect(navThumb, 2, g_c.text, 0.22f);
+    g_rt->PopAxisAlignedClip();
 
     // What's not saved
     if (Pending()) {
@@ -2143,6 +2394,7 @@ void Paint() {
         button(Part::Save, L"Save", true, true);
     }
 
+    FrameEdge({0, 0, s.width, s.height});  // (the window's own edge, as a menu's outer line)
     if ((MotionPage() || ViewsPage()) && !g_motionTimer) g_motionTimer = SetTimer(g_wnd, kTimerMotion, 16, nullptr) != 0;  // (the previews play)
     if (g_rt->EndDraw() == (HRESULT)D2DERR_RECREATE_TARGET) {
         g_rt.Reset();
@@ -2163,7 +2415,7 @@ void PlaceSearch() {
 void MakeEditFont() {
     if (g_editFont) DeleteObject(g_editFont);
     g_editFont = CreateFontW(-(int)std::lround(14 * g_scale), 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-                             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, L"Segoe UI");
+                             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, g_face.c_str());
     SendMessageW(g_search, WM_SETFONT, (WPARAM)g_editFont, TRUE);
     SendMessageW(g_edit, WM_SETFONT, (WPARAM)g_editFont, TRUE);
 }
@@ -2795,7 +3047,7 @@ void PickFromMenu(int index) {
             AppendMenuW(live, MF_STRING, kLiveFolder, L"A folder's contents…");
             AppendMenuW(menu, MF_POPUP, (UINT_PTR)live, L"A submenu that fills itself");
             answer(menu, L"Nothing (a heading)", L"", now.empty());
-            typeItem(menu, L"Type it out… (a web address, shell: name, app id)");
+            typeItem(menu, L"Type it out… (a web address, shell: name, app id, or tourne:do with a command)");
             break;
         }
         case Pick::Motion: {
@@ -2965,14 +3217,17 @@ void Click(Hit h, float x) {
         return Rebuild(true);
     }
     if (h.part == Part::ExportLook) {
-        WCHAR file[MAX_PATH] = L"my-look.tourne";
+        WCHAR file[MAX_PATH] = L"my-look.tournelook";
         OPENFILENAMEW ofn{sizeof(ofn)};
         ofn.hwndOwner = g_wnd;
-        ofn.lpstrFilter = L"A Tourne look (*.tourne)\0*.tourne\0";
-        ofn.lpstrDefExt = L"tourne";
+        ofn.lpstrFilter = L"A look pack, with the wallpaper and plugin list (*.tournelook)\0*.tournelook\0"
+                          L"Just the settings (*.tourne)\0*.tourne\0";
+        ofn.lpstrDefExt = L"tournelook";
         ofn.lpstrFile = file;
         ofn.nMaxFile = ARRAYSIZE(file);
         ofn.lpstrTitle = L"Export my look";
+        std::wstring gallery = DotsGalleryFolder();
+        ofn.lpstrInitialDir = gallery.c_str();
         ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
         if (!GetSaveFileNameW(&ofn)) return;
         std::wstring name = file, error;
@@ -2982,16 +3237,79 @@ void Click(Hit h, float x) {
         if (!DotsExport(file, name, &error)) MessageBoxW(g_wnd, (L"Not exported: " + error + L".").c_str(), L"Tourne Studio", MB_ICONWARNING);
         return;
     }
-    if (h.part == Part::ImportLook) {
+    if (h.part == Part::SaveToGallery) {
+        if (Pending()) {
+            MessageBoxW(g_wnd, L"Save your changes first: the gallery keeps your look as saved.", L"Tourne Studio", MB_ICONINFORMATION);
+            return;
+        }
+        // The screen without the Studio on it.
+        ShowWindow(g_wnd, SW_HIDE);
+        Sleep(400);
+        std::wstring saved, error;
+        bool ok = DotsSaveToGallery(L"", &saved, &error);
+        ShowWindow(g_wnd, SW_SHOW);
+        if (!ok) MessageBoxW(g_wnd, (L"Not saved: " + error + L".").c_str(), L"Tourne Studio", MB_ICONWARNING);
+        return Rebuild(false);
+    }
+    if (h.part == Part::RestoreWindows) {
+        // Windows' own colours off too, or the theme writes them again (shown as a change, kept when you save).
+        std::wstring key = L"theme.windows";
+        if (ValueOf(key) != L"off" && !ValueOf(key).empty())
+            Record(key, Same(key, L"off", SavedValue(key)) ? std::nullopt : std::optional<Change>(Change{false, L"off"}));
+        RestoreWindowsAccent();
+        return Rebuild(false);
+    }
+    if (h.part == Part::MenuFile) {
+        // Made from the example the first time, then opened in what opens .conf files (else Notepad).
+        std::wstring path = ConfigFolder() + L"\\menus.conf";
+        if (GetFileAttributesW(path.c_str()) == INVALID_FILE_ATTRIBUTES) {
+            HANDLE f = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, 0, nullptr);
+            if (f != INVALID_HANDLE_VALUE) {
+                DWORD wrote = 0;
+                WriteFile(f, kMenusStarter, (DWORD)strlen(kMenusStarter), &wrote, nullptr);
+                CloseHandle(f);
+            }
+        }
+        if ((INT_PTR)ShellExecuteW(g_wnd, L"open", path.c_str(), nullptr, nullptr, SW_SHOWNORMAL) <= 32)
+            ShellExecuteW(g_wnd, nullptr, L"notepad.exe", (L"\"" + path + L"\"").c_str(), nullptr, SW_SHOWNORMAL);
+        return;
+    }
+    if (h.part == Part::MenuLog) {
+        std::wstring path = ConfigFolder() + L"\\menus.log", text;
+        HANDLE f = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (f != INVALID_HANDLE_VALUE) {
+            std::string bytes(64 << 10, '\0');
+            DWORD got = 0;
+            ReadFile(f, bytes.data(), (DWORD)bytes.size(), &got, nullptr);
+            CloseHandle(f);
+            bytes.resize(got);
+            int n = MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), nullptr, 0);
+            text.resize(n);
+            MultiByteToWideChar(CP_UTF8, 0, bytes.data(), (int)bytes.size(), text.data(), n);
+        }
+        if (text.empty())
+            text = L"Nothing read yet: menus.log is written the first time a menu opens after menus.conf is made or changed.";
+        MessageBoxW(g_wnd, text.c_str(), L"Tourne Studio: the menu file", MB_ICONINFORMATION);
+        return;
+    }
+    std::wstring importFrom;  // a gallery tile's pack: imported as the button would, without asking which file
+    if (h.part == Part::Tile && GalleryShown()) {
+        if (h.index < 0 || h.index >= (int)g_tiles.size()) return;
+        importFrom = g_gallery[g_tiles[h.index]].pack;
+    }
+    if (h.part == Part::ImportLook || !importFrom.empty()) {
         WCHAR file[MAX_PATH] = L"";
+        wcsncpy_s(file, importFrom.c_str(), _TRUNCATE);
         OPENFILENAMEW ofn{sizeof(ofn)};
         ofn.hwndOwner = g_wnd;
-        ofn.lpstrFilter = L"A look (*.tourne, hyprland.conf)\0*.tourne;*.conf\0Anything\0*.*\0";
+        ofn.lpstrFilter = L"A look (*.tournelook, *.tourne, hyprland.conf)\0*.tournelook;*.tourne;*.conf\0Anything\0*.*\0";
         ofn.lpstrFile = file;
         ofn.nMaxFile = ARRAYSIZE(file);
-        ofn.lpstrTitle = L"Import a look: a .tourne file or a hyprland.conf";
+        ofn.lpstrTitle = L"Import a look: a look pack, a .tourne file or a hyprland.conf";
+        std::wstring gallery = DotsGalleryFolder();  // (the saved looks, a screenshot beside each)
+        ofn.lpstrInitialDir = gallery.c_str();
         ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-        if (!GetOpenFileNameW(&ofn)) return;
+        if (importFrom.empty() && !GetOpenFileNameW(&ofn)) return;
         DotsLook look;
         std::wstring error;
         if (!DotsRead(file, &look, &error)) {
@@ -3011,6 +3329,20 @@ void Click(Hit h, float x) {
         ask += std::to_wstring(changes) + L" settings change";
         for (auto const& [page, n] : byPage) ask += L"\n   " + page + L": " + std::to_wstring(n);
         if (!look.extensions.empty()) ask += L"\n" + std::to_wstring(look.extensions.size()) + L" extensions are added (looks only).";
+        if (!look.wallpaper.empty()) ask += L"\nIts wallpaper is set now (Undo doesn't take that back; your own stays where it is).";
+        // The plugins it was made with: named, never installed from here (each asks for what it needs on its own page).
+        std::vector<std::wstring> missing;
+        for (auto const& id : look.plugins) {
+            bool installed = false;
+            for (auto const& p : PluginCatalogue())
+                if (p.id == id) installed = PluginStateOf(p) == PluginState::Installed;
+            if (!installed) missing.push_back(id);
+        }
+        if (!missing.empty()) {
+            ask += L"\n\nMade with plugins you don't have (Plugins page):";
+            for (size_t i = 0; i < missing.size() && i < 6; i++) ask += L"\n   " + missing[i];
+            if (missing.size() > 6) ask += L"\n   and " + std::to_wstring(missing.size() - 6) + L" more";
+        }
         if (!look.skipped.empty()) {
             ask += L"\n\nLeft out (only looks come in):";
             for (size_t i = 0; i < look.skipped.size() && i < 6; i++) ask += L"\n   " + look.skipped[i];
@@ -3020,6 +3352,8 @@ void Click(Hit h, float x) {
                L"as tourne-gui.conf.before-import.";
         if (MessageBoxW(g_wnd, ask.c_str(), L"Tourne Studio: import a look", MB_OKCANCEL | MB_ICONQUESTION) != IDOK) return;
         CopyFileW((ConfigFolder() + L"\\tourne-gui.conf").c_str(), (ConfigFolder() + L"\\tourne-gui.conf.before-import").c_str(), FALSE);
+        if (!look.wallpaper.empty())  // (Tourne's desktop follows Windows' wallpaper as it changes)
+            SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, (void*)look.wallpaper.c_str(), SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
         for (size_t i = 0; i < look.extensions.size(); i++) {
             WCHAR temp[MAX_PATH];
             GetTempPathW(MAX_PATH, temp);
@@ -3271,7 +3605,10 @@ LRESULT CALLBACK StudioProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
             return 0;
         case WM_MOUSEWHEEL: {
             CloseEditor(true);
-            ScrollTo(g_scroll - GET_WHEEL_DELTA_WPARAM(wp) / 120.f * 64);
+            POINT pt{GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            ScreenToClient(wnd, &pt);
+            if (pt.x / g_scale < kSidebar) NavScrollTo(g_navScroll - GET_WHEEL_DELTA_WPARAM(wp) / 120.f * 64);
+            else ScrollTo(g_scroll - GET_WHEEL_DELTA_WPARAM(wp) / 120.f * 64);
             InvalidateRect(wnd, nullptr, FALSE);
             return 0;
         }
@@ -3516,6 +3853,7 @@ void StudioOpenAt(HWND host, const std::wstring& page, const std::wstring& query
             if (g_page != i) g_filter = 0;
             g_page = i;
         }
+    NavReveal(g_page);
     Rebuild(true);
 }
 

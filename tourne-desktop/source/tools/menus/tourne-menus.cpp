@@ -1,8 +1,8 @@
 // ==WindhawkMod==
 // @id              tourne-menus
 // @name            Tourne Menus
-// @description     Tourne Desktop's menus in File Explorer, the Open and Save dialogs and Windows' own menus: its look, the wheel scrolling long menus, its hide and More options rules and how menus open
-// @version         1.0.6
+// @description     Tourne Desktop's menus in File Explorer, the Open and Save dialogs, Windows' own menus, every program's menus and menu bars: its look, the wheel scrolling long menus, its hide, More options and no-duplicates rules and how menus open
+// @version         1.1.0
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
@@ -30,6 +30,18 @@ way, each with its own switch:
   (Explorer's taskbar and desktop when Explorer is the shell, the volume,
   network, language and Windows Security icons, Task Manager, Store apps'
   title bar menus). They're made plain menus first, as Classic Menus does.
+- **Every program's menus**: right-click and pop-up menus in any program,
+  as the Classic Menus and Dark Menus mods restyle them, but in Tourne's look.
+- **Menu bars**: the File, Edit, View row of programs that have one, in
+  Tourne's colours, as Dark Menus does.
+- **Duplicate items**: items listed by name (Convertify, say) that some
+  menus show twice, kept once, as Menu No Duplicates does.
+
+With these on, Classic Menus, Dark Menus, Eradicate Immersive Menus and
+Tourne'Suite's Classic Menus, Menu No Icons and Menu No Duplicates parts
+have nothing left to do: turn them off, so menus aren't styled twice.
+(Menu No Icons: Tourne Desktop's own "No icons in menus" setting reaches
+every menu drawn here.)
 
 All three start off: turn on the ones you want.
 
@@ -70,6 +82,26 @@ Bolt-Scripts' Custom Cached Context Menu (MIT). No code was copied from either.
     The menus Windows draws as "immersive" menus: Explorer's taskbar and
     desktop (when Explorer is the shell), the volume, network, language and
     Windows Security icons, Task Manager, Store apps' title bar menus.
+- allMenus: false
+  $name: Every program's menus
+  $description: >-
+    Right-click and pop-up menus in every program, as Classic Menus and Dark
+    Menus do, in Tourne's look. Menus a program draws itself stay its own.
+- menuBars: false
+  $name: Menu bars
+  $description: >-
+    The File, Edit, View row of programs that have one, in Tourne's colours
+    (as Dark Menus does).
+- noDuplicates: ''
+  $name: Show these items once
+  $description: >-
+    Item names, separated by commas, like Convertify: when a menu shows one
+    of them more than once, only one stays (as Menu No Duplicates does).
+- noDuplicatesKeep: last
+  $name: Which one stays
+  $options:
+  - first: The first
+  - last: The last
 - excludeApps: ''
   $name: Leave these programs alone
   $description: Program file names, separated by commas, like game.exe.
@@ -107,7 +139,9 @@ Bolt-Scripts' Custom Cached Context Menu (MIT). No code was copied from either.
 // Which menus are drawn here.
 
 struct Settings {
-    bool explorer = false, dialogs = false, windowsMenus = false;
+    bool explorer = false, dialogs = false, windowsMenus = false, allMenus = false, menuBars = false;
+    std::vector<std::wstring> noDuplicates;  // lower case
+    bool keepLast = true;
 };
 Settings g_settings;
 bool g_inExplorer = false;  // this program is explorer.exe
@@ -173,7 +207,41 @@ bool WantMenu(HMENU menu, HWND owner, void* caller) {
     if (g_settings.explorer && g_inExplorer && ClassIs(root, L"CabinetWClass")) return true;
     if (g_settings.dialogs && IsFileDialog(root)) return true;
     if (g_settings.windowsMenus && CalledFromWindows(caller)) return !ClassIs(root, L"CabinetWClass") || g_settings.explorer;
+    if (g_settings.allMenus) return !ClassIs(root, L"CabinetWClass") || g_settings.explorer;
     return false;
+}
+
+// Items named in "Show these items once" kept once (the first or the last), as Menu No Duplicates does;
+// put back with the hide rules' undo when the menu closes, since the menu is the program's.
+MenuRulesUndo DropDuplicates(HMENU menu) {
+    MenuRulesUndo undo;
+    undo.menu = menu;
+    if (g_settings.noDuplicates.empty() || !menu) return undo;
+    int count = GetMenuItemCount(menu);
+    std::vector<std::wstring> labels(std::max(0, count));
+    for (int i = 0; i < count; i++) {
+        WCHAR text[256] = L"";
+        if (GetMenuStringW(menu, i, text, ARRAYSIZE(text), MF_BYPOSITION)) labels[i] = MenuRuleLabel(text);
+    }
+    std::vector<bool> drop(std::max(0, count), false);
+    for (auto const& name : g_settings.noDuplicates) {
+        std::vector<int> at;
+        for (int i = 0; i < count; i++)
+            if (labels[i] == name) at.push_back(i);
+        for (size_t k = 0; k + 1 < at.size(); k++) drop[g_settings.keepLast ? at[k] : at[k + 1]] = true;
+    }
+    for (int i = count - 1; i >= 0; i--) {
+        if (!drop[i]) continue;
+        MenuRulesUndo::Taken t{i, {sizeof(MENUITEMINFOW)}, {}};
+        WCHAR text[256] = L"";
+        t.info.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_ID | MIIM_SUBMENU | MIIM_STRING | MIIM_DATA | MIIM_BITMAP | MIIM_CHECKMARKS;
+        t.info.dwTypeData = text;
+        t.info.cch = ARRAYSIZE(text);
+        if (!GetMenuItemInfoW(menu, i, TRUE, &t.info)) continue;
+        t.text = text;
+        if (RemoveMenu(menu, i, MF_BYPOSITION)) undo.taken.insert(undo.taken.begin(), t);
+    }
+    return undo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,12 +487,27 @@ LRESULT CALLBACK OwnerProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UI
 UINT TrackHere(HMENU menu, UINT flags, int x, int y, HWND owner, RECT const* exclude) {
     t_busy = true;
     MenuRules rules = LoadMenuLook(owner);
+    // The menu file's sections for this program's menus (what's chosen isn't known here).
+    MenuContext context;
+    context.app = MenuAppName();
+    context.menu = context.app == L"explorer.exe" ? L"explorer" : L"windows";
+    rules = MenuRulesFor(LoadMenuFile(), context, rules);
+    MenuRulesUndo once = DropDuplicates(menu);
     MenuRulesUndo undo = ApplyMenuRules(menu, rules, [](UINT) { return std::wstring(); });
     SetWindowSubclass(owner, OwnerProc, 0, 0);
-    UINT result = TrackStyledMenu(menu, flags, x, y, owner, true, exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
+    // With items of ours, the choice comes back here first; one of theirs then goes on as Windows would send it.
+    bool ours = !rules.add.empty() && !(flags & TPM_RETURNCMD);
+    UINT result = TrackStyledMenu(menu, flags | (ours ? TPM_RETURNCMD : 0), x, y, owner, true,
+                                  exclude && !IsRectEmpty(exclude) ? exclude : nullptr);
     RemoveWindowSubclass(owner, OwnerProc, 0);
     UndoMenuRules(undo);
+    UndoMenuRules(once);
     t_busy = false;
+    if (RunMenuRule(undo, result, context)) return ours ? TRUE : 0;
+    if (ours) {
+        if (result && !(flags & TPM_NONOTIFY)) PostMessageW(owner, WM_COMMAND, result, 0);
+        return result != 0;
+    }
     return result;
 }
 
@@ -544,6 +627,106 @@ HRESULT WINAPI IUnknown_QueryService_Hook(IUnknown* object, REFGUID service, REF
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Menu bars (Menu bars on): Windows asks the window's default procedure to draw the bar (WM_UAHDRAWMENU)
+// and each of its items (WM_UAHDRAWMENUITEM) before drawing them itself; they're drawn here instead, in
+// Tourne's colours, and the light line Windows leaves under the bar is painted over.
+constexpr UINT kUahDrawMenu = 0x91, kUahDrawMenuItem = 0x92;
+struct UahMenu {
+    HMENU menu;
+    HDC dc;
+    DWORD flags;
+};
+struct UahMenuItem {
+    int position;
+    DWORD metrics[8];  // (sizes Windows keeps for the bar and its popups)
+    DWORD popupWidths[4];
+    DWORD updateWidths;
+};
+struct UahDrawMenuItem {
+    DRAWITEMSTRUCT draw;
+    UahMenu menu;
+    UahMenuItem item;
+};
+
+COLORREF Rgb(uint32_t c) { return RGB((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF); }
+
+bool BarRect(HWND wnd, RECT* bar) {
+    MENUBARINFO info{sizeof(info)};
+    if (!GetMenuBarInfo(wnd, OBJID_MENU, 0, &info)) return false;
+    RECT window;
+    GetWindowRect(wnd, &window);
+    *bar = info.rcBar;
+    OffsetRect(bar, -window.left, -window.top);
+    return true;
+}
+
+bool DrawMenuBarHere(HWND wnd, UINT msg, LPARAM lp) {
+    if (msg == kUahDrawMenu) {
+        auto* m = (UahMenu*)lp;
+        RECT bar;
+        if (!m || !BarRect(wnd, &bar)) return false;
+        LoadMenuLook(wnd);
+        HBRUSH ground = CreateSolidBrush(Rgb(g_menuLook.ground));
+        FillRect(m->dc, &bar, ground);
+        DeleteObject(ground);
+        return true;
+    }
+    auto* d = (UahDrawMenuItem*)lp;
+    if (!d) return false;
+    LoadMenuLook(wnd);
+    MenuLook const& look = g_menuLook;
+    WCHAR text[256] = L"";
+    MENUITEMINFOW info{sizeof(info)};
+    info.fMask = MIIM_STRING;
+    info.dwTypeData = text;
+    info.cch = ARRAYSIZE(text);
+    GetMenuItemInfoW(d->menu.menu, d->item.position, TRUE, &info);
+    UINT state = d->draw.itemState;
+    bool hot = state & (ODS_HOTLIGHT | ODS_SELECTED), off = state & (ODS_INACTIVE | ODS_DISABLED | ODS_GRAYED);
+    HBRUSH back = CreateSolidBrush(Rgb(hot ? look.hover : look.ground));
+    FillRect(d->menu.dc, &d->draw.rcItem, back);
+    DeleteObject(back);
+    HGDIOBJ old = look.font ? SelectObject(d->menu.dc, look.font) : nullptr;
+    SetBkMode(d->menu.dc, TRANSPARENT);
+    SetTextColor(d->menu.dc, Rgb(off ? look.dim : hot ? look.accent : look.text));
+    RECT r = d->draw.rcItem;
+    DrawTextW(d->menu.dc, text, -1, &r,
+              DT_CENTER | DT_SINGLELINE | DT_VCENTER | ((state & ODS_NOACCEL) ? DT_HIDEPREFIX : 0));
+    if (old) SelectObject(d->menu.dc, old);
+    return true;
+}
+
+// The one-pixel line Windows draws under the bar, in the menus' ground.
+void CoverBarLine(HWND wnd) {
+    RECT bar;
+    if (!BarRect(wnd, &bar)) return;
+    RECT line = {bar.left, bar.bottom, bar.right, bar.bottom + 1};
+    HDC dc = GetWindowDC(wnd);
+    if (!dc) return;
+    LoadMenuLook(wnd);
+    HBRUSH ground = CreateSolidBrush(Rgb(g_menuLook.ground));
+    FillRect(dc, &line, ground);
+    DeleteObject(ground);
+    ReleaseDC(wnd, dc);
+}
+
+using DefWindowProcW_t = decltype(&DefWindowProcW);
+DefWindowProcW_t DefWindowProcW_Original, DefWindowProcA_Original;
+LRESULT MenuBarProc(DefWindowProcW_t original, HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    if ((msg == kUahDrawMenu || msg == kUahDrawMenuItem) && DrawMenuBarHere(wnd, msg, lp)) return 0;
+    LRESULT result = original(wnd, msg, wp, lp);
+    if (msg == WM_NCPAINT || msg == WM_NCACTIVATE) CoverBarLine(wnd);
+    return result;
+}
+LRESULT WINAPI DefWindowProcW_Hook(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    return MenuBarProc(DefWindowProcW_Original, wnd, msg, wp, lp);
+}
+LRESULT WINAPI DefWindowProcA_Hook(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    return MenuBarProc(DefWindowProcA_Original, wnd, msg, wp, lp);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 // Programs Windows' own menus aren't in, or where hooking isn't wanted, and the ones set here.
 bool ShouldRunHere(std::wstring const& name) {
     for (PCWSTR skip : {L"dwm.exe", L"ShellExperienceHost.exe", L"wlanext.exe", L"svchost.exe",
@@ -568,9 +751,22 @@ BOOL Wh_ModInit() {
     g_settings.explorer = Wh_GetIntSetting(L"explorer") != 0;
     g_settings.dialogs = Wh_GetIntSetting(L"fileDialogs") != 0;
     g_settings.windowsMenus = Wh_GetIntSetting(L"windowsMenus") != 0 && !inWindhawk;
-    // Nothing to do in this program for now: no hooks, but still loaded, so a switch turned on later
+    g_settings.allMenus = Wh_GetIntSetting(L"allMenus") != 0 && !inWindhawk;
+    g_settings.menuBars = Wh_GetIntSetting(L"menuBars") != 0;
+    PCWSTR once = Wh_GetStringSetting(L"noDuplicates");
+    g_settings.noDuplicates = MenuRuleList(once ? once : L"");
+    Wh_FreeStringSetting(once);
+    PCWSTR keep = Wh_GetStringSetting(L"noDuplicatesKeep");
+    g_settings.keepLast = !keep || _wcsicmp(keep, L"first") != 0;
+    Wh_FreeStringSetting(keep);
+    if (g_settings.menuBars) {
+        WindhawkUtils::SetFunctionHook(DefWindowProcW, DefWindowProcW_Hook, &DefWindowProcW_Original);
+        WindhawkUtils::SetFunctionHook((DefWindowProcW_t)DefWindowProcA, DefWindowProcA_Hook, &DefWindowProcA_Original);
+    }
+    // Nothing more to do in this program for now: no hooks, but still loaded, so a switch turned on later
     // reaches programs already running (one whose init said no would need restarting).
-    if (!(g_settings.explorer && g_inExplorer) && !g_settings.dialogs && !g_settings.windowsMenus) return TRUE;
+    if (!(g_settings.explorer && g_inExplorer) && !g_settings.dialogs && !g_settings.windowsMenus && !g_settings.allMenus)
+        return TRUE;
 
     WindhawkUtils::SetFunctionHook(TrackPopupMenuEx, TrackPopupMenuEx_Hook, &TrackPopupMenuEx_Original);
     WindhawkUtils::SetFunctionHook(TrackPopupMenu, TrackPopupMenu_Hook, &TrackPopupMenu_Original);

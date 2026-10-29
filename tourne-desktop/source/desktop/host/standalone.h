@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+#include "layout-scripts.h"  // layouts people write themselves, which the tiling asks for
+
 namespace part_system_icons {
 // A "tourne:" icon design, drawn by System Icons at that size (the caller
 // destroys it). Null without it: the caller uses the program's own icon.

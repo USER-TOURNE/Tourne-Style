@@ -854,6 +854,7 @@ void Rebuild() {
         size_t dot = rest.find(L'.');
         if (dot != std::wstring::npos && dot) names.insert(rest.substr(0, dot));
     }
+    names.erase(L"yours");  // (Your apps: below)
     for (auto const& name : names) {
         auto app = std::make_unique<App>();
         app->name = name;
@@ -888,6 +889,50 @@ void Rebuild() {
             if (!one.empty()) app->css.push_back(one);
             if (comma == std::wstring::npos) break;
             at = comma + 1;
+        }
+        if (auto it = old.find(name); it != old.end() && it->second->connection) app->connection = std::move(it->second->connection);
+        g_apps.push_back(std::move(app));
+    }
+    // Your apps: any program you add (Chromium and Electron ones take styles), with one set of style sheets and one
+    // restart choice for all of them. One Tourne knows already keeps its own row.
+    std::wstring list = Setting(L"yours.programs"), yourCss = Setting(L"yours.css"), yourRestart = Setting(L"yours.restart");
+    if (yourCss.empty()) yourCss = L"tourne/generic.css";
+    for (size_t at = 0; at <= list.size();) {
+        size_t comma = list.find(L',', at);
+        std::wstring exe = list.substr(at, comma == std::wstring::npos ? std::wstring::npos : comma - at);
+        at = comma == std::wstring::npos ? list.size() + 1 : comma + 1;
+        exe.erase(0, exe.find_first_not_of(L" \t"));
+        exe.erase(exe.find_last_not_of(L" \t") + 1);
+        if (exe.empty()) continue;
+        std::wstring file = exe.substr(exe.find_last_of(L"\\/") + 1);
+        if (file.size() < 4 || _wcsicmp(file.c_str() + file.size() - 4, L".exe") != 0) file += L".exe";
+        bool knownOne = false;
+        for (auto const& k : kKnown) knownOne = knownOne || !_wcsicmp(file.c_str(), k.exe);
+        if (knownOne) continue;
+        std::wstring name = L"app-" + file.substr(0, file.size() - 4);
+        std::transform(name.begin(), name.end(), name.begin(), towlower);
+        if (std::any_of(g_apps.begin(), g_apps.end(), [&](auto const& a) { return a->name == name; })) continue;
+        auto app = std::make_unique<App>();
+        app->name = name;
+        app->style = L"generic";
+        app->on = true;
+        app->exe = Expand(exe.c_str());
+        std::replace(app->exe.begin(), app->exe.end(), L'/', L'\\');
+        if (app->exe.find(L'\\') == std::wstring::npos) {
+            std::wstring found = Located(name, file, false);
+            if (found.empty()) continue;  // not found on this PC
+            app->exe = found;
+        }
+        app->title = app->exe.substr(app->exe.find_last_of(L'\\') + 1);
+        app->restart = yourRestart;
+        for (size_t c = 0; c <= yourCss.size();) {
+            size_t next = yourCss.find(L',', c);
+            std::wstring one = yourCss.substr(c, next == std::wstring::npos ? std::wstring::npos : next - c);
+            one.erase(0, one.find_first_not_of(L" \t"));
+            one.erase(one.find_last_not_of(L" \t") + 1);
+            if (!one.empty()) app->css.push_back(one);
+            if (next == std::wstring::npos) break;
+            c = next + 1;
         }
         if (auto it = old.find(name); it != old.end() && it->second->connection) app->connection = std::move(it->second->connection);
         g_apps.push_back(std::move(app));
@@ -1013,10 +1058,50 @@ void OnAppInFront(DWORD pid) {
 // The palette CSS: one for each app Tourne has a starter style for.
 Roles g_roles = {0x121C21, 0x1B2A31, 0x1E2F36, 0x4F8F6A, 0x66EA97, 0x15FFA2, 0x64AA89, 0x5D8D6F, 0xFF6F77, 0xFF8F8F, 0x66EA97, 0x15FFA2};
 
+// The glass settings and the menus' frame colour, as the sheets use them.
+CssGlass ReadCssGlass() {
+    CssGlass g;
+    auto colour = [](const wchar_t* section, const wchar_t* key, uint32_t* out, bool last) {
+        const wchar_t* v = GetString(section, key);
+        if (!v) return;
+        std::wstring s = v;
+        FreeString(v);
+        size_t at = last ? s.rfind(L'#') : s.find(L'#');
+        if (at != std::wstring::npos && at + 7 <= s.size()) *out = (uint32_t)wcstoul(s.substr(at + 1, 6).c_str(), nullptr, 16);
+    };
+    g.on = GetInt(L"glass", L"enabled") != 0;
+    g.blur = GetInt(L"glass", L"blur");
+    g.saturation = GetInt(L"glass", L"saturation");
+    g.brightness = GetInt(L"glass", L"brightness");
+    g.tintAmount = GetInt(L"glass", L"tintAmount");
+    g.shadow = GetInt(L"glass", L"shadow");
+    if (g.saturation <= 0) g.saturation = 100;
+    g.tint = g_roles.ground;
+    colour(L"glass", L"tint", &g.tint, false);
+    g.frame = g_roles.edge;
+    colour(L"taskbar", L"menuFrameColors", &g.frame, true);  // (the gradient's end, as the menus' outer line)
+    return g;
+}
+
 void WritePaletteCss() {
     std::wstring folder = CssFolder() + L"\\tourne";
     SHCreateDirectoryExW(nullptr, folder.c_str(), nullptr);
-    for (auto const& app : StyledApps()) WriteIfChanged(folder + L"\\" + Utf8ToWide(app) + L".css", AppCss(app, g_roles));
+    CssGlass glass = ReadCssGlass();
+    for (auto const& app : StyledApps()) {
+        // A sheet's own colours (Designer Mode writes them), over the theme's: inject.sheet.<sheet>.<role>.
+        Roles roles = g_roles;
+        struct { const wchar_t* name; uint32_t* role; } const own[] = {
+            {L"ground", &roles.ground}, {L"raised", &roles.raised}, {L"text", &roles.text}, {L"accent", &roles.accent}, {L"line", &roles.line}};
+        for (auto const& o : own) {
+            const wchar_t* v = GetString(L"inject", (L"sheet." + Utf8ToWide(app) + L"." + o.name).c_str());
+            if (!v) continue;
+            std::wstring s = v;
+            FreeString(v);
+            size_t at = s.find(L'#');
+            if (at != std::wstring::npos && at + 7 <= s.size()) *o.role = (uint32_t)wcstoul(s.substr(at + 1, 6).c_str(), nullptr, 16);
+        }
+        WriteIfChanged(folder + L"\\" + Utf8ToWide(app) + L".css", AppCss(app, roles, glass));
+    }
     WriteIfChanged(CssFolder() + L"\\README.txt",
                    "Style sheets for Tourne's CSS injector.\r\n\r\n"
                    "tourne\\  Tourne's own, made from your theme's colours and written again when the theme changes.\r\n"
@@ -1054,6 +1139,11 @@ void InjectorDefaults(Settings& out) {
         out[base + L".exe"] = L"";
         out[base + L".restart"] = L"ask";
     }
+    for (auto const& app : StyledApps())  // (empty: the theme's own)
+        for (auto role : {L"ground", L"raised", L"text", L"accent", L"line"}) out[L"inject.sheet." + Utf8ToWide(app) + L"." + role] = L"";
+    out[L"inject.yours.programs"] = L"";
+    out[L"inject.yours.css"] = L"tourne/generic.css";
+    out[L"inject.yours.restart"] = L"ask";
 }
 
 void InjectorStart(HWND host) {
@@ -1067,7 +1157,10 @@ void InjectorStart(HWND host) {
     Update();
 }
 
-void InjectorApply() { Update(); }
+void InjectorApply() {
+    WritePaletteCss();  // (the glass or the menus' frame may have changed; unchanged sheets aren't written)
+    Update();
+}
 
 void InjectorThemeChanged(const Roles& roles) {
     g_roles = roles;

@@ -39,6 +39,9 @@ const wchar_t* GetString(const wchar_t* prefix, const std::wstring& key);  // fr
 bool IsSet(const wchar_t* prefix, const std::wstring& key);  // set by you or the Studio (not just its default)
 bool IsSetOrIdentity(const wchar_t* prefix, const std::wstring& key);  // ... or asked for by the identity (identity.h)
 void FreeString(const wchar_t* text);
+// Writes one of the module's settings into tourne-gui.conf as the Studio would; the config watch then
+// reads it back and the module's settingsChanged runs (Tourne'Table's quick-settings panel).
+bool WriteSetting(const wchar_t* prefix, const std::wstring& key, const std::wstring& value);
 
 // What a module keeps for itself between runs (Windhawk's "values").
 size_t GetStringValue(const wchar_t* prefix, const wchar_t* name, wchar_t* buffer, size_t chars);
@@ -57,6 +60,10 @@ void LogV(const wchar_t* prefix, const wchar_t* format, va_list args);
 BOOL SetFunctionHook(const wchar_t* owner, void* target, void* hook, void** original);
 void ApplyHooks();
 void DisableHooks(const wchar_t* owner);
+
+// Tourne Desktop's own Open and Save dialogs in the shell's look: their footer and right-click menus
+// (dialog-look.cpp), what Theme Gaps and Tourne Menus do in other programs.
+void DialogLookStart();
 
 // Every setting (defaults and the user's) whose full name starts with prefix.
 std::vector<std::pair<std::wstring, std::wstring>> SettingsWithPrefix(const std::wstring& prefix);

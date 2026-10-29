@@ -2,10 +2,12 @@
 
 #include <shellapi.h>
 #include <shlobj.h>
+#include <tlhelp32.h>
 
 #include <algorithm>
 #include <atomic>
 #include <cstdio>
+#include <cstring>
 #include <ctime>
 #include <string>
 #include <vector>
@@ -182,17 +184,19 @@ void LaunchExplorerUnderneath() {
     }
 }
 
+// (Looked for often: its taskbar and desktop are hidden as soon as they're there, and Tourne starts sooner.)
 HWND WaitForExplorerTray(DWORD ms) {
-    for (DWORD waited = 0; waited < ms; waited += 250) {
+    for (DWORD waited = 0; waited < ms; waited += 25) {
         if (HWND w = ExplorerWindow(L"Shell_TrayWnd")) return w;
-        Sleep(250);
+        Sleep(25);
     }
     return nullptr;
 }
 
-// Explorer's taskbars: hidden (or shown again).
+// Explorer's taskbars and its desktop: hidden (or shown again). The desktop too, so it never paints over the
+// screen in the moment before Tourne's own is up.
 void ShowExplorerTaskbars(bool show) {
-    for (const wchar_t* cls : {L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd"})
+    for (const wchar_t* cls : {L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd", L"Progman"})
         for (HWND h = nullptr; (h = FindWindowExW(nullptr, h, cls, nullptr));) {
             DWORD pid = 0;
             GetWindowThreadProcessId(h, &pid);
@@ -218,10 +222,21 @@ void RestoreExplorerAutoHide() {
 // (it is, with no shell window yet and the registration check skipped).
 void StartExplorerUnderneath() {
     if (ExplorerWindow(L"Shell_TrayWnd")) return;
+    ULONGLONG start = GetTickCount64();
     LaunchExplorerUnderneath();
     if (WaitForExplorerTray(20000)) {
         ShowExplorerTaskbars(false);  // (Tourne Desktop keeps them hidden from here)
-        Note(L"Explorer started underneath, for Windows apps");
+        ULONGLONG tray = GetTickCount64() - start;
+        // Its desktop comes just after its taskbar: hidden too when it does (briefly looked for; Tourne Desktop
+        // hides it otherwise).
+        bool desktop = false;
+        for (int i = 0; i < 40 && !desktop; i++) {
+            desktop = ExplorerWindow(L"Progman") != nullptr;
+            if (!desktop) Sleep(25);
+        }
+        if (desktop) ShowExplorerTaskbars(false);
+        Note(L"Explorer started underneath, for Windows apps (taskbar after %llu ms, desktop %ls; hidden)", tray,
+             desktop ? L"after it" : L"not yet");
     } else {
         Note(L"Explorer underneath didn't come up: Tourne Desktop alone");
     }
@@ -259,8 +274,16 @@ void HideExplorerParts() {
     ShowExplorerTaskbars(false);  // (hidden by the watchdog already: not in g_hidden, shown again all the same)
 }
 
+bool g_explorerBarShown;  // Explorer's taskbars shown on purpose (the explorerbar command): left alone
+
+bool IsExplorerTaskbar(HWND w) {
+    wchar_t cls[64];
+    return GetClassNameW(w, cls, 64) && (!wcscmp(cls, L"Shell_TrayWnd") || !wcscmp(cls, L"Shell_SecondaryTrayWnd"));
+}
+
 void CALLBACK PartShown(HWINEVENTHOOK, DWORD, HWND w, LONG object, LONG child, DWORD, DWORD) {
     if (object != OBJID_WINDOW || child != CHILDID_SELF || !w) return;
+    if (g_explorerBarShown && IsExplorerTaskbar(w)) return;
     if (IsExplorerPart(w)) HidePart(w);
     TrayHostRaise();
 }
@@ -468,12 +491,23 @@ void RunFolder(REFKNOWNFOLDERID id, HKEY approvedRoot, int* started) {
     FindClose(find);
 }
 
+// Explorer's own mark that it ran them this sign-in. Explorer underneath never does (the shell value
+// names Tourne, so it isn't the shell to itself: 2026-10-16, nothing from Run or Startup came up).
+bool ExplorerRanStartupApps() {
+    DWORD session = 0;
+    ProcessIdToSessionId(GetCurrentProcessId(), &session);
+    wchar_t key[128];
+    swprintf(key, 128, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\%lu\\StartupHasBeenRun", session);
+    HKEY k;
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, key, 0, KEY_READ, &k) != ERROR_SUCCESS) return false;
+    RegCloseKey(k);
+    return true;
+}
+
 DWORD WINAPI StartupApps(LPVOID) {
     Sleep(1500);  // (Tourne's own bar up first)
-    // (Explorer underneath still coming up: they're its job if it does)
-    for (DWORD waited = 0; g_waiting && waited < kLateExplorer + 5000; waited += 500) Sleep(500);
-    if (g_underneath) {
-        Note(L"startup apps: Explorer underneath starts them");
+    if (ExplorerRanStartupApps()) {
+        Note(L"startup apps: Explorer started them already");
         return 0;
     }
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -666,11 +700,14 @@ int ShellWatchdog() {
         Note(L"a watchdog is running already: this one leaves it to that");
         return 0;
     }
+    // In front of anyone reading this log after a bad start.
+    Note(L"stuck with no desktop? Task Manager > Run new task > \"%ls\" --panic puts Explorer back", ThisExe().c_str());
     if (GetAsyncKeyState(VK_SHIFT) & 0x8000) {
         Note(L"Shift held at sign-in: Explorer this time");
         StartExplorer(true);
         return 0;
     }
+    TrayCollectorStart();  // (apps started at sign-in find a tray before Explorer's: elevated ones never hear ours later)
     if (WindowsAppsWanted()) StartExplorerUnderneath();  // (Explorer started again by Windows: this too)
     std::wstring self = ThisExe();
     HKEY watchdog;
@@ -779,7 +816,7 @@ void ShellSessionStart() {
     TrayHostStart();  // (before Windows is told: apps starting now find the tray)
     DesktopHostStart();
     if (!g_underneath) SignalShellReady();
-    if (firstStart && GetInt(L"shell", L"startupApps") && !g_underneath)  // (Explorer's job underneath)
+    if (firstStart && GetInt(L"shell", L"startupApps"))  // (Explorer underneath isn't the shell to itself: ours too)
         if (HANDLE t = CreateThread(nullptr, 0, StartupApps, nullptr, 0, nullptr)) CloseHandle(t);
 }
 
@@ -796,6 +833,21 @@ void ShellSessionStop() {
 }
 
 bool ShellUnderneath() { return g_underneath; }
+
+bool ShellShowExplorerBar(bool show) {
+    if (!g_underneath) return false;
+    g_explorerBarShown = show;
+    // Shown without waiting on Explorer (a synchronous call into its taskbar from here once never came back). Its
+    // auto-hide is left as Tourne set it: the taskbar slides up when the pointer reaches the screen's edge.
+    for (const wchar_t* cls : {L"Shell_TrayWnd", L"Shell_SecondaryTrayWnd"})
+        for (HWND h = nullptr; (h = FindWindowExW(nullptr, h, cls, nullptr));) {
+            DWORD pid = 0;
+            GetWindowThreadProcessId(h, &pid);
+            if (IsExplorerProcess(pid)) ShowWindowAsync(h, show ? SW_SHOWNA : SW_HIDE);
+        }
+    Note(show ? L"Explorer's taskbar shown in Tourne's place" : L"Explorer's taskbar hidden again, Tourne's bar back");
+    return true;
+}
 
 bool ShellExplorerExpected() { return g_underneath || g_waiting; }
 
@@ -828,6 +880,70 @@ void ShellRestore() {
         ClearShell();
         Note(L"--restore: Explorer is the shell again from the next sign-in");
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// --panic: Explorer back now, not at the next sign-in. For when there's no
+// desktop left to click in, run from Task Manager's "Run new task".
+
+namespace {
+
+// Every other TourneDesktop.exe ended. Only for a copy that wouldn't close:
+// the watchdog goes too, or it starts the next one over the top of Explorer.
+void EndOtherCopies() {
+    HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snap == INVALID_HANDLE_VALUE) return;
+    PROCESSENTRY32W entry{sizeof(entry)};
+    for (BOOL more = Process32FirstW(snap, &entry); more; more = Process32NextW(snap, &entry)) {
+        if (entry.th32ProcessID == GetCurrentProcessId() || _wcsicmp(entry.szExeFile, L"TourneDesktop.exe")) continue;
+        if (HANDLE process = OpenProcess(PROCESS_TERMINATE, FALSE, entry.th32ProcessID)) {
+            TerminateProcess(process, 1);
+            CloseHandle(process);
+        }
+    }
+    CloseHandle(snap);
+}
+
+}  // namespace
+
+int ShellPanic() {
+    Note(L"--panic: putting Explorer back");
+    bool wasOurs = ShellIsOurs();
+    ClearShell();
+    DWORD one = 1;  // the same flag two crashes set: shell mode stays off until the switch is saved again
+    RegSetKeyValueW(HKEY_CURRENT_USER, kOurKey, L"ShellTurnedOff", REG_DWORD, &one, sizeof(one));
+
+    // Asked to quit first: quitting on purpose is what hands the session to
+    // Explorer, so the watchdog does the rest itself.
+    bool running = false, closed = false;
+    if (HWND host = FindWindowW(L"TourneDesktop_Host", nullptr)) {  // (kHostClass, which lives in host.cpp)
+        running = true;
+        DWORD pid = 0;
+        GetWindowThreadProcessId(host, &pid);
+        HANDLE process = pid ? OpenProcess(SYNCHRONIZE, FALSE, pid) : nullptr;
+        PostMessageW(host, WM_CLOSE, 0, 0);
+        if (process) {
+            closed = WaitForSingleObject(process, 8000) == WAIT_OBJECT_0;
+            CloseHandle(process);
+        }
+        Note(closed ? L"--panic: Tourne Desktop quit" : L"--panic: Tourne Desktop wouldn't quit, ending it");
+        if (!closed) EndOtherCopies();
+    }
+
+    // Explorer's own taskbar and desktop are already there when it ran
+    // underneath; otherwise it has to be started.
+    if (ExplorerWindow(L"Shell_TrayWnd")) {
+        ShowExplorerTaskbars(true);
+        RestoreExplorerAutoHide();
+        if (HWND desk = ExplorerWindow(L"Progman")) ShowWindow(desk, SW_SHOWNA);
+        Note(L"--panic: Explorer was underneath, it's showing now");
+    } else if (!(running && closed && wasOurs)) {
+        StartExplorer(false);  // (a clean quit of our own shell leaves the watchdog to start it)
+    } else {
+        Note(L"--panic: the watchdog is starting Explorer");
+    }
+    Note(L"--panic: done. Shell mode is off until you turn it on again in Studio.");
+    return 0;
 }
 
 }  // namespace td

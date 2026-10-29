@@ -19,3 +19,4 @@ builds/private/
 # The bonsai screensaver's build output (bonsai/build.bat)
 bonsai/*.scr
 desktop/build/
+__pycache__/

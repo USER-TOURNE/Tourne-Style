@@ -37,7 +37,7 @@ Full looks (127) also carry the settings Tourne has a home for: tiling gaps
 | 28 | HyprPanel themes | MIT |
 | 18 | gh0stzk dotfiles (BSPWM rices) | GPL-3.0 (colours and sizes only) |
 | 17 | Omarchy built-in themes | MIT |
-| 15 | My picks (the one-click looks I picked from my research) | see each component |
+| 15 | Tourne picks (the research's recommended one-click looks) | see each component |
 | 9 | YASB themes gallery | MIT gallery; themes their own |
 | 4 | JaKooLit Hyprland-Dots Waybar styles | GPL-3.0 (colours only) |
 | 3 | Tokyo Night (official extras) | Apache-2.0 |

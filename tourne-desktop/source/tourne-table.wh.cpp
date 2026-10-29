@@ -1,24 +1,24 @@
 // ==WindhawkMod==
 // @id                  tourne-table-v2
-// @name                Tourne'Table [Audio Visualizer] (Beta 2.0)
-// @description         BETA BUILD. Tourne'Table 2.0: a right-click menu for live settings and audio source (any output, input or virtual device), a Terminal shape, a media-widget layout, a precision analysis core (every bar its own frequency band, IEC 61260 / musical bands, A/C weighting, real ballistics, LUFS and true peak), a choice of where the work runs (GPU, CPU or Hybrid), and a Direct3D 11 renderer that skips unchanged frames and idles to nothing. Installs alongside the release build. Not for publishing.
+// @name                Tourne'Table [Audio Visualizer] (beta)
+// @description         A real-time audio visualizer for the Windows desktop: every bar its own frequency band, a Direct3D 11 renderer that idles to nothing, live right-click settings, My Styles, a Media Card and shareable setups.
 // @description:ru-RU   Аудиовизуализатор реального времени для рабочего стола Windows. Расширенные настройки без ущерба для экономии ресурсов. Практически безинтерфейсный (near-headless) поток рендеринга с оптимизацией процессора для захвата звука.
-// @version             2.0.0
+// @version             2.3.0
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
 // @donateUrl           https://ko-fi.com/tourne
 // @license             MIT
 // @include             windhawk.exe
-// @compilerOptions     -lcabinet -lurlmon -ldxgi -ld2d1 -ld3d11 -ldcomp -ldwmapi -ldwrite -lgdi32 -lshcore -lshlwapi -lole32 -lshell32 -lksuser -lwindowscodecs -lruntimeobject -lwindowsapp -luuid -luser32 -ladvapi32 -lcomctl32 -lcomdlg32
+// @compilerOptions     -lcabinet -ldxgi -ld2d1 -ld3d11 -ldcomp -ldwmapi -ldwrite -lgdi32 -lshcore -lshlwapi -lole32 -lshell32 -lksuser -lwindowscodecs -lruntimeobject -lwindowsapp -luuid -luser32 -ladvapi32 -lcomctl32 -lcomdlg32 -lurlmon
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==
 /*
-![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/BANNER/tourne-header.png)
+![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/tourne-header.png)
 
 # `Tourne'Table` **[Audio Visualizer]**
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/11.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/11.gif)
 
 *The Oscilloscope shape running live audio: bottom-left placement, blurred panel, single-pixel border.*
 
@@ -45,9 +45,11 @@ Tourne'Table doesn't live inside `explorer.exe`. It runs as its own dedicated pr
 
 ---
 
-## ✧ NEW IN 2.0 (BETA)
+## ✧ NEW IN 2.0 AND 2.1
 
-This is a test build. It installs alongside the release build and is not for publishing. The performance figures further down were measured on 1.x and haven't been re-measured on 2.0 yet.
+2.1 replaces 1.x. If you ran one of the 2.0 test builds from GitHub, turn it off: only one Tourne'Table should run. If you also use **Tourne Desktop** (my separate desktop app, not part of Windhawk), its taskbar counts as the taskbar for Place In = Taskbar, and it can show, hide or pin the panel through the window message `TourneTable.Panel`. The performance figures further down were measured on 1.x and haven't been re-measured on 2.x yet.
+
+**Share your style.** Right-click > My Styles > Style Editor > Share: **Copy code** puts your setup on the clipboard as one line for any chat, **Save file** writes a `.ttstyle` file, and **Community** opens the setups people have shared in [the Tourne'Style repo](https://github.com/USER-TOURNE/Tourne-Style/tree/main/community) in your browser (bring one in with **Paste code** or **Open file**; the mod itself never goes online) or opens a ready GitHub issue to share yours. A setup carries every setting except the ones that belong to your PC: the audio device, icon files, panel hotkey, monitor, docked app, graphics card and custom cores. Browse them all on the [community page](https://github.com/USER-TOURNE/Tourne-Style/blob/main/community/README.md).
 
 **Every bar is its own measurement now.** Up to 1.5 the analysis split the sound into 7 fixed bands and every bar interpolated between those 7 numbers, so Bar Count and FFT Size changed how many bars you saw, not how much they knew. The new **Precision** engine gives each bar its own frequency band with its own edges, measured straight from the spectrum:
 
@@ -71,13 +73,13 @@ The 1.4 analysis is still there as **Analysis Engine = Classic**.
 
 **Glow and Bloom.** A soft halo around every bar, worked out in the same shader pass that draws it, and a lens-style bloom from a quarter-size blur that only runs on frames that change. Direct3D 11 renderer.
 
-**A Media Card.** Media Controls > Layout = Card: album art with previous / play / next on hover, a seek bar, one-click output switching and a volume slider. Theme its background, border, corner radius, art size and accent (icon colour, custom, album art or your Windows accent).
+**A Media Card.** Media Controls > Layout = Card: album art with previous / play / next on hover, a seek bar, one-click output switching and a volume slider. The output button changes the **Windows default output** for every app (through the same undocumented Windows interface sound-switcher tools use), and the slider sets the **system master volume**; both act only when you click, drag or scroll them, and both stay as set after the mod is turned off, like any change made in Windows' own sound settings. Theme its background, border, corner radius, art size and accent (icon colour, custom, album art or your Windows accent). The card shows the **title and artist** under the art all the time (a long title scrolls while you hover the card), and **clicking the title opens the player** that is playing, even one hidden in the tray. **Open Player** and **Show Now Playing** in the right-click menu do the same with any layout, and Show Now Playing brings the Now Playing text back without changing tracks.
 
 **My Styles.** Right-click > My Styles > Style Editor: mix a base style, colours, bar sizes, reflection, glow and bloom while the visualizer previews it live, save it under a name, and pick it from the menu any time.
 
 **Finer looks.** Outline and Shadow around every bar; bar modifiers Hollow, Dashed, Tilt, Afterimage (a slowly falling trail) and Mirror Gap; scale numbers on Spectrogram and VU Needles; album colours that ease in; any Unicode character in Terminal. Reflection now works on both renderers.
 
-**Exact sizes.** Bar width, gap, height, padding, borders, radii, fonts and offsets take decimals (turn Pixel Snap off to keep the fractions).
+**Exact sizes.** Bar width, gap, height, padding, borders, radii, fonts and offsets take decimals down to 0.01, and so do Sensitivity, Smoothing, Input Gain, Blur, Glow, Bloom, Shadow, Reflection, Afterimage, Beat Flash Intensity, Rainbow Speed and the dock, split and snap distances (turn Pixel Snap off to keep the fractions). The Style Editor's sliders step by 0.01 with the arrow keys.
 
 **Placement.** Drag snaps to the screen's edges and centre, the taskbar, the tray and the Start button (hold Shift to place freely). Position > Place In = Taskbar puts it inside the taskbar. Position > Dock To App keeps the visualizer beside an app's window as it moves, and Split Into Two Pieces cuts it in two, e.g. either side of the taskbar's centred icons, at almost no cost.
 
@@ -102,9 +104,9 @@ Medians across 543 samples with it running and 384 without, at 1.25 s intervals.
 
 When audio stops, rendering stops, not "slows down," *stops*.
 
-Full methodology, raw traces and caveats live in [the project repo](https://github.com/USER-TOURNE/TOURNE-TABLE) rather than on this page.
+Full methodology, raw traces and caveats live in [the bench notes](https://github.com/USER-TOURNE/Tourne-Style/tree/main/windhawk-mods/tourne-table/bench) rather than on this page.
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/10.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/10.gif)
 
 *Bottom-left placement against a dark wallpaper, with the Now Playing label sitting above the panel.*
 
@@ -126,7 +128,7 @@ Full methodology, raw traces and caveats live in [the project repo](https://gith
 | **Oscilloscope** | A single line tracing the actual sound wave. |
 | **Goniometer** | The stereo field: every sample plotted with mono straight up and width sideways, with a correlation bar underneath. *(2.0)* |
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/8.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/8.gif)
 
 *Closeup: the waveform drawn as one continuous line, with the Now Playing label and media buttons alongside.*
 
@@ -162,7 +164,7 @@ Fades in on track change, fades out after a configurable delay. Custom color, fo
 
 ---
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/7.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/7.gif)
 
 *A narrower panel. The trace scales to whatever width the bar settings give it.*
 
@@ -394,6 +396,33 @@ IEC and Musical decide how many bars there are, so **Bar Count** is ignored for 
 
 > **Why tiers instead of a bigger FFT.** Bin spacing is sample rate over FFT size, 23 Hz at 48 kHz and 2048. A 1/24-octave band at 50 Hz is 1.4 Hz wide, so one FFT would need to be enormous to resolve it, and an enormous FFT reacts slowly everywhere, treble included. Decimating first gives the bass a long window and the treble a short one. At FFT Size 2048 the three windows are 43, 171 and 683 ms long, and the two deeper tiers are only re-analysed when enough new audio has arrived to make it worthwhile.
 
+**Bass settings** *(group: Bass)*: Everything the visualizer calls "bass" is now adjustable, in one place.
+
+- **Bass Range (Low / High Edge)**: what counts as bass. It was fixed at under 150 Hz; now it is any range from 10 to 500 Hz. Bass Gain, the bass release and attack scaling, and bass hit detection all use it.
+- **Bass Gain (dB)**: -12 to +12 dB on every bar inside the range, easing out over half an octave on each side. It is added per band, so it costs nothing at run time.
+- **Bass Attack / Release Time (%)**: bass bars on their own clock. The Ballistics setting still decides the overall feel; these scale it for bass only. 50% release is a tight, short kick; 200% lets low notes sustain while the highs stay quick.
+- **Bass Hit Sensitivity and Window**: what Beat Flash and Particles treat as a bass hit. A hit is bass pulling ahead of its own recent average; the window is how far back that average looks, and the sensitivity is how far ahead it has to pull. The defaults (50 and 60 ms) are the old fixed behaviour.
+- **Low Zone Edge (Hz)**: where the low colour zone ends. It is the zone the EQ Preset's bass boost, the Multiband Oscilloscope colour and the Terminal Bass meter share.
+- **Oscilloscope Bass Focus (Hz)**: the Oscilloscope draws only what is below this frequency, and its trigger works on that same filtered sound. Treble can no longer jitter the trigger or crowd the bass shape, so a kick or a bass note holds still and reads as clean cycles. 0 is Off, the full signal as before. 120-250 Hz with a Time Window of 40-60 ms is the place to start; the filtered trace is quieter, so raise Sensitivity if it looks small.
+
+With the Classic engine, only the hit sensitivity applies, because Classic has seven fixed bands.
+
+**Bass Line** *(group: Bass Line)*: A separate lane that follows only the bass, built to read at a glance in a small, fast line.
+
+- **What it shows.** The line is the bass level on its own auto range: it tracks the loudest recent bass and may reach down by **Max Boost** dB, so a quiet voice fills the lane the way a loud 808 does. **Kick** hits (35-120 Hz, which includes 808 attacks) pop up in the Kick Color; **snare** and clap hits pop up in the Snare Color. A snare is only counted when its snap (2-6 kHz) and its body (140-260 Hz) both jump together, so hi-hats and sibilants stay out, and a kick only when its low band stands out from the full signal.
+- **How it is measured.** It does not use the spectrum bars. A small analyzer follows the audio sample by sample, so the lane works the same with the Classic and Precision engines and the GPU workload, and costs nothing when it is off (about 0.1% of one core when on).
+- **Styles.** **Line** is a scrolling trace, **Fill** is the same as columns, **Bar** is one live meter that flashes on hits. **Time Window** is how many seconds of history the lane shows.
+- **Moving it.** Placement puts it below or above the panel, or inside the bars along the bottom. **Offset X / Y** and **Width / Height** set the exact place and size. **Drag** it with the same modifier and button as the bars (it wins where it overlaps them), and it is saved like they are. **Cover** stretches it over the whole bar block, so it sits on top of the bars and follows them wherever they go. With the keyboard move keys, press **5** to steer the lane with the direction keys, and Home to put it back where its settings say.
+- **Tuning.** **Kick / Snare Sensitivity** (0 turns a detector off), **Hit Cooldown**, **Floor**, **Depth**, **Max Boost**, and the **Body Low / High Edge** and **Body Release**. Turn up the sensitivity for soft hits, down if a loud mix shows extra ones.
+
+**Depth** *(group: Depth)*: Puts the visualizer between the wallpaper and what is in front of it. The bars, the Now Playing text, the peak readout and the panel all sit behind the wallpaper's subject, like a phone lock screen's clock behind a person.
+
+- **How it works.** A cut-out of the subject (a PNG with a transparent background, saved at the wallpaper's size) is drawn over everything the visualizer draws, in the same place the wallpaper has it. Where the cut-out is opaque it covers the visualizer with the wallpaper's own pixels, so the bars appear to pass behind it.
+- **Making them for you.** Turn on **Auto Cut-out** (or pick **Cut Out This Wallpaper** in the right-click menu) and, with Source = Folder, the mod runs a background remover on the current wallpaper when no cut-out exists, then keeps the result. The default is rembg (free, open source, runs on your PC). Install it from the right-click menu with **Install Background Remover (rembg)...**: a notice says what it is, where it comes from (PyPI, github.com/danielgatis/rembg) and what it will do, and nothing runs unless you say Yes. It then runs in a visible console window, shows each step and the download's SHA-256, can check it against one you set (**Cutter Version** and **Cutter SHA-256**), and installs for your user only with no admin rights. Change the **Cutter Command** to use another program instead. It runs hidden and at low priority, once per wallpaper.
+- **Getting cut-outs by hand.** Windhawk can't cut a subject out by itself. Make them with any background remover (a phone's photo cut-out, remove.bg, a rembg script) and save them next to the wallpaper as name.cutout.png, or in the Cutout Folder as name.png. **Source = Folder** then follows the wallpaper as it changes. **Source = File** uses one image. **Source = Key** needs no cut-out: it makes the wallpaper's own dark (or light) background transparent, which suits ink or line art on a plain background.
+- **Lining it up.** Set **Fit** to the same as the wallpaper's, and use **Scale** and **Offset X / Y** if the edges don't line up exactly. A cut-out saved at the wallpaper's own size with Fill lines up on its own.
+- **Limits.** Only works with Place In = Desktop. The media control buttons are separate windows and stay on top. The cut-out is decoded once per wallpaper (a moment on a 4K image) and held in memory while it is shown.
+
 **Channel**: Which signal the spectrum comes from. **Mix** averages all channels, as before. **Mid** is what both speakers share; **Side** is their difference, which shows exactly where a mix's stereo width lives.
 
 **Display Floor / Ceiling (dBFS)**: The levels that draw as an empty and a full bar, before Sensitivity. A full-scale sine is 0 dBFS; loud modern music sits around -20 dBFS per third-octave band. Defaults -72 and -12.
@@ -483,23 +512,37 @@ If the GPU is ever lost mid-session (a driver update, a driver reset, a laptop s
   - **Frames where nothing moved are skipped.** The picture is summarised in a hash (bar heights to a quarter pixel, colours, the trace) and compared with the last frame shown. If it matches, nothing is drawn and nothing is presented, so Windows has nothing to recompose.
   - **The text lives on its own surface**, redrawn only when the text or its fade changes. The animated surface covers just the panel, not the room reserved around it for text.
   - **The panel can be opaque** (see Opaque Panel).
-- **Direct2D**: the 1.5 path, unchanged, including Smooth Mode's batching. Kept for comparison, and used automatically, with a warning, if Direct3D 11 can't start (a GPU below feature level 11.0, or `d3dcompiler_47.dll` missing).
+- **Direct2D**: the 1.5 path, unchanged, including the batching it does with Frame Sync on. Kept for comparison, and used automatically, with a warning, if Direct3D 11 can't start (a GPU below feature level 11.0, or `d3dcompiler_47.dll` missing).
 
 **Opaque Panel**: When the background panel can't show anything behind it (**Blur** on, or a panel colour with full alpha) and **Auto-Hide** is off, the Direct3D 11 renderer creates the panel's surface with alpha ignored and lets the compositor cut the rounded corners. Windows then copies those pixels instead of blending them every frame; Chromium measured the same switch at 3.12 W against 2.28 W. **Off** always blends, for comparison.
 
 **NPU Runtime Folder**: Where Intel's OpenVINO runtime lives. Blank searches the usual places. Only read when Workload is NPU.
 
-**Smooth Mode**: Frame timing locked to the display, and motion on elapsed time. **Auto** *(default)* turns it on when drawing runs on an integrated GPU or the CPU; **On** works on any GPU and is worth trying on a discrete one too; **Off** is the 1.4 timing. What it changes:
+**Frame Sync** (called Smooth Mode up to 2.1): how frames line up with the display.
 
-- **Frame timing locked to the display.** The 1.4 loop asks for a frame every `1000 / Target FPS` milliseconds and lets the timer's wake-up latency pile up, which is why 144 requested measured 141.7 delivered. On a 144 Hz panel that is a couple of refreshes every second with no new frame: a repeat, which you see as a hitch. Smooth Mode schedules from Windows' own composition clock instead, places every frame half a refresh away from the deadline on either side, and never accumulates drift.
-- **Target FPS rounded to an even fraction of the refresh rate.** 60 FPS on a 144 Hz screen means frames held for 2, 3, 2, 3 refreshes, which reads as judder however precise the timer is. Smooth Mode runs the nearest whole fraction instead: 60 becomes 72 on 144 Hz, 48 if you set it to 50, 60 on a 60 Hz screen. Asking for more than the refresh rate gets the refresh rate rather than frames nobody can see.
+- **Off**: a plain timer at Target FPS, any value, the 1.4 timing.
+- **VSync**: frame timing locked to the display, capped at the refresh rate. Smooth Mode's **On**.
+- **Adaptive**: VSync up to the refresh rate, a plain timer above it, so a Target FPS past the refresh rate is kept. The extra frames never reach the screen, but each one that does is a little fresher.
+- **Fast Sync**: like NVIDIA's. VSync up to the refresh rate. Above it, a whole number of frames per refresh (288 on 144 Hz is two), evenly spaced and lined up so the last one lands just before Windows composes. Windows shows the newest frame and drops the rest, so what you see is always equally fresh. The dropped frames still cost power.
+- **Auto** *(default)*: VSync when drawing runs on an integrated GPU or the CPU, Off otherwise.
+
+A desktop window can't tear or skip Windows' compositor, so these are pacing modes, not the driver's vsync.
+
+**Low Latency** (with Frame Sync on): **Off** draws each frame half a refresh before Windows composes, **On** a quarter refresh, and **Ultra** works like NVIDIA's Ultra Low Latency mode. It tracks how long drawing takes (the slowest recent frame, slowly forgotten) and starts each frame that long before the composition, plus half again and 1 ms for timer wake-up. At 144 Hz with 0.5 ms draws that is about 2 ms ahead instead of 3.5 ms. A slow frame raises the margin at once.
+
+**Frame Generation**: **x2** runs the analysis at half of Target FPS and draws the frames in between as the halfway point of the analysed frames on either side, like interpolating frame generation. The screen gets the full rate, the analysis work halves, and the picture is one frame later. Drawing still happens every frame and costs more than the analysis on almost every PC, so the saving is small; it is there to compare. It needs the Precision engine with analysis on the CPU. Every mode but Off changes the following (this was Smooth Mode):
+
+- **Frame timing locked to the display.** The 1.4 loop asks for a frame every `1000 / Target FPS` milliseconds and lets the timer's wake-up latency pile up, which is why 144 requested measured 141.7 delivered. On a 144 Hz panel that is a couple of refreshes every second with no new frame: a repeat, which you see as a hitch. Frame Sync schedules from Windows' own composition clock instead, places every frame half a refresh away from the deadline on either side, and never accumulates drift.
+- **Target FPS rounded to an even fraction of the refresh rate.** 60 FPS on a 144 Hz screen means frames held for 2, 3, 2, 3 refreshes, which reads as judder however precise the timer is. Frame Sync runs the nearest whole fraction instead: 60 becomes 72 on 144 Hz, 48 if you set it to 50, 60 on a 60 Hz screen. With VSync, asking for more than the refresh rate gets the refresh rate; Adaptive and Fast Sync keep it.
 - **Motion that doesn't depend on frame timing.** With the Classic engine, bar rise and fall, peak caps, beat flash and scope damping were all "move this fraction per frame", so a late frame visibly slowed everything down for a moment. They now scale by how much time actually passed. (The Precision engine runs on elapsed time whatever this is set to.)
 - **A proper animation clock.** Wave, Breathe and Rainbow ran off a millisecond counter that only ticks every 15.6 ms, stored in a float that loses precision the longer the PC has been on. They now run off the high-resolution clock. (Always, with the Direct3D 11 renderer.)
 - **With the Direct2D renderer:** the background baked once into one image, all bars in one sprite batch, and cached text layouts.
 
+**Engine Cores**: which processor cores the audio engine thread and the drawing thread run on. **Auto** *(default)* leaves it to Windows. **Efficiency** keeps both on a hybrid CPU's efficiency cores and asks for EcoQoS, the least power. **Performance** keeps them on the performance cores and opts them out of power throttling, the steadiest timing (the 2.0 behaviour, plus the core choice). **Custom** uses the cores listed in **Custom Cores** (Task Manager's CPU numbers, for example `0-3, 8`). The choice is a preference Windows honours where it can (CPU sets), not a hard affinity, and nothing outside these two threads changes. When nothing is playing the engine drops to EcoQoS whatever this says. The mod log lists the cores it found and which are efficiency or performance cores.
+
 ---
 
-![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/4.gif)
+![Oscilloscope closeup](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/4.gif)
 
 *The same shape in a warm colour: the Oscilloscope picks up Color Mode like every other shape.*
 
@@ -585,7 +628,7 @@ Every present hands Windows' compositor a new buffer and wakes it to blend that 
 
 - **Playing**: one wake per frame.
 - **Silent** (after Pause When Silent): wakes only when audio arrives or four times a second, and presents nothing unless something changes.
-- **Deep Idle** (five seconds later): the loopback stream itself is stopped, and Windows' own peak meter is read four times a second instead. A running capture stream registers an audio power request, which can hold the PC out of sleep (check `powercfg /requests`); a stopped one doesn't. The engine thread also asks Windows for efficiency-core scheduling (EcoQoS) while idle, and opts out of it while playing so frame pacing stays tight.
+- **Deep Idle** (five seconds later): the loopback stream itself is stopped, and Windows' own peak meter is read four times a second instead. A running capture stream registers an audio power request, which can hold the PC out of sleep (check `powercfg /requests`); a stopped one doesn't. The engine thread also asks Windows for efficiency-core scheduling (EcoQoS) while idle, and leaves the choice to Windows while playing.
 
 ### 11. Less for the compositor to blend *(2.0, Direct3D 11 renderer)*
 
@@ -594,7 +637,7 @@ The animated surface covers only the panel; the text has a surface of its own th
 
 ---
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/2.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/2.gif)
 
 *The full-width strip in a red colour mode.*
 
@@ -602,13 +645,13 @@ The animated surface covers only the panel; the text has a surface of its own th
 
 The figures above come from HWiNFO64 sensor logging: two captures taken back to back in one session, one with the mod running and one with it disabled, with the same music playing throughout both so the only thing that changed was the mod itself. 543 samples running, 384 disabled, at 1.25 s intervals.
 
-The full write-up (raw tables, the method, run-to-run variance, and an honest account of where the measurements fall short) is in [the project repo](https://github.com/USER-TOURNE/TOURNE-TABLE). It does not belong on a catalog page, so it is not reproduced here.
+The full write-up (raw tables, the method, run-to-run variance, and an honest account of where the measurements fall short) is in [the bench notes](https://github.com/USER-TOURNE/Tourne-Style/tree/main/windhawk-mods/tourne-table/bench). It does not belong on a catalog page, so it is not reproduced here.
 
 The caveats worth stating up front: **HWiNFO measures the whole machine, not this process alone.** A number quoted as the mod's cost therefore includes the work the mod causes elsewhere, in the compositor and the graphics driver, not only the time spent in its own threads. That makes it larger than a per-process trace would show, and it is the honest figure to quote, because it is what the machine actually pays. Both captures also contained short unrelated background spikes, which is why the numbers above are medians rather than averages.
 
 ---
 
-![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/GIF/3.gif)
+![Tourne'Table Audio Visualizer](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/3.gif)
 
 *Near-silence: the trace flattens out. When audio stops entirely, the render loop stops with it.*
 
@@ -713,16 +756,16 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - vu: VU Needles (two analog meters, L and R)
         - stereo_field: Stereo Field (left above, right below)
         - particles: Particles (bars plus sparks on each beat)
-    - reflection: 0
+    - reflection: '0'
       $name: Reflection
       $description: 0-100. Mirrors the bars onto a floor beneath them, fading out over this percentage of Bar Max Size. Horizontal bars anchored to the bottom only, with the bar shapes, LED Meter, Line Spectrum and Particles. Both renderers (Direct2D draws it on the CPU, so it costs a little more there)
-    - fxGlow: 0
+    - fxGlow: '0'
       $name: Glow
       $description: 0-100. A soft halo around each bar, dot, line and spark, worked out in the same shader pass that draws them, so it costs next to nothing. Direct3D 11 renderer only
     - fxGlowRadius: '6'
       $name: Glow Radius
       $description: 1-32 pixels. How far the halo reaches. Decimals allowed; turn Pixel Snap (Position) off to keep the fractions
-    - fxBloom: 0
+    - fxBloom: '0'
       $name: Bloom
       $description: 0-100. Light bleeding out of the whole picture, like a camera lens, from a blurred copy at a quarter of the size added back on top. A little GPU work, and only on frames that change. Direct3D 11 renderer only
     - fxBloomRadius: '16'
@@ -734,7 +777,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - fxOutlineColor: '#B0FFFFFF'
       $name: Outline Color
       $description: '#AARRGGBB or #RRGGBB. The outline fades with the bar it belongs to'
-    - fxShadow: 0
+    - fxShadow: '0'
       $name: Shadow
       $description: 0-100. A drop shadow behind each bar, dot and line, worked out in the same shader pass as Glow, so it costs next to nothing. Both renderers
     - fxShadowColor: '#000000'
@@ -767,7 +810,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - barMirrorGap: '0'
       $name: Mirror Gap
       $description: Pixels, decimals allowed. With Anchor = Middle the bars already grow both ways from a centre line; this pulls the two halves apart, like a waveform with a spine. Bar shapes, Direct3D 11 renderer
-    - afterimage: 0
+    - afterimage: '0'
       $name: Afterimage
       $description: 0-100. A see-through trail behind each bar that jumps up with it and sinks back slowly. With Peak Hold on, the caps sit on the trail. Bar shapes, Direct3D 11 renderer; keeps the analysis on the CPU (Hybrid)
     - afterimageLength: '1.2'
@@ -819,7 +862,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - gradientColor2: '#FF00B4FF'
       $name: Gradient Color 2
       $description: 'End color for Gradient and Reactive Gradient modes. Format is #AARRGGBB, #RRGGBB, rgba(r, g, b, a), or rgb(r, g, b)'
-    - sensitivity: 150
+    - sensitivity: '150'
       $name: Sensitivity
       $description: How hard the bars react to audio. Range 0-300. Past a point, raising this mostly makes quiet passages louder rather than making loud passages hit any harder, since loud signal is already at max bar height, see Sensitivity Curve
     - sensitivityCurve: knee
@@ -829,16 +872,16 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - exponential: Exponential (Soft)
         - knee: Knee (Balanced)
         - power: Power (Headroom)
-    - inputGain: 0
+    - inputGain: '0'
       $name: Input Gain (dB)
       $description: A fixed level adjustment applied to the captured audio before anything else. Range -24 to +24, where 0 leaves the signal exactly as captured. Loopback capture sees each app's own volume slider but not the Windows master slider, so a music app sitting at 40% reads as quiet no matter how loud the system sounds. This is the control for that. Unlike Sensitivity it also scales the Oscilloscope waveform
     - autoGain: false
       $name: Auto Gain
       $description: Continuously adapts the level so quiet sources still fill the bars, without retuning Sensitivity per app or per track. Boost only, so loud material behaves exactly as it does with this off. Held steady through silence, which means the noise floor is never lifted and idle shutdown still works normally
-    - autoGainMaxBoost: 12
+    - autoGainMaxBoost: '12'
       $name: Auto Gain Max Boost (dB)
       $description: The ceiling on how far Auto Gain may lift a quiet signal. Range 0 to 24. Lower it if quiet passages are getting flattened more than you want, raise it if a very quiet source still will not fill the bars. Only used when Auto Gain is on
-    - smoothing: 0
+    - smoothing: '0'
       $name: Motion Smoothing
       $description: Slows down how quickly bars rise and fall toward the target level, at the cost of a bit of lag. 0 is the original snappy response; higher values trade responsiveness for a steadier, easier-to-read motion -- helpful when bars are small on the desktop and fast jitter is hard to track
     - eqPreset: default
@@ -890,10 +933,10 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - oscilloscopeMultibandEnabled: false
       $name: Multiband Oscilloscope Coloring
       $description: Tints the Oscilloscope trace by which part of the spectrum (low/mid/high) is currently dominant, overriding Color Mode for that shape
-    - oscilloscopeWindowMs: 24
+    - oscilloscopeWindowMs: '24'
       $name: Oscilloscope Time Window (ms)
       $description: How much audio the trace shows end to end, in milliseconds. Range 5 to 250. Low values stretch out individual wave cycles and look like a hardware scope; high values compress more of the signal into the same width and read as a rolling envelope. This is a real time base, independent of FFT Size, so changing frequency resolution no longer changes what the trace looks like. Around 150 to 180 is close to what FFT Size 8192 used to give. Only affects the Oscilloscope shape
-    - oscilloscopeDamping: 0
+    - oscilloscopeDamping: '0'
       $name: Oscilloscope Damping
       $description: Slows how fast the trace changes shape, without slowing how often it is drawn. Range 0 to 100. 0 is the raw trace, redrawn every frame. Higher values ease each point toward its new position so the waveform moves slowly enough to follow with your eyes, which is what makes a wide time window legible rather than busy. Pair it with a high Time Window. Costs nothing and does not change your frame rate. Only affects the Oscilloscope shape
     - verticalAnchor: bottom
@@ -915,10 +958,10 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - beatFlashColor: '#FFFFFFFF'
       $name: Beat Flash Color
       $description: 'Color bars flash toward on a beat. Accepts #AARRGGBB, #RRGGBB, rgba(r, g, b, a) with alpha 0-1, or rgb(r, g, b). Alpha controls how strong the flash gets even at full intensity -- lower it for a subtler tint instead of a full color swap'
-    - beatFlashIntensity: 80
+    - beatFlashIntensity: '80'
       $name: Beat Flash Intensity
       $description: How quickly a beat reaches full Beat Flash Color. Only used when Beat Flash is on
-    - rainbowSpeed: 40
+    - rainbowSpeed: '40'
       $name: Rainbow Cycle Speed
       $description: Only used when Color Mode is Rainbow Cycle
     - nowPlayingEnabled: false
@@ -933,7 +976,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - nowPlayingFontSize: '16'
       $name: Now Playing Font Size
       $description: Text size, in points. Decimals allowed; turn Pixel Snap (Position) off to keep the fractions
-    - nowPlayingDisplaySeconds: 6
+    - nowPlayingDisplaySeconds: '6'
       $name: Now Playing Display Seconds
       $description: How long the text stays visible after a track changes, before fading out. 0 keeps it on screen all the time, like a media widget
     - nowPlayingOffsetX: '0'
@@ -1074,7 +1117,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - meterColumns: 40
       $name: Meter Width
       $description: Width of the Meters style, in characters
-    - hotThreshold: 75
+    - hotThreshold: '75'
       $name: Hot Threshold (%)
       $description: Above this share of full height a character turns the Hot Color
     - columnGlyph: '#'
@@ -1086,7 +1129,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - ramp: ' .:-=+*#%@'
       $name: Waterfall Ramp
       $description: 'Characters from quiet to loud for the Waterfall, any characters, e.g. " ░▒▓█" or " ·•●". Up to 128 different non-ASCII characters across all three settings'
-    - scrollRate: 20
+    - scrollRate: '20'
       $name: Waterfall Speed
       $description: Lines per second
     - lowColor: '#FF33FF66'
@@ -1123,13 +1166,13 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - '6': 1/6 octave
         - '12': 1/12 octave (semitone)
         - '24': 1/24 octave (quarter tone)
-    - minFrequency: 20
+    - minFrequency: '20'
       $name: Min Frequency (Hz)
       $description: Bottom of the analysed range. Range 10 to 1000
-    - maxFrequency: 20000
+    - maxFrequency: '20000'
       $name: Max Frequency (Hz)
       $description: Top of the analysed range. Range 1000 to 21000; anything above the device's Nyquist limit is trimmed automatically
-    - tuningA4: 440
+    - tuningA4: '440'
       $name: Tuning (A4, Hz)
       $description: Reference pitch for the Musical layout. Range 400 to 480
     - weighting: z
@@ -1184,10 +1227,10 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - right: Right
         - mid: Mid (L+R)
         - side: Side (L-R)
-    - dbFloor: -72
+    - dbFloor: '-72'
       $name: Display Floor (dBFS)
       $description: The level that draws as an empty bar. Range -120 to -20. Lower shows quieter detail, at the cost of noise and hiss showing too
-    - dbCeiling: -12
+    - dbCeiling: '-12'
       $name: Display Ceiling (dBFS)
       $description: The level that draws as a full bar, before Sensitivity. Range -60 to 0. A full-scale sine is 0 dBFS; loud modern music sits around -20 per third-octave band
     - ballistics: snappy
@@ -1201,13 +1244,13 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - ppm_ebu: PPM, EBU (Type II)
         - ppm_din: PPM, DIN (Type I)
         - custom: Custom
-    - attackMs: 10
+    - attackMs: '10'
       $name: Custom Attack (ms)
       $description: Rise time constant for Ballistics = Custom. Range 1 to 500
-    - releaseDbPerSecond: 20
+    - releaseDbPerSecond: '20'
       $name: Custom Release (dB/s)
       $description: Fall rate for Ballistics = Custom. Range 1 to 200
-    - peakHoldMs: 500
+    - peakHoldMs: '500'
       $name: Peak Hold Time (ms)
       $description: How long a peak cap hangs before it falls. Range 0 to 5000. Only used with Peak Hold Caps on
     - peakFall: gravity
@@ -1228,6 +1271,205 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
       $name: Reset Integrated Loudness On Track Change
       $description: Starts a new integrated measurement whenever the playing track changes, so the figure is per track. Off measures from when the mod started
   $name: Analysis (Precision Engine)
+- bass:
+    - lowHz: '20'
+      $name: Bass Range - Low Edge (Hz)
+      $description: The bottom of what counts as bass. Range 10 to 200. Used by Bass Gain, Bass Attack / Release Time and bass hit detection (Beat Flash and Particles)
+    - highHz: '150'
+      $name: Bass Range - High Edge (Hz)
+      $description: The top of what counts as bass. Range 40 to 500. 150 is the old fixed value. Raise it to include the punch of a kick or a bass guitar (200-250), lower it to keep only sub-bass (80-100). Needs the Precision engine; Classic keeps its own lowest band
+    - gainDb: '0'
+      $name: Bass Gain (dB)
+      $description: Raises or lowers every bar inside the Bass Range, in dB, easing out over half an octave on each side so there is no step. Range -12 to +12. Moves the bars, the bass colour zone and the hit detection together
+    - attackPct: '100'
+      $name: Bass Attack Time (%)
+      $description: How fast bass bars rise, as a share of the Ballistics attack time. Range 25 to 400. Below 100 is quicker and punchier, above 100 is softer. Needs the Precision engine
+    - releasePct: '100'
+      $name: Bass Release Time (%)
+      $description: How long bass bars take to fall, as a share of the Ballistics release time. Range 25 to 400. Below 100 makes bass tight and short, above 100 lets it sustain. Needs the Precision engine
+    - hitSensitivity: '50'
+      $name: Bass Hit Sensitivity
+      $description: How big a jump in bass counts as a hit for Beat Flash and Particles. Range 0 to 100, default 50 (the old fixed behaviour). Higher fires on smaller bass movements, lower waits for a hard kick
+    - hitWindowMs: '60'
+      $name: Bass Hit Window (ms)
+      $description: How far back a hit is compared to. Range 20 to 300, default 60. A short window catches every bass movement, a long one only fires on a hit that stands out from the bass that has been playing. Needs the Precision engine
+    - lowZoneHz: '300'
+      $name: Low Zone Edge (Hz)
+      $description: Where the low colour zone ends. The zone drives the EQ Preset's bass boost, Multiband Oscilloscope Coloring and the Terminal Bass meter. Range 100 to 1000, default 300. Needs the Precision engine
+    - scopeFocusHz: '0'
+      $name: Oscilloscope Bass Focus (Hz)
+      $description: Draws only the sound below this frequency on the Oscilloscope, and triggers on it, so a bass note holds still and reads as clean cycles instead of being buried in treble. 0 is Off (the full signal, as before). Try 120 to 250 with a Time Window of 40 to 60 ms. Range 40 to 500. Raise Sensitivity if the trace looks small
+  $name: Bass
+- bassLine:
+    - enabled: false
+      $name: Bass Line
+      $description: A separate lane that follows only the bass, built to read at a glance in a small, fast line. The body of the line is the bass level on its own auto range, so a quiet voice fills it as a loud 808 does. Kicks and 808 attacks pop up in the Kick Color, snares and claps in the Snare Color. Costs nothing when off, and works with every Analysis Engine and Workload
+    - style: line
+      $name: Style
+      $description: Line is a scrolling trace. Fill is the same as columns. Bar is a single live meter that flashes on hits
+      $options:
+        - line: Line (scrolling trace)
+        - fill: Fill (scrolling columns)
+        - bar: Bar (live meter)
+    - placement: below
+      $name: Placement
+      $options:
+        - below: Below the panel
+        - above: Above the panel
+        - overlay: Inside the bars, along the bottom
+        - cover: Over the whole bar block (synced with the bars)
+    - layer: front
+      $name: Layer
+      $description: Whether the lane is drawn over the bars, scope or wave, or behind them. Matters when it overlaps them (Inside or Cover, or moved onto them)
+      $options:
+        - front: In front of the bars
+        - behind: Behind the bars
+    - height: '28'
+      $name: Height
+      $description: In pixels. Range 4 to 400
+    - width: '0'
+      $name: Width
+      $description: In pixels. 0 matches the width of the bars. Range 0 to 4000
+    - gap: '6'
+      $name: Gap
+      $description: Distance from the panel, in pixels. Not used by the inside placement
+    - thickness: '1.5'
+      $name: Line Thickness
+      $description: In pixels, for the Line style. Range 0.5 to 20
+    - offsetX: '0'
+      $name: Offset X
+      $description: Moves the lane sideways, in pixels. Negative is left. You can also nudge it live with the keyboard move keys, picking it with 5 (see Position)
+    - offsetY: '0'
+      $name: Offset Y
+      $description: Moves the lane up or down, in pixels. Negative is up
+    - bodyColor: '#FFFFFFFF'
+      $name: Body Color
+      $description: 'The bass level. Format is #AARRGGBB, #RRGGBB, rgba(r, g, b, a), or rgb(r, g, b)'
+    - kickColor: '#FFFF3B3B'
+      $name: Kick Color
+      $description: 'Kicks and 808 attacks. Same format as Body Color'
+    - snareColor: '#FFFFD23B'
+      $name: Snare Color
+      $description: 'Snares and claps. Same format as Body Color'
+    - window: '2'
+      $name: Time Window (s)
+      $description: How much history the lane shows, in seconds. Range 0.5 to 12. Shorter is faster and reads spikes more sharply
+    - lowHz: '30'
+      $name: Body Low Edge (Hz)
+      $description: Bottom of the band the lane's body follows. Range 20 to 200
+    - highHz: '300'
+      $name: Body High Edge (Hz)
+      $description: Top of the band the lane's body follows. Range 60 to 500. Around 300 includes the low end of a voice; 120 keeps it to kick and sub
+    - floorDb: '-85'
+      $name: Floor (dBFS)
+      $description: Bass quieter than this is never shown, and hits below it are ignored. Range -100 to -30. Lower catches very quiet bass, at the cost of hiss
+    - depthDb: '36'
+      $name: Depth (dB)
+      $description: How many dB the lane spans from empty to full. Range 12 to 70. A smaller depth makes the lane more dramatic, a larger one more even
+    - boostDb: '45'
+      $name: Max Boost (dB)
+      $description: How far below full scale the lane's top may sink to follow quiet bass. Range 0 to 70. 0 turns the auto range off
+    - smoothMs: '80'
+      $name: Body Release (ms)
+      $description: How slowly the body falls after a loud moment. Range 5 to 800. Short shows every wobble, long holds a sustained note
+    - kickSens: '60'
+      $name: Kick Sensitivity
+      $description: How big a jump in the 35-120 Hz band counts as a kick or 808 attack. Range 0 to 100. 0 turns kick detection off. Higher catches softer hits and may add false ones
+    - snareSens: '50'
+      $name: Snare Sensitivity
+      $description: How big a jump counts as a snare or clap. It needs the snap (2-6 kHz) and the body (140-260 Hz) to jump together, which is what keeps hats out. Range 0 to 100. 0 turns snare detection off
+    - cooldownMs: '90'
+      $name: Hit Cooldown (ms)
+      $description: The shortest time between two hits of the same kind. Range 20 to 400. Raise it if one 808 shows as several
+  $name: Bass Line
+- depth:
+    - enabled: false
+      $name: Depth
+      $description: Puts the visualizer, its text and its panel between the wallpaper and what is in front of it, the way a phone lock screen tucks the clock behind a person. It draws a cut-out of the wallpaper's subject over everything the visualizer draws. Windhawk cannot cut a subject out by itself, so it needs a cut-out image (see Source). Only works with Place In = Desktop
+    - autoCut: false
+      $name: Auto Cut-out
+      $description: When Source = Folder and no cut-out exists for the current wallpaper, makes one by running the Cutter Command in the background (hidden, low priority) and keeps it for next time. Also in the right-click menu, where Cut Out This Wallpaper does it right now. Needs a cutter installed, rembg by default
+    - cutterVersion: ''
+      $name: Cutter Version
+      $description: For Install Background Remover in the right-click menu. The rembg version to install, for example 2.0.60. Empty installs the latest. Set it together with Cutter SHA-256 to install one exact, checked file
+    - cutterSha: ''
+      $name: Cutter SHA-256
+      $description: For Install Background Remover in the right-click menu. The SHA-256 of the rembg download (64 hex characters, from PyPI's Download files page for the version above). When set, the installer stops if the file's SHA-256 is different. Empty installs without checking, but still shows the file's SHA-256 in the console
+    - cutter: 'rembg i "{in}" "{out}"'
+      $name: Cutter Command
+      $description: 'The command that cuts out one picture. {in} is the wallpaper file and {out} the PNG it must write. The default is rembg, a free background remover: install it from the right-click menu (Install Background Remover), which explains what it is and where it comes from first. Any program that takes an image and writes a PNG with transparency works. Cut-outs are kept in the Cutout Folder, or under Local AppData\Tourne''Table\Cutouts when that is empty'
+    - source: folder
+      $name: Source
+      $description: Folder looks for a PNG with transparent background named after the current wallpaper (name.png, name.cutout.png, name_cutout.png, name.depth.png or name_depth.png) in the Cutout Folder, or beside the wallpaper, and follows the wallpaper as it changes. File uses one cut-out image whatever the wallpaper is. Key needs no cut-out, it makes the wallpaper's own dark (or light) background transparent, which suits art on a plain background
+      $options:
+        - folder: Folder (cut-out named after the wallpaper)
+        - file: File (one cut-out image)
+        - key: Key (remove the wallpaper's plain background)
+    - folder: ''
+      $name: Cutout Folder
+      $description: For Source = Folder. Where the cut-out images are. Empty looks beside the wallpaper file
+    - file: ''
+      $name: Cutout File
+      $description: For Source = File. Full path to a PNG with a transparent background
+    - fit: fill
+      $name: Fit
+      $description: How the cut-out sits on the monitor. Use the same as the wallpaper (Windows' Personalize > Background > Choose a fit). A cut-out saved at the wallpaper's own size lines up exactly with Fill
+      $options:
+        - fill: Fill
+        - fit: Fit
+        - stretch: Stretch
+        - center: Center
+    - scale: '100'
+      $name: Scale (%)
+      $description: Nudges the cut-out's size to line up with the wallpaper. Range 20 to 400
+    - offsetX: '0'
+      $name: Offset X
+      $description: Moves the cut-out sideways, in pixels, to line it up with the wallpaper
+    - offsetY: '0'
+      $name: Offset Y
+      $description: Moves the cut-out up or down, in pixels
+    - keyBackground: dark
+      $name: Key Background
+      $description: For Source = Key. Which kind of background to remove
+      $options:
+        - dark: Dark
+        - light: Light
+    - keyThreshold: '6'
+      $name: Key Threshold (%)
+      $description: For Source = Key. Brightness below this is fully transparent (for a dark background). Range 0 to 100. Raise it if the background shows a haze
+    - keySoftness: '12'
+      $name: Key Softness (%)
+      $description: For Source = Key. How soft the edge of the cut is. Range 0.1 to 100
+  $name: Depth
+- glass:
+    - enabled: false
+      $name: Glass Bars
+      $description: Draws the bars as glass. Each bar shows your wallpaper behind it, bent like a lens across its width, tinted with the bar colour and with a light edge where the glass catches the light. The wallpaper is read once (from Windows' wallpaper, as Depth reads it) and nothing on the screen is captured, so it costs a texture read per bar pixel and nothing while nothing plays. Desktop only, like Depth. The Direct2D renderer draws a plainer version without the bend
+    - bend: '8'
+      $name: Bend (px)
+      $description: How far the glass bends what is behind it at a bar's edges. 0 is flat glass. Range 0 to 40
+    - bendStyle: lens
+      $name: Bend Style
+      $description: >-
+        Lens curves the whole bar like a pane of glass, so the middle magnifies and
+        the edges pull in. Edge bends only a band along each bar's own outline and
+        leaves the middle flat, which follows rounded corners and capsule bars
+      $options:
+        - lens: Lens
+        - edge: Edge
+    - bendBand: '10'
+      $name: Edge Band (px)
+      $description: With Bend Style = Edge, how wide the bent band along a bar's edge is. Range 1 to 40
+    - edge: '55'
+      $name: Edge Light (%)
+      $description: How bright the light along the glass edge is. 0 is none. Range 0 to 100
+    - tint: '30'
+      $name: Tint (%)
+      $description: How much of the bar colour (Color Mode and all) tints the glass. 0 is clear glass, 100 is the bar colour alone. Range 0 to 100
+    - frost: '0'
+      $name: Frost (%)
+      $description: Blurs what the glass shows. 0 is clear. Range 0 to 100
+  $name: Glass Bars
 - position:
     - host: desktop
       $name: Place In
@@ -1275,29 +1517,29 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - start: Start (left or top)
         - center: Centre
         - end: End (right or bottom)
-    - dockGap: 0
+    - dockGap: '0'
       $name: Dock Gap
       $description: Pixels between the window and the visualizer. Negative overlaps
-    - dockShift: 0
+    - dockShift: '0'
       $name: Dock Shift
       $description: Pixels to slide it along the side from the alignment above
     - split: false
       $name: Split Into Two Pieces
       $description: Cuts the visualizer in two and moves the second piece by the gap and shift below, e.g. to sit either side of the taskbar's centred icons or a monitor bezel. Works with every shape and both renderers and costs next to nothing (Windows moves the piece; nothing is drawn twice). The background panel is cut at the same place. Drag, the right-click menu and Click to Seek answer on the first piece only
-    - splitAt: 50
+    - splitAt: '50'
       $name: Split Point
       $description: Percent of the way along where the cut goes. With bars it lands in the gap between two bars
-    - splitGap: 200
+    - splitGap: '200'
       $name: Split Gap
       $description: Pixels the second piece moves along the visualizer (right, or down when vertical). Negative moves it back
-    - splitShift: 0
+    - splitShift: '0'
       $name: Split Shift
       $description: Pixels the second piece moves across it (down, or right when vertical)
   $name: Position
 - interaction:
-    - keyMoveEnabled: true
+    - keyMoveEnabled: false
       $name: Enable Keyboard Move
-      $description: Hold the modifier below and tap a direction key to nudge the visualizer one pixel at a time, the way a window manager moves a tiled window. This is the precise way to place it -- it lands exactly where you put it, with no cursor to keep up with. Hold the Fast Key as well to jump by the larger step instead. The same combo with 1, 2, 3 or 4 switches what the direction keys steer -- 1 the visualizer, 2 the Now Playing text, 3 the frequency readout, 4 the Media Controls strip -- so everything movable is placed with one shortcut, and the choice sticks until you change it. Modifier + Home resets whichever is selected. Worth knowing -- the visualizer and the strip store a percentage that REPLACES their Position settings, so those fields stop having any effect until you reset; the two text overlays instead store a delta ADDED to their Offset settings, so those fields always still count. Also, if the strip is currently parked by Hide When Covered, nudging it still works but you will not see it move until it comes back
+      $description: Off by default. While it is off the mod doesn't watch the keyboard at all. Hold the modifier below and tap a direction key to nudge the visualizer one pixel at a time, the way a window manager moves a tiled window. This is the precise way to place it -- it lands exactly where you put it, with no cursor to keep up with. Hold the Fast Key as well to jump by the larger step instead. The same combo with 1, 2, 3 or 4 switches what the direction keys steer -- 1 the visualizer, 2 the Now Playing text, 3 the frequency readout, 4 the Media Controls strip -- so everything movable is placed with one shortcut, and the choice sticks until you change it. Modifier + Home resets whichever is selected. Worth knowing -- the visualizer and the strip store a percentage that REPLACES their Position settings, so those fields stop having any effect until you reset; the two text overlays instead store a delta ADDED to their Offset settings, so those fields always still count. Also, if the strip is currently parked by Hide When Covered, nudging it still works but you will not see it move until it comes back
     - keyMoveModifier: ctrl_alt
       $name: Keyboard Move Modifier
       $description: Held down while tapping a direction key. Use a two-key combo. This mod swallows the keypress outright, so the app underneath does not fall back to its own behaviour -- it simply never hears about it. With a one-key modifier that means real losses -- Ctrl with WASD eats Ctrl+A and, worse, Ctrl+S, so a save you think you made silently does not happen. Ctrl with arrows eats word-by-word cursor movement. Pick a one-key modifier and the mod will warn you on load listing exactly what you gave up
@@ -1351,11 +1593,11 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - none: None (disable fast step)
     - dragEnabled: false
       $name: Enable Drag-to-Move
-      $description: Hold the modifier + mouse button below anywhere over the visualizer and drag to reposition it. Bar rendering pauses for the duration of the drag -- only the background/border box (if Background is enabled) moves. Double-click the same combo without dragging to clear a dragged position. Note this rides a global mouse hook and has to repaint the whole visualizer to keep up with the cursor, so on a heavy shape or a high bar count it can feel sluggish next to the keyboard move above -- which is why it's off by default now
+      $description: Hold the modifier + mouse button below anywhere over the visualizer and drag to reposition it. Bar rendering pauses for the duration of the drag -- only the background/border box (if Background is enabled) moves. Double-click the same combo without dragging to clear a dragged position. Note this rides a global mouse hook and has to repaint the whole visualizer to keep up with the cursor, so on a heavy shape or a high bar count it can feel sluggish next to the keyboard move above -- which is why it's off by default now. The media strip and card drag the same way (with Drag Modifier Key = None, from their padding and gaps, so their buttons stay clicks)
     - dragSnap: true
       $name: Snap While Dragging
       $description: While dragging, the visualizer's edges and centre catch on the screen's edges and centre, the taskbar's edge, the tray and the Start button. Hold Shift (Alt when Shift is the drag key) to place it freely
-    - dragSnapDistance: 8
+    - dragSnapDistance: '8'
       $name: Snap Distance
       $description: How close, in pixels, an edge has to come before it snaps
     - dragModifier: ctrl
@@ -1380,6 +1622,12 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - right_click: Right-Click
         - ctrl_right_click: Ctrl + Right-Click
         - 'off': 'Off'
+    - menuFont: ''
+      $name: Menu Font
+      $description: The font of the right-click menu, the quick-settings panel and the Style Editor, by its name as Windows lists it (CozetteVector, scientifica, Consolas). Empty uses Tourne's menu font in Tourne Desktop, else Windows' own menu font. A name that isn't installed is ignored
+    - menuFontSize: '0'
+      $name: Menu Font Size
+      $description: The size of that font, in pixels at 100% scaling (it grows with the display's scaling). 0 keeps the font's own size. Pixel fonts look sharpest at their own size or a whole multiple of it, for example 13 or 26 for Cozette
   $name: Interaction
 - media_controls:
     - enabled: false
@@ -1477,10 +1725,10 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
       $description: Distance in from the panel's top or bottom edge, in pixels. Only used with a panel anchor. Decimals allowed; the media controls round to whole pixels
     - layout: strip
       $name: Layout
-      $description: Strip is the three buttons. Card is a small media card in the same place, sized from Icon Size and Icon Spacing - the album art (hover it for previous / play / next), a seek bar (click or drag), a speaker button that switches the Windows default output in one click, and a volume slider (drag it, or scroll anywhere on the card)
+      $description: Strip is the three buttons. Card is a small media card in the same place, sized from Icon Size and Icon Spacing - the album art (hover it for previous / play / next), a seek bar (click or drag), a speaker button that switches the Windows default output device for all apps in one click, and a volume slider that sets the system master volume (drag it, or scroll anywhere on the card)
       $options:
         - strip: Strip (three buttons)
-        - card: Card (art, seek, output, volume)
+        - card: Card (art, title, seek, output, volume)
     - cardBackground: '#9E0A0A0D'
       $name: Card Background
       $description: 'Card only. Format is #AARRGGBB, #RRGGBB, rgba(r, g, b, a), or rgb(r, g, b). Kept just above fully transparent at the least, so the card always takes clicks'
@@ -1492,10 +1740,27 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
       $description: Card only. Pixels, drawn inward from the edge. Decimals allowed; the media controls round to whole pixels
     - cardCornerRadius: '12'
       $name: Card Corner Radius
-      $description: Card only. Pixels. The album art's corners follow it. Decimals allowed; the media controls round to whole pixels
+      $description: Card only. Pixels; one value for every corner, or four for top-left, top-right, bottom-right, bottom-left (e.g. "12 12 0 0"). 0 is square, border included. Decimals allowed; the media controls round to whole pixels
+    - cardArtCornerRadius: '-1'
+      $name: Card Art Corner Radius
+      $description: Card only. The album art's corners, in pixels, one value or four like Card Corner Radius. -1 follows the card's corners (inset by the padding)
     - cardArtSize: '0'
       $name: Card Art Size
-      $description: Card only. Width of the album art in pixels, which sets the card's width. 0 sizes it from Icon Size and Icon Spacing. Decimals allowed; the media controls round to whole pixels
+      $description: Card only. Width of the album art in pixels, which sets the card's width. 0 sizes it from Icon Size and Icon Spacing. Decimals allowed; the media controls round to whole pixels. Drag the card's sides to set it
+    - cardArtHeight: '0'
+      $name: Card Art Height
+      $description: Card only. Height of the album art (or what shows in its place) in pixels. 0 makes it square, as tall as it is wide. Drag the card's top or bottom edge to set it
+    - cardArtShows: art
+      $name: In the Art's Place
+      $description: Card only. What the top of the card shows. Album art; nothing (a short row of buttons, so the card is just its text and controls); the Table drawn small, in your colours; the title and artist large; the art's main colours as a strip; the playing app's icon and name; or a clock with the time left in the track. Its controls show on hover, as over the art
+      $options:
+        - art: Album art
+        - buttons: Nothing (just the text and controls)
+        - visualizer: Mini visualizer
+        - bigtype: Big type
+        - colours: Colour block
+        - player: Player badge
+        - clock: Clock and time left
     - cardAccent: icon
       $name: Card Accent
       $description: Card only. Colour of the seek and volume fills and their knobs
@@ -1507,6 +1772,31 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - cardAccentColor: '#FFFFFFFF'
       $name: Card Accent Color
       $description: 'Card only, with Card Accent = Card Accent Color. Same formats as Card Background'
+    - cardTitle: both
+      $name: Card Track Title
+      $description: Card only. Shows what is playing under the art, all the time, so a song from a shuffle or the next podcast episode can be read at a glance. Uses the Now Playing font and the icon colour
+      $options:
+        - both: Title and artist
+        - title: Title only
+        - 'off': 'Off'
+    - cardTitleScroll: hover
+      $name: Card Title Scrolling
+      $description: Card only. What a title too long for the card does. On hover, it scrolls while the pointer is over the card so the whole title can be read, and otherwise fades out at its end. Always keeps it scrolling. Never only fades it
+      $options:
+        - hover: Scroll on hover
+        - always: Always scroll
+        - never: Never scroll
+    - cardClickOpens: true
+      $name: Click Title to Open Player
+      $description: Card only. Clicking the title brings up the app that is playing (Spotify, a browser, a podcast app), showing its window even when it is hidden in the tray, or starting it if it is closed. Open Player in the right-click menu does the same, with any layout
+    - backdrop: solid
+      $name: Backdrop
+      $description: What shows behind the card or the strip, as on Tourne's bar. Solid is Card Background (or Backing Plate Color) as set. Clear leaves that fill out (the card still takes its clicks). Blur and Acrylic blur whatever is behind, tinted by that same colour and its alpha; Acrylic is the frosted one. Corners follow Windows 11's rounding; on Windows 10 the blur is square
+      $options:
+        - solid: Solid
+        - clear: Clear
+        - blur: Blur
+        - acrylic: Acrylic
   $name: Media Controls
 - background:
     - enabled: true
@@ -1521,7 +1811,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - cornerRadius: '14'
       $name: Corner Radius
       $description: Roundness of the panel corners, in pixels. One value for all corners, or four space-separated values for top-left, top-right, bottom-right, bottom-left
-    - blur: 0
+    - blur: '0'
       $name: Blur
       $description: Gaussian blur strength behind the panel, in pixels. 0 disables it. Computed once and cached, not redrawn every frame, so raising this has minimal ongoing CPU cost
     - borderSize: '0'
@@ -1538,7 +1828,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - pauseOnFullscreen: true
       $name: Pause On Fullscreen
       $description: Stops rendering while any window is fullscreen, since the visualizer would be hidden behind it anyway
-    - pauseWhenSilentSeconds: 10
+    - pauseWhenSilentSeconds: '10'
       $name: Pause When Silent (seconds)
       $description: After this long without audio, drawing drops to a trickle that presents nothing unless something actually changes. 0 disables this behavior, and Deep Idle with it
     - deepIdle: true
@@ -1550,7 +1840,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - autoHideEnabled: false
       $name: Auto-Hide When Idle
       $description: Fades the whole visualizer out after prolonged silence, instead of just idling
-    - autoHideDelaySeconds: 15
+    - autoHideDelaySeconds: '15'
       $name: Auto-Hide Delay (seconds)
       $description: How long to wait after audio goes silent before fading the visualizer out. Only used when Auto-Hide When Idle is on
     - pauseWhenObscured: false
@@ -1600,7 +1890,7 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
         - cpu: CPU (software rendering)
     - renderer: d3d11
       $name: Renderer
-      $description: Direct3D 11 draws everything with one tiny shader from a buffer of bar heights, skips any frame where nothing moved, keeps the text on its own surface that only redraws when the text changes, and tells Windows when the panel is opaque so it copies instead of blending. Direct2D is the 1.5 path, unchanged, including Smooth Mode's batching; it is kept for comparison and as the automatic fallback
+      $description: Direct3D 11 draws everything with one tiny shader from a buffer of bar heights, skips any frame where nothing moved, keeps the text on its own surface that only redraws when the text changes, and tells Windows when the panel is opaque so it copies instead of blending. Direct2D is the 1.5 path, unchanged, including the batching it does with Frame Sync on; it is kept for comparison and as the automatic fallback
       $options:
         - d3d11: Direct3D 11 (recommended)
         - direct2d: Direct2D (1.5 path)
@@ -1613,13 +1903,39 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
     - npuRuntimePath: ''
       $name: NPU Runtime Folder
       $description: The folder that contains openvino_c.dll, or the root of an extracted OpenVINO archive. Leave blank to search the usual places - INTEL_OPENVINO_DIR, Program Files\Intel\openvino*, a pip-installed openvino package, and PATH. Only used when Workload is NPU
-    - smoothMode: auto
-      $name: Smooth Mode
-      $description: Frame timing locked to the display's refresh so every frame lands on its own refresh, and motion that scales with real elapsed time. Target FPS is rounded to an even fraction of the refresh rate (60 on a 144 Hz screen runs at 72) because that is what makes motion even. With the Direct2D renderer it also bakes the panel and batches the bars. Auto turns it on when drawing runs on an integrated GPU or the CPU. On works with any GPU. Off is the 1.4 timing
+    - frameSync: auto
+      $name: Frame Sync
+      $description: How frames line up with the display. Off draws on a plain timer at Target FPS, any value, the 1.4 timing. VSync times every frame from Windows' composition clock so each one lands on its own refresh, rounds Target FPS to an even fraction of the refresh rate (60 on a 144 Hz screen runs at 72) and caps it at the refresh rate. Adaptive is VSync up to the refresh rate and a plain timer above it, so a Target FPS past the refresh rate is kept. Fast Sync works like NVIDIA's. Up to the refresh rate it is VSync. Above it, it draws a whole number of frames per refresh, evenly spaced, and Windows shows the newest one, so what you see is always the freshest frame at the same age. Auto is VSync when drawing runs on an integrated GPU or the CPU, and Off otherwise. Every mode but Off also moves things by real elapsed time and, with Direct2D, bakes the panel and batches the bars
       $options:
-        - auto: Auto (integrated GPU or CPU drawing)
-        - 'on': 'On'
-        - 'off': Off (1.4 timing)
+        - auto: Auto (VSync on integrated GPU or CPU drawing)
+        - 'off': Off (timer, any FPS)
+        - vsync: VSync (capped at the refresh rate)
+        - adaptive: Adaptive (VSync up to the refresh rate, uncapped above)
+        - fast: Fast Sync (uncapped, newest frame shown)
+    - lowLatency: 'off'
+      $name: Low Latency
+      $description: How close to Windows' next composition each frame is drawn, with Frame Sync on. Off draws half a refresh ahead, the safest. On draws a quarter refresh ahead. Ultra works like NVIDIA's Ultra Low Latency mode. It measures how long drawing takes and starts each frame just in time, with a safety margin, so the bars trail the sound by as little as this PC allows. With Frame Sync Off there is no refresh to line up with, so this does nothing
+      $options:
+        - 'off': 'Off'
+        - 'on': On (a quarter refresh ahead)
+        - ultra: Ultra (just in time)
+    - frameGen: 'off'
+      $name: Frame Generation
+      $description: x2 analyses the sound at half of Target FPS and draws every other frame as the halfway point between two analysed ones, so the screen still gets the full Target FPS. It halves the analysis work and adds one frame of delay. Drawing still happens every frame, so on most PCs the saving is small. Needs the Precision engine with analysis on the CPU (Workload Hybrid or CPU). Oscilloscope and scope traces update at the analysis rate
+      $options:
+        - 'off': 'Off'
+        - x2: x2 (half-rate analysis, halfway frames)
+    - engineCores: auto
+      $name: Engine Cores
+      $description: Which processor cores the audio engine and the drawing thread run on. Auto leaves it to Windows. Efficiency keeps both on the efficiency cores of a hybrid CPU (Intel 12th gen and later, some AMD) at low clocks, the least power. Performance keeps them on the performance cores and asks Windows not to throttle them, the steadiest timing. Custom uses the cores listed in Custom Cores. On a CPU whose cores are all the same, Efficiency and Performance only change how Windows clocks the threads. When nothing is playing the engine always drops to low power
+      $options:
+        - auto: Auto (Windows decides)
+        - efficiency: Efficiency cores (lowest power)
+        - performance: Performance cores (steadiest timing)
+        - custom: Custom (the cores in Custom Cores)
+    - engineCoreList: ""
+      $name: Custom Cores
+      $description: For Engine Cores = Custom. Logical processor numbers as Task Manager numbers them (CPU 0, CPU 1 and so on), separated by commas, with ranges allowed, for example 0-3, 8. The mod log lists which numbers are efficiency and performance cores. Empty means any core
   $name: Hardware
 - validation:
     - showErrors: true
@@ -1652,22 +1968,24 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
 #include <wincodec.h>
 #include <dwrite.h>
 #include <windowsx.h>
+#include <urlmon.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <compressapi.h>
-#include <urlmon.h>
 #include <tlhelp32.h>
+#include <shlobj.h>
+#include <shobjidl.h>
 
 #include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <cwctype>
-#include <condition_variable>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cwchar>
+#include <condition_variable>
 #include <mutex>
 #include <map>
 #include <optional>
@@ -1684,7 +2002,7 @@ using namespace winrt::Windows::Storage::Streams;
 
 using Microsoft::WRL::ComPtr;
 
-// ---- Shared setups (2.3): the layer an imported setup sits in -------------------------------------
+// ---- Shared setups: the layer an imported setup sits in -------------------------------------
 // Every setting is read through here. An imported setup's values (the mod value "sharedSetup", as
 // key=value lines) come first, then the settings page; quick settings still go on top of both.
 // Reset Quick Settings clears it, and the settings page's values come back.
@@ -1713,7 +2031,20 @@ void VizSetupSave() {
     Wh_SetStringValue(L"sharedSetup", s.c_str());
 }
 
+// What the quick-settings panel is changing right now (a slider mid-drag), and what it has just
+// written but the settings haven't caught up with yet. Read first of all. UI thread only.
+struct VizPanelPending {
+    std::wstring value;
+    bool written = false;
+};
+std::map<std::wstring, VizPanelPending> g_panelPending;
+std::atomic<bool> g_settingsFromHost{false};
+
 const std::wstring* VizSetupFind(PCWSTR name) {
+    if (!g_panelPending.empty()) {
+        auto p = g_panelPending.find(name);
+        if (p != g_panelPending.end()) return &p->second.value;
+    }
     if (!g_setupLayerLoaded) VizSetupLoad();
     auto it = g_setupLayer.find(name);
     return it == g_setupLayer.end() ? nullptr : &it->second;
@@ -1728,7 +2059,8 @@ PCWSTR VizSettingString(PCWSTR name) {
     std::wstring v;
     if (const std::wstring* found = VizSetupFind(name)) {
         v = *found;
-    } else if (PCWSTR s = Wh_GetStringSetting(name)) {
+    } else {
+        PCWSTR s = Wh_GetStringSetting(name);
         v = s;
         Wh_FreeStringSetting(s);
     }
@@ -1739,10 +2071,7 @@ PCWSTR VizSettingString(PCWSTR name) {
 
 void VizSettingFree(PCWSTR s) { delete[] s; }
 
-// From here on, settings come through the layer.
-#define Wh_GetIntSetting VizSettingInt
-#define Wh_GetStringSetting VizSettingString
-#define Wh_FreeStringSetting VizSettingFree
+// From here on, settings come through the layer: call VizSetting* instead of Wh_Get*Setting.
 
 #ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 #define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((DPI_AWARENESS_CONTEXT)-4)
@@ -1769,6 +2098,9 @@ void VizSettingFree(PCWSTR s) { delete[] s; }
 #define WM_APP_REBUILD_DEVICE (WM_APP + 8)   // wParam: 1 = device was lost
 #define WM_APP_CONTEXT_MENU (WM_APP + 9)     // wParam, lParam: screen x, y
 #define WM_APP_PANEL_FIT (WM_APP + 10)       // Place In = Panel: size the window to the box
+#define WM_APP_MEDIA_MENU (WM_APP + 14)     // the card's or strip's right-click; wParam, lParam: screen x, y
+#define WM_APP_WRITE_SETTING (WM_APP + 13)  // lParam: heap std::pair<std::wstring, std::wstring>* (key, value), owned by receiver
+#define WM_APP_SEEK_AT (WM_APP + 12)         // Click to Seek; wParam: screen x
 #define OVERLAY_WINDOW_CLASS (L"DesktopAudioVisOverlay_" WH_MOD_ID)
 #define MESSAGE_WINDOW_CLASS (L"DesktopAudioVisMessage_" WH_MOD_ID)
 #define MEDIA_WINDOW_CLASS (L"DesktopAudioVisMedia_" WH_MOD_ID)
@@ -1798,10 +2130,12 @@ enum class VizKeyMoveKeys { Both, Arrows, Wasd };
 // What the keyboard-move keys are currently steering. Switched live with the
 // move modifier + 1/2/3, so the same combo places all three pieces without
 // needing a separate shortcut per piece.
-enum class VizMoveTarget { Visualizer, NowPlaying, PeakFreq, MediaControls };
+enum class VizMoveTarget { Visualizer, NowPlaying, PeakFreq, MediaControls, BassLine };
 // Hardware section.
 enum class VizRenderDevice { Auto, Integrated, Discrete, Cpu };
-enum class VizSmoothMode { Auto, On, Off };
+enum class VizFrameSync { Auto, Off, VSync, Adaptive, Fast };
+enum class VizLowLatency { Off, On, Ultra };
+enum class VizEngineCores { Auto, Efficiency, Performance, Custom };
 // 2.0. Where the work runs; which analysis core; which renderer.
 enum class VizWorkload { Hybrid, Gpu, Cpu, Npu };
 enum class VizRenderer { D3D11, Direct2D };
@@ -1820,6 +2154,11 @@ enum class VizTermStyle { Columns, Waterfall, Meters };
 enum class VizNpLayout { OneLine, TwoLines };
 enum class VizNpPlacement { Above, PanelTop, PanelBottom };
 enum class VizProgressPlacement { Below, Above, PanelBottom };
+enum class VizLanePlacement { Below, Above, Overlay, Cover };
+enum class VizLaneLayer { Front, Behind };
+enum class VizLaneStyle { Line, Fill, Bar };
+enum class VizDepthSource { Folder, File, Key };
+enum class VizDepthFit { Fill, Fit, Stretch, Center };
 enum class VizMediaAnchor { Screen, PanelTopLeft, PanelTopRight, PanelBottomLeft, PanelBottomRight };
 enum class VizContextMenu { RightClick, CtrlRightClick, Off };
 enum class VizStyle { None, Led, Line, Bloom, Spectrogram, Vu, SplitLR, Particles };
@@ -1837,12 +2176,12 @@ struct Settings {
     BYTE colorA = 255, colorR = 255, colorG = 255, colorB = 255;
     BYTE grad1A = 255, grad1R = 30, grad1G = 215, grad1B = 96;
     BYTE grad2A = 255, grad2R = 0, grad2G = 180, grad2B = 255;
-    int sensitivity = 150;
+    float sensitivity = 150;
     VizSensitivityCurve sensitivityCurve = VizSensitivityCurve::Knee;
     float inputGainDb = 0.0f;
     bool autoGain = false;
     float autoGainMaxDb = 12.0f;
-    int smoothing = 0;
+    float smoothing = 0;
     VizEQ eq = VizEQ::Default;
 
     float horizontalPosition = 50.0f;
@@ -1850,7 +2189,7 @@ struct Settings {
     int monitor = 1;
     VizAnchor verticalAnchor = VizAnchor::Bottom;
 
-    bool keyMoveEnabled = true;
+    bool keyMoveEnabled = false;
     unsigned keyMoveModifier = VIZ_MOD_CTRL | VIZ_MOD_ALT;
     VizKeyMoveKeys keyMoveKeys = VizKeyMoveKeys::Both;
     float keyMoveStep = 1;
@@ -1863,7 +2202,7 @@ struct Settings {
 
     bool dragEnabled = false;
     bool hostTaskbar = false;         // Position > Place In = Taskbar
-    bool hostPanel = false;           // Position > Place In = Panel (2.2)
+    bool hostPanel = false;           // Position > Place In = Panel
     int panelBackdrop = 1;            // 0 clear, 1 acrylic, 2 mica
     std::wstring panelHotkey;
     bool splitEnabled = false;        // show the visualizer as two pieces
@@ -1884,26 +2223,26 @@ struct Settings {
     BYTE bgA = 0x60, bgR = 0, bgG = 0, bgB = 0;
     float bgPaddingL = 24, bgPaddingR = 24, bgPaddingT = 24, bgPaddingB = 24;
     float bgRadiusTL = 14.0f, bgRadiusTR = 14.0f, bgRadiusBR = 14.0f, bgRadiusBL = 14.0f;
-    int bgBlur = 0;
+    float bgBlur = 0;
     float bgBorderSize = 0;
     BYTE borderA = 0x40, borderR = 255, borderG = 255, borderB = 255;
 
     int targetFps = 60;
     bool pauseOnFullscreen = true;
-    int pauseWhenSilentSeconds = 10;
+    float pauseWhenSilentSeconds = 10;
 
     bool peakHoldEnabled = false;
     BYTE peakHoldA = 255, peakHoldR = 0, peakHoldG = 180, peakHoldB = 255;
     bool beatFlashEnabled = false;
     BYTE beatFlashA = 255, beatFlashR = 255, beatFlashG = 255, beatFlashB = 255;
-    int beatFlashIntensity = 80;
-    int rainbowSpeed = 40;
+    float beatFlashIntensity = 80;
+    float rainbowSpeed = 40;
 
     bool nowPlayingEnabled = false;
     BYTE nowPlayingA = 255, nowPlayingR = 255, nowPlayingG = 255, nowPlayingB = 255;
     std::wstring nowPlayingFont = L"Segoe UI";
     float nowPlayingFontSize = 16;
-    int nowPlayingDisplaySeconds = 6;
+    float nowPlayingDisplaySeconds = 6;
     float nowPlayingOffsetY = 0;
     float nowPlayingOffsetX = 0;
     float peakFreqOffsetY = 0;
@@ -1924,7 +2263,7 @@ struct Settings {
     BYTE pfBgBorderA = 0x40, pfBgBorderR = 255, pfBgBorderG = 255, pfBgBorderB = 255;
 
     bool autoHideEnabled = false;
-    int autoHideDelaySeconds = 15;
+    float autoHideDelaySeconds = 15;
     bool pauseWhenObscured = false;
     int obscuredThresholdPercent = 100;
 
@@ -1934,8 +2273,8 @@ struct Settings {
     VizTextAlignH peakFreqAlignH = VizTextAlignH::Right;
     VizTextAlignV peakFreqAlignV = VizTextAlignV::Top;
     bool oscilloscopeMultibandEnabled = false;
-    int oscilloscopeWindowMs = 24;
-    int oscilloscopeDamping = 0;
+    float oscilloscopeWindowMs = 24;
+    float oscilloscopeDamping = 0;
 
     bool mediaControlsEnabled = false;
     BYTE mediaIconColorA = 255, mediaIconColorR = 255, mediaIconColorG = 255, mediaIconColorB = 255;
@@ -1951,9 +2290,17 @@ struct Settings {
     BYTE cardBgA = 158, cardBgR = 10, cardBgG = 10, cardBgB = 13;
     BYTE cardBorderA = 0, cardBorderR = 255, cardBorderG = 255, cardBorderB = 255;
     float cardArtSize = 0;
-    float cardRadius = 12;
+    float cardArtHeight = 0;   // 0: square
+    int cardArtShows = 0;      // In the Art's Place: 0 album art, 1 nothing (buttons), 2 clock, 3 player badge, 4 mini visualizer, 5 big type, 6 colour block
+    float cardRadius = 12;                        // the largest of the four, for the backdrop's rounding
+    float cardRadii[4] = {12, 12, 12, 12};        // top-left, top-right, bottom-right, bottom-left
+    float cardArtRadii[4] = {-1, -1, -1, -1};     // the art's; negative follows the card
     float cardBorderSize = 0;
     int cardAccentSource = 0;  // 0 icon colour, 1 custom, 2 album art, 3 Windows accent
+    int cardTitle = 2;         // Card Track Title: 0 off, 1 title only, 2 title and artist
+    int cardTitleScroll = 1;   // long titles: 0 never scroll (fade the end), 1 scroll on hover, 2 always scroll
+    bool cardClickOpens = true; // clicking the title opens the app that is playing
+    int mediaBackdrop = 0;      // Backdrop (card and strip): 0 solid, 1 clear, 2 blur, 3 acrylic
     BYTE cardAccentA = 255, cardAccentR = 255, cardAccentG = 255, cardAccentB = 255;
     float mediaPlateCornerRadius = 8;
     float mediaPlateBorderSize = 0;
@@ -1967,7 +2314,10 @@ struct Settings {
 
     VizRenderDevice renderDevice = VizRenderDevice::Auto;
     std::wstring npuRuntimePath;
-    VizSmoothMode smoothMode = VizSmoothMode::Auto;
+    VizFrameSync frameSync = VizFrameSync::Auto;
+    VizLowLatency lowLatency = VizLowLatency::Off;
+    bool frameGenX2 = false;
+    VizEngineCores engineCores = VizEngineCores::Auto;
     VizWorkload workload = VizWorkload::Hybrid;
     VizRenderer renderer = VizRenderer::D3D11;
     VizOpaquePanel opaquePanel = VizOpaquePanel::Auto;
@@ -1977,7 +2327,7 @@ struct Settings {
     VizEngineKind engine = VizEngineKind::Precision;
     VizBandLayout bandLayout = VizBandLayout::Scale;
     int octaveFraction = 6;
-    int minFreq = 20, maxFreq = 20000;
+    float minFreq = 20, maxFreq = 20000;
     float tuningA4 = 440.f;
     VizWeighting weighting = VizWeighting::Z;
     float tiltDbPerOct = 1.5f;
@@ -1985,11 +2335,45 @@ struct Settings {
     VizLevelRef levelRef = VizLevelRef::ThirdOctave;
     VizWindowKind window = VizWindowKind::Hann;
     int bassDetail = 2;
+    // Bass: what counts as bass, and how the visualizer answers it.
+    float bassLowHz = 20, bassHighHz = 150, bassGainDb = 0;
+    float bassAttackPct = 100, bassReleasePct = 100;
+    float bassHitSens = 50, bassHitWindowMs = 60;
+    float lowZoneHz = 300;
+    float scopeFocusHz = 0;  // Oscilloscope bass focus: low-pass cutoff, 0 = off
+    // Depth: a cut-out of the wallpaper's subject drawn over everything the visualizer draws
+    bool depthEnabled = false;
+    bool depthAuto = false;          // make cut-outs with an outside cutter when none exists
+    std::wstring depthCutter;        // the command; {in} and {out} are replaced
+    std::wstring depthCutterVersion; // Install Background Remover: version to install (empty = latest)
+    std::wstring depthCutterSha;     // Install Background Remover: SHA-256 the download must match (empty = show it only)
+    VizDepthSource depthSource = VizDepthSource::Folder;
+    VizDepthFit depthFit = VizDepthFit::Fill;
+    std::wstring depthFolder, depthFile;
+    float depthScale = 100, depthOffsetX = 0, depthOffsetY = 0;
+    bool depthKeyLight = false;     // Key mode: remove a light background instead of a dark one
+    float depthKeyLow = 6, depthKeySoft = 12;  // Key mode: brightness (percent) kept, and the soft edge
+    // Glass Bars: the bars as glass over the wallpaper (Direct3D 11: bent; Direct2D: plain)
+    bool glassEnabled = false;
+    bool glassBendEdge = false;   // Bend Style: lens (false) or along each bar's edge (true)
+    float glassBendBand = 10;     // Edge style: how wide the bent band is, px
+    float glassBend = 8, glassEdge = 55, glassTint = 30, glassFrost = 0;
+    // Bass Line lane
+    bool laneEnabled = false;
+    VizLanePlacement lanePlacement = VizLanePlacement::Below;
+    VizLaneLayer laneLayer = VizLaneLayer::Front;
+    VizLaneStyle laneStyle = VizLaneStyle::Line;
+    float laneHeight = 28, laneWidth = 0, laneGap = 6, laneOffsetX = 0, laneOffsetY = 0, laneThickness = 1.5f;
+    float laneWindowS = 2, laneLowHz = 30, laneHighHz = 300, laneFloorDb = -85, laneDepthDb = 36, laneBoostDb = 45;
+    float laneSmoothMs = 80, laneKickSens = 60, laneSnareSens = 50, laneCooldownMs = 90;
+    BYTE laneBodyA = 255, laneBodyR = 255, laneBodyG = 255, laneBodyB = 255;
+    BYTE laneKickA = 255, laneKickR = 255, laneKickG = 59, laneKickB = 59;
+    BYTE laneSnareA = 255, laneSnareR = 255, laneSnareG = 210, laneSnareB = 59;
     VizChannel channel = VizChannel::Mix;
-    int dbFloor = -72, dbCeiling = -12;
+    float dbFloor = -72, dbCeiling = -12;
     VizBallisticsPreset ballistics = VizBallisticsPreset::Snappy;
-    int attackMs = 10, releaseDbPerSec = 20;
-    int peakHoldMs = 500;
+    float attackMs = 10, releaseDbPerSec = 20;
+    float peakHoldMs = 500;
     VizPeakFall peakFall = VizPeakFall::Gravity;
     VizReadout readout = VizReadout::Frequency;
     bool loudnessResetOnTrack = true;
@@ -2000,19 +2384,19 @@ struct Settings {
 
     // Styles (2.1): picked from the Shape list on top of an internal shape.
     VizStyle style = VizStyle::None;
-    int reflection = 0;  // %, of Bar Max Size
-    int fxGlow = 0, fxBloom = 0;
+    float reflection = 0;  // %, of Bar Max Size
+    float fxGlow = 0, fxBloom = 0;
     float fxBloomRadius = 16;
     float fxGlowRadius = 6;  // FX (2.1)
     float fxOutlineWidth = 0.f;  // px
     BYTE fxOutlineA = 0xB0, fxOutlineR = 255, fxOutlineG = 255, fxOutlineB = 255;
-    int fxShadow = 0;  // %
+    float fxShadow = 0;  // %
     BYTE fxShadowR = 0, fxShadowG = 0, fxShadowB = 0;
     float fxShadowX = 2.f, fxShadowY = 3.f, fxShadowSoft = 4.f;  // px
     bool barHollow = false;
     float barHollowWidth = 1.5f, barDash = 0.f, barDashGap = 2.f, barTilt = 0.f;  // px, px, px, degrees
     float barMirrorGap = 0.f;  // px
-    int afterimage = 0;  // %
+    float afterimage = 0;  // %
     float afterimageSeconds = 1.2f;
 
     // Media widget (2.0).
@@ -2041,11 +2425,11 @@ struct Settings {
     float termFontSize = 14;
     int termRows = 16;
     int termMeterColumns = 40;
-    int termHotThreshold = 75;
+    float termHotThreshold = 75;
     wchar_t termColumnGlyph = L'#';
     wchar_t termPeakGlyph = L'-';
     std::wstring termRamp = L" .:-=+*#%@";
-    int termScrollRate = 20;
+    float termScrollRate = 20;
     BYTE termDimA = 255, termDimR = 0x1E, termDimG = 0x6B, termDimB = 0x34;
     BYTE termLowA = 255, termLowR = 0x33, termLowG = 0xFF, termLowB = 0x66;
     BYTE termHighA = 255, termHighR = 0xFF, termHighG = 0x3B, termHighB = 0x3B;
@@ -2096,15 +2480,17 @@ std::atomic<float> g_mediaOverrideH{50.0f};
 std::atomic<float> g_mediaOverrideV{95.0f};
 
 std::atomic<HWND> g_overlayWnd{nullptr};
-// Place In = Panel (2.2): whether the current overlay window is the panel,
+// Place In = Panel: whether the current overlay window is the panel,
 // and the panel's own state (kept in the "panel" mod value).
 bool g_overlayInPanel = false;
+// RegisterWindowMessage("TourneTable.Panel"): wParam 0 toggles the panel, 1 shows, 2 hides, 3 toggles
+// Keep on Top. Tourne Desktop sends it from its taskbar; any other launcher or script can too.
+UINT g_panelMsg = 0;
 bool g_panelHidden = false;
 bool g_panelPinned = false;
 float g_panelZoom = 1.0f;
 RECT g_panelRect{0, 0, 0, 0};  // empty until placed once
 int g_panelSizingW = 0, g_panelSizingH = 0;  // non-zero while an edge is being dragged
-UINT g_panelMsg = 0;  // RegisterWindowMessage("TourneTable.Panel")
 ComPtr<IDXGISwapChain1> g_swapChain;
 ComPtr<ID2D1DeviceContext> g_dc;
 ComPtr<IDCompositionDevice> g_compositionDevice;
@@ -2129,9 +2515,29 @@ struct VizSplitState {
 } g_split;
 ComPtr<ID2D1SolidColorBrush> g_barBrush;
 ComPtr<ID2D1SolidColorBrush> g_barBrush2;
+// The Spectrogram style's history bitmap and the device context it was made on.
+ComPtr<ID2D1Bitmap> s_specBmp;
+ID2D1DeviceContext* s_specDc = nullptr;
 ComPtr<ID2D1SolidColorBrush> g_backgroundBrush;
 ComPtr<ID2D1SolidColorBrush> g_borderBrush;
 ComPtr<ID2D1Bitmap> g_wallpaperBitmap;
+// Depth: the cut-out of the wallpaper's subject (premultiplied, its own pixels), what it was loaded
+// from, and a counter that changes whenever what it shows could have.
+ComPtr<ID2D1Bitmap> g_depthBitmap;
+// Glass Bars on the Direct2D renderer: the wallpaper, as the Direct3D 11 one keeps it in a texture.
+ComPtr<ID2D1Bitmap> g_glassBitmap;
+std::wstring g_glassBitmapPath;
+ULONGLONG g_glassBitmapPoll = 0;
+int g_glassBitmapFit = 0;
+std::wstring g_depthWantPath, g_depthLoadedPath;
+uint32_t g_depthLoadedSig = 0, g_depthGen = 0;
+HANDLE g_cutProc = nullptr;                       // the outside cutter, while it runs
+ULONGLONG g_cutStartTick = 0;
+std::wstring g_cutFor, g_cutPart, g_cutFinal;      // wallpaper, temporary output, final output
+std::wstring g_cutFailedFor;                       // a wallpaper the cutter failed on: not retried
+std::atomic<bool> g_depthCutRequest{false};        // the menu's Cut Out This Wallpaper
+UINT g_depthImgW = 0, g_depthImgH = 0;
+ULONGLONG g_depthPollTick = 0;
 ComPtr<ID2D1Effect> g_blurEffect;
 // Pre-rendered result of the Gaussian blur. The blur is a full-image convolution
 // and by far the most expensive Direct2D operation in the scene, but its input
@@ -2293,9 +2699,6 @@ inline float VizPx(float v) {
 FILETIME g_lastWallpaperTime = {};
 std::atomic<HMONITOR> g_cachedMonitor{nullptr};
 
-std::atomic<bool> g_captureRunning{false};
-std::thread* g_captureThread = nullptr;
-HANDLE g_captureEvent = nullptr;
 std::atomic<bool> g_deviceChanged{false};
 
 // Per-band energy and oscilloscope waveform are each produced as a whole array
@@ -2361,6 +2764,33 @@ void ReadWaveform(float (&dst)[VIZ_WAVE_SAMPLES]) {
     }
 }
 
+// Bass Line lane: the newest history (level, kick hit, snare hit per point), published by the
+// engine thread and read by the renderer, the same way the oscilloscope trace is.
+constexpr int VIZ_LANE_PTS = 256;
+std::atomic<uint32_t> g_laneSeq{0};
+float g_laneData[3][VIZ_LANE_PTS] = {};
+
+void PublishLane(const float* lvl, const float* kick, const float* snare) {
+    uint32_t seq = g_laneSeq.load(std::memory_order_relaxed);
+    g_laneSeq.store(seq + 1, std::memory_order_release);
+    memcpy(g_laneData[0], lvl, sizeof(float) * VIZ_LANE_PTS);
+    memcpy(g_laneData[1], kick, sizeof(float) * VIZ_LANE_PTS);
+    memcpy(g_laneData[2], snare, sizeof(float) * VIZ_LANE_PTS);
+    g_laneSeq.store(seq + 2, std::memory_order_release);
+}
+
+void ReadLane(float (&lvl)[VIZ_LANE_PTS], float (&kick)[VIZ_LANE_PTS], float (&snare)[VIZ_LANE_PTS]) {
+    for (;;) {
+        uint32_t seq1 = g_laneSeq.load(std::memory_order_acquire);
+        if (seq1 & 1) continue;
+        memcpy(lvl, g_laneData[0], sizeof(lvl));
+        memcpy(kick, g_laneData[1], sizeof(kick));
+        memcpy(snare, g_laneData[2], sizeof(snare));
+        std::atomic_thread_fence(std::memory_order_acquire);
+        if (seq1 == g_laneSeq.load(std::memory_order_relaxed)) return;
+    }
+}
+
 std::atomic<float> g_beatPulse{0.f};
 std::atomic<float> g_dominantFreqHz{0.f};
 
@@ -2397,8 +2827,10 @@ float g_visualOffsetX = 0.f, g_visualOffsetY = 0.f;
 std::mutex g_nowPlayingMutex;
 std::wstring g_nowPlayingDisplay;
 std::wstring g_nowPlayingTitle, g_nowPlayingArtist;  // the parts, for the two-line layout
+std::wstring g_nowPlayingSourceApp;  // the playing app's AppUserModelID (GSMTC), for Open Player
+std::atomic<ULONGLONG> g_nowPlayingReshowTick{0};  // Show Now Playing: brings the text back without a track change
 
-// ---- track timeline: begin (src/tests_features/test_timeline.cpp compiles this block from v2b.cpp)
+// ---- track timeline: begin
 // Track timeline from the media session, for the progress bar: start, end and
 // position in 100 ns units, and the tick at which the position was current.
 // Between updates the bar extrapolates while playing, since most players only
@@ -2872,31 +3304,26 @@ void ReportSettingWarning(PCWSTR group, PCWSTR name, const std::wstring& detail)
 // back here as empty text: that number is used until the setting is saved
 // again.
 float ReadSizeSetting(PCWSTR key, float lo, float hi, float def) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     float v = def;
-    bool ok = false;
-    if (str && *str) {
+    const bool empty = !(str && *str);
+    if (!empty) {
         WCHAR buf[64];
         wcsncpy_s(buf, str, _TRUNCATE);
         for (WCHAR* c = buf; *c; c++)
             if (*c == L',') *c = L'.';
         WCHAR* end = nullptr;
         double d = wcstod(buf, &end);
-        if (end != buf && std::isfinite(d)) {
-            v = (float)d;
-            ok = true;
-        }
+        if (end != buf && std::isfinite(d)) v = (float)d;
     }
-    Wh_FreeStringSetting(str);
-    if (!ok) {
-        int n = Wh_GetIntSetting(key);
-        if (n != 0) v = (float)n;
-    }
+    VizSettingFree(str);
+    // Empty text is a number saved before 2.1, used as it is (0 included).
+    if (empty) v = (float)VizSettingInt(key);
     return std::clamp(v, lo, hi);
 }
 
 float ReadNumberSetting(PCWSTR key, PCWSTR group, PCWSTR name, float def, float lo, float hi) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     float result = def;
 
     WCHAR* end = nullptr;
@@ -2921,14 +3348,14 @@ float ReadNumberSetting(PCWSTR key, PCWSTR group, PCWSTR name, float def, float 
         result = (float)parsed;
     }
 
-    Wh_FreeStringSetting(str);
+    VizSettingFree(str);
     return result;
 }
 
 // Reads a color setting, reporting the exact accepted formats on failure.
 void ReadColorSetting(PCWSTR key, PCWSTR group, PCWSTR name, BYTE defA, BYTE defR, BYTE defG,
                       BYTE defB, BYTE* a, BYTE* r, BYTE* g, BYTE* b) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     if (!ParseColorHex(str, a, r, g, b)) {
         *a = defA; *r = defR; *g = defG; *b = defB;
         WCHAR using_[64];
@@ -2936,7 +3363,7 @@ void ReadColorSetting(PCWSTR key, PCWSTR group, PCWSTR name, BYTE defA, BYTE def
         ReportSettingIssue(group, name, str,
                            L"#AARRGGBB, #RRGGBB, rgba(r, g, b, a) or rgb(r, g, b)", using_);
     }
-    Wh_FreeStringSetting(str);
+    VizSettingFree(str);
 }
 
 // Reads a "one value, or four space-separated values" box (padding, corner
@@ -2945,7 +3372,7 @@ void ReadColorSetting(PCWSTR key, PCWSTR group, PCWSTR name, BYTE defA, BYTE def
 // horizontal/vertical, and it doesn't.
 void ReadQuadSetting(PCWSTR key, PCWSTR group, PCWSTR name, PCWSTR meaning, float def,
                      bool allowNegative, float out[4]) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     out[0] = out[1] = out[2] = out[3] = def;
 
     float v[4] = {def, def, def, def};
@@ -2962,7 +3389,7 @@ void ReadQuadSetting(PCWSTR key, PCWSTR group, PCWSTR name, PCWSTR meaning, floa
         ReportSettingIssue(group, name, str, expected, using_);
     }
 
-    Wh_FreeStringSetting(str);
+    VizSettingFree(str);
 }
 
 // Reads one of the "how much has to be covered" dropdowns. Stored as a string
@@ -2970,7 +3397,7 @@ void ReadQuadSetting(PCWSTR key, PCWSTR group, PCWSTR name, PCWSTR meaning, floa
 // -- same as the FFT Size dropdown. Picking from a list means it can't normally
 // be wrong, but a hand-edited settings file still can be.
 int ReadThresholdPercentSetting(PCWSTR key, PCWSTR group, PCWSTR name, int def) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     int v = (str && *str) ? _wtoi(str) : 0;
 
     if (v < 5 || v > 100) {
@@ -2981,7 +3408,7 @@ int ReadThresholdPercentSetting(PCWSTR key, PCWSTR group, PCWSTR name, int def) 
         v = def;
     }
 
-    Wh_FreeStringSetting(str);
+    VizSettingFree(str);
     return v;
 }
 
@@ -2989,7 +3416,7 @@ int ReadThresholdPercentSetting(PCWSTR key, PCWSTR group, PCWSTR name, int def) 
 // built-in glyph" -- but a path that's set and wrong is silent breakage, since
 // the fallback looks identical to having left it blank.
 std::wstring ReadIconPathSetting(PCWSTR key, PCWSTR group, PCWSTR name) {
-    PCWSTR str = Wh_GetStringSetting(key);
+    PCWSTR str = VizSettingString(key);
     std::wstring path = str ? str : L"";
 
     // Users paste paths out of Explorer's address bar or "Copy as path", both of
@@ -3012,7 +3439,7 @@ std::wstring ReadIconPathSetting(PCWSTR key, PCWSTR group, PCWSTR name) {
         }
     }
 
-    Wh_FreeStringSetting(str);
+    VizSettingFree(str);
     return path;
 }
 
@@ -3281,6 +3708,7 @@ int ComputeRectCoveragePercent(const RECT& targetIn) {
                 if (_wcsicmp(cls, L"Progman") == 0 || _wcsicmp(cls, L"WorkerW") == 0 ||
                     _wcsicmp(cls, L"Shell_TrayWnd") == 0 ||
                     _wcsicmp(cls, L"Shell_SecondaryTrayWnd") == 0 ||
+                    _wcsnicmp(cls, L"TourneTaskbar", 13) == 0 ||
                     _wcsicmp(cls, L"Windows.UI.Core.CoreWindow") == 0 ||
                     _wcsicmp(cls, L"Windows.UI.Composition.DesktopWindowContentBridge") == 0 ||
                     _wcsicmp(cls, L"XamlExplorerHostIslandWindow") == 0 ||
@@ -3383,6 +3811,48 @@ bool IsMediaStripCovered() {
     return ComputeRectCoveragePercent(strip) >= threshold;
 }
 
+// Windows' taskbar, or Tourne Desktop's (see VizMenuHook).
+bool VizIsTaskbarWindow(HWND w) {
+    WCHAR cls[64] = {};
+    if (!GetClassNameW(w, cls, ARRAYSIZE(cls))) return false;
+    return wcscmp(cls, L"Shell_TrayWnd") == 0 || wcscmp(cls, L"Shell_SecondaryTrayWnd") == 0 ||
+           wcsncmp(cls, L"TourneTaskbar", 13) == 0;
+}
+
+// Whether a visible taskbar overlaps rc. With aboveStrip, only one stacked
+// above the media window counts. A taskbar is topmost, so media controls placed
+// over one have to be topmost too, and come back up when the taskbar is raised
+// (a click on it does that), or clicks meant for them land on the taskbar.
+bool VizTaskbarOverlaps(const RECT& rc, bool aboveStrip) {
+    auto hits = [&](HWND w) {
+        RECT r, x;
+        return IsWindowVisible(w) && VizIsTaskbarWindow(w) && GetWindowRect(w, &r) && IntersectRect(&x, &r, &rc);
+    };
+    if (aboveStrip) {
+        if (!g_mediaWnd) return false;
+        for (HWND w = GetWindow(g_mediaWnd, GW_HWNDPREV); w; w = GetWindow(w, GW_HWNDPREV))
+            if (hits(w)) return true;
+        return false;
+    }
+    // The taskbars are found once a second at most, not on every repaint.
+    static std::vector<HWND> bars;
+    static ULONGLONG barsTick = 0;
+    ULONGLONG now = GetTickCount64();
+    if (!barsTick || now - barsTick >= 1000) {
+        barsTick = now;
+        bars.clear();
+        EnumWindows(
+            [](HWND w, LPARAM lp) __stdcall -> BOOL {
+                if (VizIsTaskbarWindow(w)) ((std::vector<HWND>*)lp)->push_back(w);
+                return TRUE;
+            },
+            (LPARAM)&bars);
+    }
+    for (HWND w : bars)
+        if (IsWindow(w) && hits(w)) return true;
+    return false;
+}
+
 void RefreshAccentColorCache() {
     HKEY hKey = nullptr;
     if (RegOpenKeyExW(HKEY_CURRENT_USER,
@@ -3421,6 +3891,106 @@ DWORD GetWindowsAccentColor() {
     return g_accentColorCache.load(std::memory_order_relaxed);
 }
 
+// ---- Open Player -------------------------------------------------------------------------
+// Brings up the app that is playing, from the card (click the title) or the right-click menu.
+// The media session names its app by AppUserModelID: "Spotify.exe" for desktop Spotify,
+// "SpotifyAB.SpotifyMusic_...!Spotify" for the Store one, "Chrome", "MSEdge" for browsers.
+//   1. A window of that app is found and shown, even a hidden one: Spotify's "close to tray"
+//      hides its window, and its tray icon is often missing, so showing the window is the way back.
+//   2. Otherwise the app is started (or asked to come forward) through shell:AppsFolder\<id>,
+//      which is how the Start menu launches it.
+// Alternative kept as a comment: IApplicationActivationManager::ActivateApplication would also
+// work for Store apps, but not for desktop ones, and shell:AppsFolder covers both.
+
+std::wstring VizNowPlayingSource() {
+    std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+    return g_nowPlayingSourceApp;
+}
+
+namespace {
+struct VizOpenFind {
+    std::wstring exe1, exe2;  // "spotify.exe", or "chrome" -> "chrome.exe"
+    HWND visible = nullptr, hidden = nullptr;
+    DWORD lastPid = 0;
+    bool lastMatch = false;
+};
+
+bool VizPidIsExe(DWORD pid, const VizOpenFind& f) {
+    HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!p) return false;
+    WCHAR path[MAX_PATH];
+    DWORD n = MAX_PATH;
+    bool match = false;
+    if (QueryFullProcessImageNameW(p, 0, path, &n)) {
+        std::wstring name = path;
+        size_t slash = name.find_last_of(L"\\/");
+        if (slash != std::wstring::npos) name = name.substr(slash + 1);
+        for (auto& ch : name) ch = (WCHAR)towlower(ch);
+        match = name == f.exe1 || (!f.exe2.empty() && name == f.exe2);
+    }
+    CloseHandle(p);
+    return match;
+}
+
+BOOL CALLBACK VizOpenEnumProc(HWND w, LPARAM lp) {
+    auto* f = (VizOpenFind*)lp;
+    if (GetWindow(w, GW_OWNER) || (GetWindowLongPtr(w, GWL_EXSTYLE) & WS_EX_TOOLWINDOW)) return TRUE;
+    if (GetWindowTextLengthW(w) == 0) return TRUE;
+    RECT r{};
+    GetWindowRect(w, &r);
+    const bool visible = IsWindowVisible(w) != FALSE;
+    // Hidden helper windows are tiny or untitled; a real main window is big enough to use.
+    if (!visible && (r.right - r.left < 200 || r.bottom - r.top < 150)) return TRUE;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(w, &pid);
+    if (!pid || pid == GetCurrentProcessId()) return TRUE;
+    bool match;
+    if (pid == f->lastPid) match = f->lastMatch;
+    else { match = VizPidIsExe(pid, *f); f->lastPid = pid; f->lastMatch = match; }
+    if (!match) return TRUE;
+    if (visible) { f->visible = w; return FALSE; }  // topmost in Z-order first: the one last used
+    if (!f->hidden) f->hidden = w;
+    return TRUE;
+}
+}  // namespace
+
+// True when something was shown or started.
+bool VizOpenPlayer() {
+    const std::wstring id = VizNowPlayingSource();
+    if (id.empty()) return false;
+    VizOpenFind f;
+    if (id.find(L'!') == std::wstring::npos) {  // a desktop app: the id is (or names) its exe
+        f.exe1 = id;
+        for (auto& ch : f.exe1) ch = (WCHAR)towlower(ch);
+        if (f.exe1.size() < 4 || f.exe1.compare(f.exe1.size() - 4, 4, L".exe") != 0) f.exe2 = f.exe1 + L".exe";
+        EnumWindows(VizOpenEnumProc, (LPARAM)&f);
+    }
+    HWND w = f.visible ? f.visible : f.hidden;
+    if (w) {
+        if (IsIconic(w)) ShowWindow(w, SW_RESTORE);
+        else if (!IsWindowVisible(w)) ShowWindow(w, SW_SHOW);
+        // A click on the card makes this process the one with the last input, which lets it
+        // hand the foreground over.
+        SetForegroundWindow(w);
+        Wh_Log(L"[Media] opened %s (window)", id.c_str());
+        return true;
+    }
+    const std::wstring target = L"shell:AppsFolder\\" + id;
+    HRESULT co = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    HINSTANCE r = ShellExecuteW(nullptr, L"open", target.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    if (SUCCEEDED(co)) CoUninitialize();
+    const bool ok = (INT_PTR)r > 32;
+    Wh_Log(L"[Media] open %s: %s", target.c_str(), ok ? L"started" : L"failed");
+    return ok;
+}
+
+// Show Now Playing: brings the text back for its usual time, without touching the track-change
+// clock (Reset Integrated Loudness On Track Change reads that one).
+void VizShowNowPlayingAgain() {
+    g_nowPlayingReshowTick.store(GetTickCount64(), std::memory_order_relaxed);
+    if (g_overlayWnd) PostMessage(g_overlayWnd, WM_APP_FORCE_REDRAW, 0, 0);
+}
+
 void FetchAlbumArtColorAsync() {
     bool expected = false;
     if (!g_albumArtFetchPending.compare_exchange_strong(expected, true))
@@ -3451,14 +4021,23 @@ void FetchAlbumArtColorAsync() {
                 std::wstring display = artist.empty() ? title
                                       : title.empty()  ? artist
                                                         : (artist + L" - " + title);
+                std::wstring source;
+                try { source = std::wstring(session.SourceAppUserModelId()); } catch (...) {}
                 if (!display.empty()) {
-                    std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
-                    g_nowPlayingTitle = title;
-                    g_nowPlayingArtist = artist;
-                    if (g_nowPlayingDisplay != display) {
-                        g_nowPlayingDisplay = display;
-                        g_nowPlayingChangedTick.store(GetTickCount64(), std::memory_order_relaxed);
+                    bool changed = false;
+                    {
+                        std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+                        changed = g_nowPlayingTitle != title || g_nowPlayingArtist != artist;
+                        g_nowPlayingTitle = title;
+                        g_nowPlayingArtist = artist;
+                        if (!source.empty()) g_nowPlayingSourceApp = source;
+                        if (g_nowPlayingDisplay != display) {
+                            g_nowPlayingDisplay = display;
+                            g_nowPlayingChangedTick.store(GetTickCount64(), std::memory_order_relaxed);
+                        }
                     }
+                    // The card shows the title, so it repaints as soon as the text changes.
+                    if (changed && g_mediaWnd && g_settings.mediaCard) PostMessage(g_mediaWnd, WM_APP_MEDIA_REPAINT, 0, 0);
                 }
             }
 
@@ -3595,7 +4174,11 @@ void RefreshMediaPlaybackStatus(GlobalSystemMediaTransportControlsSession const&
         auto info = session.GetPlaybackInfo();
         bool playing = info && info.PlaybackStatus() ==
             GlobalSystemMediaTransportControlsSessionPlaybackStatus::Playing;
+        bool was = g_mediaIsPlaying.load(std::memory_order_relaxed);
         VizTimelineSetPlaying(gen, playing);  // also sets g_mediaIsPlaying
+        // Some players send PlaybackInfoChanged every second or so with
+        // nothing changed; only a play/pause change needs the controls redrawn.
+        if (playing == was) return;
     } catch (...) {}
     if (g_mediaWnd) PostMessage(g_mediaWnd, WM_APP_MEDIA_REPAINT, 0, 0);
 }
@@ -3720,7 +4303,7 @@ std::atomic<bool> g_mediaCmdPending{false};
 std::atomic<int> g_mediaCmdQueued{-1};
 
 void SendMediaCommand(int cmd) {
-    g_mediaCmdQueued.store(cmd, std::memory_order_relaxed);
+    g_mediaCmdQueued.store(cmd);
 
     bool expected = false;
     if (!g_mediaCmdPending.compare_exchange_strong(expected, true))
@@ -3733,24 +4316,34 @@ void SendMediaCommand(int cmd) {
         g_mediaCmdThread = nullptr;
     }
 
+    // The thread runs every command queued while it works (the latest one, if
+    // several came in), so a seek on release isn't dropped while the seek on
+    // press is still in flight.
     g_mediaCmdThread = new std::thread([]() {
-        int cmd = g_mediaCmdQueued.load(std::memory_order_relaxed);
-        try {
-            winrt::init_apartment(winrt::apartment_type::multi_threaded);
-            auto mgr = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
-            if (mgr) {
-                auto session = mgr.GetCurrentSession();
-                if (session) {
-                    if (cmd == 0)      session.TrySkipPreviousAsync().get();
-                    else if (cmd == 1) session.TryTogglePlayPauseAsync().get();
-                    else if (cmd == 2) session.TrySkipNextAsync().get();
-                    else if (cmd == 3)
-                        session.TryChangePlaybackPositionAsync(g_mediaSeekTicks.load(std::memory_order_relaxed)).get();
-                }
+        try { winrt::init_apartment(winrt::apartment_type::multi_threaded); } catch (...) {}
+        for (;;) {
+            int cmd = g_mediaCmdQueued.exchange(-1);
+            if (cmd < 0) {
+                g_mediaCmdPending.store(false);
+                // A command that arrived just now, after its caller saw us still busy.
+                if (g_mediaCmdQueued.load() >= 0 && !g_mediaCmdPending.exchange(true)) continue;
+                break;
             }
-        } catch (...) {}
+            try {
+                auto mgr = GlobalSystemMediaTransportControlsSessionManager::RequestAsync().get();
+                if (mgr) {
+                    auto session = mgr.GetCurrentSession();
+                    if (session) {
+                        if (cmd == 0)      session.TrySkipPreviousAsync().get();
+                        else if (cmd == 1) session.TryTogglePlayPauseAsync().get();
+                        else if (cmd == 2) session.TrySkipNextAsync().get();
+                        else if (cmd == 3)
+                            session.TryChangePlaybackPositionAsync(g_mediaSeekTicks.load(std::memory_order_relaxed)).get();
+                    }
+                }
+            } catch (...) {}
+        }
         try { winrt::uninit_apartment(); } catch (...) {}
-        g_mediaCmdPending.store(false, std::memory_order_relaxed);
     });
 }
 
@@ -3986,7 +4579,8 @@ constexpr UINT_PTR kCardTimer = 0x7701;
 bool VizCardActive() { return g_settings.mediaCard; }
 
 struct VizCardGeom {
-    int pad, tile, gap, progY, progH, rowY, rowH, w, h;
+    int pad, tile, tileH, gap, progY, progH, rowY, rowH, w, h;  // (tile: the art's width; tileH: its height)
+    int titleY, titlePx, titleH, artistY, artistPx, artistH;  // track title block (0 high when off)
     float dpi;
 };
 
@@ -3999,8 +4593,20 @@ VizCardGeom VizCardLayout() {
     g.tile = g_settings.cardArtSize > 0 ? std::max(24, (int)std::lround(g_settings.cardArtSize * g.dpi)) : s * 3 + sp * 2;
     g.gap = std::max(4, (int)std::lround(7 * g.dpi));
     g.progH = std::max(3, (int)std::lround(3 * g.dpi));
-    g.progY = g.pad + g.tile + g.gap;
     g.rowH = std::max((int)std::lround(18 * g.dpi), (int)std::lround(s * 0.6f));
+    // Its height: Card Art Height, else square; the buttons on their own, a short row unless a height is set.
+    g.tileH = g_settings.cardArtHeight > 0 ? std::max(16, (int)std::lround(g_settings.cardArtHeight * g.dpi))
+              : g_settings.cardArtShows == 1 ? std::max((int)std::lround(26 * g.dpi), g.rowH + (int)std::lround(8 * g.dpi))
+                                             : g.tile;
+    // Track title and artist, under the art. Sized from the row so the card keeps its proportions.
+    g.titleY = g.pad + g.tileH + g.gap;
+    g.titlePx = std::max((int)std::lround(12 * g.dpi), (int)std::lround(g.rowH * 0.72f));
+    g.artistPx = std::max((int)std::lround(10 * g.dpi), (int)std::lround(g.titlePx * 0.84f));
+    g.titleH = g_settings.cardTitle >= 1 ? (int)std::lround(g.titlePx * 1.3f) : 0;
+    g.artistY = g.titleY + g.titleH;
+    g.artistH = g_settings.cardTitle >= 2 ? (int)std::lround(g.artistPx * 1.3f) : 0;
+    const int textH = g.titleH + g.artistH;
+    g.progY = g.pad + g.tileH + g.gap + (textH > 0 ? textH + g.gap / 2 : 0);
     g.rowY = g.progY + g.progH + g.gap;
     g.w = g.tile + g.pad * 2;
     g.h = g.rowY + g.rowH + g.pad;
@@ -4014,7 +4620,7 @@ void VizCardSize(int* w, int* h) {
 }
 
 namespace {
-enum CardPart { kPartNone, kPartArt, kPartSeek, kPartSpeaker, kPartVolume };
+enum CardPart { kPartNone, kPartArt, kPartSeek, kPartSpeaker, kPartVolume, kPartTitle };
 bool s_cardHover = false, s_cardTracking = false;
 int s_cardDrag = kPartNone;
 int s_cardHoverPart = kPartNone;
@@ -4090,6 +4696,24 @@ void CardFillRound(BYTE* buf, int stride, int W, int H, float l, float t, float 
         }
 }
 
+// The same with a radius per corner (top-left, top-right, bottom-right, bottom-left): each quarter
+// of the rect takes its own corner's radius.
+float CardRoundCov4(float px, float py, float l, float t, float r, float b, const float rad[4]) {
+    const bool right = px >= (l + r) * 0.5f, bottom = py >= (t + b) * 0.5f;
+    return CardRoundCov(px, py, l, t, r, b, std::max(0.f, rad[bottom ? (right ? 2 : 3) : (right ? 1 : 0)]));
+}
+
+void CardFillRound4(BYTE* buf, int stride, int W, int H, float l, float t, float r, float b, const float rad[4], float cr,
+                    float cg, float cb, float ca) {
+    int x0 = std::max(0, (int)floorf(l)), x1 = std::min(W, (int)ceilf(r));
+    int y0 = std::max(0, (int)floorf(t)), y1 = std::min(H, (int)ceilf(b));
+    for (int y = y0; y < y1; y++)
+        for (int x = x0; x < x1; x++) {
+            float cov = CardRoundCov4(x + 0.5f, y + 0.5f, l, t, r, b, rad);
+            if (cov > 0.f) CardBlend(buf + (size_t)y * stride + (size_t)x * 4, cr, cg, cb, ca * cov);
+        }
+}
+
 // A small speaker: body, cone, and one or two sound waves by volume.
 void CardSpeaker(BYTE* buf, int stride, int ox, int oy, int sz, float vol, float ir, float ig, float ib, float ia) {
     float s = (float)sz;
@@ -4114,7 +4738,8 @@ void CardSpeaker(BYTE* buf, int stride, int ox, int oy, int sz, float vol, float
 
 int CardHit(const VizCardGeom& g, int x, int y) {
     int slack = (int)std::lround(5 * g.dpi);
-    if (x >= g.pad && x < g.pad + g.tile && y >= g.pad && y < g.pad + g.tile) return kPartArt;
+    if (x >= g.pad && x < g.pad + g.tile && y >= g.pad && y < g.pad + g.tileH) return kPartArt;
+    if (g.titleH > 0 && x >= g.pad && x < g.pad + g.tile && y >= g.titleY && y < g.artistY + g.artistH) return kPartTitle;
     if (x >= g.pad && x < g.pad + g.tile && y >= g.progY - slack && y < g.progY + g.progH + slack) return kPartSeek;
     if (y >= g.rowY && y < g.rowY + g.rowH) {
         if (x >= g.pad && x < g.pad + g.rowH) return kPartSpeaker;
@@ -4142,6 +4767,206 @@ void CardSeek(float frac) {
 }
 }  // namespace
 
+// ---- Card text ---------------------------------------------------------------------------
+// The title and artist are rasterised once per change with GDI (greyscale antialiasing, in the
+// Now Playing font) into a coverage strip, then laid onto the card in the icon colour. A title
+// wider than the card fades out at its end, or scrolls (on hover, or always). Scrolling repaints
+// the card about 30 times a second, only while it scrolls.
+constexpr UINT_PTR kCardMarqueeTimer = 0x7702;
+struct CardTextStrip {
+    std::wstring text, font;
+    int px = 0;
+    bool bold = false;
+    int w = 0, h = 0;
+    std::vector<BYTE> cov;
+};
+CardTextStrip s_cardTitleStrip, s_cardArtistStrip;
+ULONGLONG s_cardMarqueeStart = 0;
+bool s_cardMarqueeOn = false;
+
+void CardBuildStrip(CardTextStrip& st, const std::wstring& text, int px, bool bold) {
+    const std::wstring& font = g_settings.nowPlayingFont;
+    if (st.text == text && st.font == font && st.px == px && st.bold == bold && (text.empty() || !st.cov.empty())) return;
+    st.text = text; st.font = font; st.px = px; st.bold = bold;
+    st.cov.clear(); st.w = st.h = 0;
+    if (text.empty() || px <= 0) return;
+    HDC dc = CreateCompatibleDC(nullptr);
+    if (!dc) return;
+    HFONT f = CreateFontW(-px, 0, 0, 0, bold ? FW_SEMIBOLD : FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+                          OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, font.c_str());
+    HGDIOBJ oldF = SelectObject(dc, f);
+    RECT m = {0, 0, 0, 0};
+    DrawTextW(dc, text.c_str(), (int)text.size(), &m, DT_SINGLELINE | DT_NOPREFIX | DT_CALCRECT);
+    const int w = std::clamp((int)(m.right - m.left) + 2, 1, 6000), h = std::max(1, (int)(m.bottom - m.top));
+    BITMAPINFO bmi = {};
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = w;
+    bmi.bmiHeader.biHeight = -h;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;
+    bmi.bmiHeader.biCompression = BI_RGB;
+    void* bits = nullptr;
+    HBITMAP dib = CreateDIBSection(dc, &bmi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (dib && bits) {
+        HGDIOBJ oldB = SelectObject(dc, dib);
+        memset(bits, 0, (size_t)w * h * 4);
+        SetBkMode(dc, TRANSPARENT);
+        SetTextColor(dc, RGB(255, 255, 255));
+        RECT r = {1, 0, w, h};
+        DrawTextW(dc, text.c_str(), (int)text.size(), &r, DT_SINGLELINE | DT_NOPREFIX | DT_NOCLIP);
+        GdiFlush();
+        st.cov.resize((size_t)w * h);
+        const BYTE* p = (const BYTE*)bits;
+        for (size_t i = 0; i < st.cov.size(); i++) st.cov[i] = std::max({p[i * 4], p[i * 4 + 1], p[i * 4 + 2]});
+        st.w = w; st.h = h;
+        SelectObject(dc, oldB);
+    }
+    if (dib) DeleteObject(dib);
+    SelectObject(dc, oldF);
+    DeleteObject(f);
+    DeleteDC(dc);
+}
+
+// Lays a strip into the box [x0, x0+boxW) at y0 (vertically centred in boxH). scroll < 0: no
+// scrolling, the end fades out if it doesn't fit. scroll >= 0: the strip moves left by that many
+// pixels and repeats after a gap, with both edges faded.
+void CardDrawStrip(BYTE* buf, int stride, int W, int H, const CardTextStrip& st, int x0, int y0, int boxW, int boxH,
+                   float scroll, float gapPx, float r, float g, float b, float a) {
+    if (st.cov.empty() || boxW <= 0) return;
+    const int ty = y0 + (boxH - st.h) / 2;
+    const bool fits = st.w <= boxW;
+    const float fade = std::min(18.f, boxW * 0.2f);
+    const float period = (float)st.w + gapPx;
+    for (int y = 0; y < st.h; y++) {
+        const int py = ty + y;
+        if (py < 0 || py >= H) continue;
+        for (int x = 0; x < boxW; x++) {
+            const int px = x0 + x;
+            if (px < 0 || px >= W) continue;
+            int sx;
+            if (fits || scroll < 0.f) {
+                sx = x;
+            } else {
+                float u = fmodf((float)x + scroll, period);
+                if (u < 0) u += period;
+                sx = (int)u;
+            }
+            if (sx < 0 || sx >= st.w) continue;
+            float c = st.cov[(size_t)y * st.w + sx] / 255.f;
+            if (c <= 0.f) continue;
+            if (!fits) {
+                if (x > boxW - fade) c *= std::max(0.f, (boxW - x) / fade);           // right edge
+                if (scroll > 0.f && x < fade) c *= std::max(0.f, (float)x / fade);    // left edge, while moving
+            }
+            CardBlend(buf + (size_t)py * stride + (size_t)px * 4, r, g, b, a * c);
+        }
+    }
+}
+
+int VizEffectiveBarCount();
+constexpr UINT_PTR kCardVizTimer = 0x7703;  // the mini visualizer's frames (only while it shows and plays)
+
+// Colour block: the art's main colours, five at most, most covered first. Worked out again when the art changes.
+std::vector<COLORREF> CardArtColours() {
+    static std::vector<COLORREF> s_colours;
+    static uint64_t s_key = 0;
+    std::lock_guard<std::mutex> lock(g_artTileMutex);
+    if (g_artTile.empty() || g_artTileW <= 0 || g_artTileH <= 0) return {};
+    uint64_t key = (uint64_t)g_artTileW * 1315423911u + g_artTileH;
+    for (size_t i = 0; i < g_artTile.size(); i += std::max<size_t>(4, g_artTile.size() / 64 / 4 * 4)) key = key * 131 + g_artTile[i];
+    if (key == s_key && !s_colours.empty()) return s_colours;
+    s_key = key;
+    // Pixels in buckets of 16 levels a channel; the fullest buckets, skipping any too close to one already taken.
+    std::vector<uint32_t> count(4096);
+    std::vector<uint64_t> sum(4096 * 3);
+    const size_t n = (size_t)g_artTileW * g_artTileH;
+    for (size_t i = 0; i < n; i++) {
+        const BYTE* px = &g_artTile[i * 4];  // (B, G, R, A)
+        if (px[3] < 128) continue;
+        int b = (px[2] >> 4) << 8 | (px[1] >> 4) << 4 | (px[0] >> 4);
+        count[b]++;
+        sum[b * 3] += px[2], sum[b * 3 + 1] += px[1], sum[b * 3 + 2] += px[0];
+    }
+    std::vector<int> order(4096);
+    for (int i = 0; i < 4096; i++) order[i] = i;
+    std::sort(order.begin(), order.end(), [&](int a, int b) { return count[a] > count[b]; });
+    s_colours.clear();
+    for (int b : order) {
+        if (!count[b] || s_colours.size() >= 5) break;
+        int r = (int)(sum[b * 3] / count[b]), g = (int)(sum[b * 3 + 1] / count[b]), bl = (int)(sum[b * 3 + 2] / count[b]);
+        bool similar = false;
+        for (COLORREF c : s_colours)
+            similar = similar || abs(GetRValue(c) - r) + abs(GetGValue(c) - g) + abs(GetBValue(c) - bl) < 60;
+        if (!similar) s_colours.push_back(RGB(r, g, bl));
+    }
+    return s_colours;
+}
+
+// Player badge: the playing app's icon (as the Start menu shows it), fetched off this thread when the app
+// changes, kept as straight-alpha BGRA.
+std::mutex s_badgeMutex;
+std::wstring s_badgeFor;
+std::vector<BYTE> s_badgeIcon;
+int s_badgeSize = 0;
+
+std::wstring CardAppName(std::wstring app) {
+    // "SpotifyAB.SpotifyMusic_zpdnekdrzrea0!Spotify" -> "Spotify", "chrome.exe" -> "Chrome"
+    if (size_t bang = app.rfind(L'!'); bang != std::wstring::npos) app = app.substr(bang + 1);
+    if (size_t slash = app.find_last_of(L"\\/"); slash != std::wstring::npos) app = app.substr(slash + 1);
+    if (app.size() > 4 && !_wcsicmp(app.c_str() + app.size() - 4, L".exe")) app.resize(app.size() - 4);
+    if (!app.empty()) app[0] = towupper(app[0]);
+    return app;
+}
+
+void CardFetchBadge(std::wstring aumid, int size) {
+    std::thread([aumid, size] {
+        HRESULT co = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        IShellItem* item = nullptr;
+        // A Start menu app by its AppUserModelID, else the running program of that name.
+        if (FAILED(SHCreateItemInKnownFolder(FOLDERID_AppsFolder, 0, aumid.c_str(), IID_PPV_ARGS(&item)))) {
+            std::wstring exe = aumid.substr(aumid.find_last_of(L"\\/!") == std::wstring::npos ? 0 : aumid.find_last_of(L"\\/!") + 1);
+            if (exe.size() < 4 || _wcsicmp(exe.c_str() + exe.size() - 4, L".exe")) exe += L".exe";
+            HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+            PROCESSENTRY32W pe{sizeof(pe)};
+            for (BOOL ok = snap != INVALID_HANDLE_VALUE && Process32FirstW(snap, &pe); ok && !item; ok = Process32NextW(snap, &pe)) {
+                if (_wcsicmp(pe.szExeFile, exe.c_str())) continue;
+                HANDLE h = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe.th32ProcessID);
+                WCHAR path[MAX_PATH];
+                DWORD len = MAX_PATH;
+                if (h && QueryFullProcessImageNameW(h, 0, path, &len)) SHCreateItemFromParsingName(path, nullptr, IID_PPV_ARGS(&item));
+                if (h) CloseHandle(h);
+            }
+            if (snap != INVALID_HANDLE_VALUE) CloseHandle(snap);
+        }
+        std::vector<BYTE> px;
+        IShellItemImageFactory* f = nullptr;
+        HBITMAP bmp = nullptr;
+        if (item && SUCCEEDED(item->QueryInterface(IID_PPV_ARGS(&f))) &&
+            SUCCEEDED(f->GetImage({size, size}, SIIGBF_ICONONLY | SIIGBF_BIGGERSIZEOK, &bmp)) && bmp) {
+            BITMAPINFO bi{};
+            bi.bmiHeader = {sizeof(BITMAPINFOHEADER), size, -size, 1, 32, BI_RGB};
+            px.resize((size_t)size * size * 4);
+            HDC dc = GetDC(nullptr);
+            if (!GetDIBits(dc, bmp, 0, size, px.data(), &bi, DIB_RGB_COLORS)) px.clear();
+            ReleaseDC(nullptr, dc);
+            for (size_t i = 0; i + 3 < px.size(); i += 4)  // (premultiplied to straight)
+                if (px[i + 3] && px[i + 3] < 255)
+                    for (int k = 0; k < 3; k++) px[i + k] = (BYTE)std::min(255, px[i + k] * 255 / px[i + 3]);
+            DeleteObject(bmp);
+        }
+        if (f) f->Release();
+        if (item) item->Release();
+        if (SUCCEEDED(co)) CoUninitialize();
+        {
+            std::lock_guard<std::mutex> lock(s_badgeMutex);
+            if (s_badgeFor != aumid) return;
+            s_badgeIcon = std::move(px);
+            s_badgeSize = s_badgeIcon.empty() ? 0 : size;
+        }
+        if (g_mediaWnd) PostMessage(g_mediaWnd, WM_APP_MEDIA_REPAINT, 0, 0);
+    }).detach();
+}
+
 void VizPaintCard(BYTE* buf, int stride, int W, int H) {
     VizCardGeom g = VizCardLayout();
     const float ir = g_settings.mediaIconColorR / 255.f, ig = g_settings.mediaIconColorG / 255.f,
@@ -4165,16 +4990,21 @@ void VizPaintCard(BYTE* buf, int stride, int W, int H) {
     // background is never fully transparent: a layered window lets clicks
     // through pixels with zero alpha, and the card should take every click
     // inside it.
-    const float cardR = g_settings.cardRadius * g.dpi;
-    CardFillRound(buf, stride, W, H, 0.f, 0.f, (float)W, (float)H, cardR, g_settings.cardBgR / 255.f,
-                  g_settings.cardBgG / 255.f, g_settings.cardBgB / 255.f, std::max(1, (int)g_settings.cardBgA) / 255.f);
+    // Backdrop Clear keeps only that lowest alpha.
+    float cardR4[4];
+    for (int k = 0; k < 4; k++) cardR4[k] = g_settings.cardRadii[k] * g.dpi;
+    const int bgA = g_settings.mediaBackdrop == 1 ? 1 : std::max(1, (int)g_settings.cardBgA);
+    CardFillRound4(buf, stride, W, H, 0.f, 0.f, (float)W, (float)H, cardR4, g_settings.cardBgR / 255.f,
+                   g_settings.cardBgG / 255.f, g_settings.cardBgB / 255.f, bgA / 255.f);
     if (g_settings.cardBorderSize > 0 && g_settings.cardBorderA > 0) {
         float bw = std::min(g_settings.cardBorderSize * g.dpi, std::min(W, H) * 0.5f);
+        float innerR4[4];
+        for (int k = 0; k < 4; k++) innerR4[k] = std::max(0.f, cardR4[k] - bw);
         for (int y = 0; y < H; y++)
             for (int x = 0; x < W; x++) {
                 float px = x + 0.5f, py = y + 0.5f;
-                float ring = CardRoundCov(px, py, 0.f, 0.f, (float)W, (float)H, cardR) -
-                             CardRoundCov(px, py, bw, bw, W - bw, H - bw, std::max(0.f, cardR - bw));
+                float ring = CardRoundCov4(px, py, 0.f, 0.f, (float)W, (float)H, cardR4) -
+                             CardRoundCov4(px, py, bw, bw, W - bw, H - bw, innerR4);
                 if (ring > 0.f)
                     CardBlend(buf + (size_t)y * stride + (size_t)x * 4, g_settings.cardBorderR / 255.f,
                               g_settings.cardBorderG / 255.f, g_settings.cardBorderB / 255.f,
@@ -4182,20 +5012,25 @@ void VizPaintCard(BYTE* buf, int stride, int W, int H) {
             }
     }
 
-    // Album art, scaled bilinearly into the tile with rounded corners.
-    const float tl = (float)g.pad, tt = (float)g.pad, ts = (float)g.tile;
-    const float rad = std::max(0.f, cardR - g.pad * 0.5f);  // follows the card's corners
+    // Album art, scaled bilinearly to cover the tile (cut to it when it isn't square) with rounded corners; or
+    // what's chosen in its place.
+    const float tl = (float)g.pad, tt = (float)g.pad, ts = (float)g.tile, tsH = (float)g.tileH;
+    float rad[4];  // its own (Card Art Corner Radius), or following the card's corners
+    for (int k = 0; k < 4; k++)
+        rad[k] = g_settings.cardArtRadii[k] >= 0.f ? g_settings.cardArtRadii[k] * g.dpi : std::max(0.f, cardR4[k] - g.pad * 0.5f);
     bool art = false;
-    {
+    const int shows = g_settings.cardArtShows;
+    if (shows == 0) {
         std::lock_guard<std::mutex> lock(g_artTileMutex);
         if (!g_artTile.empty() && g_artTileW > 0 && g_artTileH > 0) {
             art = true;
             const int aw = g_artTileW, ah = g_artTileH;
-            for (int y = 0; y < g.tile; y++)
+            const float scale = std::max(ts / aw, tsH / ah);  // (covers the tile; the rest is cut)
+            for (int y = 0; y < g.tileH; y++)
                 for (int x = 0; x < g.tile; x++) {
-                    float cov = CardRoundCov(tl + x + 0.5f, tt + y + 0.5f, tl, tt, tl + ts, tt + ts, rad);
+                    float cov = CardRoundCov4(tl + x + 0.5f, tt + y + 0.5f, tl, tt, tl + ts, tt + tsH, rad);
                     if (cov <= 0.f) continue;
-                    float u = (x + 0.5f) / ts * aw - 0.5f, v = (y + 0.5f) / ts * ah - 0.5f;
+                    float u = (x + 0.5f - ts * 0.5f) / scale + aw * 0.5f - 0.5f, v = (y + 0.5f - tsH * 0.5f) / scale + ah * 0.5f - 0.5f;
                     int x0 = std::clamp((int)floorf(u), 0, aw - 1), y0 = std::clamp((int)floorf(v), 0, ah - 1);
                     int x1 = std::min(x0 + 1, aw - 1), y1 = std::min(y0 + 1, ah - 1);
                     float fx = std::clamp(u - x0, 0.f, 1.f), fy = std::clamp(v - y0, 0.f, 1.f);
@@ -4209,18 +5044,198 @@ void VizPaintCard(BYTE* buf, int stride, int W, int H) {
                 }
         }
     }
-    if (!art) CardFillRound(buf, stride, W, H, tl, tt, tl + ts, tt + ts, rad, 1.f, 1.f, 1.f, 0.06f);
+    if (!art && shows != 1) CardFillRound4(buf, stride, W, H, tl, tt, tl + ts, tt + tsH, rad, 1.f, 1.f, 1.f, 0.06f);
 
-    // Controls over the art: on hover, or always when there is no cover.
-    if (!art || s_cardHoverPart == kPartArt) {
-        if (art) CardFillRound(buf, stride, W, H, tl, tt, tl + ts, tt + ts, rad, 0.f, 0.f, 0.f, 0.45f);
-        int gs = std::max(8, g.tile / 4);
-        int gy = g.pad + (g.tile - gs) / 2;
+    bool texted = false;
+    if (shows == 4) {
+        // Mini visualizer: the Table's bars as they are now, in its colours (one colour, or across its gradient).
+        int n = std::clamp(VizEffectiveBarCount(), 1, VIZ_BARS_MAX);
+        int bars = std::clamp(g.tile / std::max(3, (int)std::lround(4 * g.dpi)), 4, std::min(n, 48));
+        float slot = ts / bars, gap = std::max(1.f, slot * 0.25f);
+        bool across = g_settings.colorMode == VizColorMode::Gradient || g_settings.colorMode == VizColorMode::Tourne ||
+                      g_settings.colorMode == VizColorMode::ReactiveGradient;
+        for (int b = 0; b < bars; b++) {
+            // (each drawn bar takes the highest of the Table's bars it stands for)
+            float lv = 0.f;
+            for (int i = b * n / bars; i < std::max(b * n / bars + 1, (b + 1) * n / bars); i++) lv = std::max(lv, g_vizPeak[i]);
+            lv = std::clamp(lv, 0.02f, 1.f);
+            float t = bars > 1 ? (float)b / (bars - 1) : 0.f;
+            float cr = g_settings.colorR / 255.f, cg = g_settings.colorG / 255.f, cb = g_settings.colorB / 255.f;
+            if (across) {
+                cr = (g_settings.grad1R + (g_settings.grad2R - g_settings.grad1R) * t) / 255.f;
+                cg = (g_settings.grad1G + (g_settings.grad2G - g_settings.grad1G) * t) / 255.f;
+                cb = (g_settings.grad1B + (g_settings.grad2B - g_settings.grad1B) * t) / 255.f;
+            }
+            float x0 = tl + b * slot + gap * 0.5f, x1 = x0 + slot - gap, h = (tsH - 4 * g.dpi) * lv;
+            CardFillRound(buf, stride, W, H, x0, tt + tsH - 2 * g.dpi - h, x1, tt + tsH - 2 * g.dpi, 0.f, cr, cg, cb, 0.95f);
+        }
+        texted = true;
+    } else if (shows == 5) {
+        // Big type: the title as large as the space takes, the artist under it.
+        std::wstring title, artist;
+        {
+            std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+            title = g_nowPlayingTitle;
+            artist = g_nowPlayingArtist;
+        }
+        if (title.empty()) title = artist, artist.clear();
+        if (title.empty()) title = L"Nothing playing";
+        static CardTextStrip s_typeTitle, s_typeArtist;
+        int px = std::max((int)std::lround(12 * g.dpi), (int)(tsH * 0.34f));
+        for (; px > (int)std::lround(12 * g.dpi); px = px * 9 / 10) {  // (smaller until it fits, or as small as it goes)
+            CardBuildStrip(s_typeTitle, title, px, true);
+            if (s_typeTitle.w <= g.tile) break;
+        }
+        CardBuildStrip(s_typeTitle, title, px, true);
+        CardBuildStrip(s_typeArtist, artist, std::max((int)std::lround(10 * g.dpi), px * 5 / 9), false);
+        const int artistPx = px * 5 / 9;
+        int th = (int)(px * 1.25f), ah = artist.empty() ? 0 : (int)((float)artistPx * 1.35f);
+        int top = g.pad + (g.tileH - th - ah) / 2;
+        CardDrawStrip(buf, stride, W, H, s_typeTitle, g.pad, top, g.tile, th, -1.f, 0.f, ir, ig, ib, ia);
+        if (ah) CardDrawStrip(buf, stride, W, H, s_typeArtist, g.pad, top + th, g.tile, ah, -1.f, 0.f, ir, ig, ib, ia * 0.62f);
+        texted = true;
+    } else if (shows == 6) {
+        // Colour block: the art's main colours side by side, the fullest first, in the art's rounded tile.
+        std::vector<COLORREF> cols = CardArtColours();
+        if (!cols.empty()) {
+            for (int y = 0; y < g.tileH; y++)
+                for (int x = 0; x < g.tile; x++) {
+                    float cov = CardRoundCov4(tl + x + 0.5f, tt + y + 0.5f, tl, tt, tl + ts, tt + tsH, rad);
+                    if (cov <= 0.f) continue;
+                    COLORREF c = cols[std::min(cols.size() - 1, (size_t)(x * cols.size() / std::max(1, g.tile)))];
+                    CardBlend(buf + (size_t)(g.pad + y) * stride + (size_t)(g.pad + x) * 4, GetRValue(c) / 255.f, GetGValue(c) / 255.f,
+                              GetBValue(c) / 255.f, cov);
+                }
+        }
+        texted = true;
+    }
+    // A clock with the time left in the track, or the playing app's badge (its icon and name), in the art's place.
+    if (shows == 2 || shows == 3) {
+        std::wstring big, small;
+        if (shows == 2) {
+            SYSTEMTIME now;
+            GetLocalTime(&now);
+            WCHAR b[16];
+            swprintf_s(b, L"%02u:%02u", now.wHour, now.wMinute);
+            big = b;
+            if (g_tlValid.load(std::memory_order_relaxed)) {
+                double dur = (g_tlEnd.load(std::memory_order_relaxed) - g_tlStart.load(std::memory_order_relaxed)) / 1e7;
+                float p = VizTrackProgress();
+                if (dur > 0 && p >= 0.f) {
+                    int left = (int)std::lround(dur * (1.0 - p));
+                    swprintf_s(b, L"-%d:%02d", left / 60, left % 60);
+                    small = b;
+                }
+            }
+        } else {
+            std::wstring aumid;
+            {
+                std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+                aumid = g_nowPlayingSourceApp;
+            }
+            std::wstring app = CardAppName(aumid);
+            big = app.empty() ? L"Nothing playing" : app;
+            small = g_mediaIsPlaying.load(std::memory_order_relaxed) ? L"playing" : L"paused";
+            // Its icon, above the name, once it's been fetched for this app.
+            int icon = std::max(16, std::min(g.tile / 2, g.tileH / 2));
+            bool fetch = false;
+            {
+                std::lock_guard<std::mutex> lock(s_badgeMutex);
+                if (s_badgeFor != aumid || (s_badgeSize && s_badgeSize != icon)) {
+                    s_badgeFor = aumid, s_badgeIcon.clear(), s_badgeSize = 0;
+                    fetch = !aumid.empty();
+                }
+                if (s_badgeSize == icon && !s_badgeIcon.empty()) {
+                    int ix = g.pad + (g.tile - icon) / 2, iy = g.pad + (int)(g.tileH * 0.12f);
+                    for (int y = 0; y < icon; y++)
+                        for (int x = 0; x < icon; x++) {
+                            const BYTE* c = &s_badgeIcon[((size_t)y * icon + x) * 4];
+                            if (c[3] && iy + y < H && ix + x < W)
+                                CardBlend(buf + (size_t)(iy + y) * stride + (size_t)(ix + x) * 4, c[2] / 255.f, c[1] / 255.f, c[0] / 255.f,
+                                          c[3] / 255.f);
+                        }
+                }
+            }
+            if (fetch) CardFetchBadge(aumid, icon);
+        }
+        static CardTextStrip s_bigStrip, s_smallStrip;
+        int bigPx = std::max((int)std::lround(12 * g.dpi), std::min((int)(g.tileH * 0.38f), (int)(g.tile * 0.3f)));
+        int smallPx = std::max((int)std::lround(10 * g.dpi), bigPx / 3);
+        CardBuildStrip(s_bigStrip, big, bigPx, true);
+        CardBuildStrip(s_smallStrip, small, smallPx, false);
+        int bigH = (int)(bigPx * 1.25f), smallH = small.empty() ? 0 : (int)(smallPx * 1.3f);
+        int top = g.pad + (g.tileH - bigH - smallH) / 2;
+        if (shows == 3) {  // (under the icon)
+            bigPx = std::max((int)std::lround(11 * g.dpi), std::min(bigPx, g.tileH / 6));
+            CardBuildStrip(s_bigStrip, big, bigPx, true);
+            bigH = (int)(bigPx * 1.25f);
+            top = g.pad + (int)(g.tileH * 0.12f) + std::max(16, std::min(g.tile / 2, g.tileH / 2)) + (int)(4 * g.dpi);
+        }
+        auto centred = [&](const CardTextStrip& st, int y, int h, float alpha) {
+            int w = std::min(st.w, g.tile);
+            CardDrawStrip(buf, stride, W, H, st, g.pad + (g.tile - w) / 2, y, w, h, -1.f, 0.f, ir, ig, ib, alpha);
+        };
+        centred(s_bigStrip, top, bigH, ia);
+        if (smallH) centred(s_smallStrip, top + bigH, smallH, ia * 0.62f);
+        texted = true;
+    }
+
+    // Controls over the art: on hover, or always when there is no cover (and always for Buttons only).
+    if (shows == 1 || (!art && !texted) || s_cardHoverPart == kPartArt) {
+        if (art || texted) CardFillRound4(buf, stride, W, H, tl, tt, tl + ts, tt + tsH, rad, 0.f, 0.f, 0.f, texted ? 0.7f : 0.45f);
+        int gs = std::max(8, std::min(g.tile / 4, (int)(g.tileH * 0.7f)));
+        int gy = g.pad + (g.tileH - gs) / 2;
         bool playing = g_mediaIsPlaying.load(std::memory_order_relaxed);
         int slot = g.tile / 3;
         CardGlyph(buf, stride, g.pad + (slot - gs) / 2, gy, gs, 0);
         CardGlyph(buf, stride, g.pad + slot + (slot - gs) / 2, gy, gs, playing ? 2 : 1);
         CardGlyph(buf, stride, g.pad + 2 * slot + (slot - gs) / 2, gy, gs, 3);
+    }
+
+    // Track title and artist.
+    bool wantMarquee = false;
+    if (g.titleH > 0) {
+        std::wstring title, artist;
+        {
+            std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+            title = g_nowPlayingTitle;
+            artist = g_nowPlayingArtist;
+        }
+        if (title.empty()) { title = artist; artist.clear(); }  // some apps send only one of them
+        CardBuildStrip(s_cardTitleStrip, title, g.titlePx, true);
+        CardBuildStrip(s_cardArtistStrip, g.artistH > 0 ? artist : std::wstring(), g.artistPx, false);
+        const bool hot = s_cardHoverPart == kPartTitle;
+        const bool scrollOk = g_settings.cardTitleScroll == 2 || (g_settings.cardTitleScroll == 1 && s_cardHover);
+        const float speed = 32.f * g.dpi, gapPx = 36.f * g.dpi, pauseS = 1.2f;
+        auto scrollFor = [&](const CardTextStrip& st) -> float {
+            if (!scrollOk || st.w <= g.tile || !g_mediaWnd || !IsWindowVisible(g_mediaWnd)) return -1.f;
+            wantMarquee = true;
+            float period = (float)st.w + gapPx;
+            float t = (GetTickCount64() - s_cardMarqueeStart) / 1000.f;
+            float cycle = pauseS + period / speed;  // rest at the start, then one full pass
+            float k = fmodf(t, cycle);
+            return k < pauseS ? 0.f : (k - pauseS) * speed;
+        };
+        const float ta = hot && g_settings.cardClickOpens ? ia : ia * 0.92f;
+        CardDrawStrip(buf, stride, W, H, s_cardTitleStrip, g.pad, g.titleY, g.tile, g.titleH, scrollFor(s_cardTitleStrip),
+                      gapPx, ir, ig, ib, ta);
+        if (g.artistH > 0)
+            CardDrawStrip(buf, stride, W, H, s_cardArtistStrip, g.pad, g.artistY, g.tile, g.artistH,
+                          scrollFor(s_cardArtistStrip), gapPx, ir, ig, ib, ia * 0.62f);
+    }
+    {
+        static bool s_vizOn = false;
+        bool want = shows == 4 && g_mediaIsPlaying.load(std::memory_order_relaxed) && g_mediaWnd && IsWindowVisible(g_mediaWnd);
+        if (want != s_vizOn && g_mediaWnd) {
+            s_vizOn = want;
+            if (want) SetTimer(g_mediaWnd, kCardVizTimer, 33, nullptr);
+            else KillTimer(g_mediaWnd, kCardVizTimer);
+        }
+    }
+    if (wantMarquee != s_cardMarqueeOn && g_mediaWnd) {
+        s_cardMarqueeOn = wantMarquee;
+        if (wantMarquee) SetTimer(g_mediaWnd, kCardMarqueeTimer, 33, nullptr);
+        else KillTimer(g_mediaWnd, kCardMarqueeTimer);
     }
 
     // Seek bar.
@@ -4265,6 +5280,7 @@ bool VizCardMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 TRACKMOUSEEVENT tme = {sizeof(tme), TME_LEAVE, hWnd, 0};
                 s_cardTracking = TrackMouseEvent(&tme) != FALSE;
             }
+            if (!s_cardHover) { s_cardMarqueeStart = GetTickCount64(); CardRepaint(); }
             s_cardHover = true;
             int part = s_cardDrag != kPartNone ? s_cardDrag : CardHit(g, x, y);
             bool repaint = part != s_cardHoverPart;
@@ -4282,11 +5298,17 @@ bool VizCardMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_MOUSELEAVE:
             s_cardTracking = false;
             s_cardHover = false;
-            if (s_cardDrag == kPartNone && s_cardHoverPart != kPartNone) {
-                s_cardHoverPart = kPartNone;
-                CardRepaint();
-            }
+            s_cardMarqueeStart = GetTickCount64();
+            if (s_cardDrag == kPartNone) s_cardHoverPart = kPartNone;
+            CardRepaint();  // also settles a title that was scrolling back to its start
             return true;
+        case WM_SETCURSOR:
+            if (LOWORD(lParam) == HTCLIENT && s_cardHoverPart == kPartTitle && g_settings.cardClickOpens &&
+                !VizNowPlayingSource().empty()) {
+                SetCursor(LoadCursor(nullptr, IDC_HAND));
+                return true;
+            }
+            return false;
         case WM_LBUTTONDOWN: {
             int part = CardHit(g, x, y);
             if (part == kPartSeek || part == kPartVolume) {
@@ -4321,6 +5343,8 @@ bool VizCardMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 GetCursorPos(&pt);
                 VizCardOutputMenu(hWnd, pt);
                 CardRepaint();
+            } else if (part == kPartTitle && g_settings.cardClickOpens) {
+                VizOpenPlayer();
             }
             return true;
         }
@@ -4333,7 +5357,12 @@ bool VizCardMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return true;
         }
         case WM_TIMER:
+            if (wParam == kCardMarqueeTimer || wParam == kCardVizTimer) {
+                CardRepaint();
+                return true;
+            }
             if (wParam != kCardTimer) return false;
+            if (g_settings.cardArtShows == 2 || g_settings.cardArtShows == 3) CardRepaint();  // (the clock, paused or playing)
             // Repaint only when the seek bar moved by a pixel, or the volume
             // changed from elsewhere (the volume flyout, a keyboard key).
             if (g_mediaIsPlaying.load(std::memory_order_relaxed) && s_cardDrag == kPartNone) {
@@ -4389,7 +5418,8 @@ void PaintMediaControls(int x, int y, int width, int height) {
     // against a pale wallpaper, which meant icons that were meant to sit
     // transparently on the desktop always had a dark box behind them. Both
     // pieces are settings now and both default to nothing.
-    if (g_settings.mediaPlateA > 0 ||
+    const BYTE plateA = g_settings.mediaBackdrop == 1 ? 0 : g_settings.mediaPlateA;  // (Backdrop Clear: no fill)
+    if (plateA > 0 ||
         (g_settings.mediaPlateBorderSize > 0 && g_settings.mediaPlateBorderA > 0)) {
         float dpiScale = GetMediaControlsDpiScale();
         float radius = std::min({(float)std::max(0.f, g_settings.mediaPlateCornerRadius) * dpiScale,
@@ -4401,7 +5431,7 @@ void PaintMediaControls(int x, int y, int width, int height) {
         bool wantBorder = bw > 0.f && g_settings.mediaPlateBorderA > 0;
 
         float innerRadius = std::max(0.0f, radius - bw);
-        float fillAlpha = g_settings.mediaPlateA / 255.0f;
+        float fillAlpha = plateA / 255.0f;
         float borderAlpha = g_settings.mediaPlateBorderA / 255.0f;
 
         // Coverage of a rounded rect inset by `inset` on every side: clamp the
@@ -4440,7 +5470,7 @@ void PaintMediaControls(int x, int y, int width, int height) {
                 // Fill covers the whole plate including under the border, so a
                 // translucent border blends over the fill rather than cutting a
                 // hole in it.
-                if (g_settings.mediaPlateA > 0) {
+                if (plateA > 0) {
                     float a = fillAlpha * outerCov;
                     p[0] = (BYTE)std::lround(g_settings.mediaPlateB * a);
                     p[1] = (BYTE)std::lround(g_settings.mediaPlateG * a);
@@ -4524,6 +5554,43 @@ void PaintMediaControls(int x, int y, int width, int height) {
 // doesn't pop it back on screen over the window it just got out from under.
 bool g_mediaHiddenByCover = false;
 
+// Backdrop Blur or Acrylic behind the card or the strip: the same accent policy Tourne's bar uses
+// (blur-behind, or acrylic), whose own colour is near-clear so the drawn fill is the tint. Set
+// only when it changes. Rounded on Windows 11 when the card or plate has a corner radius.
+void VizMediaBackdrop() {
+    static HWND s_wnd = nullptr;
+    static int s_state = -1, s_round = -1;
+    if (!g_mediaWnd) return;
+    const int state = g_settings.mediaBackdrop == 3 ? 4 : g_settings.mediaBackdrop == 2 ? 3 : 0;
+    const float radius = VizCardActive() ? g_settings.cardRadius : g_settings.mediaPlateCornerRadius;
+    const int round = state && radius > 0.f ? (radius >= 6.f ? 2 : 3) : 1;  // DWMWCP_ROUND, ROUNDSMALL, DONOTROUND
+    if (g_mediaWnd == s_wnd && state == s_state && round == s_round) return;
+    s_wnd = g_mediaWnd;
+    s_state = state;
+    s_round = round;
+    struct AccentPolicy {
+        int state, flags;
+        DWORD color;
+        int animation;
+    };
+    struct CompositionData {
+        int attribute;
+        void* data;
+        SIZE_T size;
+    };
+    using SetWindowCompositionAttribute_t = BOOL(WINAPI*)(HWND, CompositionData*);
+    static auto set =
+        (SetWindowCompositionAttribute_t)GetProcAddress(GetModuleHandleW(L"user32.dll"), "SetWindowCompositionAttribute");
+    if (set) {
+        AccentPolicy policy{state, 0, 0x01000000, 0};
+        CompositionData data{19 /* WCA_ACCENT_POLICY */, &policy, sizeof(policy)};
+        set(g_mediaWnd, &data);
+    }
+    DWORD corners = (DWORD)round;
+    DwmSetWindowAttribute(g_mediaWnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &corners, sizeof(corners));
+    Wh_Log(L"[Media] backdrop %s", state == 4 ? L"acrylic" : state == 3 ? L"blur" : L"none");
+}
+
 void RepositionAndRepaintMediaControls() {
     if (!g_mediaWnd) return;
     if (g_overlayInPanel && g_panelHidden) {
@@ -4567,7 +5634,8 @@ void RepositionAndRepaintMediaControls() {
     // Anchored to the visualizer's panel (2.0): a corner of the panel as last
     // drawn, inset by the anchor offsets, replacing the position above. The
     // panel publishes its rect every frame and re-posts this when it moves.
-    if (g_settings.mediaAnchor != VizMediaAnchor::Screen && g_drawRectValid.load(std::memory_order_relaxed)) {
+    // A place it was dragged or nudged to wins until that is cleared.
+    if (!override_ && g_settings.mediaAnchor != VizMediaAnchor::Screen && g_drawRectValid.load(std::memory_order_relaxed)) {
         LONG pl = g_drawRectL.load(std::memory_order_relaxed), pt = g_drawRectT.load(std::memory_order_relaxed);
         LONG pr = g_drawRectR.load(std::memory_order_relaxed), pb = g_drawRectB.load(std::memory_order_relaxed);
         int ox = (int)std::lround(g_settings.mediaAnchorOffsetX * dpiScale);
@@ -4589,12 +5657,16 @@ void RepositionAndRepaintMediaControls() {
     // something in it. A layered window that has never been given content is
     // invisible, which is indistinguishable from "the mod isn't working."
     PaintMediaControls(x, y, width, height);
+    VizMediaBackdrop();
 
     // Stacking: only touch the z-order when it is wrong. Raising it on every
     // repaint put the card back over its own open menus.
     const bool isTop = (GetWindowLongPtr(g_mediaWnd, GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
-    const bool wantTop = g_settings.mediaOnTop && !g_menuOpen.load(std::memory_order_acquire);
-    UINT zFlags = (isTop == wantTop) ? SWP_NOZORDER : 0;
+    const RECT want{x, y, x + width, y + height};
+    const bool overTaskbar = VizTaskbarOverlaps(want, false);
+    const bool wantTop = (g_settings.mediaOnTop || overTaskbar) && !g_menuOpen.load(std::memory_order_acquire);
+    const bool buried = wantTop && overTaskbar && VizTaskbarOverlaps(want, true);
+    UINT zFlags = (isTop == wantTop && !buried) ? SWP_NOZORDER : 0;
     BOOL posOk = SetWindowPos(g_mediaWnd, wantTop ? HWND_TOPMOST : HWND_NOTOPMOST, x, y, width, height,
                               SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER | zFlags);
 
@@ -4619,7 +5691,226 @@ void VizMediaMenuEnd() {
         SetWindowPos(g_mediaWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 }
 
+// ---- Dragging the strip or the card ------------------------------------------------------
+// With Enable Drag-to-Move on, the media strip and the card move with the same button and key as
+// the visualizer. Holding a drag key, a press anywhere on them starts it; with Drag Modifier Key =
+// None only their plain parts do (the padding and the gaps), so their buttons, seek bar, slider
+// and title stay clicks. A press that doesn't move is handed on as a click. Where it's let go is
+// kept like a keyboard move (and cleared the same way, with the move combo + Home), and it wins
+// over Anchor To Panel until then.
+bool GetMediaTravelRange(float* travelX, float* travelY);
+void RequestPositionOverrideSave();
+UINT DragButtonDownMsg();
+UINT DragButtonUpMsg();
+bool DragModifierHeld();
+
+struct VizMediaDrag {
+    bool pending = false, moving = false;
+    POINT start{};
+    float h0 = 0.f, v0 = 0.f;
+};
+VizMediaDrag s_mediaDrag;
+
+// Where the strip or card sits now, as the percentages its position is kept in.
+void MediaPercentNow(float* h, float* v) {
+    *h = g_mediaOverrideActive.load(std::memory_order_relaxed) ? g_mediaOverrideH.load(std::memory_order_relaxed)
+                                                               : g_settings.mediaHorizontalPosition;
+    *v = g_mediaOverrideActive.load(std::memory_order_relaxed) ? g_mediaOverrideV.load(std::memory_order_relaxed)
+                                                               : g_settings.mediaVerticalPosition;
+    RECT r;
+    float tx = 0.f, ty = 0.f;
+    HMONITOR monitor = GetMonitorById(g_settings.monitor - 1);
+    if (!monitor) monitor = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi = {sizeof(mi)};
+    if (!g_mediaWnd || !GetWindowRect(g_mediaWnd, &r) || !GetMediaTravelRange(&tx, &ty) || !GetMonitorInfo(monitor, &mi)) return;
+    if (tx > 1.f) *h = std::clamp((r.left - mi.rcWork.left) / tx * 100.f, 0.f, 100.f);
+    if (ty > 1.f) *v = std::clamp((r.top - mi.rcWork.top) / ty * 100.f, 0.f, 100.f);
+}
+
+bool MediaPlainAt(int x, int y) {
+    if (VizCardActive()) return CardHit(VizCardLayout(), x, y) == kPartNone;
+    float dpiScale = GetMediaControlsDpiScale();
+    int size = std::max(1, (int)std::lround(g_settings.mediaIconSize * dpiScale));
+    int spacing = std::max(0, (int)std::lround(g_settings.mediaIconSpacing * dpiScale));
+    int pad = GetMediaPlatePaddingPx();
+    for (int i = 0; i < 3; i++)
+        if (x >= pad + i * (size + spacing) && x < pad + i * (size + spacing) + size) return false;
+    return true;
+}
+
+bool MediaDragMessage(HWND hWnd, UINT msg, WPARAM, LPARAM lParam) {
+    VizMediaDrag& d = s_mediaDrag;
+    if (msg == WM_CAPTURECHANGED && d.pending && (HWND)lParam != hWnd) {
+        if (d.moving) RequestPositionOverrideSave();
+        d.pending = d.moving = false;
+        return false;
+    }
+    if (!g_settings.dragEnabled && !d.pending) return false;
+    if (!d.pending) {
+        if (msg != DragButtonDownMsg() || !DragModifierHeld()) return false;
+        if (g_settings.dragModifier == VizDragModifier::None && !MediaPlainAt(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)))
+            return false;
+        d.pending = true;
+        d.moving = false;
+        GetCursorPos(&d.start);
+        MediaPercentNow(&d.h0, &d.v0);
+        SetCapture(hWnd);
+        return true;
+    }
+    if (msg == WM_MOUSEMOVE) {
+        POINT p;
+        GetCursorPos(&p);
+        const int dx = p.x - d.start.x, dy = p.y - d.start.y;
+        if (!d.moving && std::abs(dx) < 4 && std::abs(dy) < 4) return true;
+        d.moving = true;
+        float tx = 0.f, ty = 0.f;
+        if (!GetMediaTravelRange(&tx, &ty)) return true;
+        g_mediaOverrideH.store(tx > 1.f ? std::clamp(d.h0 + dx / tx * 100.f, 0.f, 100.f) : d.h0, std::memory_order_relaxed);
+        g_mediaOverrideV.store(ty > 1.f ? std::clamp(d.v0 + dy / ty * 100.f, 0.f, 100.f) : d.v0, std::memory_order_relaxed);
+        g_mediaOverrideActive.store(true, std::memory_order_relaxed);
+        RepositionAndRepaintMediaControls();
+        return true;
+    }
+    if (msg == DragButtonUpMsg()) {
+        const bool moved = d.moving;
+        d.pending = d.moving = false;
+        if (GetCapture() == hWnd) ReleaseCapture();
+        if (moved) RequestPositionOverrideSave();
+        return moved;  // not moved: the release goes on as a click
+    }
+    return false;
+}
+
+// ---- Resizing the card ----------------------------------------------------------------------
+// Its edges and corners take the pointer (the resize arrows show there). The sides drag its width (Card Art
+// Size), the top and bottom its height (Card Art Height), each on its own; a corner drags both together,
+// keeping its proportions. The edge or corner across from the one dragged stays put.
+void VizWriteSetting(const wchar_t* key, const std::wstring& value);
+
+struct VizCardResize {
+    bool on = false, moved = false;
+    int corner = 0;  // 0 top left, 1 top right, 2 bottom right, 3 bottom left; 4 left, 5 right, 6 top, 7 bottom
+    POINT start{};
+    RECT rect{};     // the card when it started, on the screen
+    float art = 0.f, artH = 0.f;  // its art's width and height then, in the settings' pixels
+    bool hadHeight = false;       // Card Art Height was set (else the art was square, or the buttons' row)
+};
+VizCardResize s_cardResize;
+
+// Which corner or edge of the card a point (in the card) is on, or -1. Corners take a little more room; the
+// edges only the padding, so the title, seek bar and slider keep their clicks.
+int CardCornerAt(HWND hWnd, int x, int y) {
+    if (!VizCardActive()) return -1;
+    RECT rc;
+    GetClientRect(hWnd, &rc);
+    VizCardGeom g = VizCardLayout();
+    int k = std::max((int)std::lround(10 * g.dpi), g.pad), e = std::max((int)std::lround(4 * g.dpi), std::min(g.pad, (int)std::lround(8 * g.dpi)));
+    bool left = x < k, right = x >= rc.right - k, top = y < k, bottom = y >= rc.bottom - k;
+    if (top && left) return 0;
+    if (top && right) return 1;
+    if (bottom && right) return 2;
+    if (bottom && left) return 3;
+    if (x < e) return 4;
+    if (x >= rc.right - e) return 5;
+    if (y < e) return 6;
+    if (y >= rc.bottom - e) return 7;
+    return -1;
+}
+
+bool CardResizeMessage(HWND hWnd, UINT msg, WPARAM, LPARAM lParam) {
+    VizCardResize& r = s_cardResize;
+    if (msg == WM_SETCURSOR) {
+        if (LOWORD(lParam) != HTCLIENT) return false;
+        POINT p;
+        GetCursorPos(&p);
+        ScreenToClient(hWnd, &p);
+        int c = r.on ? r.corner : CardCornerAt(hWnd, p.x, p.y);
+        if (c < 0) return false;
+        SetCursor(LoadCursor(nullptr, c == 0 || c == 2 ? IDC_SIZENWSE : c <= 3 ? IDC_SIZENESW : c <= 5 ? IDC_SIZEWE : IDC_SIZENS));
+        return true;
+    }
+    if (msg == WM_LBUTTONDOWN && !r.on) {
+        int c = CardCornerAt(hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        if (c < 0) return false;
+        VizCardGeom g = VizCardLayout();
+        r.on = true;
+        r.moved = false;
+        r.corner = c;
+        GetCursorPos(&r.start);
+        GetWindowRect(hWnd, &r.rect);
+        r.art = g.tile / std::max(0.01f, g.dpi);
+        r.artH = g.tileH / std::max(0.01f, g.dpi);
+        r.hadHeight = g_settings.cardArtHeight > 0;
+        SetCapture(hWnd);
+        return true;
+    }
+    if (!r.on) return false;
+    if (msg == WM_MOUSEMOVE) {
+        POINT p;
+        GetCursorPos(&p);
+        VizCardGeom g = VizCardLayout();
+        // Which way each edge goes (-1: the left or top one moves), and which of width and height change.
+        int sx = r.corner == 1 || r.corner == 2 || r.corner == 5 ? 1 : -1, sy = r.corner == 2 || r.corner == 3 || r.corner == 7 ? 1 : -1;
+        bool widthToo = r.corner <= 5, heightToo = r.corner <= 3 || r.corner >= 6;
+        if (r.corner >= 6) sx = 1;  // (top and bottom: the left edge stays)
+        if (r.corner == 4 || r.corner == 5) sy = 1;  // (the sides: the top stays)
+        const float dpi = std::max(0.01f, g.dpi);
+        r.moved = true;
+        if (r.corner <= 3) {
+            // A corner: both, keeping the proportions.
+            float w0 = (float)(r.rect.right - r.rect.left), h0 = (float)std::max(1L, r.rect.bottom - r.rect.top);
+            float byX = (p.x - r.start.x) * sx, byY = (p.y - r.start.y) * sy * (w0 / h0);
+            float grow = std::fabs(byX) >= std::fabs(byY) ? byX : byY;
+            float k = std::max(0.1f, (r.art + grow / dpi) / std::max(1.f, r.art));
+            g_settings.cardArtSize = std::clamp(std::round(r.art * k), 40.f, 600.f);
+            if (r.hadHeight) g_settings.cardArtHeight = std::clamp(std::round(r.artH * k), 16.f, 600.f);
+        } else {
+            if (widthToo) {
+                g_settings.cardArtSize = std::clamp(std::round(r.art + (p.x - r.start.x) * sx / dpi), 40.f, 600.f);
+                // (the height holds where it was: square or not, it no longer follows the width)
+                g_settings.cardArtHeight = std::round(r.artH);
+            }
+            if (heightToo) g_settings.cardArtHeight = std::clamp(std::round(r.artH + (p.y - r.start.y) * sy / dpi), 16.f, 600.f);
+        }
+        // The opposite corner stays where it was: the card's place follows from its new size.
+        int w, h;
+        VizCardSize(&w, &h);
+        int left = sx > 0 ? r.rect.left : r.rect.right - w, top = sy > 0 ? r.rect.top : r.rect.bottom - h;
+        float tx = 0.f, ty = 0.f;
+        HMONITOR monitor = GetMonitorById(g_settings.monitor - 1);
+        if (!monitor) monitor = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+        MONITORINFO mi = {sizeof(mi)};
+        if (GetMediaTravelRange(&tx, &ty) && GetMonitorInfo(monitor, &mi)) {
+            if (tx > 1.f) g_mediaOverrideH.store(std::clamp((left - mi.rcWork.left) / tx * 100.f, 0.f, 100.f), std::memory_order_relaxed);
+            if (ty > 1.f) g_mediaOverrideV.store(std::clamp((top - mi.rcWork.top) / ty * 100.f, 0.f, 100.f), std::memory_order_relaxed);
+            g_mediaOverrideActive.store(true, std::memory_order_relaxed);
+        }
+        RepositionAndRepaintMediaControls();
+        return true;
+    }
+    if (msg == WM_LBUTTONUP || msg == WM_CAPTURECHANGED) {
+        r.on = false;
+        if (msg == WM_LBUTTONUP && GetCapture() == hWnd) ReleaseCapture();
+        if (!r.moved) return true;
+        // (written on the message window's thread, where the settings are read and written)
+        auto keep = [](const wchar_t* key, float value) {
+            WCHAR v[16];
+            swprintf_s(v, L"%d", (int)value);
+            if (!g_messageWnd ||
+                !PostMessage(g_messageWnd, WM_APP_WRITE_SETTING, 0, (LPARAM) new std::pair<std::wstring, std::wstring>(key, v)))
+                Wh_Log(L"[Card] couldn't keep its size");
+        };
+        keep(L"media_controls.cardArtSize", g_settings.cardArtSize);
+        if (g_settings.cardArtHeight > 0) keep(L"media_controls.cardArtHeight", g_settings.cardArtHeight);
+        RequestPositionOverrideSave();
+        return true;
+    }
+    return false;
+}
+
 LRESULT CALLBACK MediaWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (CardResizeMessage(hWnd, uMsg, wParam, lParam)) return uMsg == WM_SETCURSOR ? TRUE : 0;
+    if (MediaDragMessage(hWnd, uMsg, wParam, lParam)) return 0;
     if (VizCardActive() && VizCardMessage(hWnd, uMsg, wParam, lParam)) return 0;
     switch (uMsg) {
         case WM_LBUTTONUP: {
@@ -4656,7 +5947,7 @@ LRESULT CALLBACK MediaWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
             if (g_messageWnd && g_settings.contextMenu != VizContextMenu::Off) {
                 POINT pt;
                 GetCursorPos(&pt);
-                PostMessage(g_messageWnd, WM_APP_CONTEXT_MENU, (WPARAM)pt.x, (LPARAM)pt.y);
+                PostMessage(g_messageWnd, WM_APP_MEDIA_MENU, (WPARAM)pt.x, (LPARAM)pt.y);
             }
             return 0;
 
@@ -4707,9 +5998,9 @@ void CreateMediaControlWindow() {
         Wh_Log(L"[Media] CreateWindowEx failed, error %u", GetLastError());
         return;
     }
-    Wh_Log(L"[Media] Window created hwnd=%p enabled=%d iconSize=%d spacing=%d pos=(%.2f,%.2f) monitor=%d",
-           (void*)g_mediaWnd, (int)g_settings.mediaControlsEnabled, g_settings.mediaIconSize,
-           g_settings.mediaIconSpacing, g_settings.mediaHorizontalPosition,
+    Wh_Log(L"[Media] Window created hwnd=%p enabled=%d iconSize=%.2f spacing=%.2f pos=(%.2f,%.2f) monitor=%d",
+           (void*)g_mediaWnd, (int)g_settings.mediaControlsEnabled, (double)g_settings.mediaIconSize,
+           (double)g_settings.mediaIconSpacing, g_settings.mediaHorizontalPosition,
            g_settings.mediaVerticalPosition, g_settings.monitor);
 
     RecreateMediaControlResources();
@@ -5225,6 +6516,18 @@ enum class Weighting { Z, A, C };
 enum class Detector { Rms, Peak };
 enum class LevelRef { ThirdOctave, Band };
 
+// ---- Bass shaping ---------------------------------------------------------------
+// Weight of the Bass Gain at a band centre: 1 inside [lo, hi], easing to 0
+// over half an octave outside (smoothstep), so a boost never has a hard edge.
+inline double BassShape(double fc, double lo, double hi) {
+    if (fc <= 0.0 || hi <= lo) return 0.0;
+    double t = 1.0;
+    if (fc < lo) t = 1.0 + log2(fc / lo) / 0.5;
+    else if (fc > hi) t = 1.0 - log2(fc / hi) / 0.5;
+    t = std::clamp(t, 0.0, 1.0);
+    return t * t * (3.0 - 2.0 * t);
+}
+
 // ---- Spectrum engine ----------------------------------------------------------------
 //
 // Owns the three tiers (rings, decimators, FFTs), the per-band bin maps and
@@ -5261,6 +6564,8 @@ public:
         Detector detector = Detector::Rms;
         LevelRef levelRef = LevelRef::ThirdOctave;
         double zoneDb[3] = {0, 0, 0};  // EQ preset, low (<300 Hz) / mid / high (>2.5 kHz)
+        double bassLoHz = 20.0, bassHiHz = 150.0, bassDb = 0.0;  // Bass range and gain
+        double zoneLowHz = 300.0;                                // where the low zone ends
     };
 
     struct BandMap {
@@ -5368,8 +6673,9 @@ public:
             if (cfg_.weighting == Weighting::A) off += AWeightDb(b.fc);
             else if (cfg_.weighting == Weighting::C) off += CWeightDb(b.fc);
             off += cfg_.tiltDbPerOct * log2(b.fc / 1000.0);
-            int zone = (b.fc < 300.0) ? 0 : (b.fc < 2500.0) ? 1 : 2;
+            int zone = (b.fc < cfg_.zoneLowHz) ? 0 : (b.fc < 2500.0) ? 1 : 2;
             off += cfg_.zoneDb[zone];
+            if (cfg_.bassDb != 0.0) off += cfg_.bassDb * BassShape(b.fc, cfg_.bassLoHz, cfg_.bassHiHz);
             double refTerm = 0.0;
             if (cfg_.levelRef == LevelRef::ThirdOctave) {
                 double bw13 = b.fc * (pow(2.0, 1.0 / 6.0) - pow(2.0, -1.0 / 6.0));
@@ -5692,6 +6998,247 @@ inline void KWeightingFilters(double fs, Biquad& shelf, Biquad& hp) {
         hp.a2 = (1.0 - K / Q + K * K) / a0;
     }
 }
+
+// ---- Bass Line ------------------------------------------------------------------------------
+//
+// A small time-domain analyzer for the Bass Line lane. It is deliberately not built on the
+// spectrum engine: it runs on every sample, so it works the same with the Classic engine, the GPU
+// workload and the Precision engine, and it costs nothing when the lane is off.
+//
+// What it follows:
+//   Body   a band-pass (Low..High Edge) followed by an envelope, then its own auto range. The
+//          range tracks the loudest recent bass (fast up, 4 s down) and may reach down by Max
+//          Boost dB, so a quiet voice fills the lane the way a loud 808 does.
+//   Kick   35..120 Hz, a 10 ms envelope against a 150 ms envelope. A hit is the fast one
+//          standing a set number of dB above the slow one.
+//   Snare  the 140..260 Hz body AND the 2..6.5 kHz snap must both jump, which keeps hats
+//          (no body) and sibilants (no body) out while catching snares and claps.
+// Every hit is armed again only after the jump has fallen back and the cooldown has passed, so one
+// 808 is one hit. All time constants are in seconds against the real sample rate.
+struct BassLineParams {
+    bool on = false;
+    double lowHz = 30.0, highHz = 300.0;  // body band
+    double floorDb = -85.0;               // below this the lane reads empty
+    double depthDb = 36.0;                // dB from the lane's floor to its top
+    double boostDb = 45.0;                // how far below 0 dBFS the top may sink for quiet bass
+    double smoothMs = 80.0;               // how slowly the body falls
+    double windowS = 2.0;                 // history the lane shows
+    float kickSens = 60.f, snareSens = 50.f;  // 0 = off .. 100
+    double cooldownMs = 90.0;
+};
+
+struct BassLine {
+    static constexpr int N = 256;  // points in the lane
+
+    void Configure(double fs, const BassLineParams& p) {
+        p_ = p;
+        fs_ = std::max(8000.0, fs);
+        const double hi = std::min(p_.highHz, fs_ * 0.45);
+        const double lo = std::min(p_.lowHz, hi * 0.5);
+        Hp(body_[0], lo);
+        Lp(body_[1], hi);
+        Hp(kick_[0], 30.0);
+        Lp(kick_[1], 120.0);
+        Hp(snB_[0], 140.0);
+        Lp(snB_[1], 260.0);
+        Hp(snS_[0], 2000.0);
+        Lp(snS_[1], std::min(6500.0, fs_ * 0.45));
+        auto coef = [&](double s) { return 1.0 - exp(-1.0 / (fs_ * s)); };
+        aBodyUp_ = coef(0.004);
+        aBodyDown_ = coef(std::max(0.005, p_.smoothMs / 1000.0));
+        aKickFast_ = coef(0.010);
+        aKickSlow_ = coef(0.150);
+        aBodyFast_ = coef(0.010);
+        aBodySlow_ = coef(0.150);
+        aSnapFast_ = coef(0.002);
+        aSnapSlow_ = coef(0.100);
+        impDecay_ = exp(-1.0 / (fs_ * 0.045));
+        tickSamples_ = std::max(8.0, fs_ * std::clamp(p_.windowS, 0.5, 12.0) / (double)N);
+        cooldownSamples_ = (long long)(std::max(10.0, p_.cooldownMs) * 0.001 * fs_);
+        const double kThr = p_.kickSens > 0.f ? 14.0 - 0.12 * p_.kickSens : 0.0;
+        const double sThr = p_.snareSens > 0.f ? 12.0 - 0.10 * p_.snareSens : 0.0;
+        kickOn_ = p_.kickSens > 0.f;
+        snareOn_ = p_.snareSens > 0.f;
+        kickThrDb_ = kThr;
+        snareThrDb_ = sThr;
+        kickRatio_ = pow(10.0, kThr / 20.0);
+        snareRatio_ = pow(10.0, sThr / 20.0);
+        snareBodyRatio_ = pow(10.0, 0.5 * sThr / 20.0);
+        gateLin_ = pow(10.0, p_.floorDb / 20.0);
+        hitGateLin_ = pow(10.0, (p_.floorDb + 20.0) / 20.0);
+        Reset();
+    }
+
+    void Reset() {
+        for (auto* b : {&body_[0], &body_[1], &kick_[0], &kick_[1], &snB_[0], &snB_[1], &snS_[0], &snS_[1]}) b->Reset();
+        bodyEnv_ = tickMaxEnv_ = 0.0;
+        kickF_ = kickS_ = bodyF_ = bodyS_ = snapF_ = snapS_ = fullF_ = 0.0;
+        kickImp_ = snareImp_ = 0.0;
+        tickKick_ = tickSnare_ = 0.f;
+        kickArmed_ = snareArmed_ = true;
+        lastSnareJump_ = 0.0;
+        sinceKick_ = sinceSnare_ = 1LL << 40;
+        refDb_ = -120.0;
+        tickPos_ = 0.0;
+        detCount_ = 0;
+        std::fill(std::begin(level_), std::end(level_), 0.f);
+        std::fill(std::begin(kickHit_), std::end(kickHit_), 0.f);
+        std::fill(std::begin(snareHit_), std::end(snareHit_), 0.f);
+        dirty_ = true;
+    }
+
+    // One mono sample, gain already applied.
+    inline void Process(float xin) {
+        const double x = xin;
+        // Body.
+        const double yb = fabs(body_[1].Run(body_[0].Run(x)));
+        bodyEnv_ += (yb - bodyEnv_) * (yb > bodyEnv_ ? aBodyUp_ : aBodyDown_);
+        if (bodyEnv_ > tickMaxEnv_) tickMaxEnv_ = bodyEnv_;
+        // Hit paths.
+        const double yk = fabs(kick_[1].Run(kick_[0].Run(x)));
+        const double ys = fabs(snB_[1].Run(snB_[0].Run(x)));
+        const double yp = fabs(snS_[1].Run(snS_[0].Run(x)));
+        kickF_ += (yk - kickF_) * aKickFast_;
+        kickS_ += (yk - kickS_) * aKickSlow_;
+        bodyF_ += (ys - bodyF_) * aBodyFast_;
+        bodyS_ += (ys - bodyS_) * aBodySlow_;
+        snapF_ += (yp - snapF_) * aSnapFast_;
+        snapS_ += (yp - snapS_) * aSnapSlow_;
+        fullF_ += (fabs(x) - fullF_) * aKickFast_;
+        sinceKick_++;
+        sinceSnare_++;
+        kickImp_ *= impDecay_;
+        snareImp_ *= impDecay_;
+        // Detection every 24 samples (0.5 ms at 48 kHz): plenty for a 10 ms envelope.
+        if (++detCount_ >= 24) {
+            detCount_ = 0;
+            Detect();
+        }
+        if (kickImp_ > tickKick_) tickKick_ = (float)kickImp_;
+        if (snareImp_ > tickSnare_) tickSnare_ = (float)snareImp_;
+        tickPos_ += 1.0;
+        if (tickPos_ >= tickSamples_) {
+            tickPos_ -= tickSamples_;
+            Tick();
+        }
+    }
+
+    void ProcessZeros(int n) {
+        for (int i = 0; i < n; i++) Process(0.f);
+    }
+
+    bool TakeDirty() {
+        bool d = dirty_;
+        dirty_ = false;
+        return d;
+    }
+    // True when the whole history is empty (the lane has nothing to draw).
+    bool Flat() const {
+        for (int i = 0; i < N; i++)
+            if (level_[i] > 0.003f || kickHit_[i] > 0.01f || snareHit_[i] > 0.01f) return false;
+        return true;
+    }
+    const float* Level() const { return level_; }
+    const float* Kick() const { return kickHit_; }
+    const float* Snare() const { return snareHit_; }
+    double RefDb() const { return refDb_; }
+
+private:
+    void Lp(Biquad& b, double f) const { Design(b, f, false); }
+    void Hp(Biquad& b, double f) const { Design(b, f, true); }
+    void Design(Biquad& b, double f, bool hp) const {
+        const double q = 0.70710678118654752;
+        double K = tan(kPi * std::clamp(f, 1.0, fs_ * 0.49) / fs_);
+        double norm = 1.0 / (1.0 + K / q + K * K);
+        if (hp) {
+            b.b0 = norm;
+            b.b1 = -2.0 * norm;
+            b.b2 = norm;
+        } else {
+            b.b0 = K * K * norm;
+            b.b1 = 2.0 * b.b0;
+            b.b2 = b.b0;
+        }
+        b.a1 = 2.0 * (K * K - 1.0) * norm;
+        b.a2 = (1.0 - K / q + K * K) * norm;
+    }
+    static double Db(double lin) { return 20.0 * log10(std::max(lin, 1e-9)); }
+
+    void Detect() {
+        const double gate = hitGateLin_;
+        double snareJump = -1.0;  // dB of the snare's snap jump on this check, when it fires
+        if (snareOn_) {
+            const double rs = snapF_ / (snapS_ + 1e-9);
+            const double rb = bodyF_ / (bodyS_ + 1e-9);
+            if (!snareArmed_) {
+                if (rs < 1.0 + (snareRatio_ - 1.0) * 0.5) snareArmed_ = true;
+            } else if (rs >= snareRatio_ && rb >= snareBodyRatio_ && snapF_ > gate && bodyF_ > gate &&
+                       bodyF_ >= 0.04 * fullF_ && snapF_ >= 0.08 * fullF_ && sinceSnare_ >= cooldownSamples_) {
+                snareJump = Db(rs);
+                snareImp_ = std::max(snareImp_, std::clamp(0.35 + 0.65 * (snareJump - snareThrDb_) / 12.0, 0.35, 1.0));
+                snareArmed_ = false;
+                sinceSnare_ = 0;
+            }
+        }
+        if (kickOn_) {
+            const double ratio = kickF_ / (kickS_ + 1e-9);
+            if (!kickArmed_) {
+                if (ratio < 1.0 + (kickRatio_ - 1.0) * 0.5) kickArmed_ = true;
+            } else if (ratio >= kickRatio_ && kickF_ > gate && kickF_ >= 0.12 * fullF_ &&
+                       sinceKick_ >= cooldownSamples_) {
+                const double jump = Db(ratio);
+                // A snare's body leaks into the kick band. When the snare just fired, the kick only
+                // counts if its own jump is clearly bigger (a kick and snare landing together).
+                const bool snareNear = sinceSnare_ < (long long)(0.04 * fs_);
+                const double snareRef = snareJump >= 0.0 ? snareJump : lastSnareJump_;
+                if (!snareNear || jump >= snareRef + 6.0) {
+                    kickImp_ = std::max(kickImp_, std::clamp(0.35 + 0.65 * (jump - kickThrDb_) / 12.0, 0.35, 1.0));
+                    kickArmed_ = false;
+                    sinceKick_ = 0;
+                }
+            }
+        }
+        if (snareJump >= 0.0) lastSnareJump_ = snareJump;
+    }
+
+    void Tick() {
+        const double dtTick = tickSamples_ / fs_;
+        const double cur = Db(tickMaxEnv_ * 1.5708);  // mean of |sine| back to amplitude
+        const double k = 1.0 - exp(-dtTick / (cur > refDb_ ? 0.05 : 4.0));
+        refDb_ += (cur - refDb_) * k;
+        const double top = std::min(0.0, std::max(refDb_ + 1.5, -p_.boostDb));
+        const double bottom = std::max(p_.floorDb, top - std::max(6.0, p_.depthDb));
+        double x = (cur - bottom) / std::max(1.0, top - bottom);
+        x = std::clamp(x, 0.0, 1.0);
+        const float lvl = (float)std::max(x, (double)std::max(tickKick_, tickSnare_));
+        std::memmove(level_, level_ + 1, sizeof(float) * (N - 1));
+        std::memmove(kickHit_, kickHit_ + 1, sizeof(float) * (N - 1));
+        std::memmove(snareHit_, snareHit_ + 1, sizeof(float) * (N - 1));
+        level_[N - 1] = lvl;
+        kickHit_[N - 1] = tickKick_;
+        snareHit_[N - 1] = tickSnare_;
+        tickMaxEnv_ = bodyEnv_;
+        tickKick_ = tickSnare_ = 0.f;
+        dirty_ = true;
+    }
+
+    BassLineParams p_;
+    double fs_ = 48000.0;
+    Biquad body_[2], kick_[2], snB_[2], snS_[2];
+    double aBodyUp_ = 0, aBodyDown_ = 0, aKickFast_ = 0, aKickSlow_ = 0, aBodyFast_ = 0, aBodySlow_ = 0,
+           aSnapFast_ = 0, aSnapSlow_ = 0, impDecay_ = 0;
+    double tickSamples_ = 750.0, tickPos_ = 0.0;
+    long long cooldownSamples_ = 4000, sinceKick_ = 0, sinceSnare_ = 0;
+    double kickThrDb_ = 7.0, snareThrDb_ = 7.0, kickRatio_ = 2.2, snareRatio_ = 2.2, snareBodyRatio_ = 1.5,
+           gateLin_ = 1e-4, hitGateLin_ = 1e-3, lastSnareJump_ = 0.0;
+    bool kickOn_ = true, snareOn_ = true, kickArmed_ = true, snareArmed_ = true;
+    double bodyEnv_ = 0, tickMaxEnv_ = 0, fullF_ = 0, kickF_ = 0, kickS_ = 0, bodyF_ = 0, bodyS_ = 0, snapF_ = 0, snapS_ = 0,
+           kickImp_ = 0, snareImp_ = 0, refDb_ = -120.0;
+    float tickKick_ = 0.f, tickSnare_ = 0.f;
+    int detCount_ = 0;
+    float level_[N] = {}, kickHit_[N] = {}, snareHit_[N] = {};
+    bool dirty_ = true;
+};
 
 // ---- Loudness and true peak (ITU-R BS.1770-5 / EBU R128) --------------------------------
 //
@@ -7092,6 +8639,14 @@ void VizCardSetVolume(float level) {
     if (v) v->SetMasterVolumeLevelScalar(std::clamp(level, 0.f, 1.f), nullptr);
 }
 
+// A popup menu in Tourne's menu look when Tourne Desktop runs this (it exports TourneStyledMenu), else
+// Windows' own.
+UINT VizTrackMenu(HMENU menu, UINT flags, int x, int y, HWND owner) {
+    using Styled = UINT (*)(HMENU, UINT, int, int, HWND);
+    static Styled styled = (Styled)GetProcAddress(GetModuleHandleW(nullptr), "TourneStyledMenu");
+    return styled ? styled(menu, flags, x, y, owner) : (UINT)TrackPopupMenuEx(menu, flags, x, y, owner, nullptr);
+}
+
 // One click: the outputs, the current default ticked; picking one makes it
 // the default for every role, as the Sound settings page does.
 void VizCardOutputMenu(HWND hWnd, POINT pt) {
@@ -7113,7 +8668,7 @@ void VizCardOutputMenu(HWND hWnd, POINT pt) {
         AppendMenuW(menu, MF_STRING | (outs[i].id == current ? MF_CHECKED : 0), 1 + i, outs[i].name.c_str());
     SetForegroundWindow(hWnd);  // so a click elsewhere closes the menu
     VizMediaMenuBegin();
-    UINT cmd = (UINT)TrackPopupMenuEx(menu, TPM_RETURNCMD | TPM_NONOTIFY | TPM_BOTTOMALIGN, pt.x, pt.y, hWnd, nullptr);
+    UINT cmd = VizTrackMenu(menu, TPM_RETURNCMD | TPM_NONOTIFY | TPM_BOTTOMALIGN, pt.x, pt.y, hWnd);
     VizMediaMenuEnd();
     PostMessage(hWnd, WM_NULL, 0, 0);
     DestroyMenu(menu);
@@ -7322,7 +8877,41 @@ struct VizBandFrame {
 std::atomic<uint32_t> g_bandFrameSeq{0};
 VizBandFrame g_bandFrame;
 
+void PublishBandFrameNow(const VizBandFrame& f);
+
+// Frame Generation x2. Engine thread only. While g_fgInterp is set (around
+// an analysed frame while playing), a new frame goes out as the halfway point
+// from the last one and is held for the next, generated tick, which shows it
+// as it is: halfway, real, halfway, real, evenly spaced, one frame late.
+bool g_fgInterp = false;
+bool g_fgHavePrev = false, g_fgHeld = false;
+VizBandFrame g_fgPrev, g_fgNext;
+
 void PublishBandFrame(const VizBandFrame& f) {
+    if (g_fgInterp && g_fgHavePrev && g_fgPrev.count == f.count) {
+        VizBandFrame mid = f;
+        for (int i = 0; i < std::clamp(f.count, 0, VIZ_BARS_MAX); i++) mid.level[i] = 0.5f * (g_fgPrev.level[i] + f.level[i]);
+        for (int z = 0; z < 3; z++) mid.zone[z] = 0.5f * (g_fgPrev.zone[z] + f.zone[z]);
+        PublishBandFrameNow(mid);
+        g_fgNext = f;
+        g_fgHeld = true;
+    } else {
+        PublishBandFrameNow(f);
+        g_fgHeld = false;
+    }
+    g_fgPrev = f;
+    g_fgHavePrev = true;
+}
+
+// The generated tick: shows the frame held back by the last analysed one.
+bool VizFrameGenShowHeld() {
+    if (!g_fgHeld) return false;
+    g_fgHeld = false;
+    PublishBandFrameNow(g_fgNext);
+    return true;
+}
+
+void PublishBandFrameNow(const VizBandFrame& f) {
     uint32_t seq = g_bandFrameSeq.load(std::memory_order_relaxed);
     g_bandFrameSeq.store(seq + 1, std::memory_order_release);
     std::atomic_thread_fence(std::memory_order_release);
@@ -7364,6 +8953,9 @@ struct VizEngineConfig {
     bool wantCorrelation = false;  // Loudness (full) readout or the Goniometer
     bool wantGonio = false;
     bool beat = false;
+    float hitThresh = 0.12f, hitWindowS = 0.06f;  // bass hit detection
+    ttdsp::BassLineParams lane;                   // the Bass Line lane
+    float bassAtk = 1.f, bassRel = 1.f;           // bass attack / release time scales
     bool loudnessResetOnTrack = true;
 };
 std::mutex g_engineCfgMutex;
@@ -7380,6 +8972,7 @@ struct VizGpuFeed {
     double rate[3] = {48000, 12000, 3000};
     bool used[3] = {true, false, false};
     double peakCal = 0.0;
+    double zoneLowHz = 300.0;
     std::vector<ttdsp::SpectrumEngine::BandMap> maps;
     std::vector<ttdsp::Band> bands;
     std::vector<float> window;
@@ -7691,6 +9284,7 @@ public:
         dt = std::clamp(dt, 0.0005, 0.25);
         int got = pendingGot_;
         bool changed = PublishScope();
+        changed |= PublishLaneFrame(dt, got);
         if (cfg_.precision) changed |= PrecisionFrame(dt, got);
         else {
             ClassicFrame(dt, got);
@@ -7745,8 +9339,8 @@ private:
             const auto& bands = spec_.Bands();
             for (size_t b = 0; b < bands.size() && b < (size_t)VIZ_BARS_MAX; b++) {
                 double fc = bands[b].fc;
-                bandZone_[b] = (fc < 300.0) ? 0 : (fc < 2500.0) ? 1 : 2;
-                bandBass_[b] = fc < 150.0;
+                bandZone_[b] = (fc < cfg_.spec.zoneLowHz) ? 0 : (fc < 2500.0) ? 1 : 2;
+                bandBass_[b] = fc >= cfg_.spec.bassLoHz && fc <= cfg_.spec.bassHiHz;
             }
             std::fill(std::begin(bandLevel_), std::end(bandLevel_), 0.f);
             agcDb_ = 0.f;
@@ -7760,6 +9354,7 @@ private:
                     g_gpuFeed.used[t] = spec_.TierUsed(t);
                 }
                 g_gpuFeed.peakCal = spec_.PeakCal();
+                g_gpuFeed.zoneLowHz = cfg_.spec.zoneLowHz;
                 g_gpuFeed.maps = spec_.Maps();
                 g_gpuFeed.bands = bands;
                 g_gpuFeed.window.assign(spec_.Window(), spec_.Window() + g_gpuFeed.n);
@@ -7785,6 +9380,9 @@ private:
         loudness_.Configure((int)sampleRate_, (int)std::min<UINT32>(channels_, ttdsp::LoudnessMeter::kMaxCh), w);
         loudness_.SetTruePeak(cfg_.wantTruePeak);
         correlation_.Configure((int)sampleRate_, 300.0);
+        laneActive_ = cfg_.lane.on;
+        if (laneActive_) lane_.Configure((double)sampleRate_, cfg_.lane);
+        lanePubFlat_ = false;
         // Digital silence (see PrecisionFrame): zeros enough to fill the
         // deepest tier's whole ring (2 N at fs / 16) plus every decimator's
         // history, after which every input the analysis can see is zero.
@@ -7863,6 +9461,7 @@ private:
         if (loud) inter_.resize((size_t)frames * ch);
         if (gonio) stereo_.resize((size_t)frames * 2);
         if (!pData) {
+            if (laneActive_) lane_.ProcessZeros((int)frames);
             if (prec) {
                 // Once the analysis holds nothing but zeros, more zeros change
                 // none of its state, so they needn't be pushed.
@@ -7901,6 +9500,7 @@ private:
             ringHead_ = (ringHead_ + 1) % RING_CAP;
             if (ringCount_ < RING_CAP) ringCount_++;
             blockPeak_ = std::max(blockPeak_, fabsf(mono));
+            if (laneActive_) lane_.Process(mono);
             l *= gain;
             r *= gain;
             if (prec) {
@@ -7947,6 +9547,21 @@ private:
             gonioPending_.erase(gonioPending_.begin(), gonioPending_.end() - keep * 2);
     }
 
+    // ---- Bass Line lane --------------------------------------------------------------
+    // The analyzer runs sample by sample as audio is drained; this only advances it through
+    // silence (no packets arrive then) and publishes the history when it changed. A lane that
+    // has run out to nothing stops publishing, so the renderer can go idle.
+    bool PublishLaneFrame(double dt, int got) {
+        if (!laneActive_) return false;
+        if (got == 0) lane_.ProcessZeros((int)(dt * (double)sampleRate_));
+        if (!lane_.TakeDirty()) return false;
+        const bool flat = lane_.Flat();
+        if (flat && lanePubFlat_) return false;
+        PublishLane(lane_.Level(), lane_.Kick(), lane_.Snare());
+        lanePubFlat_ = flat;
+        return true;
+    }
+
     // ---- Oscilloscope trace (1.5, unchanged apart from where it lives) ---------------
     // Returns whether a new trace was published.
     bool PublishScope() {
@@ -7964,17 +9579,65 @@ private:
             if (m < 0) m += RING_CAP;
             return ring_[m];
         };
-        int windowMs = std::clamp(g_settings.oscilloscopeWindowMs, 5, 250);
+        float windowMs = std::clamp(g_settings.oscilloscopeWindowMs, 5.f, 250.f);
         int span = (int)((double)sampleRate_ * (double)windowMs / 1000.0);
         span = std::clamp(span, VIZ_WAVE_SAMPLES, RING_CAP / 2);
         // Trigger on the nearest rising zero crossing before the window's
         // natural start, so the trace holds still (see the 1.4 notes).
         int start = ringHead_ - span;
         int searchSpan = std::min(span / 2, RING_CAP - span - 1);
-        for (int k = 1; k <= searchSpan; k++) {
-            if (ringAt(start - k - 1) <= 0.f && ringAt(start - k) > 0.f) {
-                start -= k;
-                break;
+        // Scope Bass Focus: the span (and the trigger search before it) is run
+        // through a 4th-order low-pass first, so treble ripple can't move the
+        // trigger or fill in the bass shape. Off (0) leaves the raw path as it was.
+        const float focusHz = g_settings.scopeFocusHz;
+        const bool focus = focusHz >= 40.f && focusHz < 0.45f * (float)sampleRate_;
+        int fBase = 0;
+        if (focus) {
+            int warm = std::max(0, std::min(4096, RING_CAP - span - searchSpan - 2));
+            int total = warm + span + searchSpan + 1;
+            fBase = ringHead_ - total;
+            scopeFilt_.resize((size_t)total);
+            ttdsp::Biquad lp1, lp2;
+            auto lowpass = [&](ttdsp::Biquad& bq, double q) {
+                double K = tan(ttdsp::kPi * (double)focusHz / (double)sampleRate_);
+                double norm = 1.0 / (1.0 + K / q + K * K);
+                bq.b0 = K * K * norm;
+                bq.b1 = 2.0 * bq.b0;
+                bq.b2 = bq.b0;
+                bq.a1 = 2.0 * (K * K - 1.0) * norm;
+                bq.a2 = (1.0 - K / q + K * K) * norm;
+                bq.Reset();
+            };
+            lowpass(lp1, 0.5411961);  // the two sections of a 4th-order Butterworth
+            lowpass(lp2, 1.3065630);
+            for (int i = 0; i < total; i++) scopeFilt_[(size_t)i] = (float)lp2.Run(lp1.Run((double)ringAt(fBase + i)));
+        }
+        auto sampleAt = [&](int i) -> float { return focus ? scopeFilt_[(size_t)(i - fBase)] : ringAt(i); };
+        if (!focus) {
+            for (int k = 1; k <= searchSpan; k++) {
+                if (ringAt(start - k - 1) <= 0.f && ringAt(start - k) > 0.f) {
+                    start -= k;
+                    break;
+                }
+            }
+        } else {
+            // Rising zero crossing that follows a real negative half-cycle (at
+            // least 5% of the span's peak below zero), so wobble near zero
+            // doesn't count as a trigger.
+            float pk = 0.f;
+            for (int i = start - searchSpan; i < ringHead_; i += 4) pk = std::max(pk, fabsf(sampleAt(i)));
+            const float hyst = 0.05f * pk;
+            const int guard = std::max(2, std::min(span, (int)((float)sampleRate_ / (2.f * focusHz))));
+            for (int k = 1; k <= searchSpan; k++) {
+                if (sampleAt(start - k - 1) <= 0.f && sampleAt(start - k) > 0.f) {
+                    float lowest = 0.f;
+                    for (int g = 1; g <= guard && start - k - g >= fBase + 0; g++)
+                        lowest = std::min(lowest, sampleAt(start - k - g));
+                    if (lowest <= -hyst) {
+                        start -= k;
+                        break;
+                    }
+                }
             }
         }
         float waveSnap[VIZ_WAVE_SAMPLES];
@@ -7985,7 +9648,7 @@ private:
             if (to <= from) to = from + 1;
             float peak = 0.f;
             for (int s = from; s < to; s++) {
-                float v = ringAt(s);
+                float v = sampleAt(s);
                 if (fabsf(v) > fabsf(peak)) peak = v;
             }
             waveSnap[w] = std::clamp(peak * gain * staleFade, -1.0f, 1.0f);
@@ -8098,7 +9761,8 @@ private:
             if (maxMag > 0.03f && (!g_settings.autoGain || blockIdleAudible))
                 g_lastAudibleTickMs.store(GetTickCount64(), std::memory_order_relaxed);
             if (g_settings.beatFlashEnabled) {
-                if (bandEnv_[0] - prevBassEnv_ > 0.12f) g_beatPulse.store(1.0f, std::memory_order_relaxed);
+                if (bandEnv_[0] - prevBassEnv_ > 0.02f + 0.2f * (100.f - g_settings.bassHitSens) / 100.f)
+                    g_beatPulse.store(1.0f, std::memory_order_relaxed);
                 prevBassEnv_ = bandEnv_[0];
             }
             if (g_settings.peakFreqEnabled) {
@@ -8205,6 +9869,12 @@ private:
         disp.gainDb = cfg_.sensDb + agcDb_;
         // Attack / release coefficients once per frame, not once per band.
         const ttdsp::BallisticsCoef bc = ttdsp::BallisticsCoefs(dt, cfg_.ball, range);
+        // Bass bands can move at their own speed (Bass Attack / Release Time).
+        ttdsp::Ballistics bassBall = cfg_.ball;
+        bassBall.attackMs *= cfg_.bassAtk;
+        bassBall.releaseMs *= cfg_.bassRel;
+        bassBall.releaseDbPerSec /= cfg_.bassRel;
+        const ttdsp::BallisticsCoef bcBass = ttdsp::BallisticsCoefs(dt, bassBall, range);
         float maxX = 0.f, rawMax = -300.f, bass = 0.f, maxLevel = 0.f;
         VizBandFrame& out = frame_;
         out.count = nb;
@@ -8212,7 +9882,7 @@ private:
         out.zoneCount[0] = out.zoneCount[1] = out.zoneCount[2] = 0.f;
         for (int b = 0; b < nb; b++) {
             float x = disp.ToNorm(db[b]);
-            bandLevel_[b] = ttdsp::BallisticsApply(bandLevel_[b], x, bc);
+            bandLevel_[b] = ttdsp::BallisticsApply(bandLevel_[b], x, bandBass_[b] ? bcBass : bc);
             out.level[b] = bandLevel_[b];
             out.zone[bandZone_[b]] += bandLevel_[b];
             out.zoneCount[bandZone_[b]] += 1.f;
@@ -8253,8 +9923,8 @@ private:
         // Beat: bass pulling ahead of its own 60 ms average. A difference of
         // two envelopes rather than "rose since the last block", so it fires
         // the same way at any frame rate.
-        bassSlow_ += (bass - bassSlow_) * (1.f - expf(-(float)dt / 0.06f));
-        if (cfg_.beat && bass - bassSlow_ > 0.12f) g_beatPulse.store(1.0f, std::memory_order_relaxed);
+        bassSlow_ += (bass - bassSlow_) * (1.f - expf(-(float)dt / std::max(0.005f, cfg_.hitWindowS)));
+        if (cfg_.beat && bass - bassSlow_ > cfg_.hitThresh) g_beatPulse.store(1.0f, std::memory_order_relaxed);
 
         if (cfg_.wantDominant && fresh) {
             double hz = spec_.DominantHz(-70.0);
@@ -8334,6 +10004,9 @@ private:
     // Shared by both engines: the classic mono ring also feeds the scope.
     std::vector<float> ring_;
     int ringHead_ = 0, ringCount_ = 0;
+    ttdsp::BassLine lane_;  // Bass Line lane analyzer
+    bool laneActive_ = false, lanePubFlat_ = false;
+    std::vector<float> scopeFilt_;  // Scope Bass Focus: low-passed copy of the span being drawn
     ULONGLONG lastAudioTick_ = 0;
     bool scopeFlatPublished_ = false;
 
@@ -8368,7 +10041,9 @@ private:
 // The capture "thread" is now a state of the engine thread. These keep their
 // 1.5 names and meaning for the callers (pause on fullscreen, resume, unload):
 // Start asks for the stream, Stop asks for it to be closed and waits until it
-// is, then clears the bars, exactly as joining the old thread did.
+// is. Closing clears the bars (Close -> ResetAnalysis), on the engine thread:
+// the bars have exactly one writer, because two publishers racing on the
+// seqlock can leave its count odd, and every reader would then spin forever.
 void StartVizCaptureThread() {
     g_captureWanted.store(true);
     if (g_engineWake) SetEvent(g_engineWake);
@@ -8378,10 +10053,6 @@ void StopVizCaptureThread() {
     g_captureWanted.store(false);
     if (g_engineWake) SetEvent(g_engineWake);
     if (g_engineClosed && g_audioOpen.load()) WaitForSingleObject(g_engineClosed, 1500);
-    float zeroBands[VIZ_NUM_BANDS] = {};
-    PublishBands(zeroBands);
-    VizBandFrame empty;
-    PublishBandFrame(empty);
 }
 
 int VizEffectiveBarCount();
@@ -8399,7 +10070,8 @@ void UpdateVisualizerTargets() {
     auto eq = GetVizEQMultipliers(g_settings.eq);
 
     auto sampleBands = [&](float t) -> float {
-        float pos = t * (VIZ_NUM_BANDS - 1);
+        // warpT can return a hair over 1 (HzToBandPos gives VIZ_NUM_BANDS at the top edge).
+        float pos = std::clamp(t, 0.f, 1.f) * (VIZ_NUM_BANDS - 1);
         int lo = (int)pos;
         int hi = std::min(lo + 1, VIZ_NUM_BANDS - 1);
         return bands[lo] * (1.f - (pos - (float)lo)) + bands[hi] * (pos - (float)lo);
@@ -8655,14 +10327,23 @@ void VizComputeBarFrame() {
 
 // Copies what the engine thread needs out of the settings, as one value, and
 // tells it. UI thread, from LoadSettings.
+bool VizStyleNeedsCpuBars();
+// Set by the Direct3D 11 renderer when the GPU analysis passes can't start on
+// this device, so the engine analyses on the CPU instead. UI thread only.
+bool g_gpuAnalysisFailed = false;
+
 void VizPublishEngineConfig() {
     VizEngineConfig c;
     c.precision = g_settings.engine == VizEngineKind::Precision;
     c.workload = g_settings.workload;
-    // GPU analysis needs both the Precision engine and the Direct3D 11
-    // renderer; without either it is Hybrid (LoadSettings has said why).
+    // GPU analysis needs the Precision engine, the Direct3D 11 renderer, a
+    // style whose bars are drawn from GPU levels, and passes that started;
+    // otherwise it is Hybrid (LoadSettings or the renderer has said why). The
+    // same test as the renderer's gpuWork, or the engine would publish nothing
+    // and the bars would sit at idle height.
     if (c.workload == VizWorkload::Gpu &&
-        (!c.precision || g_settings.renderer != VizRenderer::D3D11 || g_settings.shape == VizShape::Terminal))
+        (!c.precision || g_settings.renderer != VizRenderer::D3D11 || g_settings.shape == VizShape::Terminal ||
+         VizStyleNeedsCpuBars() || g_gpuAnalysisFailed))
         c.workload = VizWorkload::Hybrid;
     auto& s = c.spec;
     s.fftSize = g_settings.fftSize;
@@ -8685,6 +10366,10 @@ void VizPublishEngineConfig() {
     s.zoneDb[0] = 20.0 * log10(std::max(0.01f, eq.low));
     s.zoneDb[1] = 20.0 * log10(std::max(0.01f, eq.mid));
     s.zoneDb[2] = 20.0 * log10(std::max(0.01f, eq.high));
+    s.bassLoHz = g_settings.bassLowHz;
+    s.bassHiHz = g_settings.bassHighHz;
+    s.bassDb = g_settings.bassGainDb;
+    s.zoneLowHz = g_settings.lowZoneHz;
 
     if (g_settings.ballistics == VizBallisticsPreset::Custom) {
         c.ball.attackMs = g_settings.attackMs;
@@ -8708,6 +10393,21 @@ void VizPublishEngineConfig() {
     c.autoGain = g_settings.autoGain;
     c.autoGainMaxDb = g_settings.autoGainMaxDb;
     c.channel = g_settings.channel;
+    c.hitThresh = 0.02f + 0.2f * (100.f - g_settings.bassHitSens) / 100.f;
+    c.hitWindowS = g_settings.bassHitWindowMs / 1000.f;
+    c.lane.on = g_settings.laneEnabled;
+    c.lane.lowHz = g_settings.laneLowHz;
+    c.lane.highHz = g_settings.laneHighHz;
+    c.lane.floorDb = g_settings.laneFloorDb;
+    c.lane.depthDb = g_settings.laneDepthDb;
+    c.lane.boostDb = g_settings.laneBoostDb;
+    c.lane.smoothMs = g_settings.laneSmoothMs;
+    c.lane.windowS = g_settings.laneWindowS;
+    c.lane.kickSens = g_settings.laneKickSens;
+    c.lane.snareSens = g_settings.laneSnareSens;
+    c.lane.cooldownMs = g_settings.laneCooldownMs;
+    c.bassAtk = g_settings.bassAttackPct / 100.f;
+    c.bassRel = g_settings.bassReleasePct / 100.f;
     bool readout = g_settings.peakFreqEnabled;
     c.wantDominant = readout && (g_settings.readout == VizReadout::Frequency || g_settings.readout == VizReadout::Both);
     c.wantLoudness = readout && g_settings.readout != VizReadout::Frequency;
@@ -8897,8 +10597,9 @@ VizAdapterChoice VizPickRenderAdapter(IDXGIFactory1* factory, VizRenderDevice wa
 }
 
 void VizUpdateSmoothActive() {
-    bool on = g_settings.smoothMode == VizSmoothMode::On ||
-              (g_settings.smoothMode == VizSmoothMode::Auto && g_renderAdapter.valid &&
+    VizFrameSync sync = g_settings.frameSync;
+    bool on = sync == VizFrameSync::VSync || sync == VizFrameSync::Adaptive || sync == VizFrameSync::Fast ||
+              (sync == VizFrameSync::Auto && g_renderAdapter.valid &&
                (g_renderAdapter.integrated || g_renderAdapter.warp));
     bool was = g_smoothActive.exchange(on);
     if (was != on) Wh_Log(L"[Hardware] Smooth Mode %s", on ? L"on" : L"off");
@@ -9026,6 +10727,8 @@ bool VizRenderDeviceNeedsRebuild() {
 void ReleaseSwapChainResources();
 bool CreateSwapChainResources();
 void RenderVisualizer();
+std::wstring VizDepthWallPath();
+bool VizDepthDecode(const std::wstring& path, bool key, std::vector<BYTE>& px, UINT& w, UINT& h);
 namespace ttgfx {
 void ReleaseDevice();
 void ReleaseSurface();
@@ -9039,11 +10742,14 @@ void PresentBlank();
 // change and for recovering from a lost device (driver update, TDR, a hybrid
 // laptop switching GPUs), which the 1.4 build had no answer to -- the
 // visualizer simply froze until the mod was restarted.
+void VizReleaseStyleResources();
+
 void VizRebuildRenderDevice(PCWSTR reason) {
     Wh_Log(L"[Hardware] rebuilding the render device: %s", reason);
     g_lastDeviceRebuildTick = GetTickCount64();
 
     ReleaseSwapChainResources();
+    VizReleaseStyleResources();
     ttgfx::ReleaseDevice();
     g_roundCapStrokeStyle.Reset();
     g_d2dDevice.Reset();
@@ -9077,6 +10783,7 @@ void VizCheckDeviceLost(HRESULT hrEndDraw, HRESULT hrPresent) {
 }
 
 void UninitDirectX() {
+    VizReleaseStyleResources();
     ttgfx::ReleaseDevice();
     g_dwriteTextFormat.Reset();
     g_dwriteFactory.Reset();
@@ -9150,6 +10857,7 @@ struct VizLayout {
     float textTop;                  // vertical room reserved above the bars
     float textBottom;               // vertical room reserved below the bars
 };
+bool VizLaneRect(const VizLayout& layout, D2D1_RECT_F* out);
 
 // ---- Drag-to-move ----------------------------------------------------------
 // Ctrl (or whichever modifier/button is configured) + a click-drag over the
@@ -9174,6 +10882,7 @@ std::atomic<bool> g_dragRenderPauseActive{false};
 // A delta of zero means "no nudge", which needs no separate active flag.
 std::atomic<int> g_npNudgeX{0}, g_npNudgeY{0};
 std::atomic<int> g_pfNudgeX{0}, g_pfNudgeY{0};
+std::atomic<int> g_lnNudgeX{0}, g_lnNudgeY{0};  // Bass Line lane
 
 float EffectiveNowPlayingOffsetX() {
     return (float)g_settings.nowPlayingOffsetX * g_dpiScale +
@@ -9190,6 +10899,12 @@ float EffectivePeakFreqOffsetX() {
 float EffectivePeakFreqOffsetY() {
     return (float)g_settings.peakFreqOffsetY * g_dpiScale +
            (float)g_pfNudgeY.load(std::memory_order_relaxed);
+}
+float EffectiveLaneOffsetX() {
+    return (float)g_settings.laneOffsetX * g_dpiScale + (float)g_lnNudgeX.load(std::memory_order_relaxed);
+}
+float EffectiveLaneOffsetY() {
+    return (float)g_settings.laneOffsetY * g_dpiScale + (float)g_lnNudgeY.load(std::memory_order_relaxed);
 }
 
 // Runtime placements go through Wh_SetStringValue / Wh_GetStringValue, which
@@ -9209,10 +10924,10 @@ void LoadPositionOverride() {
     // sentinel for "no position override" -- needed now that the record can
     // exist purely to hold text nudges, and an old one never contains one.
     float hPct = -1.0f, vPct = -1.0f;
-    int npX = 0, npY = 0, pfX = 0, pfY = 0;
+    int npX = 0, npY = 0, pfX = 0, pfY = 0, lnX = 0, lnY = 0;
     float mediaH = -1.0f, mediaV = -1.0f;
-    int n = swscanf_s(buf, L"%f %f %d %d %d %d %f %f", &hPct, &vPct, &npX, &npY, &pfX, &pfY,
-                      &mediaH, &mediaV);
+    int n = swscanf_s(buf, L"%f %f %d %d %d %d %f %f %d %d", &hPct, &vPct, &npX, &npY, &pfX, &pfY,
+                      &mediaH, &mediaV, &lnX, &lnY);
     if (n >= 2 && hPct >= 0.0f && vPct >= 0.0f) {
         g_dragOverrideH.store(std::clamp(hPct, 0.0f, 100.0f), std::memory_order_relaxed);
         g_dragOverrideV.store(std::clamp(vPct, 0.0f, 100.0f), std::memory_order_relaxed);
@@ -9223,6 +10938,10 @@ void LoadPositionOverride() {
         g_npNudgeY.store(npY, std::memory_order_relaxed);
         g_pfNudgeX.store(pfX, std::memory_order_relaxed);
         g_pfNudgeY.store(pfY, std::memory_order_relaxed);
+    }
+    if (n >= 10) {
+        g_lnNudgeX.store(lnX, std::memory_order_relaxed);
+        g_lnNudgeY.store(lnY, std::memory_order_relaxed);
     }
     if (n >= 8 && mediaH >= 0.0f && mediaV >= 0.0f) {
         g_mediaOverrideH.store(std::clamp(mediaH, 0.0f, 100.0f), std::memory_order_relaxed);
@@ -9241,19 +10960,22 @@ void PersistOverrideState() {
     int npY = g_npNudgeY.load(std::memory_order_relaxed);
     int pfX = g_pfNudgeX.load(std::memory_order_relaxed);
     int pfY = g_pfNudgeY.load(std::memory_order_relaxed);
+    int lnX = g_lnNudgeX.load(std::memory_order_relaxed);
+    int lnY = g_lnNudgeY.load(std::memory_order_relaxed);
 
-    if (!posActive && !mediaActive && !npX && !npY && !pfX && !pfY) {
+    if (!posActive && !mediaActive && !npX && !npY && !pfX && !pfY && !lnX && !lnY) {
         Wh_SetStringValue(L"positionOverride", L"");
         return;
     }
 
     WCHAR buf[192];
-    int len = swprintf_s(buf, L"%.4f %.4f %d %d %d %d %.4f %.4f",
+    int len = swprintf_s(buf, L"%.4f %.4f %d %d %d %d %.4f %.4f %d %d",
                          posActive ? g_dragOverrideH.load(std::memory_order_relaxed) : -1.0f,
                          posActive ? g_dragOverrideV.load(std::memory_order_relaxed) : -1.0f,
                          npX, npY, pfX, pfY,
                          mediaActive ? g_mediaOverrideH.load(std::memory_order_relaxed) : -1.0f,
-                         mediaActive ? g_mediaOverrideV.load(std::memory_order_relaxed) : -1.0f);
+                         mediaActive ? g_mediaOverrideV.load(std::memory_order_relaxed) : -1.0f,
+                         lnX, lnY);
     if (len > 0) Wh_SetStringValue(L"positionOverride", buf);
 }
 
@@ -9447,7 +11169,7 @@ void VizTermMeterLevels(float out[4]) {
     for (int i = 0; i < 4; i++) out[i] = std::clamp(out[i], 0.f, 1.f);
 }
 
-// ---- waterfall scroll: begin (src/tests_features/test_waterfall.cpp compiles this block from v2b.cpp)
+// ---- waterfall scroll: begin
 // Scrolls the waterfall history (rows x cols, row 0 newest) down by `steps`
 // rows and writes the current levels (`newest`, clamped at 0) into row 0. The
 // rows a multi-row step opens up between the new row 0 and the previous newest
@@ -9500,7 +11222,7 @@ void VizBuildTermGridCells() {
     VizTermGrid& g = g_termGrid;
     VizTermGridSize(&g.cols, &g.rows);
     g.cells.assign((size_t)g.cols * g.rows, TermCell(L' ', 0));
-    const float hot = std::clamp(g_settings.termHotThreshold, 1, 100) / 100.0f;
+    const float hot = std::clamp(g_settings.termHotThreshold, 1.f, 100.f) / 100.0f;
     auto at = [&](int c, int r) -> uint32_t& { return g.cells[(size_t)r * g.cols + c]; };
 
     if (g_settings.termStyle == VizTermStyle::Meters) {
@@ -9535,7 +11257,7 @@ void VizBuildTermGridCells() {
         }
         // Scroll by whole rows at the configured rate; the newest row always
         // shows the current levels, so the top line stays live between steps.
-        g_termScrollAcc += g_frameDt * (float)std::clamp(g_settings.termScrollRate, 1, 120);
+        g_termScrollAcc += g_frameDt * std::clamp(g_settings.termScrollRate, 1.f, 120.f);
         int steps = std::min((int)g_termScrollAcc, g.rows);
         g_termScrollAcc -= (float)(int)g_termScrollAcc;
         VizTermScrollHistory(g_termHistory.data(), g.rows, g.cols, steps, g_vizPeak);
@@ -9724,7 +11446,7 @@ bool VizReflectionActive() {
            s == VizShape::Breathe || s == VizShape::Dots;
 }
 
-float VizReflectionDepth(float maxSize) { return maxSize * std::clamp(g_settings.reflection, 0, 100) / 100.f; }
+float VizReflectionDepth(float maxSize) { return maxSize * std::clamp(g_settings.reflection, 0.f, 100.f) / 100.f; }
 
 // ---- Scale numbers -----------------------------------------------------------------------
 // The Spectrogram legend's quarter ticks and the VU faces carry numbers. They
@@ -10225,8 +11947,8 @@ bool VizDrawStyleD2D(float blockX, float blockY, float totalWidth, float totalHe
     }
 
     if (st == VizStyle::Spectrogram) {
-        static ComPtr<ID2D1Bitmap> bmp;
-        static ID2D1DeviceContext* bmpDc = nullptr;
+        auto& bmp = s_specBmp;
+        auto& bmpDc = s_specDc;
         static uint32_t bmpSerial = 0;
         static std::vector<uint32_t> px;
         int w = g_vizSpecW, rows = kVizSpecRows;
@@ -10339,6 +12061,18 @@ ID2D1DeviceContext* s_reflDc = nullptr;
 float s_reflDpi = 96.f;
 const CLSID kVizClsidShadow = {0xC67EA361, 0x1863, 0x4E69, {0x89, 0xDB, 0x69, 0x5D, 0x3E, 0x9A, 0x5B, 0x6B}};
 }  // namespace
+
+// Drops what the styles and effects made on the old device, so a rebuild or
+// unload doesn't keep it alive. UI thread only.
+void VizReleaseStyleResources() {
+    s_reflBmp.Reset();
+    s_reflOld.Reset();
+    s_reflFade.Reset();
+    s_shadowFx.Reset();
+    s_reflDc = nullptr;
+    s_specBmp.Reset();
+    s_specDc = nullptr;
+}
 
 bool VizFxD2DBegin(bool fadeLayer) {
     if (fadeLayer || !g_dc || !(VizReflectionActive() || g_settings.fxShadow > 0)) return false;
@@ -10568,6 +12302,26 @@ bool ComputeVizLayout(VizLayout* out) {
         // Panel Bottom: drawn at the bars' bottom edge + gap (VizProgressRect),
         // so whatever of gap + height the bottom padding doesn't cover.
         else textBottom = std::max(textBottom, std::max(0.f, need - padB));
+    }
+    if (g_settings.laneEnabled) {
+        // Bass Line lane: room above or below like the progress bar, and for its offsets and width.
+        const float lh = std::max(4.f, g_settings.laneHeight) * g_dpiScale;
+        const float lg = g_settings.laneGap * g_dpiScale;
+        const float need = lh + lg + 2.0f * g_dpiScale;
+        const float progNeed = g_settings.progressEnabled
+            ? (float)(std::max(1.f, g_settings.progressHeight) + g_settings.progressGap) * g_dpiScale + 2.0f * g_dpiScale : 0.f;
+        const float lnOffX = EffectiveLaneOffsetX(), lnOffY = EffectiveLaneOffsetY();
+        const float lw = (g_settings.laneWidth > 0.f) ? g_settings.laneWidth * g_dpiScale : totalWidth;
+        if (g_settings.lanePlacement == VizLanePlacement::Above) {
+            textTop += need + reserveFor(std::max(0.f, -lnOffY));
+        } else if (g_settings.lanePlacement == VizLanePlacement::Below) {
+            const bool progBelow = g_settings.progressEnabled && g_settings.progressPlacement == VizProgressPlacement::Below;
+            textBottom = std::max(textBottom, need + (progBelow ? progNeed : 0.f) + reserveFor(std::max(0.f, lnOffY)));
+        } else {
+            textTop = std::max(textTop, reserveFor(std::max(0.f, -lnOffY)));
+            textBottom = std::max(textBottom, reserveFor(std::max(0.f, lnOffY)));
+        }
+        extraSide = std::max(extraSide, reserveFor(std::abs(lnOffX)) + std::max(0.f, (lw - totalWidth) * 0.5f));
     }
     if (g_settings.peakFreqEnabled) {
         float pfOffX = reserveFor(std::abs(EffectivePeakFreqOffsetX()) + pfPanel);
@@ -10808,6 +12562,83 @@ ULONGLONG g_dragLastClickTick = 0;
 POINT g_dragLastClickPos{};
 
 void VizCollectSnapLines();
+
+// ---- Bass Line lane drag ----------------------------------------------------
+// The lane is dragged like the bars (same modifier and button), by its own box. It moves by the
+// cursor's distance, in pixels, through the lane's live nudge, which the next frame picks up and
+// the position save keeps. The lane wins where it overlaps the bars.
+std::atomic<LONG> g_laneHitL{0}, g_laneHitT{0}, g_laneHitR{0}, g_laneHitB{0};
+std::atomic<bool> g_laneHitValid{false};
+bool g_laneDragging = false;
+POINT g_laneDragCursor{};
+int g_laneDragStartX = 0, g_laneDragStartY = 0;
+
+bool PointInLaneBounds(POINT pt) {
+    if (!g_laneHitValid.load(std::memory_order_relaxed)) return false;
+    // Thin lanes are hard to hit: at least 12 px tall.
+    LONG t = g_laneHitT.load(std::memory_order_relaxed), b = g_laneHitB.load(std::memory_order_relaxed);
+    if (b - t < 12) { LONG m = (t + b) / 2; t = m - 6; b = m + 6; }
+    return pt.x >= g_laneHitL.load(std::memory_order_relaxed) && pt.x < g_laneHitR.load(std::memory_order_relaxed) &&
+           pt.y >= t && pt.y < b;
+}
+
+void RequestPositionOverrideSave();
+
+void BeginLaneDrag(POINT pt) {
+    g_laneDragging = true;
+    g_laneDragCursor = pt;
+    g_laneDragStartX = g_lnNudgeX.load(std::memory_order_relaxed);
+    g_laneDragStartY = g_lnNudgeY.load(std::memory_order_relaxed);
+}
+
+void UpdateLaneDrag(POINT pt) {
+    if (!g_laneDragging) return;
+    g_lnNudgeX.store(g_laneDragStartX + (pt.x - g_laneDragCursor.x), std::memory_order_relaxed);
+    g_lnNudgeY.store(g_laneDragStartY + (pt.y - g_laneDragCursor.y), std::memory_order_relaxed);
+    if (g_overlayWnd) PostMessage(g_overlayWnd, WM_APP_FORCE_REDRAW, 0, 0);
+}
+
+void EndLaneDrag() {
+    if (!g_laneDragging) return;
+    g_laneDragging = false;
+    RequestPositionOverrideSave();  // deferred: no storage write inside the mouse hook
+}
+
+// The Now Playing text is dragged the same way, by the text itself (where it's drawn, not its whole row),
+// through its live nudge like a keyboard move, and kept by the position save.
+std::atomic<float> g_npHitL{0}, g_npHitT{0}, g_npHitR{0}, g_npHitB{0};  // layout space, from the last text frame
+std::atomic<LONG> g_npScreenL{0}, g_npScreenT{0}, g_npScreenR{0}, g_npScreenB{0};
+std::atomic<bool> g_npHitValid{false};
+bool g_npDragging = false;
+POINT g_npDragCursor{};
+int g_npDragStartX = 0, g_npDragStartY = 0;
+
+bool PointInNowPlaying(POINT pt) {
+    if (!g_npHitValid.load(std::memory_order_relaxed)) return false;
+    return pt.x >= g_npScreenL.load(std::memory_order_relaxed) && pt.x < g_npScreenR.load(std::memory_order_relaxed) &&
+           pt.y >= g_npScreenT.load(std::memory_order_relaxed) && pt.y < g_npScreenB.load(std::memory_order_relaxed);
+}
+
+void BeginNowPlayingDrag(POINT pt) {
+    g_npDragging = true;
+    g_npDragCursor = pt;
+    g_npDragStartX = g_npNudgeX.load(std::memory_order_relaxed);
+    g_npDragStartY = g_npNudgeY.load(std::memory_order_relaxed);
+}
+
+void UpdateNowPlayingDrag(POINT pt) {
+    if (!g_npDragging) return;
+    constexpr int kMaxNudge = 4000;  // (as NudgeTextOverlayPx)
+    g_npNudgeX.store(std::clamp(g_npDragStartX + (int)(pt.x - g_npDragCursor.x), -kMaxNudge, kMaxNudge), std::memory_order_relaxed);
+    g_npNudgeY.store(std::clamp(g_npDragStartY + (int)(pt.y - g_npDragCursor.y), -kMaxNudge, kMaxNudge), std::memory_order_relaxed);
+    if (g_overlayWnd) PostMessage(g_overlayWnd, WM_APP_FORCE_REDRAW, 0, 0);
+}
+
+void EndNowPlayingDrag() {
+    if (!g_npDragging) return;
+    g_npDragging = false;
+    RequestPositionOverrideSave();  // deferred: no storage write inside the mouse hook
+}
 
 void BeginDrag(POINT pt) {
     g_dragInProgress = true;
@@ -11128,8 +12959,12 @@ void RequestPositionOverrideSave() {
 
 bool ModKeysHeld(unsigned flags) {
     if (flags == VIZ_MOD_NONE) return false;
+    // Right Alt is AltGr on many layouts, which Windows reports as Ctrl + Alt
+    // (AltGr+2 is @ on a Nordic keyboard). Never treat it as a modifier, so
+    // typing those characters always reaches the app.
+    if (GetAsyncKeyState(VK_RMENU) & 0x8000) return false;
     if ((flags & VIZ_MOD_CTRL)  && !(GetAsyncKeyState(VK_CONTROL) & 0x8000)) return false;
-    if ((flags & VIZ_MOD_ALT)   && !(GetAsyncKeyState(VK_MENU)    & 0x8000)) return false;
+    if ((flags & VIZ_MOD_ALT)   && !(GetAsyncKeyState(VK_LMENU)   & 0x8000)) return false;
     if ((flags & VIZ_MOD_SHIFT) && !(GetAsyncKeyState(VK_SHIFT)   & 0x8000)) return false;
     if ((flags & VIZ_MOD_WIN)   && !((GetAsyncKeyState(VK_LWIN) & 0x8000) ||
                                      (GetAsyncKeyState(VK_RWIN) & 0x8000))) return false;
@@ -11223,11 +13058,8 @@ void NudgeMediaControlsPx(int dxPx, int dyPx) {
     float travelX = 0.f, travelY = 0.f;
     if (!GetMediaTravelRange(&travelX, &travelY)) return;
 
-    bool active = g_mediaOverrideActive.load(std::memory_order_relaxed);
-    float h = active ? g_mediaOverrideH.load(std::memory_order_relaxed)
-                     : g_settings.mediaHorizontalPosition;
-    float v = active ? g_mediaOverrideV.load(std::memory_order_relaxed)
-                     : g_settings.mediaVerticalPosition;
+    float h = 0.f, v = 0.f;
+    MediaPercentNow(&h, &v);  // (from where it is, which may be anchored to the panel)
 
     if (dxPx && travelX > 1.0f) h = std::clamp(h + (dxPx / travelX) * 100.0f, 0.0f, 100.0f);
     if (dyPx && travelY > 1.0f) v = std::clamp(v + (dyPx / travelY) * 100.0f, 0.0f, 100.0f);
@@ -11254,6 +13086,8 @@ void NudgeTextOverlayPx(VizMoveTarget target, int dxPx, int dyPx) {
         ax = &g_npNudgeX; ay = &g_npNudgeY;
     } else if (target == VizMoveTarget::PeakFreq) {
         ax = &g_pfNudgeX; ay = &g_pfNudgeY;
+    } else if (target == VizMoveTarget::BassLine) {
+        ax = &g_lnNudgeX; ay = &g_lnNudgeY;
     } else {
         return;
     }
@@ -11286,6 +13120,11 @@ void ResetMoveTarget(VizMoveTarget target) {
             g_pfNudgeY.store(0, std::memory_order_relaxed);
             RequestPositionOverrideSave();
             break;
+        case VizMoveTarget::BassLine:
+            g_lnNudgeX.store(0, std::memory_order_relaxed);
+            g_lnNudgeY.store(0, std::memory_order_relaxed);
+            RequestPositionOverrideSave();
+            break;
         case VizMoveTarget::MediaControls:
             g_mediaOverrideActive.store(false, std::memory_order_relaxed);
             RequestPositionOverrideSave();
@@ -11298,14 +13137,25 @@ void ResetMoveTarget(VizMoveTarget target) {
     if (g_overlayWnd) PostMessage(g_overlayWnd, WM_APP_FORCE_REDRAW, 0, 0);
 }
 
+// Keys whose press the hook swallowed; only their releases are swallowed, so
+// an app never sees a release without its press or a press without its release.
+bool g_keyMoveSwallowed[256] = {};  // input hook thread only
+
 LRESULT CALLBACK MoveKeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (nCode == HC_ACTION) {
+        KBDLLHOOKSTRUCT* kb = (KBDLLHOOKSTRUCT*)lParam;
+        bool isUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
+        if (isUp && kb->vkCode < 256 && g_keyMoveSwallowed[kb->vkCode]) {
+            g_keyMoveSwallowed[kb->vkCode] = false;
+            return 1;
+        }
+    }
     if (nCode == HC_ACTION && !g_unloading.load(std::memory_order_relaxed) &&
         g_settings.keyMoveEnabled) {
         KBDLLHOOKSTRUCT* kb = (KBDLLHOOKSTRUCT*)lParam;
         bool isDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
-        bool isUp   = (wParam == WM_KEYUP   || wParam == WM_SYSKEYUP);
 
-        if ((isDown || isUp) && !g_fullscreenPaused.load(std::memory_order_relaxed) &&
+        if (isDown && kb->vkCode < 256 && !g_fullscreenPaused.load(std::memory_order_relaxed) &&
             ModKeysHeld(g_settings.keyMoveModifier)) {
             int dx = 0, dy = 0;
             if (KeyMoveDirection(kb->vkCode, &dx, &dy)) {
@@ -11328,26 +13178,28 @@ LRESULT CALLBACK MoveKeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
                         NudgeTextOverlayPx(g_keyMoveTarget, dx * step, dy * step);
                     }
                 }
-                // Swallow the key-up too, so an app underneath never sees a
-                // release for a press it was never told about.
+                g_keyMoveSwallowed[kb->vkCode] = true;  // its release is swallowed too
                 return 1;
             }
 
             // Same combo + 1/2/3/4 picks what the direction keys steer. One
             // combo places every movable piece rather than needing a shortcut
             // each, and the choice sticks until it's changed again.
-            if (kb->vkCode >= '1' && kb->vkCode <= '4') {
+            if (kb->vkCode >= '1' && kb->vkCode <= '5') {
                 if (isDown) {
                     g_keyMoveTarget = (kb->vkCode == '2') ? VizMoveTarget::NowPlaying
                                     : (kb->vkCode == '3') ? VizMoveTarget::PeakFreq
                                     : (kb->vkCode == '4') ? VizMoveTarget::MediaControls
+                                    : (kb->vkCode == '5') ? VizMoveTarget::BassLine
                                                           : VizMoveTarget::Visualizer;
                     Wh_Log(L"[KeyMove] target = %s",
                            g_keyMoveTarget == VizMoveTarget::NowPlaying    ? L"Now Playing text"
                            : g_keyMoveTarget == VizMoveTarget::PeakFreq    ? L"frequency readout"
                            : g_keyMoveTarget == VizMoveTarget::MediaControls ? L"media controls"
+                           : g_keyMoveTarget == VizMoveTarget::BassLine      ? L"bass line"
                                                                             : L"visualizer");
                 }
+                g_keyMoveSwallowed[kb->vkCode] = true;
                 return 1;
             }
 
@@ -11360,6 +13212,7 @@ LRESULT CALLBACK MoveKeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
                     ResetMoveTarget(g_keyMoveTarget);
                     Wh_Log(L"[KeyMove] reset target %d", (int)g_keyMoveTarget);
                 }
+                g_keyMoveSwallowed[kb->vkCode] = true;
                 return 1;
             }
         }
@@ -11379,9 +13232,12 @@ bool VizDesktopUnderPoint(POINT pt) {
     WCHAR cls[32] = {};
     GetClassNameW(root, cls, ARRAYSIZE(cls));
     if (g_overlayInPanel && root == g_overlayWnd) return true;
-    // (Tourne Desktop's own bars too: their empty space between segments takes clicks, so it's what's under it)
-    if (g_settings.hostTaskbar && (wcscmp(cls, L"Shell_TrayWnd") == 0 || wcscmp(cls, L"Shell_SecondaryTrayWnd") == 0 ||
-                                   wcsncmp(cls, L"TourneTaskbar", 13) == 0))
+    // Tourne Desktop (the author's separate desktop app, not in the catalog) can draw its own taskbar over
+    // Windows' one; the empty space between its segments takes clicks, so it counts as the taskbar too. It
+    // counts with Place In = Desktop as well: a visualizer on the desktop under that bar gets its right-click
+    // menu and drag there (callers check the point is inside the visualizer's own box first).
+    if (wcsncmp(cls, L"TourneTaskbar", 13) == 0) return true;
+    if (g_settings.hostTaskbar && (wcscmp(cls, L"Shell_TrayWnd") == 0 || wcscmp(cls, L"Shell_SecondaryTrayWnd") == 0))
         return true;
     return wcscmp(cls, L"WorkerW") == 0 || wcscmp(cls, L"Progman") == 0;
 }
@@ -11435,31 +13291,35 @@ bool VizMenuHook(WPARAM wParam, const MSLLHOOKSTRUCT* info) {
 // ---- Click to Seek (2.1) -----------------------------------------------------------------
 // A left press on the progress bar jumps there; dragging and releasing jumps
 // again where it's let go. The cursor moves freely meanwhile (moves are
-// never swallowed). The app list is checked against running processes at
-// most every 3 s, and only on a press that lands on the bar.
-bool VizSeekAppsAllow() {
+// never swallowed). The hook only decides and posts: the app list is checked
+// by the message window's 1-second timer (a process snapshot every 3 s, only
+// while Click to Seek has a list), and the seek itself runs on that thread.
+std::atomic<bool> g_seekAppsAllowed{true};
+
+void VizSeekAppsRefresh() {
     const auto& apps = g_settings.progressSeekApps;
-    if (apps.empty()) return true;
-    static ULONGLONG s_tick = 0;
-    static bool s_anyRunning = false;
-    ULONGLONG now = GetTickCount64();
-    if (s_tick == 0 || now - s_tick > 3000) {
-        s_tick = now;
-        s_anyRunning = false;
-        HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-        if (snap != INVALID_HANDLE_VALUE) {
-            PROCESSENTRY32W pe = {sizeof(pe)};
-            for (BOOL more = Process32FirstW(snap, &pe); more && !s_anyRunning; more = Process32NextW(snap, &pe)) {
-                std::wstring n = pe.szExeFile;
-                for (auto& ch : n) ch = (WCHAR)towlower(ch);
-                if (n.size() > 4 && n.compare(n.size() - 4, 4, L".exe") == 0) n.resize(n.size() - 4);
-                for (const auto& a : apps)
-                    if (n == a) s_anyRunning = true;
-            }
-            CloseHandle(snap);
-        }
+    if (!g_settings.progressSeek || apps.empty()) {
+        g_seekAppsAllowed.store(true, std::memory_order_relaxed);
+        return;
     }
-    return g_settings.progressSeekOnlyListed ? s_anyRunning : !s_anyRunning;
+    static ULONGLONG s_tick = 0;
+    ULONGLONG now = GetTickCount64();
+    if (s_tick != 0 && now - s_tick < 3000) return;
+    s_tick = now;
+    bool anyRunning = false;
+    HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snap != INVALID_HANDLE_VALUE) {
+        PROCESSENTRY32W pe = {sizeof(pe)};
+        for (BOOL more = Process32FirstW(snap, &pe); more && !anyRunning; more = Process32NextW(snap, &pe)) {
+            std::wstring n = pe.szExeFile;
+            for (auto& ch : n) ch = (WCHAR)towlower(ch);
+            if (n.size() > 4 && n.compare(n.size() - 4, 4, L".exe") == 0) n.resize(n.size() - 4);
+            for (const auto& a : apps)
+                if (n == a) anyRunning = true;
+        }
+        CloseHandle(snap);
+    }
+    g_seekAppsAllowed.store(g_settings.progressSeekOnlyListed ? anyRunning : !anyRunning, std::memory_order_relaxed);
 }
 
 void VizSeekAtX(LONG x) {
@@ -11467,15 +13327,22 @@ void VizSeekAtX(LONG x) {
     if (r > l) CardSeek((float)(x - l) / (float)(r - l));
 }
 
+void VizPostSeek(LONG x) {
+    if (g_messageWnd) PostMessage(g_messageWnd, WM_APP_SEEK_AT, (WPARAM)(int)x, 0);
+}
+
 bool VizSeekHook(WPARAM wParam, const MSLLHOOKSTRUCT* info) {
     static bool s_seeking = false;
     if (s_seeking) {
         if (wParam == WM_LBUTTONUP) {
             s_seeking = false;
-            VizSeekAtX(info->pt.x);
+            VizPostSeek(info->pt.x);
             return true;
         }
-        return false;
+        // A press while we think the button is still down: its release was
+        // lost (Win+L, a UAC prompt), so the earlier seek is over.
+        if (wParam != WM_LBUTTONDOWN) return false;
+        s_seeking = false;
     }
     if (wParam != WM_LBUTTONDOWN || !g_settings.progressSeek || !g_seekRectValid.load(std::memory_order_relaxed))
         return false;
@@ -11486,9 +13353,11 @@ bool VizSeekHook(WPARAM wParam, const MSLLHOOKSTRUCT* info) {
     if (pt.x < g_seekRectL.load(std::memory_order_relaxed) || pt.x >= g_seekRectR.load(std::memory_order_relaxed) ||
         pt.y < g_seekRectT.load(std::memory_order_relaxed) || pt.y >= g_seekRectB.load(std::memory_order_relaxed))
         return false;
-    if (!g_tlValid.load(std::memory_order_relaxed) || !VizDesktopUnderPoint(pt) || !VizSeekAppsAllow()) return false;
+    if (!g_tlValid.load(std::memory_order_relaxed) || !g_seekAppsAllowed.load(std::memory_order_relaxed) ||
+        !VizDesktopUnderPoint(pt))
+        return false;
     s_seeking = true;
-    VizSeekAtX(pt.x);
+    VizPostSeek(pt.x);
     return true;
 }
 
@@ -11505,6 +13374,41 @@ LRESULT CALLBACK DragMouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
         UINT downMsg = DragButtonDownMsg();
         UINT upMsg = DragButtonUpMsg();
 
+        // Now Playing text drag, ahead of the lane's and the bars' own.
+        if (g_npDragging) {
+            if (wParam == WM_MOUSEMOVE) {
+                UpdateNowPlayingDrag(info->pt);
+                return CallNextHookEx(nullptr, nCode, wParam, lParam);
+            }
+            if (wParam == upMsg || wParam == downMsg) {
+                EndNowPlayingDrag();
+                return wParam == upMsg ? 1 : CallNextHookEx(nullptr, nCode, wParam, lParam);
+            }
+        } else if (!g_dragInProgress && !g_laneDragging && wParam == downMsg && g_settings.nowPlayingEnabled &&
+                   DragModifierHeld() && PointInNowPlaying(info->pt) && !g_fullscreenPaused.load(std::memory_order_relaxed) &&
+                   !g_vizSceneHidden.load(std::memory_order_relaxed) && VizDesktopUnderPoint(info->pt)) {
+            BeginNowPlayingDrag(info->pt);
+            return 1;
+        }
+        if (g_npDragging) return CallNextHookEx(nullptr, nCode, wParam, lParam);
+
+        // Bass Line lane drag, ahead of the bars' own.
+        if (g_laneDragging) {
+            if (wParam == WM_MOUSEMOVE) {
+                UpdateLaneDrag(info->pt);
+                return CallNextHookEx(nullptr, nCode, wParam, lParam);
+            }
+            if (wParam == upMsg || wParam == downMsg) {
+                EndLaneDrag();
+                return wParam == upMsg ? 1 : CallNextHookEx(nullptr, nCode, wParam, lParam);
+            }
+        } else if (!g_dragInProgress && wParam == downMsg && g_settings.laneEnabled && DragModifierHeld() &&
+                   PointInLaneBounds(info->pt) && !g_fullscreenPaused.load(std::memory_order_relaxed) &&
+                   !g_vizSceneHidden.load(std::memory_order_relaxed) && VizDesktopUnderPoint(info->pt)) {
+            BeginLaneDrag(info->pt);
+            return 1;
+        }
+
         if (!g_dragInProgress) {
             if (wParam == downMsg && DragModifierHeld() && PointInVisualizerBounds(info->pt) &&
                 !g_fullscreenPaused.load(std::memory_order_relaxed) &&
@@ -11513,9 +13417,17 @@ LRESULT CALLBACK DragMouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
                 return 1;
             }
         } else {
+            // Moves go through: the cursor travels with the visualizer, and
+            // UpdateDrag works from the absolute position against the start.
             if (wParam == WM_MOUSEMOVE) {
                 UpdateDrag(info->pt);
-                return 1;
+                return CallNextHookEx(nullptr, nCode, wParam, lParam);
+            }
+            // A second press of the drag button: the release of the first one
+            // never came (see VizDesktopSwitchProc), so that drag is over.
+            if (wParam == downMsg) {
+                EndDrag();
+                return CallNextHookEx(nullptr, nCode, wParam, lParam);
             }
             if (wParam == upMsg) {
                 POINT pt = info->pt;
@@ -11556,6 +13468,15 @@ HHOOK g_moveKeyboardHook = nullptr;
 HANDLE g_inputHookThread = nullptr;
 DWORD g_inputHookThreadId = 0;
 
+// Win+L, Ctrl+Alt+Del and UAC prompts switch to a secure desktop, and a button
+// released there never reaches the mouse hook. A drag left running would keep
+// moving the visualizer with the cursor after unlocking, so a desktop switch
+// ends it. Runs on the input hook thread.
+void CALLBACK VizDesktopSwitchProc(HWINEVENTHOOK, DWORD, HWND, LONG, LONG, DWORD, DWORD) {
+    if (g_dragInProgress) EndDrag();
+}
+constexpr UINT WM_APP_KEYMOVE_SYNC = WM_APP + 90;  // thread message to the input hook thread
+
 // Both low-level input hooks run on this thread, deliberately kept away from
 // the UI thread that also handles WM_APP_RENDER_TICK. Direct2D's Present() can
 // block that thread for real time each frame; a hook living there has its
@@ -11568,25 +13489,40 @@ DWORD WINAPI InputHookThreadProc(LPVOID) {
     HINSTANCE hInst = (HINSTANCE)GetCurrentModuleHandle();
 
     g_dragMouseHook = SetWindowsHookEx(WH_MOUSE_LL, DragMouseHookProc, hInst, 0);
+    HWINEVENTHOOK desktopSwitch = SetWinEventHook(EVENT_SYSTEM_DESKTOPSWITCH, EVENT_SYSTEM_DESKTOPSWITCH, nullptr,
+                                                  VizDesktopSwitchProc, 0, 0, WINEVENT_OUTOFCONTEXT);
     if (!g_dragMouseHook) {
         Wh_Log(L"[Drag] SetWindowsHookEx(WH_MOUSE_LL) failed, error=%lu", GetLastError());
     }
 
-    g_moveKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, MoveKeyboardHookProc, hInst, 0);
-    if (!g_moveKeyboardHook) {
-        Wh_Log(L"[KeyMove] SetWindowsHookEx(WH_KEYBOARD_LL) failed, error=%lu", GetLastError());
-    }
-
-    if (!g_dragMouseHook && !g_moveKeyboardHook) return 1;
+    // The keyboard hook exists only while Keyboard Move is on; turning it on
+    // or off in the settings posts WM_APP_KEYMOVE_SYNC here.
+    auto syncKeyboardHook = [hInst] {
+        bool want = g_settings.keyMoveEnabled;
+        if (want && !g_moveKeyboardHook) {
+            g_moveKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, MoveKeyboardHookProc, hInst, 0);
+            if (!g_moveKeyboardHook)
+                Wh_Log(L"[KeyMove] SetWindowsHookEx(WH_KEYBOARD_LL) failed, error=%lu", GetLastError());
+        } else if (!want && g_moveKeyboardHook) {
+            UnhookWindowsHookEx(g_moveKeyboardHook);
+            g_moveKeyboardHook = nullptr;
+        }
+    };
+    syncKeyboardHook();
 
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0) > 0) {
+        if (!msg.hwnd && msg.message == WM_APP_KEYMOVE_SYNC) {
+            syncKeyboardHook();
+            continue;
+        }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
 
     // Low-level hooks have to be removed by the thread that installed them,
     // which is why this happens here rather than in UninitInputHooks.
+    if (desktopSwitch) UnhookWinEvent(desktopSwitch);
     if (g_dragMouseHook) {
         UnhookWindowsHookEx(g_dragMouseHook);
         g_dragMouseHook = nullptr;
@@ -11596,6 +13532,12 @@ DWORD WINAPI InputHookThreadProc(LPVOID) {
         g_moveKeyboardHook = nullptr;
     }
     return 0;
+}
+
+// Settings changed: let the input thread add or remove the keyboard hook
+// (a low-level hook has to be set and removed by the thread that owns it).
+void VizSyncKeyboardHook() {
+    if (g_inputHookThreadId) PostThreadMessage(g_inputHookThreadId, WM_APP_KEYMOVE_SYNC, 0, 0);
 }
 
 void InitInputHooks() {
@@ -11700,6 +13642,10 @@ void ReleaseVisualResources() {
     g_blurEffect.Reset();
     g_blurredBitmap.Reset();
     g_wallpaperBitmap.Reset();
+    g_depthBitmap.Reset();
+    g_depthLoadedPath.clear();
+    g_glassBitmap.Reset();
+    g_glassBitmapPath.clear();
     g_borderBrush.Reset();
     g_backgroundBrush.Reset();
     g_barBrush.Reset();
@@ -12408,6 +14354,12 @@ TT_CBUFFER(FrameCB, b0) {
     float fBarDash, fBarDashGap, fBarTiltK, fBarPivot;
     float fGhostA, fHollowW, fMirrorGap;
     uint fModFlags;
+    float4 fLaneRect;                       // Bass Line lane x0, y0, x1, y1 px (empty = off)
+    float4 fLaneBody, fLaneKick, fLaneSnare;  // straight alpha
+    float4 fLaneP;                          // line half-width px, style (0 line, 1 fill, 2 bar)
+    float4 fGlass;                          // Glass Bars: bend px, edge light 0..1, tint 0..1, frost px
+    float4 fGlass2;                         // bend style (0 lens, 1 edge), the edge band's width px, -, -
+    float4 fGlassMap;                       // wallpaper texture on the surface: x, y, width, height px (width 0 = off)
 }
 TT_CBUFFER_END
 
@@ -12427,6 +14379,8 @@ TT_CBUFFER(CsCB, b2) {
     uint cPeakGravity, cDomOn, cPad1, cPad2;
     float cTierRate0, cTierRate1, cTierRate2, cPeakCal;
     float cFmin, cFmax, cBreatheUp, cBreatheDown;  // breathe env taus, seconds
+    float cBassLo, cBassHi, cBassAtk, cBassRel;    // bass range (Hz), bass attack / release time scales
+    float cHitThresh, cHitWindow, cPad3, cPad4;    // bass hit threshold, hit window (s)
 }
 TT_CBUFFER_END
 // ---- Resources -----------------------------------------------------------------
@@ -12445,6 +14399,8 @@ Texture2D<float> gSpec REG(t12);            // Spectrogram: bar levels, one row 
 Texture2D<float4> gFxSrc REG(t13);          // FX: the texture a bloom pass reads
 Texture2D<float4> gFxBloom REG(t14);        // FX: the blurred bloom, for the composite
 SamplerState gLin REG(s1);                  // FX: bilinear, clamped
+Texture2D<float4> gGlass REG(t15);          // Glass Bars: the wallpaper, premultiplied (opaque)
+SamplerState gGlassSamp REG(s2);            // Glass Bars: bilinear, clamped
 
 // Analysis (compute shaders, Workload = GPU).
 StructuredBuffer<float> gTierIn REG(t5);     // 3 x N newest samples, one block per tier
@@ -12691,6 +14647,52 @@ Prim RadialPrim(uint i) {
     return CapsulePrim(fCenter.x + dx * fInnerR, fCenter.y + dy * fInnerR,
                        fCenter.x + dx * (fInnerR + len), fCenter.y + dy * (fInnerR + len),
                        fStrokeW * 0.5f, BarColor(i, fac, true));
+}
+
+// Bass Line lane. gWave holds four 256-sample blocks: [0] the scope trace, [256] lane level,
+// [512] kick hit, [768] snare hit. The style picks what an instance is: Line, a capsule per
+// segment (255); Fill, a column per point (256); Bar, the track and the live level (2).
+float2 LanePoint(uint i) {
+    float t = (float)i / 255.0f;
+    float x = fLaneRect.x + t * (fLaneRect.z - fLaneRect.x);
+    float y = fLaneRect.w - clamp(gWave[256u + i], 0.0f, 1.0f) * (fLaneRect.w - fLaneRect.y);
+    return float2(x, y);
+}
+float4 LaneColor(float k, float s) {
+    float4 c = lerp(fLaneBody, fLaneKick, saturate(k));
+    return lerp(c, fLaneSnare, saturate(s));
+}
+Prim LanePrim(uint i) {
+    if (fLaneRect.z <= fLaneRect.x) return NoPrim();
+    uint style = (uint)fLaneP.y;
+    float h = fLaneRect.w - fLaneRect.y;
+    if (style == 2u) {
+        float w = fLaneRect.z - fLaneRect.x;
+        if (i == 0u) {
+            float4 tc = fLaneBody;
+            tc.w = tc.w * 0.18f;
+            return RectPrim(fLaneRect.x, fLaneRect.y, fLaneRect.z, fLaneRect.w, float4(0.0f, 0.0f, 0.0f, 0.0f), tc);
+        }
+        float lv = clamp(gWave[256u + 255u], 0.0f, 1.0f);
+        if (lv < 0.004f) return NoPrim();
+        return RectPrim(fLaneRect.x, fLaneRect.y, fLaneRect.x + w * lv, fLaneRect.w, float4(0.0f, 0.0f, 0.0f, 0.0f),
+                        LaneColor(gWave[512u + 255u], gWave[768u + 255u]));
+    }
+    if (style == 1u) {
+        if (i >= 256u) return NoPrim();
+        float v = clamp(gWave[256u + i], 0.0f, 1.0f);
+        if (v < 0.004f) return NoPrim();
+        float cw = (fLaneRect.z - fLaneRect.x) / 256.0f;
+        float x0 = fLaneRect.x + cw * (float)i;
+        return RectPrim(x0, fLaneRect.w - v * h, x0 + cw, fLaneRect.w, float4(0.0f, 0.0f, 0.0f, 0.0f),
+                        LaneColor(gWave[512u + i], gWave[768u + i]));
+    }
+    if (i >= 255u) return NoPrim();
+    float2 a = LanePoint(i);
+    float2 b = LanePoint(i + 1u);
+    float k = max(gWave[512u + i], gWave[512u + i + 1u]);
+    float s = max(gWave[768u + i], gWave[768u + i + 1u]);
+    return CapsulePrim(a.x, a.y, b.x, b.y, fLaneP.x, LaneColor(k, s));
 }
 
 float2 ScopePoint(uint w) {
@@ -13079,6 +15081,7 @@ Prim BuildPrim(uint passId, uint id) {
     if (passId == 14u) return SplitPrim(id);
     if (passId == 15u) return SparkPrim(id);
     if (passId == 16u) return GhostPrim(id);
+    if (passId == 17u) return LanePrim(id);
     return NoPrim();
 }
 
@@ -13158,6 +15161,9 @@ VsOut VSMain(uint vid SEM(SV_VertexID), uint iid SEM(SV_InstanceID)) {
         p.kind = p.kind | 64u;
     if ((barPass || pPass == 2u) && (fModFlags & 4u) != 0u && (p.kind & 15u) <= 1u)
         p.kind = p.kind | 128u;
+    // Glass Bars: the bars themselves (not their caps or Afterimage), rects and capsules.
+    if (pPass == 1u && fGlassMap.z > 0.0f && (p.kind & 15u) <= 1u)
+        p.kind = p.kind | 256u;
     if (pPad0 != 0u) p = ReflectPrim(p);
     return EmitVertex(p, vid);
 }
@@ -13329,8 +15335,82 @@ float4 FxShade(VsOut i, uint kb) {
     return col;
 }
 
+// Glass Bars: inside the bar, the wallpaper behind it, bent like a lens across the bar (the middle magnified, the
+// edges pulling in from further out), optionally frosted, tinted with the bar's own colour, with light along the
+// edge and a soft streak down one side. Opaque where the bar is: the glass shows the wallpaper instead of what's
+// under the visualizer, which on the desktop is the same picture.
+float3 GlassAt(float2 p) {
+    float2 uv = float2((p.x - fGlassMap.x) / max(fGlassMap.z, 1.0f), (p.y - fGlassMap.y) / max(fGlassMap.w, 1.0f));
+    return gGlass.SampleLevel(gGlassSamp, uv, 0.0f).xyz;
+}
+
+float4 GlassShade(VsOut i, uint kb) {
+    float cov = Coverage(i, kb);
+    if (cov <= 0.0f) return float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float u = (fVertical == 0u) ? i.pix.x : i.pix.y;
+    float centre, hw;
+    if (kb == 1u) {
+        centre = (fVertical == 0u) ? (i.shape.x + i.shape.z) * 0.5f : (i.shape.y + i.shape.w) * 0.5f;
+        hw = max(i.radii.x, 0.5f);
+    } else {
+        float lo = (fVertical == 0u) ? i.shape.x : i.shape.y;
+        float hi = (fVertical == 0u) ? i.shape.z : i.shape.w;
+        centre = (lo + hi) * 0.5f;
+        hw = max((hi - lo) * 0.5f, 0.5f);
+    }
+    float t = clamp((u - centre) / hw, -1.0f, 1.0f);
+    float2 off;
+    if (fGlass2.x > 0.5f) {
+        // Edge: the bend follows the bar's own outline rather than its width,
+        // so it holds at rounded corners and on capsule bars. The push is
+        // along the outward normal, which is the gradient of the distance,
+        // taken by central differences; squared so the middle stays flat.
+        float d = (kb == 1u) ? SdCapsule(i.pix, i.shape, i.radii.x) : SdRoundRect(i.pix, i.shape, i.radii);
+        float band = saturate(1.0f + d / max(fGlass2.y, 0.5f));
+        float e = 1.0f;
+        float gx = ((kb == 1u) ? SdCapsule(float2(i.pix.x + e, i.pix.y), i.shape, i.radii.x)
+                               : SdRoundRect(float2(i.pix.x + e, i.pix.y), i.shape, i.radii)) -
+                   ((kb == 1u) ? SdCapsule(float2(i.pix.x - e, i.pix.y), i.shape, i.radii.x)
+                               : SdRoundRect(float2(i.pix.x - e, i.pix.y), i.shape, i.radii));
+        float gy = ((kb == 1u) ? SdCapsule(float2(i.pix.x, i.pix.y + e), i.shape, i.radii.x)
+                               : SdRoundRect(float2(i.pix.x, i.pix.y + e), i.shape, i.radii)) -
+                   ((kb == 1u) ? SdCapsule(float2(i.pix.x, i.pix.y - e), i.shape, i.radii.x)
+                               : SdRoundRect(float2(i.pix.x, i.pix.y - e), i.shape, i.radii));
+        float len = length(float2(gx, gy));
+        float2 nrm = (len > 1e-5f) ? float2(gx / len, gy / len) : float2(0.0f, 0.0f);
+        off = nrm * (fGlass.x * band * band);
+    } else {
+        float bend = fGlass.x * t * t * t;
+        off = (fVertical == 0u) ? float2(bend, 0.0f) : float2(0.0f, bend);
+    }
+    float2 p = i.pix + off;
+    float3 wall = GlassAt(p);
+    if (fGlass.w > 0.0f) {  // frost: four more taps around the point
+        float r = fGlass.w;
+        wall = (wall * 2.0f + GlassAt(p + float2(r, 0.0f)) + GlassAt(p - float2(r, 0.0f)) + GlassAt(p + float2(0.0f, r)) +
+                GlassAt(p - float2(0.0f, r))) / 6.0f;
+    }
+    float3 bar = i.color.xyz / max(i.color.w, 1e-4f);
+    float3 rgb = lerp(wall, bar, fGlass.z);
+    float inside = (kb == 1u) ? -SdCapsule(i.pix, i.shape, i.radii.x) : -SdRoundRect(i.pix, i.shape, i.radii);
+    float edge = exp(-max(inside, 0.0f) / 1.25f) * fGlass.y;
+    float streak = saturate(1.0f - abs(t + 0.55f) * 4.0f) * 0.22f * fGlass.y;
+    rgb = rgb + (1.0f - rgb) * saturate(edge + streak);
+    float a = cov * i.color.w;
+    return float4(rgb * a, a);
+}
+
 float4 PSMain(VsOut iIn) SEM(SV_Target) {
     VsOut i = iIn;
+    if ((iIn.kind & 256u) != 0u) {  // Glass Bars, over any glow or shadow the bar has
+        if ((i.kind & 128u) != 0u) i.pix = Untilt(i.pix);
+        uint gk = i.kind & 15u;
+        float gfade = 1.0f;
+        if ((i.kind & 16u) != 0u) gfade = saturate(1.0f - (i.pix.y - fReflBase) * fReflDir / max(fReflDepth, 1.0f));
+        float4 glass = GlassShade(i, gk);
+        float4 under = ((i.kind & 32u) != 0u) ? FxShade(i, gk) : float4(0.0f, 0.0f, 0.0f, 0.0f);
+        return (glass + under * (1.0f - glass.w)) * (gfade * fSceneAlpha);
+    }
     if ((i.kind & 128u) != 0u) i.pix = Untilt(i.pix);
     uint kb = i.kind & 15u;
     float fade = 1.0f;
@@ -13486,10 +15566,10 @@ float CurveOf(float x) {
     return (x <= knee) ? x : knee + (1.0f - knee) * tanh((x - knee) / (1.0f - knee));
 }
 
-float Ballistic(float y, float x) {
-    if (x > y) return y + (x - y) * (1.0f - exp(-cDt * 1000.0f / max(0.1f, cAttackMs)));
-    if (cReleaseLinear != 0u) return max(x, y - cReleaseDbPerSec * cDt / max(1.0f, cRangeDb));
-    return y + (x - y) * (1.0f - exp(-cDt * 1000.0f / max(0.1f, cReleaseMs)));
+float Ballistic(float y, float x, float aS, float rS) {
+    if (x > y) return y + (x - y) * (1.0f - exp(-cDt * 1000.0f / max(0.1f, cAttackMs * aS)));
+    if (cReleaseLinear != 0u) return max(x, y - cReleaseDbPerSec / rS * cDt / max(1.0f, cRangeDb));
+    return y + (x - y) * (1.0f - exp(-cDt * 1000.0f / max(0.1f, cReleaseMs * rS)));
 }
 
 float DbOf(float p) { return 10.0f * log10(max(p, 1e-30f)); }
@@ -13520,7 +15600,8 @@ void CsBands(uint3 did SEM(SV_DispatchThreadID)) {
     float gain = cSensDb + gGlobalsOut[2].x;  // auto gain from the previous frame
     float x = clamp(CurveOf((db + gain - cFloorDb) / max(1.0f, cRangeDb)), 0.0f, 1.0f);
     float4 st = gBandState[b];
-    st.x = Ballistic(st.x, x);
+    bool isBass = (d.w >= cBassLo) && (d.w <= cBassHi);
+    st.x = isBass ? Ballistic(st.x, x, cBassAtk, cBassRel) : Ballistic(st.x, x, 1.0f, 1.0f);
     st.y = db;
     gBandState[b] = st;
 }
@@ -13546,7 +15627,7 @@ void CsReduce(uint3 tid3 SEM(SV_GroupThreadID)) {
         if (zone == 0u) zl += st.x;
         else if (zone == 1u) zm += st.x;
         else zh += st.x;
-        if (zone == 0u && gBandDesc[b].w < 150.0f) bass = max(bass, st.x);
+        if (gBandDesc[b].w >= cBassLo && gBandDesc[b].w <= cBassHi) bass = max(bass, st.x);
         rawMax = max(rawMax, st.y);
     }
     gsRed[tid] = float4(mx, zl, zm, zh);
@@ -13603,9 +15684,9 @@ void CsReduce(uint3 tid3 SEM(SV_GroupThreadID)) {
         float4 g2 = gGlobalsOut[2];
         // Beat: the bass envelope pulling ahead of its own 60 ms average.
         float fast = red2.x;
-        float slow = g2.z + (fast - g2.z) * (1.0f - exp(-cDt / 0.06f));
+        float slow = g2.z + (fast - g2.z) * (1.0f - exp(-cDt / max(0.005f, cHitWindow)));
         float pulse = max(0.0f, g0.x - 4.8f * cDt);
-        if (fast - slow > 0.12f) pulse = 1.0f;
+        if (fast - slow > cHitThresh) pulse = 1.0f;
         // Breathe envelope, as the Direct2D path eases it, from elapsed time.
         float env = g0.z;
         float tau = (red.x > env) ? cBreatheUp : cBreatheDown;
@@ -13735,6 +15816,12 @@ struct FrameCB {
     float barDash, barDashGap, barTiltK, barPivot;
     float ghostA, hollowW, mirrorGap;
     uint32_t modFlags;
+    float laneRect[4];   // Bass Line lane: x0, y0, x1, y1 in surface pixels (empty = off)
+    float laneBody[4], laneKick[4], laneSnare[4];  // straight alpha, 0..1
+    float laneP[4];      // line half-width px, style (0 line, 1 fill, 2 bar), -, -
+    float glass[4];      // Glass Bars: bend px, edge light 0..1, tint 0..1, frost px
+    float glass2[4];     // bend style (0 lens, 1 edge), the edge band's width px, -, -
+    float glassMap[4];   // the wallpaper texture's place on the surface: x, y, width, height px (width 0 = off)
 };
 struct PassCB {
     uint32_t pass, count, pad0, pad1;
@@ -13749,15 +15836,17 @@ struct CsCB {
     uint32_t peakGravity, domOn, pad1, pad2;
     float tierRate0, tierRate1, tierRate2, peakCal;
     float fmin, fmax, breatheUp, breatheDown;
+    float bassLo, bassHi, bassAtk, bassRel;
+    float hitThresh, hitWindow, pad3, pad4;
 };
 #pragma pack(pop)
-static_assert(sizeof(FrameCB) == 39 * 16, "FrameCB must match tt_cb.hlsl");
+static_assert(sizeof(FrameCB) == 47 * 16, "FrameCB must match tt_cb.hlsl");
 static_assert(sizeof(PassCB) == 16, "PassCB must match tt_cb.hlsl");
-static_assert(sizeof(CsCB) == 9 * 16, "CsCB must match tt_cb.hlsl");
+static_assert(sizeof(CsCB) == 11 * 16, "CsCB must match tt_cb.hlsl");
 
 enum Pass : uint32_t {
     kPlate = 0, kBars, kCaps, kDots, kRadial, kScope, kGonio, kCorr, kTerm,
-    kLed, kLine, kBloom, kSpectro, kVu, kSplit, kSpark, kGhost, kPassCount
+    kLed, kLine, kBloom, kSpectro, kVu, kSplit, kSpark, kGhost, kLane, kPassCount
 };
 constexpr int kMaxPoints = 8192;
 constexpr int kGonioFrames = 6;  // persistence: this frame and the five before it
@@ -13833,6 +15922,15 @@ struct State {
     float dcOffX = 0.f, dcOffY = 0.f;
     bool dcClipOn = false;
     float dcClip[8] = {};  // left, top, right, bottom, radii TL TR BR BL
+
+    // Glass Bars: the wallpaper, read once (and again when it changes), at most the monitor's size.
+    ComPtr<ID3D11Texture2D> glassTex;
+    ComPtr<ID3D11ShaderResourceView> glassSRV;
+    ComPtr<ID3D11SamplerState> glassSampler;  // bilinear, clamped
+    std::wstring glassPath;
+    UINT glassW = 0, glassH = 0;
+    int glassFit = 0;  // Windows' fit for it: 0 fill, 1 fit, 2 stretch, 3 centre
+    ULONGLONG glassPoll = 0;
 
     // Baked background, the size of the panel surface.
     ComPtr<ID3D11Texture2D> plateTex;
@@ -14000,7 +16098,7 @@ bool EnsureDevice() {
     }
     if (FAILED(MakeStructured(8, VIZ_BARS_MAX, true, false, nullptr, g.barsDyn, &g.barsDynSRV, nullptr)) ||
         FAILED(MakeStructured(16, 4, true, false, nullptr, g.globalsDyn, &g.globalsDynSRV, nullptr)) ||
-        FAILED(MakeStructured(4, VIZ_WAVE_SAMPLES, true, false, nullptr, g.waveDyn, &g.waveSRV, nullptr)) ||
+        FAILED(MakeStructured(4, 4 * VIZ_WAVE_SAMPLES, true, false, nullptr, g.waveDyn, &g.waveSRV, nullptr)) ||
         FAILED(MakeStructured(16, kMaxPoints, true, false, nullptr, g.pointsDyn, &g.pointsSRV, nullptr)))
         return false;
 
@@ -14231,6 +16329,7 @@ void ReleaseDevice() {
     g.barsDynSRV.Reset(); g.globalsDynSRV.Reset(); g.waveSRV.Reset(); g.pointsSRV.Reset();
     g.cellsDyn.Reset(); g.cellsSRV.Reset(); g.glyphTex.Reset(); g.glyphSRV.Reset();
     g.specTex.Reset(); g.specSRV.Reset(); g.specW = 0;
+    g.glassTex.Reset(); g.glassSRV.Reset(); g.glassSampler.Reset(); g.glassPath.clear(); g.glassW = g.glassH = 0;
     g.glyphKey = 0;
     g.sampler.Reset(); g.blend.Reset(); g.blendOff.Reset(); g.raster.Reset();
     g.vsFull.Reset(); g.samplerLin.Reset();
@@ -14491,7 +16590,7 @@ int EnsureGpuAnalysis() {
     for (int b = 0; b < nb; b++) {
         const auto& m = g_gpuFeed.maps[b];
         double fc = g_gpuFeed.bands[b].fc;
-        int zone = (fc < 300.0) ? 0 : (fc < 2500.0) ? 1 : 2;
+        int zone = (fc < g_gpuFeed.zoneLowHz) ? 0 : (fc < 2500.0) ? 1 : 2;
         desc[b * 4 + 0] = (float)(m.tier + 4 * zone);
         desc[b * 4 + 1] = (float)m.k0;
         desc[b * 4 + 2] = (float)m.k1;
@@ -14616,6 +16715,12 @@ void RunGpuAnalysis(int bars, float barRangePx) {
         c.fmax = (float)cfg.spec.fmax;
         c.breatheUp = 0.408f;
         c.breatheDown = 1.103f;
+        c.bassLo = (float)cfg.spec.bassLoHz;
+        c.bassHi = (float)cfg.spec.bassHiHz;
+        c.bassAtk = cfg.bassAtk;
+        c.bassRel = cfg.bassRel;
+        c.hitThresh = cfg.hitThresh;
+        c.hitWindow = cfg.hitWindowS;
         memcpy(ms.pData, &c, sizeof(c));
         g.ctx->Unmap(g.csCB.Get(), 0);
     }
@@ -14873,6 +16978,108 @@ bool EnsureFx() {
 
 // Returns false if nothing could be drawn this way (the caller then uses the
 // Direct2D path for this frame).
+// Glass Bars: the wallpaper as a texture, read when it changes (looked at once a second at most), shrunk to the
+// monitor's size so a 4K picture costs what the screen does. False when glass is off or can't show here.
+bool EnsureGlass() {
+    if (!g_settings.glassEnabled || g_overlayInPanel || g_overlayInTaskbar || !g_d3dDevice) {
+        if (g.glassTex) g.glassTex.Reset(), g.glassSRV.Reset(), g.glassPath.clear();
+        return false;
+    }
+    const ULONGLONG now = GetTickCount64();
+    if (g.glassSRV && now - g.glassPoll < 1000) return true;
+    g.glassPoll = now;
+    const std::wstring path = VizDepthWallPath();
+    if (path.empty()) {
+        g.glassTex.Reset(), g.glassSRV.Reset(), g.glassPath.clear();
+        return false;
+    }
+    if (g.glassSRV && path == g.glassPath) return true;
+    g.glassTex.Reset(), g.glassSRV.Reset();
+    g.glassPath = path;
+    WCHAR style[16] = L"10";
+    DWORD sz = sizeof(style);
+    RegGetValueW(HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"WallpaperStyle", RRF_RT_REG_SZ, nullptr, style, &sz);
+    const int ws = _wtoi(style);
+    g.glassFit = ws == 6 ? 1 : ws == 2 ? 2 : ws == 0 ? 3 : 0;
+    std::vector<BYTE> px;
+    UINT w = 0, h = 0;
+    if (!VizDepthDecode(path, false, px, w, h)) {
+        Wh_Log(L"[Glass] could not read the wallpaper %s", path.c_str());
+        return false;
+    }
+    // Shrunk by whole steps (2x2 boxes) while bigger than the monitor: smooth enough for glass that bends it.
+    HMONITOR mon = g_cachedMonitor.load();
+    if (!mon) mon = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{.cbSize = sizeof(mi)};
+    const UINT mw = GetMonitorInfo(mon, &mi) ? (UINT)(mi.rcMonitor.right - mi.rcMonitor.left) : 1920;
+    const UINT mh = GetMonitorInfo(mon, &mi) ? (UINT)(mi.rcMonitor.bottom - mi.rcMonitor.top) : 1080;
+    while (w >= 2 * mw && h >= 2 * mh && w > 2 && h > 2) {
+        const UINT nw = w / 2, nh = h / 2;
+        std::vector<BYTE> half((size_t)nw * nh * 4);
+        for (UINT y = 0; y < nh; y++)
+            for (UINT x = 0; x < nw; x++)
+                for (int c = 0; c < 4; c++) {
+                    const size_t a = ((size_t)(2 * y) * w + 2 * x) * 4 + c, b = a + (size_t)w * 4;
+                    half[((size_t)y * nw + x) * 4 + c] = (BYTE)((px[a] + px[a + 4] + px[b] + px[b + 4] + 2) / 4);
+                }
+        px.swap(half);
+        w = nw, h = nh;
+    }
+    D3D11_TEXTURE2D_DESC td = {};
+    td.Width = w;
+    td.Height = h;
+    td.MipLevels = 1;
+    td.ArraySize = 1;
+    td.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    td.SampleDesc.Count = 1;
+    td.Usage = D3D11_USAGE_IMMUTABLE;
+    td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    D3D11_SUBRESOURCE_DATA init = {px.data(), w * 4, 0};
+    if (FAILED(g_d3dDevice->CreateTexture2D(&td, &init, &g.glassTex)) ||
+        FAILED(g_d3dDevice->CreateShaderResourceView(g.glassTex.Get(), nullptr, &g.glassSRV))) {
+        g.glassTex.Reset(), g.glassSRV.Reset();
+        return false;
+    }
+    if (!g.glassSampler) {
+        D3D11_SAMPLER_DESC sd = {};
+        sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        sd.AddressU = sd.AddressV = sd.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sd.MaxLOD = D3D11_FLOAT32_MAX;
+        if (FAILED(g_d3dDevice->CreateSamplerState(&sd, &g.glassSampler))) {
+            g.glassTex.Reset(), g.glassSRV.Reset();
+            return false;
+        }
+    }
+    g.glassW = w, g.glassH = h;
+    return true;
+}
+
+// Where the glass texture lies on the surface (x, y, width, height in surface pixels): the wallpaper as Windows
+// fits it on this monitor, the same placement Depth gives its cut-out.
+void GlassMap(const VizLayout& L, float out[4]) {
+    HMONITOR mon = g_cachedMonitor.load();
+    if (!mon) mon = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{.cbSize = sizeof(mi)};
+    if (!GetMonitorInfo(mon, &mi) || !g.glassW || !g.glassH) return;
+    const POINT vo = VizLayoutOrigin();
+    const float mx = (float)mi.rcMonitor.left - (float)vo.x - L.originX - (float)g.offX;
+    const float my = (float)mi.rcMonitor.top - (float)vo.y - L.originY - (float)g.offY;
+    const float mw = (float)(mi.rcMonitor.right - mi.rcMonitor.left), mh = (float)(mi.rcMonitor.bottom - mi.rcMonitor.top);
+    const float iw = (float)g.glassW, ih = (float)g.glassH;
+    float sx, sy;
+    switch (g.glassFit) {
+        case 1: sx = sy = std::min(mw / iw, mh / ih); break;
+        case 2: sx = mw / iw; sy = mh / ih; break;
+        case 3: sx = sy = 1.f; break;
+        default: sx = sy = std::max(mw / iw, mh / ih); break;
+    }
+    const float dw = iw * sx, dh = ih * sy;
+    out[0] = mx + (mw - dw) * 0.5f;
+    out[1] = my + (mh - dh) * 0.5f;
+    out[2] = dw;
+    out[3] = dh;
+}
+
 bool Render(const FrameInputs& in) {
     if (!g.ctx) return false;
     const VizLayout& L = *in.layout;
@@ -14901,6 +17108,17 @@ bool Render(const FrameInputs& in) {
         margin += maxSize * fabsf(tanf(g_settings.barTilt * 3.14159265f / 180.f));  // room for the light and shade to spread
     D2D1_RECT_F content = D2D1::RectF(L.blockX - margin, L.blockY - margin, L.blockX + L.totalWidth + margin,
                                       L.blockY + L.totalHeight + margin);
+    // The Bass Line lane lives outside the bar block (below or above the panel), so the surface has
+    // to grow to hold it, or it is clipped away.
+    D2D1_RECT_F laneRc = {};
+    const bool laneWanted = g_settings.laneEnabled && VizLaneRect(L, &laneRc);
+    if (laneWanted) {
+        const float lm = 2.f * g_dpiScale + g_settings.laneThickness * g_dpiScale;
+        content.left = std::min(content.left, laneRc.left - lm);
+        content.top = std::min(content.top, laneRc.top - lm);
+        content.right = std::max(content.right, laneRc.right + lm);
+        content.bottom = std::max(content.bottom, laneRc.bottom + lm);
+    }
     D2D1_RECT_F want = content;
     bool opaque = false;
     if (in.hasPanel) {
@@ -14910,7 +17128,9 @@ bool Render(const FrameInputs& in) {
         // it: bars and their antialiased edge, stroked shapes' half stroke.
         float bleed = roundShape ? margin : (shape == VizShape::Oscilloscope ? barW : 1.0f);
         bool inside = b.left <= L.blockX - bleed && b.top <= L.blockY - bleed &&
-                      b.right >= L.blockX + L.totalWidth + bleed && b.bottom >= L.blockY + L.totalHeight + bleed;
+                      b.right >= L.blockX + L.totalWidth + bleed && b.bottom >= L.blockY + L.totalHeight + bleed &&
+                      (!laneWanted || (b.left <= laneRc.left - 2.f && b.top <= laneRc.top - 2.f &&
+                                       b.right >= laneRc.right + 2.f && b.bottom >= laneRc.bottom + 2.f));
         opaque = g_settings.opaquePanel == VizOpaquePanel::Auto && plateOpaque && inside &&
                  !g_settings.autoHideEnabled;
         want = opaque ? b
@@ -14962,6 +17182,10 @@ bool Render(const FrameInputs& in) {
     if (gpuWork) {
         int st = EnsureGpuAnalysis();
         gpuOk = st > 0;
+        if ((st < 0) != g_gpuAnalysisFailed && st != 0) {
+            g_gpuAnalysisFailed = st < 0;
+            VizPublishEngineConfig();
+        }
         if (st < 0 && !g.gpuWarned) {
             g.gpuWarned = true;
             ReportSettingWarning(L"Hardware", L"Workload",
@@ -15036,6 +17260,28 @@ bool Render(const FrameInputs& in) {
         else if (g_settings.colorMode == VizColorMode::RainbowCycle)
             col = HSVtoRGB(fmodf(in.rainbowBase, 360.f), 0.85f, 1.0f, in.c1.a);
         setCol(f.scopeColor, col);
+    }
+    // Bass Line lane: its box in surface pixels, colours and style.
+    if (laneWanted) {
+        // Surface pixels: the same shift the bar block gets.
+        f.laneRect[0] = laneRc.left - (float)g.offX; f.laneRect[1] = laneRc.top - (float)g.offY;
+        f.laneRect[2] = laneRc.right - (float)g.offX; f.laneRect[3] = laneRc.bottom - (float)g.offY;
+        setCol(f.laneBody, RGBA{g_settings.laneBodyA, g_settings.laneBodyR, g_settings.laneBodyG, g_settings.laneBodyB});
+        setCol(f.laneKick, RGBA{g_settings.laneKickA, g_settings.laneKickR, g_settings.laneKickG, g_settings.laneKickB});
+        setCol(f.laneSnare, RGBA{g_settings.laneSnareA, g_settings.laneSnareR, g_settings.laneSnareG, g_settings.laneSnareB});
+        f.laneP[0] = std::max(0.5f, g_settings.laneThickness * g_dpiScale * 0.5f);
+        f.laneP[1] = (float)(int)g_settings.laneStyle;
+    }
+    // Glass Bars: the wallpaper texture and where it lies; its width stays 0 (off) when there's none.
+    const bool glassOn = EnsureGlass();
+    if (glassOn) {
+        f.glass[0] = g_settings.glassBend * g_dpiScale;
+        f.glass[1] = g_settings.glassEdge / 100.f;
+        f.glass[2] = g_settings.glassTint / 100.f;
+        f.glass[3] = g_settings.glassFrost / 100.f * 6.f * g_dpiScale;
+        f.glass2[0] = g_settings.glassBendEdge ? 1.f : 0.f;
+        f.glass2[1] = std::max(0.5f, g_settings.glassBendBand * g_dpiScale);
+        GlassMap(L, f.glassMap);
     }
     // Terminal: palette, grid origin on a whole pixel (glyphs land 1:1), cell
     // size, atlas size.
@@ -15173,13 +17419,20 @@ bool Render(const FrameInputs& in) {
     if (g_settings.colorMode == VizColorMode::RainbowCycle) MixF(hash, in.rainbowBase, 2.f);
     if (g_settings.beatFlashEnabled) MixF(hash, pulse, 128.f);
     Mix(hash, in.dragPause);
-    Mix(hash, (uint64_t)style * 1009u + (uint64_t)g_settings.reflection);
+    Mix(hash, (uint64_t)style * 1009u + (uint64_t)lroundf(g_settings.reflection * 100.f));
     for (int k = 0; k < 4; k++) MixF(hash, f.vu[k], 2048.f);
-    Mix(hash, (uint64_t)g_settings.fxGlow * 1000003u + (uint64_t)g_settings.fxBloom * 1009u);
+    Mix(hash, (uint64_t)lroundf(g_settings.fxGlow * 100.f) * 1000003u + (uint64_t)lroundf(g_settings.fxBloom * 100.f) * 1009u);
     MixF(hash, g_settings.fxGlowRadius + g_settings.fxBloomRadius * 257.f, 64.f);
     MixF(hash, f.fxLineW, 64.f);
     for (int k = 0; k < 4; k++) MixF(hash, f.fxLineColor[k] + f.fxShadowColor[k] * 7.f, 1024.f);
     MixF(hash, f.fxShadowX + f.fxShadowY * 1013.f + f.fxShadowSoft * 7919.f, 64.f);
+    // Glass Bars: the settings and where the wallpaper lies, so changing one of
+    // them, or the wallpaper itself, draws the next frame instead of the panel
+    // sitting on the last one.
+    for (int k = 0; k < 4; k++) MixF(hash, f.glass[k], 64.f);
+    MixF(hash, f.glass2[0] * 97.f + f.glass2[1], 64.f);
+    for (int k = 0; k < 4; k++) MixF(hash, f.glassMap[k], 64.f);
+    if (f.glassMap[2] > 0.f) Mix(hash, (uint64_t)g.glassW * 65536ull + g.glassH);
 
     const bool drawBars = !in.dragPause;
     const bool cpuBars = !gpuOk && drawBars;
@@ -15219,9 +17472,24 @@ bool Render(const FrameInputs& in) {
         Mix(hash, g.lastMaxDeltaPx >= 0.25f ? (uint64_t)g.frameNo : 0ull);
     }
     uint64_t waveKey = 0;
-    if (shape == VizShape::Oscilloscope && drawBars) {
+    const bool laneOn = laneWanted && drawBars;
+    float laneLvl[VIZ_LANE_PTS] = {}, laneK[VIZ_LANE_PTS] = {}, laneS[VIZ_LANE_PTS] = {};
+    const bool scopeOn = shape == VizShape::Oscilloscope && drawBars;
+    if (laneOn) ReadLane(laneLvl, laneK, laneS);
+    if (scopeOn || laneOn) {
         waveKey = 1469598103934665603ull;
-        for (int i = 0; i < VIZ_WAVE_SAMPLES; i++) MixF(waveKey, in.scopeDisp[i] * f.ampScale, 4.f);
+        if (scopeOn)
+            for (int i = 0; i < VIZ_WAVE_SAMPLES; i++) MixF(waveKey, in.scopeDisp[i] * f.ampScale, 4.f);
+        if (laneOn) {
+            const float laneH = f.laneRect[3] - f.laneRect[1];
+            for (int i = 0; i < VIZ_LANE_PTS; i++) {
+                MixF(waveKey, laneLvl[i] * laneH, 4.f);
+                MixF(waveKey, laneK[i] + laneS[i] * 3.f, 32.f);
+            }
+            for (int k = 0; k < 4; k++) MixF(waveKey, f.laneRect[k] + f.laneBody[k] * 7.f + f.laneKick[k] * 13.f + f.laneSnare[k] * 17.f, 255.f);
+            MixF(waveKey, f.laneP[0] + f.laneP[1] * 31.f, 64.f);
+            MixF(waveKey, (float)g_settings.laneLayer, 1.f);
+        }
         Mix(hash, waveKey);
     }
     // Terminal: VizBuildTermGrid bumps g_termGridSerial only when a cell
@@ -15283,7 +17551,14 @@ bool Render(const FrameInputs& in) {
     }
     if (waveKey && (!g.uploadsValid || waveKey != g.waveKey)) {
         if (SUCCEEDED(g.ctx->Map(g.waveDyn.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &ms))) {
-            memcpy(ms.pData, in.scopeDisp, sizeof(float) * VIZ_WAVE_SAMPLES);
+            float wb[4 * VIZ_WAVE_SAMPLES] = {};
+            if (scopeOn) memcpy(wb, in.scopeDisp, sizeof(float) * VIZ_WAVE_SAMPLES);
+            if (laneOn) {
+                memcpy(wb + VIZ_WAVE_SAMPLES, laneLvl, sizeof(laneLvl));
+                memcpy(wb + 2 * VIZ_WAVE_SAMPLES, laneK, sizeof(laneK));
+                memcpy(wb + 3 * VIZ_WAVE_SAMPLES, laneS, sizeof(laneS));
+            }
+            memcpy(ms.pData, wb, sizeof(wb));
             g.ctx->Unmap(g.waveDyn.Get(), 0);
             VizPerf(kPerfMaps);
             g.waveKey = waveKey;
@@ -15420,6 +17695,12 @@ bool Render(const FrameInputs& in) {
         ID3D11ShaderResourceView* sv = g.specSRV.Get();
         g.ctx->PSSetShaderResources(12, 1, &sv);
     }
+    if (glassOn) {
+        ID3D11ShaderResourceView* gv = g.glassSRV.Get();
+        ID3D11SamplerState* gs = g.glassSampler.Get();
+        g.ctx->PSSetShaderResources(15, 1, &gv);
+        g.ctx->PSSetSamplers(2, 1, &gs);
+    }
     ID3D11SamplerState* smp = g.sampler.Get();
     g.ctx->PSSetSamplers(0, 1, &smp);
     ID3D11Buffer* fcb = g.frameCB.Get();
@@ -15462,6 +17743,10 @@ bool Render(const FrameInputs& in) {
             if (g_settings.peakHoldEnabled) drawRefl(kCaps, (UINT)bars);
         }
     }
+    // The Bass Line lane before the bars when it's behind them, after them (every style) when in front.
+    const UINT laneCount = g_settings.laneStyle == VizLaneStyle::Bar ? 2u : g_settings.laneStyle == VizLaneStyle::Fill ? 256u : 255u;
+    const bool laneBehind = g_settings.laneLayer == VizLaneLayer::Behind;
+    if (laneOn && laneBehind) draw(kLane, laneCount);
     bool styled = drawBars;
     if (drawBars) {
         switch (style) {
@@ -15496,6 +17781,7 @@ bool Render(const FrameInputs& in) {
         }
         if (sparks) draw(kSpark, (UINT)g_vizSparkCount);
     }
+    if (laneOn && !laneBehind) draw(kLane, laneCount);
     if (bloom) {
         // Down to a quarter, blur across, blur down, then the scene plus its
         // light over the plate.
@@ -15532,6 +17818,7 @@ bool Render(const FrameInputs& in) {
         g.ctx->PSSetShaderResources(11, 1, nullSrv);
     }
     if (specReady) g.ctx->PSSetShaderResources(12, 1, nullSrv);
+    if (glassOn) g.ctx->PSSetShaderResources(15, 1, nullSrv);
 
     HRESULT hr = g.sc->Present(0, 0);
     VizCheckDeviceLost(S_OK, hr);
@@ -15546,6 +17833,7 @@ bool Render(const FrameInputs& in) {
 // Publishes the bounds of what is actually visible, for the occlusion check
 // (see the note where 1.4 introduced this).
 bool VizProgressRect(const VizLayout& layout, D2D1_RECT_F* out);
+bool VizLaneRect(const VizLayout& layout, D2D1_RECT_F* out);
 
 void VizPublishDrawRect(const VizLayout& layout) {
     const POINT layoutOrigin = VizLayoutOrigin();
@@ -15563,6 +17851,24 @@ void VizPublishDrawRect(const VizLayout& layout) {
             g_seekRectB.store((LONG)lroundf(layout.originY + cy + hh) + virtualScreenY, std::memory_order_relaxed);
         }
         g_seekRectValid.store(ok, std::memory_order_relaxed);
+    }
+    {
+        D2D1_RECT_F lr;
+        const bool ok = g_settings.laneEnabled && VizLaneRect(layout, &lr);
+        if (ok) {
+            g_laneHitL.store((LONG)lroundf(layout.originX + lr.left) + virtualScreenX, std::memory_order_relaxed);
+            g_laneHitR.store((LONG)lroundf(layout.originX + lr.right) + virtualScreenX, std::memory_order_relaxed);
+            g_laneHitT.store((LONG)lroundf(layout.originY + lr.top) + virtualScreenY, std::memory_order_relaxed);
+            g_laneHitB.store((LONG)lroundf(layout.originY + lr.bottom) + virtualScreenY, std::memory_order_relaxed);
+        }
+        g_laneHitValid.store(ok, std::memory_order_relaxed);
+    }
+    {
+        // The Now Playing text's box, as the last text frame drew it.
+        g_npScreenL.store((LONG)lroundf(layout.originX + g_npHitL.load(std::memory_order_relaxed)) + virtualScreenX, std::memory_order_relaxed);
+        g_npScreenR.store((LONG)lroundf(layout.originX + g_npHitR.load(std::memory_order_relaxed)) + virtualScreenX, std::memory_order_relaxed);
+        g_npScreenT.store((LONG)lroundf(layout.originY + g_npHitT.load(std::memory_order_relaxed)) + virtualScreenY, std::memory_order_relaxed);
+        g_npScreenB.store((LONG)lroundf(layout.originY + g_npHitB.load(std::memory_order_relaxed)) + virtualScreenY, std::memory_order_relaxed);
     }
     float padL = g_settings.backgroundEnabled ? VizPx((float)g_settings.bgPaddingL) : 0.f;
     float padR = g_settings.backgroundEnabled ? VizPx((float)g_settings.bgPaddingR) : 0.f;
@@ -15769,9 +18075,10 @@ void VizBuildTextFrame(VizTextFrame& t) {
     t.pf.clear();
     t.pfWide = false;
     if (g_settings.nowPlayingEnabled && g_dwriteTextFormat && g_nowPlayingBrush) {
-        ULONGLONG changedAt = g_nowPlayingChangedTick.load(std::memory_order_relaxed);
+        ULONGLONG changedAt = std::max(g_nowPlayingChangedTick.load(std::memory_order_relaxed),
+                                       g_nowPlayingReshowTick.load(std::memory_order_relaxed));
         ULONGLONG npElapsed = GetTickCount64() - changedAt;
-        ULONGLONG showMs = (ULONGLONG)std::max(0, g_settings.nowPlayingDisplaySeconds) * 1000ULL;
+        ULONGLONG showMs = (ULONGLONG)(std::max(0.f, g_settings.nowPlayingDisplaySeconds) * 1000.f);
         constexpr ULONGLONG kNpFadeMs = 800;
         if (changedAt != 0 && showMs == 0)
             t.npAlpha = 1.0f;  // Display Seconds 0: always shown, a widget rather than a toast
@@ -15841,6 +18148,609 @@ bool VizProgressRect(const VizLayout& layout, D2D1_RECT_F* out) {
     return out->right > out->left;
 }
 
+// Where the Bass Line lane goes, layout-local. False when it isn't shown. It sits above or below the
+// panel (past the progress bar when that is on the same side), or inside the bars at their bottom
+// edge, centred on the bars, then moved by Offset X / Y and the live nudge.
+bool VizLaneRect(const VizLayout& layout, D2D1_RECT_F* out) {
+    if (!g_settings.laneEnabled) return false;
+    const bool cover = g_settings.lanePlacement == VizLanePlacement::Cover;
+    const float h = cover ? layout.totalHeight : std::max(4.f, g_settings.laneHeight) * g_dpiScale;
+    const float gap = g_settings.laneGap * g_dpiScale;
+    const float w = (g_settings.laneWidth > 0.f && !cover) ? g_settings.laneWidth * g_dpiScale : layout.totalWidth;
+    const float progNeed = g_settings.progressEnabled
+        ? (float)(std::max(1.f, g_settings.progressHeight) + g_settings.progressGap) * g_dpiScale + 2.0f * g_dpiScale : 0.f;
+    D2D1_RECT_F panel;
+    float radii[4];
+    VizPanelRect(layout, &panel, radii);
+    const bool hasPanel = g_settings.backgroundEnabled;
+    const float top = hasPanel ? panel.top : layout.blockY;
+    const float bottom = hasPanel ? panel.bottom : layout.blockY + layout.totalHeight;
+    float y;
+    switch (g_settings.lanePlacement) {
+        case VizLanePlacement::Above:
+            y = top - gap - h - (g_settings.progressEnabled && g_settings.progressPlacement == VizProgressPlacement::Above ? progNeed : 0.f);
+            break;
+        case VizLanePlacement::Overlay: y = layout.blockY + layout.totalHeight - h; break;
+        case VizLanePlacement::Cover: y = layout.blockY; break;
+        default:
+            y = bottom + gap + (g_settings.progressEnabled && g_settings.progressPlacement == VizProgressPlacement::Below ? progNeed : 0.f);
+            break;
+    }
+    const float x0 = layout.blockX + (layout.totalWidth - w) * 0.5f + EffectiveLaneOffsetX();
+    y += EffectiveLaneOffsetY();
+    *out = D2D1::RectF(roundf(x0), roundf(y), roundf(x0 + w), roundf(y) + roundf(h));
+    return out->right > out->left && out->bottom > out->top;
+}
+
+// The lane on the Direct2D renderer (the fallback; the Direct3D 11 renderer draws it in a shader pass).
+void VizDrawLaneD2D(const VizLayout& layout) {
+    D2D1_RECT_F r;
+    if (!g_dc || !g_barBrush || !VizLaneRect(layout, &r)) return;
+    float lvl[VIZ_LANE_PTS], kk[VIZ_LANE_PTS], ss[VIZ_LANE_PTS];
+    ReadLane(lvl, kk, ss);
+    const float w = r.right - r.left, h = r.bottom - r.top;
+    auto color = [&](float k, float s) {
+        float cr = g_settings.laneBodyR, cg = g_settings.laneBodyG, cb = g_settings.laneBodyB, ca = g_settings.laneBodyA;
+        auto mix = [&](float t, BYTE a, BYTE rr, BYTE gg, BYTE bb) {
+            t = std::clamp(t, 0.f, 1.f);
+            cr += (rr - cr) * t; cg += (gg - cg) * t; cb += (bb - cb) * t; ca += (a - ca) * t;
+        };
+        mix(k, g_settings.laneKickA, g_settings.laneKickR, g_settings.laneKickG, g_settings.laneKickB);
+        mix(s, g_settings.laneSnareA, g_settings.laneSnareR, g_settings.laneSnareG, g_settings.laneSnareB);
+        return D2D1::ColorF(cr / 255.f, cg / 255.f, cb / 255.f, ca / 255.f);
+    };
+    if (g_settings.laneStyle == VizLaneStyle::Bar) {
+        g_barBrush->SetColor(D2D1::ColorF(g_settings.laneBodyR / 255.f, g_settings.laneBodyG / 255.f,
+                                          g_settings.laneBodyB / 255.f, g_settings.laneBodyA / 255.f * 0.18f));
+        g_dc->FillRectangle(r, g_barBrush.Get());
+        const int last = VIZ_LANE_PTS - 1;
+        g_barBrush->SetColor(color(kk[last], ss[last]));
+        g_dc->FillRectangle(D2D1::RectF(r.left, r.top, r.left + w * std::clamp(lvl[last], 0.f, 1.f), r.bottom), g_barBrush.Get());
+        return;
+    }
+    const float colW = w / (float)VIZ_LANE_PTS;
+    if (g_settings.laneStyle == VizLaneStyle::Fill) {
+        for (int i = 0; i < VIZ_LANE_PTS; i++) {
+            const float v = std::clamp(lvl[i], 0.f, 1.f);
+            if (v < 0.004f) continue;
+            g_barBrush->SetColor(color(kk[i], ss[i]));
+            g_dc->FillRectangle(D2D1::RectF(r.left + colW * i, r.bottom - v * h, r.left + colW * (i + 1), r.bottom), g_barBrush.Get());
+        }
+        return;
+    }
+    const float sw = std::max(1.0f, g_settings.laneThickness * g_dpiScale);
+    auto pt = [&](int i) {
+        return D2D1::Point2F(r.left + w * (float)i / (float)(VIZ_LANE_PTS - 1), r.bottom - std::clamp(lvl[i], 0.f, 1.f) * h);
+    };
+    D2D1_POINT_2F prev = pt(0);
+    for (int i = 1; i < VIZ_LANE_PTS; i++) {
+        D2D1_POINT_2F cur = pt(i);
+        g_barBrush->SetColor(color(std::max(kk[i - 1], kk[i]), std::max(ss[i - 1], ss[i])));
+        g_dc->DrawLine(prev, cur, g_barBrush.Get(), sw);
+        prev = cur;
+    }
+}
+
+// ---- Depth ---------------------------------------------------------------------------
+// The wallpaper's subject, drawn over the bars, the text and the panel, so they sit between the
+// wallpaper and what is in front of it (the way a phone lock screen tucks the clock behind a
+// person). It needs a cut-out of the subject, which Windhawk cannot make on its own:
+//   Folder  looks for a cut-out PNG (with transparency) named after the wallpaper file, in the
+//           Depth Folder, or beside the wallpaper (name.png, name.cutout.png, name_cutout.png,
+//           name.depth.png, name_depth.png), and follows the wallpaper as it changes;
+//   File    one cut-out image, whatever the wallpaper;
+//   Key     no cut-out: the wallpaper file itself with its dark (or light) background made
+//           transparent, which suits art on a plain background.
+// The cut-out is placed on the monitor like the wallpaper is (Fill, Fit, Stretch, Center). It is
+// only drawn where the desktop is the host; a panel or the taskbar has no wallpaper behind it.
+// Alternatives kept as comments: capturing the wallpaper's own pixels for the cut-out
+// (CaptureWallpaperBitmap does that for the blur) would match any wallpaper app exactly, but
+// wallpaper engines that draw in their own window come back black, so the image's pixels are used.
+
+uint32_t VizDepthSig() {
+    uint32_t h = 2166136261u;
+    auto mix = [&](uint32_t v) { h = (h ^ v) * 16777619u; };
+    mix((uint32_t)g_settings.depthEnabled); mix((uint32_t)g_settings.depthSource); mix((uint32_t)g_settings.depthFit);
+    mix((uint32_t)lroundf(g_settings.depthScale * 10)); mix((uint32_t)(int)g_settings.depthOffsetX);
+    mix((uint32_t)(int)g_settings.depthOffsetY); mix((uint32_t)g_settings.depthKeyLight);
+    mix((uint32_t)lroundf(g_settings.depthKeyLow * 10)); mix((uint32_t)lroundf(g_settings.depthKeySoft * 10));
+    for (wchar_t c : g_settings.depthFolder) mix((uint32_t)c);
+    for (wchar_t c : g_settings.depthFile) mix((uint32_t)c);
+    return h;
+}
+
+static bool VizFileExists(const std::wstring& p) {
+    DWORD a = GetFileAttributesW(p.c_str());
+    return a != INVALID_FILE_ATTRIBUTES && !(a & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+std::wstring VizDepthWallPath() {
+    WCHAR wp[MAX_PATH] = {};
+    SystemParametersInfo(SPI_GETDESKWALLPAPER, MAX_PATH, wp, 0);
+    std::wstring wall = wp;
+    return (!wall.empty() && VizFileExists(wall)) ? wall : L"";
+}
+
+// Where cut-outs made by the cutter are kept: the Cutout Folder, or under Local AppData.
+std::wstring VizDepthCacheDir() {
+    std::wstring f = g_settings.depthFolder;
+    while (!f.empty() && iswspace(f.back())) f.pop_back();
+    if (!f.empty()) {
+        if (f.back() != L'\\' && f.back() != L'/') f += L'\\';
+        return f;
+    }
+    WCHAR la[MAX_PATH] = {};
+    DWORD n = GetEnvironmentVariableW(L"LOCALAPPDATA", la, MAX_PATH);
+    if (!n || n >= MAX_PATH) return L"";
+    return std::wstring(la) + L"\\Tourne'Table\\Cutouts\\";
+}
+
+// The cutter's output name: the wallpaper's name, then a hash of its path and last change, so two
+// wallpapers with one name don't share a cut-out and an edited wallpaper is cut again.
+std::wstring VizDepthAutoName(const std::wstring& wall) {
+    WIN32_FILE_ATTRIBUTE_DATA d = {};
+    GetFileAttributesExW(wall.c_str(), GetFileExInfoStandard, &d);
+    uint32_t h = 2166136261u;
+    for (wchar_t c : wall) h = (h ^ (uint32_t)towlower(c)) * 16777619u;
+    h = (h ^ d.ftLastWriteTime.dwLowDateTime) * 16777619u;
+    h = (h ^ d.ftLastWriteTime.dwHighDateTime) * 16777619u;
+    size_t slash = wall.find_last_of(L"\\/");
+    std::wstring file = slash == std::wstring::npos ? wall : wall.substr(slash + 1);
+    size_t dot = file.find_last_of(L'.');
+    WCHAR hex[16];
+    swprintf_s(hex, L".%08x", h);
+    return (dot == std::wstring::npos ? file : file.substr(0, dot)) + hex;
+}
+
+// ---- Installing the background remover (rembg) ------------------------------------------
+// From the right-click menu, after a notice that says what it is, where it comes from and what it
+// will do. Nothing runs unless the user says Yes. The mod itself never downloads anything: it writes
+// a small script and opens it in a visible console window, so every step and the file's SHA-256 can
+// be seen, and the user can close the window to stop. It installs for the current user only, with
+// no admin rights.
+
+std::wstring VizDepthSetupDir() {
+    WCHAR la[MAX_PATH] = {};
+    DWORD n = GetEnvironmentVariableW(L"LOCALAPPDATA", la, MAX_PATH);
+    if (!n || n >= MAX_PATH) return L"";
+    return std::wstring(la) + L"\\Tourne'Table\\Setup\\";
+}
+
+// The Python launcher or Python itself, as a command; empty if neither is on the PATH.
+std::wstring VizDepthFindPython() {
+    WCHAR buf[MAX_PATH];
+    if (SearchPathW(nullptr, L"py.exe", nullptr, MAX_PATH, buf, nullptr)) return L"py -3";
+    if (SearchPathW(nullptr, L"python.exe", nullptr, MAX_PATH, buf, nullptr)) return L"python";
+    return L"";
+}
+
+// The rembg the installer left, if it is still there.
+std::wstring VizDepthInstalledCutter() {
+    const std::wstring f = VizDepthSetupDir() + L"rembg-path.txt";
+    HANDLE h = CreateFileW(f.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (h == INVALID_HANDLE_VALUE) return L"";
+    char b[1024] = {};
+    DWORD got = 0;
+    ReadFile(h, b, sizeof(b) - 1, &got, nullptr);
+    CloseHandle(h);
+    int wl = MultiByteToWideChar(CP_UTF8, 0, b, (int)got, nullptr, 0);
+    std::wstring path(wl > 0 ? wl : 0, L'\0');
+    if (wl > 0) MultiByteToWideChar(CP_UTF8, 0, b, (int)got, path.data(), wl);
+    while (!path.empty() && (path.back() == L'\r' || path.back() == L'\n' || path.back() == L' ')) path.pop_back();
+    return (!path.empty() && VizFileExists(path)) ? path : L"";
+}
+
+static bool VizIsHex64(const std::wstring& v) {
+    if (v.size() != 64) return false;
+    for (wchar_t c : v) if (!iswxdigit(c)) return false;
+    return true;
+}
+
+static std::string VizUtf8(const std::wstring& w) {
+    int n = WideCharToMultiByte(CP_UTF8, 0, w.c_str(), (int)w.size(), nullptr, 0, nullptr, nullptr);
+    std::string o(n > 0 ? n : 0, '\0');
+    if (n > 0) WideCharToMultiByte(CP_UTF8, 0, w.c_str(), (int)w.size(), o.data(), n, nullptr, nullptr);
+    return o;
+}
+
+// Shows the notice and, on Yes, runs the install in a visible console. Message thread.
+void VizDepthInstallCutter() {
+    const std::wstring py = VizDepthFindPython();
+    std::wstring ver = g_settings.depthCutterVersion, pin = g_settings.depthCutterSha;
+    for (auto& c : pin) c = (wchar_t)towlower(c);
+    while (!ver.empty() && iswspace(ver.back())) ver.pop_back();
+    const bool pinOk = VizIsHex64(pin);
+    const std::wstring dir = VizDepthSetupDir();
+    if (dir.empty()) return;
+
+    std::wstring msg =
+        L"Install the background remover (rembg)?\n\n"
+        L"WHAT IT IS\n"
+        L"rembg is a free, open-source (MIT licence) Python tool that cuts the subject out of a picture. "
+        L"Depth uses it to make the cut-outs for your wallpapers. It is not part of Windhawk or "
+        L"Tourne'Table, and neither of them made it.\n\n"
+        L"WHERE IT COMES FROM\n"
+        L"PyPI, the official Python package index: pypi.org/project/rembg\n"
+        L"Source code: github.com/danielgatis/rembg\n\n"
+        L"WHAT WILL HAPPEN\n"
+        L"A console window opens and shows each step. It downloads rembg" + (ver.empty() ? std::wstring(L" (the latest version)") : L" " + ver) +
+        L", shows you the file's SHA-256, " + (pinOk ? L"checks it against the SHA-256 you set (it stops if they differ), " : L"") +
+        L"then installs it for your user only, with no admin rights, along with the packages it needs "
+        L"(onnxruntime, numpy, Pillow and more: several hundred MB). Installed before without onnxruntime "
+        L"(cut-outs fail with exit 1)? Installing again adds it. The first cut-out also downloads "
+        L"its AI model (about 170 MB) from github.com/danielgatis/rembg/releases into your user folder.\n\n"
+        L"SHA-256\n" +
+        (pinOk ? L"Must match: " + pin
+               : L"None is set, so none is enforced. The console shows the downloaded file's SHA-256 so you can compare it with the one "
+                 L"on PyPI's Download files page. You can set one in Depth > Cutter SHA-256.") +
+        L"\n\nTO UNDO\n"
+        L"Run  pip uninstall rembg  in a terminal.\n\n";
+    if (py.empty()) {
+        msg += L"Python 3 was not found on your PATH, so this cannot run yet. Install Python 3 from python.org (tick \"Add to PATH\"), "
+               L"then try again.";
+        MessageBoxW(g_messageWnd, msg.c_str(), L"Tourne'Table - install rembg", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND | MB_TOPMOST);
+        return;
+    }
+    msg += L"Python found: " + py + L"\n\nInstall now?";
+    if (MessageBoxW(g_messageWnd, msg.c_str(), L"Tourne'Table - install rembg", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 | MB_SETFOREGROUND | MB_TOPMOST) != IDYES)
+        return;
+
+    {   // the folders, then the script
+        std::wstring d = dir;
+        d.pop_back();
+        size_t cut = d.find_last_of(L'\\');
+        if (cut != std::wstring::npos) CreateDirectoryW(d.substr(0, cut).c_str(), nullptr);
+        CreateDirectoryW(d.c_str(), nullptr);
+    }
+    const std::wstring spec = ver.empty() ? L"rembg" : L"rembg==" + ver;
+    std::wstring sc;
+    sc += L"@echo off\r\nchcp 65001 >nul\r\ntitle Tourne'Table - installing rembg\r\n";
+    sc += L"set \"D=" + dir + L"dl\"\r\nset \"PY=" + py + L"\"\r\n";
+    sc += L"if exist \"%D%\" rmdir /s /q \"%D%\"\r\nmkdir \"%D%\"\r\n";
+    sc += L"echo.\r\necho Step 1 of 3 - downloading " + spec + L" from PyPI (nothing is installed yet)\r\n";
+    sc += L"%PY% -m pip download \"" + spec + L"\" --no-deps -d \"%D%\"\r\nif errorlevel 1 goto fail\r\n";
+    sc += L"set \"W=\"\r\nfor %%F in (\"%D%\\rembg-*.whl\") do set \"W=%%~fF\"\r\nif not defined W goto fail\r\n";
+    sc += L"echo.\r\necho Step 2 of 3 - checking the download\r\n";
+    sc += L"for /f \"usebackq delims=\" %%H in (`powershell -NoProfile -Command \"(Get-FileHash -Algorithm SHA256 -LiteralPath $env:W).Hash.ToLower()\"`) do set \"H=%%H\"\r\n";
+    sc += L"echo File   : %W%\r\necho SHA-256: %H%\r\n";
+    if (pinOk) sc += L"if /i not \"%H%\"==\"" + pin + L"\" goto badhash\r\necho Matches the SHA-256 you set.\r\n";
+    else sc += L"echo No SHA-256 was set to check against: compare the line above with PyPI's Download files page for rembg.\r\n";
+    sc += L"echo.\r\necho Step 3 of 3 - installing for your user only (no admin rights)\r\n";
+    // (cpu brings onnxruntime: newer rembg releases leave it out unless asked, and then can't cut anything)
+    sc += L"%PY% -m pip install --user \"%W%[cpu,cli]\"\r\nif errorlevel 1 goto fail\r\n";
+    sc += L"echo import sysconfig;print(sysconfig.get_path('scripts','nt_user'))> \"%D%\\sc.py\"\r\n";
+    sc += L"set \"SC=\"\r\nfor /f \"usebackq delims=\" %%S in (`%PY% \"%D%\\sc.py\"`) do set \"SC=%%S\"\r\n";
+    sc += L"if not exist \"%SC%\\rembg.exe\" goto nopath\r\n";
+    sc += L"> \"" + dir + L"rembg-path.txt\" echo %SC%\\rembg.exe\r\n";
+    sc += L"echo.\r\necho Done. Tourne'Table will use it from now on. The AI model downloads the first time it cuts a picture.\r\n";
+    sc += L"pause\r\nexit /b 0\r\n";
+    sc += L":nopath\r\necho.\r\necho rembg installed, but its program was not found in %SC%.\r\necho Set Depth ^> Cutter Command to its full path.\r\npause\r\nexit /b 1\r\n";
+    sc += L":badhash\r\necho.\r\necho STOPPED: the file's SHA-256 does not match the one you set. Nothing was installed.\r\npause\r\nexit /b 1\r\n";
+    sc += L":fail\r\necho.\r\necho Something failed. Read the lines above. Nothing more will run.\r\npause\r\nexit /b 1\r\n";
+    const std::wstring script = dir + L"install-cutter.cmd";
+    HANDLE f = CreateFileW(script.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return;
+    const std::string bytes = VizUtf8(sc);
+    DWORD wrote = 0;
+    WriteFile(f, bytes.data(), (DWORD)bytes.size(), &wrote, nullptr);
+    CloseHandle(f);
+    std::wstring cmd = L"cmd.exe /d /c \"\"" + script + L"\"\"";
+    std::vector<wchar_t> buf(cmd.begin(), cmd.end());
+    buf.push_back(0);
+    STARTUPINFOW si{sizeof(si)};
+    PROCESS_INFORMATION pi{};
+    if (CreateProcessW(nullptr, buf.data(), nullptr, nullptr, FALSE, CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi)) {
+        CloseHandle(pi.hThread);
+        CloseHandle(pi.hProcess);
+        Wh_Log(L"[Depth] installer opened: %s", script.c_str());
+    } else {
+        Wh_Log(L"[Depth] could not open the installer (%lu)", GetLastError());
+    }
+}
+
+// Runs the outside cutter (rembg by default) on the wallpaper, hidden and at low priority. The
+// result lands in the cache; the next poll finds it and the cut-out appears. Windhawk itself has
+// no way to find a subject in a picture, which is why this is a separate program.
+void VizDepthCutStart(const std::wstring& wall) {
+    if (g_cutProc || wall.empty()) return;
+    const std::wstring dir = VizDepthCacheDir();
+    if (dir.empty()) return;
+    {   // make the folder (and Tourne'Table under Local AppData)
+        std::wstring d = dir;
+        d.pop_back();
+        size_t cut = d.find_last_of(L'\\');
+        if (cut != std::wstring::npos) CreateDirectoryW(d.substr(0, cut).c_str(), nullptr);
+        CreateDirectoryW(d.c_str(), nullptr);
+    }
+    const std::wstring name = VizDepthAutoName(wall);
+    g_cutFinal = dir + name + L".cutout.png";
+    g_cutPart = dir + name + L".part.png";
+    std::wstring cmd = g_settings.depthCutter.empty() ? L"rembg i \"{in}\" \"{out}\"" : g_settings.depthCutter;
+    if (cmd == L"rembg i \"{in}\" \"{out}\"") {  // the default: use the copy the installer found, which may not be on the PATH
+        const std::wstring made = VizDepthInstalledCutter();
+        if (!made.empty()) cmd = L"\"" + made + L"\" i \"{in}\" \"{out}\"";
+    }
+    auto sub = [&](const wchar_t* tag, const std::wstring& v) {
+        for (size_t at = cmd.find(tag); at != std::wstring::npos; at = cmd.find(tag, at + v.size()))
+            cmd.replace(at, wcslen(tag), v);
+    };
+    sub(L"{in}", wall);
+    sub(L"{out}", g_cutPart);
+    std::wstring full = L"cmd.exe /d /s /c \"" + cmd + L"\"";
+    DeleteFileW(g_cutPart.c_str());
+    STARTUPINFOW si{sizeof(si)};
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    PROCESS_INFORMATION pi{};
+    std::vector<wchar_t> buf(full.begin(), full.end());
+    buf.push_back(0);
+    if (!CreateProcessW(nullptr, buf.data(), nullptr, nullptr, FALSE,
+                        CREATE_NO_WINDOW | BELOW_NORMAL_PRIORITY_CLASS, nullptr, nullptr, &si, &pi)) {
+        Wh_Log(L"[Depth] could not start the cutter (%lu)", GetLastError());
+        g_cutFailedFor = wall;
+        return;
+    }
+    CloseHandle(pi.hThread);
+    g_cutProc = pi.hProcess;
+    g_cutFor = wall;
+    g_cutStartTick = GetTickCount64();
+    Wh_Log(L"[Depth] cutting out %s", wall.c_str());
+}
+
+// Checks on the cutter. True when it just finished with a cut-out, so the caller looks again.
+bool VizDepthCutPoll() {
+    if (!g_cutProc) return false;
+    DWORD w = WaitForSingleObject(g_cutProc, 0);
+    if (w == WAIT_TIMEOUT) {
+        if (GetTickCount64() - g_cutStartTick > 10ull * 60 * 1000) {  // a stuck run
+            TerminateProcess(g_cutProc, 1);
+            Wh_Log(L"[Depth] the cutter ran too long and was stopped");
+        } else {
+            return false;
+        }
+    }
+    DWORD code = 1;
+    GetExitCodeProcess(g_cutProc, &code);
+    CloseHandle(g_cutProc);
+    g_cutProc = nullptr;
+    if (code == 0 && VizFileExists(g_cutPart) && MoveFileExW(g_cutPart.c_str(), g_cutFinal.c_str(), MOVEFILE_REPLACE_EXISTING)) {
+        Wh_Log(L"[Depth] cut-out ready: %s", g_cutFinal.c_str());
+        return true;
+    }
+    DeleteFileW(g_cutPart.c_str());
+    g_cutFailedFor = g_cutFor;
+    Wh_Log(L"[Depth] the cutter failed (exit %lu). Is rembg installed? Use the right-click menu: Install Background Remover (rembg)...", code);
+    return false;
+}
+
+void VizDepthShutdown() {
+    if (g_cutProc) {
+        TerminateProcess(g_cutProc, 1);
+        CloseHandle(g_cutProc);
+        g_cutProc = nullptr;
+        DeleteFileW(g_cutPart.c_str());
+    }
+}
+
+// The image to show for the wallpaper that is on now; empty when there is none.
+std::wstring VizDepthResolvePath() {
+    if (!g_settings.depthEnabled || g_overlayInPanel || g_overlayInTaskbar) return L"";
+    if (g_settings.depthSource == VizDepthSource::File) return VizFileExists(g_settings.depthFile) ? g_settings.depthFile : L"";
+    std::wstring wall = VizDepthWallPath();
+    if (wall.empty()) return L"";
+    if (g_settings.depthSource == VizDepthSource::Key) return wall;
+    size_t slash = wall.find_last_of(L"\\/");
+    std::wstring dir = slash == std::wstring::npos ? L"" : wall.substr(0, slash + 1);
+    std::wstring file = slash == std::wstring::npos ? wall : wall.substr(slash + 1);
+    size_t dot = file.find_last_of(L'.');
+    std::wstring stem = dot == std::wstring::npos ? file : file.substr(0, dot);
+    std::wstring folder = g_settings.depthFolder;
+    while (!folder.empty() && iswspace(folder.back())) folder.pop_back();
+    if (!folder.empty() && folder.back() != L'\\' && folder.back() != L'/') folder += L'\\';
+    static const wchar_t* kSuffix[] = {L".png", L".cutout.png", L"_cutout.png", L".depth.png", L"_depth.png", L".webp"};
+    for (const std::wstring& base : {folder, dir}) {
+        if (base.empty()) continue;
+        for (const wchar_t* sfx : kSuffix) {
+            std::wstring cand = base + stem + sfx;
+            if (_wcsicmp(cand.c_str(), wall.c_str()) == 0) continue;  // never the wallpaper itself
+            if (VizFileExists(cand)) return cand;
+        }
+    }
+    {   // one the cutter made
+        std::wstring made = VizDepthCacheDir() + VizDepthAutoName(wall) + L".cutout.png";
+        if (VizFileExists(made)) return made;
+    }
+    return L"";
+}
+
+// Decodes to premultiplied BGRA. Key mode makes the background transparent by brightness.
+bool VizDepthDecode(const std::wstring& path, bool key, std::vector<BYTE>& px, UINT& w, UINT& h) {
+    px.clear();
+    IWICImagingFactory* f = nullptr;
+    if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&f))) || !f) return false;
+    IWICBitmapDecoder* dec = nullptr;
+    IWICBitmapFrameDecode* fr = nullptr;
+    IWICFormatConverter* cv = nullptr;
+    bool ok = false;
+    if (SUCCEEDED(f->CreateDecoderFromFilename(path.c_str(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &dec)) &&
+        SUCCEEDED(dec->GetFrame(0, &fr)) && SUCCEEDED(f->CreateFormatConverter(&cv)) &&
+        SUCCEEDED(cv->Initialize(fr, GUID_WICPixelFormat32bppBGRA, WICBitmapDitherTypeNone, nullptr, 0.0,
+                                 WICBitmapPaletteTypeMedianCut)) &&
+        SUCCEEDED(cv->GetSize(&w, &h)) && w > 0 && h > 0 && (uint64_t)w * h <= 120000000ull) {
+        px.resize((size_t)w * h * 4);
+        ok = SUCCEEDED(cv->CopyPixels(nullptr, w * 4, (UINT)px.size(), px.data()));
+    }
+    if (cv) cv->Release();
+    if (fr) fr->Release();
+    if (dec) dec->Release();
+    f->Release();
+    if (!ok) { px.clear(); return false; }
+    const float lo = std::clamp(g_settings.depthKeyLow, 0.f, 100.f) / 100.f;
+    const float hi = std::min(1.f, lo + std::max(0.1f, g_settings.depthKeySoft) / 100.f);
+    for (size_t i = 0; i + 3 < px.size(); i += 4) {
+        float a = px[i + 3] / 255.f;
+        if (key) {
+            float lum = (0.0722f * px[i] + 0.7152f * px[i + 1] + 0.2126f * px[i + 2]) / 255.f;
+            if (g_settings.depthKeyLight) lum = 1.f - lum;
+            float t = std::clamp((lum - lo) / (hi - lo), 0.f, 1.f);
+            a *= t * t * (3.f - 2.f * t);
+        }
+        px[i + 0] = (BYTE)(px[i + 0] * a + 0.5f);
+        px[i + 1] = (BYTE)(px[i + 1] * a + 0.5f);
+        px[i + 2] = (BYTE)(px[i + 2] * a + 0.5f);
+        px[i + 3] = (BYTE)(a * 255.f + 0.5f);
+    }
+    return true;
+}
+
+// Once a second at most: what image the wallpaper calls for, and (re)loads it when that or the
+// settings changed. True when a cut-out is ready to draw. Called on the render thread.
+bool VizDepthActive() {
+    if (!g_settings.depthEnabled || !g_dc) return false;
+    const ULONGLONG now = GetTickCount64();
+    const uint32_t sig = VizDepthSig();
+    if (now - g_depthPollTick >= 1000 || sig != g_depthLoadedSig || g_depthWantPath.empty()) {
+        g_depthPollTick = now;
+        if (VizDepthCutPoll()) g_depthWantPath.clear();
+        g_depthWantPath = VizDepthResolvePath();
+        if (g_settings.depthSource == VizDepthSource::Folder && !g_cutProc) {
+            const std::wstring wall = VizDepthWallPath();
+            const bool asked = g_depthCutRequest.exchange(false);
+            if (asked) g_cutFailedFor.clear();
+            if (!wall.empty() && ((g_depthWantPath.empty() && g_settings.depthAuto && g_cutFailedFor != wall) || asked))
+                VizDepthCutStart(wall);
+        }
+    }
+    if (g_depthWantPath.empty()) {
+        if (g_depthBitmap) { g_depthBitmap.Reset(); g_depthLoadedPath.clear(); g_depthGen++; }
+        return false;
+    }
+    if (!g_depthBitmap || g_depthLoadedPath != g_depthWantPath || g_depthLoadedSig != sig) {
+        g_depthLoadedSig = sig;
+        g_depthLoadedPath = g_depthWantPath;
+        g_depthBitmap.Reset();
+        g_depthGen++;
+        std::vector<BYTE> px;
+        UINT w = 0, h = 0;
+        if (VizDepthDecode(g_depthWantPath, g_settings.depthSource == VizDepthSource::Key, px, w, h)) {
+            D2D1_BITMAP_PROPERTIES bp = D2D1::BitmapProperties(
+                D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+            if (SUCCEEDED(g_dc->CreateBitmap(D2D1::SizeU(w, h), px.data(), w * 4, bp, &g_depthBitmap))) {
+                g_depthImgW = w; g_depthImgH = h;
+            }
+        } else {
+            Wh_Log(L"[Depth] could not read %s", g_depthWantPath.c_str());
+        }
+    }
+    return g_depthBitmap != nullptr;
+}
+
+// Draws the cut-out over the surface, which shows layout-local coordinates. The image goes where
+// the wallpaper goes on this monitor; only the part under the surface is drawn.
+void VizDrawDepth(const VizLayout& layout) {
+    if (!g_dc || !g_depthBitmap || !g_depthImgW || !g_depthImgH) return;
+    HMONITOR mon = g_cachedMonitor.load();
+    if (!mon) mon = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{.cbSize = sizeof(mi)};
+    if (!GetMonitorInfo(mon, &mi)) return;
+    const POINT vo = VizLayoutOrigin();
+    const float mx = (float)mi.rcMonitor.left - (float)vo.x - layout.originX;
+    const float my = (float)mi.rcMonitor.top - (float)vo.y - layout.originY;
+    const float mw = (float)(mi.rcMonitor.right - mi.rcMonitor.left), mh = (float)(mi.rcMonitor.bottom - mi.rcMonitor.top);
+    const float iw = (float)g_depthImgW, ih = (float)g_depthImgH;
+    float sx, sy;
+    switch (g_settings.depthFit) {
+        case VizDepthFit::Fit: sx = sy = std::min(mw / iw, mh / ih); break;
+        case VizDepthFit::Stretch: sx = mw / iw; sy = mh / ih; break;
+        case VizDepthFit::Center: sx = sy = 1.f; break;
+        default: sx = sy = std::max(mw / iw, mh / ih); break;  // Fill
+    }
+    const float k = std::max(0.1f, g_settings.depthScale / 100.f);
+    const float dw = iw * sx * k, dh = ih * sy * k;
+    const float dx = mx + (mw - dw) * 0.5f + g_settings.depthOffsetX;
+    const float dy = my + (mh - dh) * 0.5f + g_settings.depthOffsetY;
+    // The part of the image that is on this monitor and on the surface.
+    const float l = std::max({dx, mx, 0.f}), t = std::max({dy, my, 0.f});
+    const float r = std::min({dx + dw, mx + mw, (float)layout.width}), b = std::min({dy + dh, my + mh, (float)layout.height});
+    if (r <= l || b <= t) return;
+    D2D1_RECT_F dest = D2D1::RectF(l, t, r, b);
+    D2D1_RECT_F src = D2D1::RectF((l - dx) / dw * iw, (t - dy) / dh * ih, (r - dx) / dw * iw, (b - dy) / dh * ih);
+    g_dc->DrawBitmap(g_depthBitmap.Get(), &dest, 1.0f, D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC, &src);
+}
+
+// Glass Bars on the Direct2D renderer: the wallpaper bitmap, (re)read when it changes (looked at once a second at
+// most), and where it lies in layout-local pixels (x, y, width, height). False when glass is off or can't show.
+bool VizGlassD2D(const VizLayout& layout, float map[4]) {
+    if (!g_settings.glassEnabled || !g_dc || g_overlayInPanel || g_overlayInTaskbar) {
+        if (g_glassBitmap) g_glassBitmap.Reset(), g_glassBitmapPath.clear();
+        return false;
+    }
+    const ULONGLONG now = GetTickCount64();
+    if (!g_glassBitmap || now - g_glassBitmapPoll >= 1000) {
+        g_glassBitmapPoll = now;
+        const std::wstring wall = VizDepthWallPath();
+        if (wall.empty()) {
+            g_glassBitmap.Reset(), g_glassBitmapPath.clear();
+            return false;
+        }
+        if (!g_glassBitmap || wall != g_glassBitmapPath) {
+            g_glassBitmap.Reset();
+            g_glassBitmapPath = wall;
+            WCHAR style[16] = L"10";
+            DWORD sz = sizeof(style);
+            RegGetValueW(HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"WallpaperStyle", RRF_RT_REG_SZ, nullptr, style, &sz);
+            const int ws = _wtoi(style);
+            g_glassBitmapFit = ws == 6 ? 1 : ws == 2 ? 2 : ws == 0 ? 3 : 0;
+            std::vector<BYTE> px;
+            UINT w = 0, h = 0;
+            if (VizDepthDecode(wall, false, px, w, h)) {
+                D2D1_BITMAP_PROPERTIES bp =
+                    D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED));
+                g_dc->CreateBitmap(D2D1::SizeU(w, h), px.data(), w * 4, bp, &g_glassBitmap);
+            }
+            if (!g_glassBitmap) Wh_Log(L"[Glass] could not read the wallpaper %s", wall.c_str());
+        }
+    }
+    if (!g_glassBitmap) return false;
+    HMONITOR mon = g_cachedMonitor.load();
+    if (!mon) mon = MonitorFromPoint({0, 0}, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi{.cbSize = sizeof(mi)};
+    if (!GetMonitorInfo(mon, &mi)) return false;
+    const POINT vo = VizLayoutOrigin();
+    const float mx = (float)mi.rcMonitor.left - (float)vo.x - layout.originX;
+    const float my = (float)mi.rcMonitor.top - (float)vo.y - layout.originY;
+    const float mw = (float)(mi.rcMonitor.right - mi.rcMonitor.left), mh = (float)(mi.rcMonitor.bottom - mi.rcMonitor.top);
+    const D2D1_SIZE_F is = g_glassBitmap->GetSize();
+    float sx, sy;
+    switch (g_glassBitmapFit) {
+        case 1: sx = sy = std::min(mw / is.width, mh / is.height); break;
+        case 2: sx = mw / is.width; sy = mh / is.height; break;
+        case 3: sx = sy = 1.f; break;
+        default: sx = sy = std::max(mw / is.width, mh / is.height); break;
+    }
+    map[2] = is.width * sx, map[3] = is.height * sy;
+    map[0] = mx + (mw - map[2]) * 0.5f, map[1] = my + (mh - map[3]) * 0.5f;
+    return true;
+}
+
+// One glass bar on the Direct2D renderer: the wallpaper behind it (no bend here), the bar colour over it at the
+// Tint, and a light edge.
+void VizFillGlassBar(const D2D1_RECT_F& r, const float map[4], D2D1_COLOR_F col, ID2D1SolidColorBrush* brush) {
+    const D2D1_SIZE_F is = g_glassBitmap->GetSize();
+    D2D1_RECT_F src = D2D1::RectF((r.left - map[0]) / map[2] * is.width, (r.top - map[1]) / map[3] * is.height,
+                                  (r.right - map[0]) / map[2] * is.width, (r.bottom - map[1]) / map[3] * is.height);
+    g_dc->DrawBitmap(g_glassBitmap.Get(), &r, col.a, D2D1_INTERPOLATION_MODE_LINEAR, &src);
+    const D2D1_COLOR_F keep = brush->GetColor();
+    brush->SetColor(D2D1::ColorF(col.r, col.g, col.b, col.a * g_settings.glassTint / 100.f));
+    g_dc->FillRectangle(r, brush);
+    if (g_settings.glassEdge > 0.f) {
+        brush->SetColor(D2D1::ColorF(1.f, 1.f, 1.f, col.a * g_settings.glassEdge / 100.f * 0.7f));
+        const float w = std::max(1.f, g_dpiScale);
+        g_dc->DrawRectangle(D2D1::RectF(r.left + w * 0.5f, r.top + w * 0.5f, r.right - w * 0.5f, r.bottom - w * 0.5f), brush, w);
+    }
+    brush->SetColor(keep);
+}
+
 void VizDrawTextOverlays(const VizTextFrame& t, const VizLayout& layout, bool smooth) {
     const float blockX = layout.blockX, blockY = layout.blockY;
     const float totalWidth = layout.totalWidth, totalHeight = layout.totalHeight;
@@ -15869,6 +18779,7 @@ void VizDrawTextOverlays(const VizTextFrame& t, const VizLayout& layout, bool sm
         }
     }
 
+    if (t.np.empty() || t.npAlpha <= 0.01f) g_npHitValid.store(false, std::memory_order_relaxed);
     if (!t.np.empty() && t.npAlpha > 0.01f) {
         g_nowPlayingBrush->SetColor(D2D1::ColorF(g_settings.nowPlayingR / 255.0f, g_settings.nowPlayingG / 255.0f,
                                                  g_settings.nowPlayingB / 255.0f,
@@ -15957,6 +18868,18 @@ void VizDrawTextOverlays(const VizTextFrame& t, const VizLayout& layout, bool sm
         (void)smooth;
         DrawOverlayText(text.c_str(), (UINT32)text.size(), npRect, g_nowPlayingBrush.Get(), npPanel, t.npAlpha,
                         &g_npLayoutCache);
+        // Where the words are (not the whole row), a little roomier, for dragging it.
+        DWRITE_TEXT_METRICS m{};
+        if (c.layout && SUCCEEDED(c.layout->GetMetrics(&m)) && m.width > 0) {
+            float grow = std::max(4.f * g_dpiScale, (float)g_settings.npBgPadding * g_dpiScale);
+            g_npHitL.store(npRect.left + m.left - grow, std::memory_order_relaxed);
+            g_npHitR.store(npRect.left + m.left + m.width + grow, std::memory_order_relaxed);
+            g_npHitT.store(npRect.top + m.top - grow, std::memory_order_relaxed);
+            g_npHitB.store(npRect.top + m.top + m.height + grow, std::memory_order_relaxed);
+            g_npHitValid.store(t.npAlpha > 0.05f, std::memory_order_relaxed);
+        } else {
+            g_npHitValid.store(false, std::memory_order_relaxed);
+        }
     }
     if (!t.pf.empty()) {
         g_nowPlayingBrush->SetColor(D2D1::ColorF(g_settings.nowPlayingR / 255.0f, g_settings.nowPlayingG / 255.0f,
@@ -16039,6 +18962,8 @@ bool RenderVisualizerD3D(float sceneAlpha) {
         return false;
     }
 
+    // Depth: polled before the key below, so a wallpaper change redraws the surface.
+    const bool depthOn = sceneAlpha > 0.001f && VizDepthActive();
     // Text surface: redrawn only when what it shows changes.
     static VizTextFrame tf;  // kept, so its strings keep their storage
     if (sceneAlpha > 0.001f && !dragPause) {
@@ -16066,7 +18991,17 @@ bool RenderVisualizerD3D(float sceneAlpha) {
     ttgfx::MixF(key, sceneAlpha, 255.f);
     ttgfx::MixF(key, layout.blockX, 64.f);
     ttgfx::MixF(key, layout.blockY, 64.f);
+    // Where the two texts sit: a keyboard nudge moves them without changing anything else here.
+    ttgfx::MixF(key, EffectiveNowPlayingOffsetX(), 64.f);
+    ttgfx::MixF(key, EffectiveNowPlayingOffsetY(), 64.f);
+    ttgfx::MixF(key, EffectivePeakFreqOffsetX(), 64.f);
+    ttgfx::MixF(key, EffectivePeakFreqOffsetY(), 64.f);
     ttgfx::Mix(key, (uint64_t)g_swapChainWidth * 65536u + g_swapChainHeight);
+    if (depthOn) {  // the cut-out moves with the box over the wallpaper
+        ttgfx::Mix(key, 9176u + (uint64_t)g_depthGen * 131u + (uint64_t)g_depthLoadedSig);
+        ttgfx::MixF(key, layout.originX, 8.f);
+        ttgfx::MixF(key, layout.originY, 8.f);
+    }
     // Scale numbers (Spectrogram, VU): fixed by the settings and the size.
     const bool scale = VizStyleHasScale();
     const bool scaleHorizontal = g_settings.orientation == VizOrientation::Horizontal;
@@ -16076,8 +19011,8 @@ bool RenderVisualizerD3D(float sceneAlpha) {
     const float scaleGap = VizPx((float)std::max(0.f, g_settings.barGap));
     const float scaleThick = scaleBars * (scaleBarW + scaleGap) - scaleGap;
     if (scale) {
-        ttgfx::Mix(key, 7u + (uint64_t)g_settings.style * 131u + (uint64_t)(g_settings.dbFloor + 200) * 1009u +
-                            (uint64_t)(g_settings.dbCeiling + 200) * 65537u + (uint64_t)g_settings.engine);
+        ttgfx::Mix(key, 7u + (uint64_t)g_settings.style * 131u + (uint64_t)lroundf((g_settings.dbFloor + 200) * 100) * 1009u +
+                            (uint64_t)lroundf((g_settings.dbCeiling + 200) * 100) * 65537u + (uint64_t)g_settings.engine);
         ttgfx::MixF(key, scaleMax, 64.f);
         ttgfx::MixF(key, scaleThick, 64.f);
         ttgfx::Mix(key, scaleHorizontal ? 1u : 2u);
@@ -16087,7 +19022,7 @@ bool RenderVisualizerD3D(float sceneAlpha) {
     ttgfx::g.textForce = false;
     // Nothing to show: take the surface off rather than present a clear one.
     const bool textEmpty = tf.pf.empty() && tf.progress < 0.f && (tf.np.empty() || tf.npAlpha <= 0.01f)
-                           && !(scale && sceneAlpha > 0.001f);
+                           && !(scale && sceneAlpha > 0.001f) && !depthOn;
     if (textEmpty) {
         ttgfx::ShowTextSurface(false);
         return true;
@@ -16102,6 +19037,7 @@ bool RenderVisualizerD3D(float sceneAlpha) {
     VizDrawTextOverlays(tf, layout, true);
     if (scale && sceneAlpha > 0.001f) VizDrawStyleScale(layout.blockX, layout.blockY, scaleMax, scaleThick, scaleHorizontal);
     if (fade) g_dc->PopLayer();
+    if (depthOn) VizDrawDepth(layout);
     HRESULT hrEnd = g_dc->EndDraw();
     HRESULT hrPresent = g_swapChain->Present(0, 0);
     VizCheckDeviceLost(hrEnd, hrPresent);
@@ -16149,7 +19085,7 @@ void RenderVisualizer() {
     float sceneAlpha = 1.0f;
     if (g_settings.autoHideEnabled) {
         ULONGLONG idleMs = GetTickCount64() - g_lastAudibleTickMs.load(std::memory_order_relaxed);
-        ULONGLONG delayMs = (ULONGLONG)std::max(0, g_settings.autoHideDelaySeconds) * 1000ULL;
+        ULONGLONG delayMs = (ULONGLONG)(std::max(0.f, g_settings.autoHideDelaySeconds) * 1000.f);
         constexpr ULONGLONG kFadeMs = 1500;
         if (idleMs > delayMs) {
             ULONGLONG fadeElapsed = idleMs - delayMs;
@@ -16409,6 +19345,8 @@ void RenderVisualizer() {
             cGrad1 = c1;
         }
 
+        const bool laneBehind = g_settings.laneLayer == VizLaneLayer::Behind;
+        if (g_settings.laneEnabled && laneBehind) VizDrawLaneD2D(layout);  // under the bars
         const bool reflD2D = VizFxD2DBegin(useFadeLayer);
         if (VizDrawStyleD2D(blockX, blockY, totalWidth, totalHeight, barCount, barW, barGap, maxSize, idleSize,
                             horizontal, c1, cGrad1, c2, rainbowBase)) {
@@ -16748,6 +19686,8 @@ void RenderVisualizer() {
                 VizClearSprites();
                 s_capRects.clear();
             }
+            float glassMap[4] = {};
+            const bool glassD2D = VizGlassD2D(layout, glassMap);
 
             for (int i = 0; i < barCount; i++) {
                 float fac = std::max(0.f, g_vizPeak[i]);
@@ -16795,7 +19735,9 @@ void RenderVisualizer() {
                 // Draws one bar body: queued as sprites in Smooth Mode, filled
                 // directly otherwise. Peak caps likewise queue or draw.
                 auto fillBar = [&](const D2D1_RECT_F& r) {
-                    if (barSprites)
+                    if (glassD2D)  // (drawn straight away, sprites or not)
+                        VizFillGlassBar(r, glassMap, d2dCol, g_barBrush.Get());
+                    else if (barSprites)
                         VizQueueBarSprites(r, horizontal, spriteCol);
                     else
                         FillRoundedRectPerCorner(g_dc.Get(), g_d2dFactory.Get(), r,
@@ -16878,6 +19820,7 @@ void RenderVisualizer() {
         }
         if (reflD2D) VizFxD2DEnd(blockY + maxSize, VizReflectionDepth(maxSize));
 
+        if (g_settings.laneEnabled && !laneBehind) VizDrawLaneD2D(layout);
         {
             VizTextFrame tf;
             VizBuildTextFrame(tf);
@@ -16887,6 +19830,7 @@ void RenderVisualizer() {
         if (useFadeLayer) {
             g_dc->PopLayer();
         }
+        if (VizDepthActive()) VizDrawDepth(layout);
     }
 
     HRESULT hrEnd = g_dc->EndDraw();
@@ -16929,6 +19873,14 @@ void RenderVisualizer() {
 // It still wakes once per frame, never once per vblank, so the idle-power
 // behaviour the README measures is kept. DWM is asked for its clock twice a
 // second, not per frame.
+// The slowest recent frame's drawing time in ms, forgotten slowly (2% a
+// frame), for Low Latency = Ultra. Written by the UI thread, read by the engine.
+std::atomic<float> g_drawMsMax{1.f};
+void VizNoteDrawMs(float ms) {
+    float m = g_drawMsMax.load(std::memory_order_relaxed);
+    g_drawMsMax.store(std::max(ms, m * 0.98f), std::memory_order_relaxed);
+}
+
 struct VizVsyncSchedule {
     // Smallest time >= t of the form vblank + (k + phase) * period.
     static LONGLONG AlignUp(LONGLONG t, LONGLONG vblank, LONGLONG period, double phase) {
@@ -16947,21 +19899,21 @@ struct VizVsyncSchedule {
     // so a drifting or re-read vblank reference is absorbed gradually. If the
     // thread has fallen more than a frame behind, it rejoins at the next slot
     // instead of rendering a burst to catch up.
-    static LONGLONG Next(LONGLONG due, LONGLONG now, LONGLONG vblank, LONGLONG period, int divisor) {
-        LONGLONG next = AlignUp(due + (LONGLONG)divisor * period - period / 2, vblank, period, 0.5);
-        if (next <= now) next = AlignUp(now + 1, vblank, period, 0.5);
+    static LONGLONG Next(LONGLONG due, LONGLONG now, LONGLONG vblank, LONGLONG period, int divisor, double phase) {
+        LONGLONG next = AlignUp(due + (LONGLONG)divisor * period - period / 2, vblank, period, phase);
+        if (next <= now) next = AlignUp(now + 1, vblank, period, phase);
         return next;
     }
 };
 
-// Thread-scoped quality of service. While playing, the engine thread opts out
-// of execution-speed throttling so frame pacing stays tight on a hybrid CPU;
-// while idle it asks for EcoQoS, so the trickle and the meter reads run on
-// efficiency cores at low clocks. Thread-scoped on purpose: nothing about the
+// Thread-scoped quality of service. level 0 leaves the thread to Windows,
+// 1 asks for EcoQoS (efficiency cores at low clocks), 2 opts it out of power
+// throttling. The engine thread asks for EcoQoS whenever it is idle; while
+// playing, Engine Cores decides. Thread-scoped on purpose: nothing about the
 // process changes. SetThreadInformation is resolved at runtime (Windows 8+;
 // the power-throttling class needs Windows 10 1709, and older builds simply
 // return an error, which is ignored).
-void VizThreadEcoQoS(bool eco) {
+void VizThreadQoS(int level) {
     struct PowerThrottlingState {
         ULONG Version, ControlMask, StateMask;
     };
@@ -16969,12 +19921,156 @@ void VizThreadEcoQoS(bool eco) {
     static SetThreadInformationFn fn =
         (SetThreadInformationFn)(void*)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "SetThreadInformation");
     if (!fn) return;
-    // E2 (to be decided with [Perf] / HWiNFO numbers, not yet): while playing
-    // this still opts out of throttling (HighQoS). The alternative is
-    // {1, eco ? 0x1u : 0x0u, eco ? 0x1u : 0x0u}, "let the system manage",
-    // which keeps the thread off forced P-core / boost scheduling.
-    PowerThrottlingState st = {1, 0x1 /* EXECUTION_SPEED */, eco ? 0x1u : 0x0u};
+    // Measured at 144 fps: about 0.03 ms of engine work per wake and well
+    // under 1 ms of rendering per frame, against a 6.9 ms frame, so Auto
+    // leaves the choice to Windows rather than forcing boost clocks.
+    PowerThrottlingState st = {1, level ? 0x1u : 0x0u /* EXECUTION_SPEED */, level == 1 ? 0x1u : 0x0u};
     fn(GetCurrentThread(), 3 /* ThreadPowerThrottling */, &st, sizeof(st));
+}
+
+// ---- Engine Cores -------------------------------------------------------------
+// Resolved into CPU set ids on every settings load; the engine thread and the
+// drawing (UI) thread pick them up at their next wake. CPU sets are a
+// preference Windows honours where it can, not a hard affinity, so a parked
+// or busy core never stalls the visualizer. GetSystemCpuSetInformation and
+// SetThreadSelectedCpuSets are Windows 10 and are resolved at runtime.
+std::mutex g_coresMutex;
+std::vector<ULONG> g_coresIds;  // empty: any core
+std::atomic<unsigned> g_coresGen{0};
+std::atomic<int> g_coresMode{0};  // VizEngineCores
+
+// Task Manager's CPU numbers, "0-3, 8". False on anything else.
+bool VizParseCoreList(PCWSTR text, std::vector<int>* out) {
+    PCWSTR p = text;
+    auto skip = [&]() {
+        while (*p == L' ' || *p == L'\t') p++;
+    };
+    for (;;) {
+        skip();
+        if (!*p) return true;
+        if (*p < L'0' || *p > L'9') return false;
+        WCHAR* end = nullptr;
+        long a = wcstol(p, &end, 10), b = a;
+        p = end;
+        skip();
+        if (*p == L'-') {
+            p++;
+            skip();
+            if (*p < L'0' || *p > L'9') return false;
+            b = wcstol(p, &end, 10);
+            p = end;
+            skip();
+        }
+        if (a > b || b > 4095) return false;
+        for (long i = a; i <= b; i++) out->push_back((int)i);
+        if (*p == L',' || *p == L';') p++;
+        else if (*p) return false;
+    }
+}
+
+// "0-7, 16" from a sorted list of numbers.
+std::wstring VizCoreRanges(const std::vector<int>& n) {
+    std::wstring r;
+    for (size_t i = 0; i < n.size();) {
+        size_t j = i;
+        while (j + 1 < n.size() && n[j + 1] == n[j] + 1) j++;
+        if (!r.empty()) r += L", ";
+        r += std::to_wstring(n[i]);
+        if (j > i) r += L"-" + std::to_wstring(n[j]);
+        i = j + 1;
+    }
+    return r;
+}
+
+void VizResolveEngineCores(VizEngineCores mode, PCWSTR list) {
+    typedef BOOL(WINAPI * GetSetsFn)(PSYSTEM_CPU_SET_INFORMATION, ULONG, PULONG, HANDLE, ULONG);
+    static GetSetsFn getSets =
+        (GetSetsFn)(void*)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "GetSystemCpuSetInformation");
+    std::vector<ULONG> ids;
+    ULONG len = 0;
+    if (getSets) getSets(nullptr, 0, &len, GetCurrentProcess(), 0);
+    std::vector<BYTE> buf(len);
+    if (len && getSets((PSYSTEM_CPU_SET_INFORMATION)buf.data(), len, &len, GetCurrentProcess(), 0)) {
+        struct Cpu {
+            ULONG id;
+            int num, cls;
+        };
+        std::vector<Cpu> cpus;
+        int lo = 255, hi = 0;
+        for (ULONG off = 0; off + 8 <= len;) {
+            auto* e = (PSYSTEM_CPU_SET_INFORMATION)(buf.data() + off);
+            if (e->Size == 0 || off + e->Size > len) break;
+            if (e->Type == CpuSetInformation) {
+                int cls = e->CpuSet.EfficiencyClass;
+                cpus.push_back({e->CpuSet.Id, e->CpuSet.Group * 64 + e->CpuSet.LogicalProcessorIndex, cls});
+                lo = std::min(lo, cls);
+                hi = std::max(hi, cls);
+            }
+            off += e->Size;
+        }
+        std::vector<int> want, eff, perf, taken;
+        bool listOk = mode != VizEngineCores::Custom || VizParseCoreList(list, &want);
+        if (!listOk) {
+            ReportSettingWarning(L"Hardware", L"Custom Cores",
+                                 std::wstring(L"\"") + list +
+                                     L"\" isn't a list of CPU numbers like 0-3, 8. Using any core.");
+            want.clear();
+        }
+        for (const Cpu& c : cpus) {
+            (c.cls == lo ? eff : perf).push_back(c.num);
+            bool take = (mode == VizEngineCores::Efficiency && lo != hi && c.cls == lo) ||
+                        (mode == VizEngineCores::Performance && lo != hi && c.cls == hi) ||
+                        (mode == VizEngineCores::Custom &&
+                         std::find(want.begin(), want.end(), c.num) != want.end());
+            if (take) {
+                ids.push_back(c.id);
+                taken.push_back(c.num);
+            }
+        }
+        for (auto* v : {&eff, &perf, &taken}) std::sort(v->begin(), v->end());
+        if (lo != hi)
+            Wh_Log(L"[Cores] %u logical processors: efficiency %s, performance %s", (unsigned)cpus.size(),
+                   VizCoreRanges(eff).c_str(), VizCoreRanges(perf).c_str());
+        else
+            Wh_Log(L"[Cores] %u logical processors, all the same kind", (unsigned)cpus.size());
+        if (mode == VizEngineCores::Custom && !want.empty() && ids.empty())
+            ReportSettingWarning(L"Hardware", L"Custom Cores",
+                                 std::wstring(L"None of ") + list + L" is a CPU on this PC. Using any core.");
+        Wh_Log(L"[Cores] engine and drawing threads on %s",
+               ids.empty() ? L"any core" : VizCoreRanges(taken).c_str());
+    }
+    {
+        std::lock_guard<std::mutex> lock(g_coresMutex);
+        g_coresIds = std::move(ids);
+    }
+    g_coresMode.store((int)mode, std::memory_order_relaxed);
+    g_coresGen.fetch_add(1, std::memory_order_release);
+}
+
+// Puts the calling thread on the Engine Cores choice.
+void VizApplyEngineCores() {
+    typedef BOOL(WINAPI * SetSetsFn)(HANDLE, const ULONG*, ULONG);
+    static SetSetsFn setSets =
+        (SetSetsFn)(void*)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "SetThreadSelectedCpuSets");
+    if (!setSets) return;
+    std::vector<ULONG> ids;
+    {
+        std::lock_guard<std::mutex> lock(g_coresMutex);
+        ids = g_coresIds;
+    }
+    setSets(GetCurrentThread(), ids.empty() ? nullptr : ids.data(), (ULONG)ids.size());
+}
+
+// The QoS level for a busy thread under the Engine Cores choice.
+int VizBusyQoS() {
+    switch ((VizEngineCores)g_coresMode.load(std::memory_order_relaxed)) {
+        case VizEngineCores::Efficiency:
+            return 1;
+        case VizEngineCores::Performance:
+            return 2;
+        default:
+            return 0;
+    }
 }
 
 // The engine thread: frame pacing (as 1.5), and since 2.0 also audio capture
@@ -16986,11 +20082,14 @@ void RenderThreadProc() {
     engine.ThreadInit();
 
     ULONGLONG lastSuccessfulPostTick = 0;
-    int ecoState = -1;  // -1 unknown, 0 system-managed, 1 EcoQoS
+    int qosState = -1;  // -1 unknown, else the VizThreadQoS level
+    unsigned fgTick = 0;
+    unsigned coresGen = ~0u;
     auto setEco = [&](bool eco) {
-        if (ecoState == (eco ? 1 : 0)) return;
-        ecoState = eco ? 1 : 0;
-        VizThreadEcoQoS(eco);
+        int level = eco ? 1 : VizBusyQoS();
+        if (qosState == level) return;
+        qosState = level;
+        VizThreadQoS(level);
     };
 
     // Smooth Mode pacing state (see VizVsyncSchedule).
@@ -17052,6 +20151,11 @@ void RenderThreadProc() {
     ULONGLONG meterWakeRaisedUntil = 0;
 
     while (g_renderThreadRunning.load(std::memory_order_relaxed)) {
+        if (unsigned gen = g_coresGen.load(std::memory_order_acquire); gen != coresGen) {
+            coresGen = gen;
+            VizApplyEngineCores();
+            qosState = -1;
+        }
         VizPerfMaybeLog();
         VizPerf(kPerfEngineWakes);
         VizPerf((VizPerfCounter)(kPerfIdlePlaying + std::clamp(g_idleState.load(std::memory_order_relaxed), 0, 2)));
@@ -17084,12 +20188,12 @@ void RenderThreadProc() {
 
         // ---- Idle ladder ----------------------------------------------------------
         ULONGLONG idleMs = now - g_lastAudibleTickMs.load(std::memory_order_relaxed);
-        ULONGLONG silentAfter = (ULONGLONG)std::max(0, g_settings.pauseWhenSilentSeconds) * 1000ULL;
+        ULONGLONG silentAfter = (ULONGLONG)(std::max(0.f, g_settings.pauseWhenSilentSeconds) * 1000.f);
         bool silent = g_settings.pauseWhenSilentSeconds > 0 && idleMs > silentAfter;
         // An auto-hide fade in progress still wants full frames.
         bool fading = false;
         if (g_settings.autoHideEnabled) {
-            ULONGLONG d = (ULONGLONG)std::max(0, g_settings.autoHideDelaySeconds) * 1000ULL;
+            ULONGLONG d = (ULONGLONG)(std::max(0.f, g_settings.autoHideDelaySeconds) * 1000.f);
             fading = idleMs > d && idleMs < d + 2000;
         }
         g_slowMode = silent && !fading;
@@ -17202,14 +20306,35 @@ void RenderThreadProc() {
                 }
                 vsLastSync = nowQpc.QuadPart;
             }
-            if (vsPeriod > 0) {
-                if (vsDue == 0) vsDue = VizVsyncSchedule::AlignUp(nowQpc.QuadPart, vsVblank, vsPeriod, 0.5);
+            // Where in the refresh each frame starts (Low Latency): half a
+            // refresh before Windows composes, a quarter, or just in time.
+            // Adaptive: past the refresh rate, the plain timer below runs the
+            // Target FPS as asked. Fast Sync: past it, a whole number of frames
+            // per refresh on a finer grid, the last one at that same point.
+            const VizFrameSync sync = g_settings.frameSync;
+            double phase = 0.5;
+            if (g_settings.lowLatency == VizLowLatency::On) phase = 0.75;
+            if (g_settings.lowLatency == VizLowLatency::Ultra && vsPeriod > 0) {
+                double periodMs = (double)vsPeriod * 1000.0 / (double)qpcFreq.QuadPart;
+                double lead = g_drawMsMax.load(std::memory_order_relaxed) * 1.5 + 1.0;
+                phase = std::clamp(1.0 - lead / periodMs, 0.5, 0.92);
+            }
+            const bool aboveRefresh = (sync == VizFrameSync::Adaptive || sync == VizFrameSync::Fast) &&
+                                      vsPeriod > 0 &&
+                                      (double)fps * (double)vsPeriod > (double)qpcFreq.QuadPart * 1.02;
+            int perRefresh = 1;
+            if (aboveRefresh && sync == VizFrameSync::Fast)
+                perRefresh = (int)std::clamp(llround((double)fps * (double)vsPeriod / (double)qpcFreq.QuadPart), 1LL, 8LL);
+            const LONGLONG grid = vsPeriod / perRefresh;
+            const double gridPhase = phase * perRefresh - std::floor(phase * perRefresh);
+            if (vsPeriod > 0 && (!aboveRefresh || sync == VizFrameSync::Fast)) {
+                if (vsDue == 0) vsDue = VizVsyncSchedule::AlignUp(nowQpc.QuadPart, vsVblank, grid, gridPhase);
                 if (nowQpc.QuadPart < vsDue) {
                     preciseWait((double)(vsDue - nowQpc.QuadPart) * 1000.0 / (double)qpcFreq.QuadPart);
                     continue;
                 }
-                int divisor = VizVsyncSchedule::Divisor((double)fps, vsPeriod, qpcFreq.QuadPart);
-                vsDue = VizVsyncSchedule::Next(vsDue, nowQpc.QuadPart, vsVblank, vsPeriod, divisor);
+                int divisor = perRefresh > 1 ? 1 : VizVsyncSchedule::Divisor((double)fps, vsPeriod, qpcFreq.QuadPart);
+                vsDue = VizVsyncSchedule::Next(vsDue, nowQpc.QuadPart, vsVblank, grid, divisor, gridPhase);
                 absDue = 0;
             } else {
                 LONGLONG interval = (LONGLONG)((double)qpcFreq.QuadPart * intervalMs / 1000.0);
@@ -17249,7 +20374,13 @@ void RenderThreadProc() {
 
         if (!g_renderThreadRunning.load(std::memory_order_relaxed) || g_unloading.load()) break;
 
-        engineFrame();
+        // Frame Generation x2: every other tick shows the frame the last
+        // analysis held back instead of analysing.
+        if (!(g_settings.frameGenX2 && (fgTick++ & 1) && VizFrameGenShowHeld())) {
+            g_fgInterp = g_settings.frameGenX2;
+            engineFrame();
+            g_fgInterp = false;
+        }
         postTick(overlayWnd, GetTickCount64());
     }
 
@@ -17301,7 +20432,7 @@ void ResumeFromFullscreen() {
     }
 }
 
-// ---- Place In = Panel (2.2) -------------------------------------------------
+// ---- Place In = Panel -------------------------------------------------
 
 void VizPanelLoad() {
     WCHAR buf[160] = {};
@@ -17623,12 +20754,25 @@ LRESULT CALLBACK OverlayWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         }
     }
     switch (uMsg) {
-        case WM_APP_RENDER_TICK:
+        case WM_APP_RENDER_TICK: {
+            // The drawing thread follows Engine Cores too.
+            static unsigned uiCoresGen = ~0u;
+            if (unsigned gen = g_coresGen.load(std::memory_order_acquire); gen != uiCoresGen) {
+                uiCoresGen = gen;
+                VizApplyEngineCores();
+                VizThreadQoS(VizBusyQoS());
+            }
             g_renderTickPending.store(false, std::memory_order_relaxed);
             if (!g_unloading && !g_fullscreenPaused.load()) {
+                LARGE_INTEGER t0, t1, fq;
+                QueryPerformanceCounter(&t0);
                 RenderVisualizer();
+                QueryPerformanceCounter(&t1);
+                QueryPerformanceFrequency(&fq);
+                VizNoteDrawMs((float)((double)(t1.QuadPart - t0.QuadPart) * 1000.0 / (double)fq.QuadPart));
             }
             return 0;
+        }
 
         case WM_WINDOWPOSCHANGED: {
             const WINDOWPOS* wp = (const WINDOWPOS*)lParam;
@@ -17816,6 +20960,14 @@ void VizApplyMenuOverrides() {
             g_settings.nowPlayingEnabled = is(L"1");
         } else if (k == L"progress") {
             g_settings.progressEnabled = is(L"1");
+        } else if (k == L"depth") {
+            g_settings.depthEnabled = is(L"1");
+        } else if (k == L"depthAuto") {
+            g_settings.depthAuto = is(L"1");
+        } else if (k == L"glass") {
+            g_settings.glassEnabled = is(L"1");
+        } else if (k == L"bassLine") {
+            g_settings.laneEnabled = is(L"1");
         } else if (k == L"mediaControls") {
             g_settings.mediaControlsEnabled = is(L"1");
         } else if (k == L"pixelText") {
@@ -17835,13 +20987,13 @@ void VizApplyMenuOverrides() {
             float rad = std::clamp((float)_wtof(v), 0.f, 100.f);
             g_settings.barRadiusTL = g_settings.barRadiusTR = g_settings.barRadiusBR = g_settings.barRadiusBL = rad;
         } else if (k == L"reflection") {
-            g_settings.reflection = std::clamp(_wtoi(v), 0, 100);
+            g_settings.reflection = std::clamp((float)_wtof(v), 0.f, 100.f);
         } else if (k == L"fxGlow") {
-            g_settings.fxGlow = std::clamp(_wtoi(v), 0, 100);
+            g_settings.fxGlow = std::clamp((float)_wtof(v), 0.f, 100.f);
         } else if (k == L"fxGlowRadius") {
             g_settings.fxGlowRadius = std::clamp((float)_wtof(v), 0.5f, 32.f);
         } else if (k == L"fxBloom") {
-            g_settings.fxBloom = std::clamp(_wtoi(v), 0, 100);
+            g_settings.fxBloom = std::clamp((float)_wtof(v), 0.f, 100.f);
         } else if (k == L"fxBloomRadius") {
             g_settings.fxBloomRadius = std::clamp((float)_wtof(v), 4.f, 64.f);
         } else if (k == L"color") {
@@ -17890,6 +21042,10 @@ enum : UINT {
     kMenuCopy = 192,
     kMenuPanelPin = 193,
     kMenuPanelHide = 194,
+    kMenuDepthCut = 195,
+    kMenuCutterInstall = 196,
+    kMenuOpenPlayer = 197,
+    kMenuShowNowPlaying = 198,
     kMenuDefaultOut = 200,
     kMenuDefaultIn = 201,
     kMenuDeviceBase = 300,   // + endpoint index
@@ -17898,7 +21054,7 @@ enum : UINT {
     kMenuPresetBase = 5000,  // + saved style index
 };
 
-// Saved styles and the Style Editor (p3_editor.cpp).
+// Saved styles and the Style Editor.
 std::vector<std::wstring> VizStylePresetNames();
 bool VizApplyStylePreset(const std::wstring& name);
 void VizOpenStyleEditor();
@@ -17974,15 +21130,25 @@ static void VizCopyMenuOverrides(const VizMenuToggle* toggles, size_t nToggles,
     CloseClipboard();
 }
 
+bool VizQuickPanelOpen(POINT pt);
+bool g_qpForMedia = false;  // the panel is opening from the media card or strip (message thread)
+bool g_forceClassicMenu = false;  // the panel's "More" row
+
 void VizShowContextMenu(POINT pt) {
     // One menu at a time: a second request (e.g. the media strip, posted while
     // this menu's modal loop is dispatching messages) would nest and fail.
     if (!g_messageWnd || g_menuOpen.load(std::memory_order_acquire)) return;
+    // The quick-settings panel, unless Shift is held (or it asked for this menu).
+    if (!g_forceClassicMenu && !(GetKeyState(VK_SHIFT) & 0x8000) && VizQuickPanelOpen(pt)) return;
     const VizMenuToggle toggles[] = {
         {L"peakHold", L"Peak Hold Caps", &g_settings.peakHoldEnabled},
         {L"beatFlash", L"Beat Flash", &g_settings.beatFlashEnabled},
         {L"nowPlaying", L"Now Playing Text", &g_settings.nowPlayingEnabled},
         {L"progress", L"Track Progress Bar", &g_settings.progressEnabled},
+        {L"depth", L"Depth", &g_settings.depthEnabled},
+        {L"depthAuto", L"Auto Cut-out", &g_settings.depthAuto},
+        {L"glass", L"Glass Bars", &g_settings.glassEnabled},
+        {L"bassLine", L"Bass Line", &g_settings.laneEnabled},
         {L"mediaControls", L"Media Controls", &g_settings.mediaControlsEnabled},
         {L"pixelText", L"Pixel-Sharp Text", &g_settings.textPixel},
         {L"pixelSnap", L"Pixel Snap (sharp edges)", &g_settings.pixelSnap},
@@ -18045,11 +21211,25 @@ void VizShowContextMenu(POINT pt) {
         AppendMenuW(menu, MF_STRING | (*toggles[ti].field ? MF_CHECKED : 0), kMenuToggleBase + (UINT)ti,
                     toggles[ti].label);
     AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    {
+        bool hasTitle;
+        {
+            std::lock_guard<std::mutex> lock(g_nowPlayingMutex);
+            hasTitle = !g_nowPlayingDisplay.empty();
+        }
+        AppendMenuW(menu, MF_STRING | (VizNowPlayingSource().empty() ? MF_GRAYED : 0), kMenuOpenPlayer, L"Open Player");
+        AppendMenuW(menu, MF_STRING | ((g_settings.nowPlayingEnabled && hasTitle) ? 0 : MF_GRAYED), kMenuShowNowPlaying,
+                    L"Show Now Playing");
+    }
     AppendMenuW(menu, MF_STRING | (g_userPaused.load() ? MF_CHECKED : 0), kMenuPause, L"Pause Visualizer");
     if (g_overlayInPanel) {
         AppendMenuW(menu, MF_STRING | (g_panelPinned ? MF_CHECKED : 0), kMenuPanelPin, L"Keep Panel on Top");
         AppendMenuW(menu, MF_STRING, kMenuPanelHide, L"Hide Panel");
     }
+    AppendMenuW(menu, MF_STRING | ((g_settings.depthEnabled && g_settings.depthSource == VizDepthSource::Folder && !g_cutProc) ? 0 : MF_GRAYED),
+                kMenuDepthCut, g_cutProc ? L"Cutting Out Wallpaper..." : L"Cut Out This Wallpaper");
+    AppendMenuW(menu, MF_STRING, kMenuCutterInstall,
+                VizDepthInstalledCutter().empty() ? L"Install Background Remover (rembg)..." : L"Reinstall Background Remover (rembg)...");
     std::wstring reset = L"Reset Quick Settings";
     if (!g_menuOverrides.empty()) reset += L" (" + std::to_wstring(g_menuOverrides.size()) + L" active)";
     AppendMenuW(menu, MF_STRING | (g_menuOverrides.empty() ? MF_GRAYED : 0), kMenuCopy, L"Copy Quick Settings");
@@ -18058,20 +21238,18 @@ void VizShowContextMenu(POINT pt) {
     AppendMenuW(menu, MF_STRING | (g_menuOverrides.empty() && g_setupLayer.empty() ? MF_GRAYED : 0), kMenuReset, reset.c_str());
 
     // A menu only closes on an outside click when its owner is foreground.
-    // The right-click went to the desktop (the hook swallowed it), so borrow
-    // the foreground thread's input state long enough to take foreground.
-    HWND fg = GetForegroundWindow();
-    DWORD fgThread = fg ? GetWindowThreadProcessId(fg, nullptr) : 0;
-    DWORD me = GetCurrentThreadId();
-    bool attached = fgThread && fgThread != me && AttachThreadInput(me, fgThread, TRUE);
+    // The right-click went to the desktop (the hook swallowed it), so Windows
+    // would refuse SetForegroundWindow. An empty SendInput makes this process
+    // the one that sent the last input, which allows it, without attaching to
+    // another app's input queue (that could hang if the app isn't responding).
+    INPUT input{};
+    SendInput(1, &input, sizeof(INPUT));
     SetForegroundWindow(g_messageWnd);
-    if (attached) AttachThreadInput(me, fgThread, FALSE);
 
     // While the menu is up the mouse hook passes every click through, so a
     // right-click elsewhere closes it instead of being swallowed.
     VizMediaMenuBegin();
-    UINT cmd = (UINT)TrackPopupMenuEx(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY, pt.x, pt.y, g_messageWnd,
-                                      nullptr);
+    UINT cmd = VizTrackMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY, pt.x, pt.y, g_messageWnd);
     VizMediaMenuEnd();
     PostMessage(g_messageWnd, WM_NULL, 0, 0);
     DestroyMenu(menu);  // destroys the submenus with it
@@ -18096,6 +21274,20 @@ void VizShowContextMenu(POINT pt) {
         return;
     } else if (cmd == kMenuPanelHide) {
         VizPanelShow(false);
+        return;
+    } else if (cmd == kMenuOpenPlayer) {
+        VizOpenPlayer();
+        return;
+    } else if (cmd == kMenuShowNowPlaying) {
+        VizShowNowPlayingAgain();
+        return;
+    } else if (cmd == kMenuCutterInstall) {
+        VizDepthInstallCutter();
+        return;
+    } else if (cmd == kMenuDepthCut) {
+        g_depthCutRequest.store(true);
+        if (g_overlayWnd) PostMessage(g_overlayWnd, WM_APP_FORCE_REDRAW, 0, 0);
+        g_depthPollTick = 0;
         return;
     } else if (cmd == kMenuPause) {
         g_userPaused.store(!g_userPaused.load());
@@ -18152,7 +21344,7 @@ static std::wstring VizHexColor(BYTE a, BYTE r, BYTE g, BYTE b) {
 static // A size as text: '6', '1.25', never '6.000000'.
 std::wstring VizNumText(float v) {
     WCHAR b[32];
-    swprintf_s(b, L"%g", std::round(v * 1000.f) / 1000.f);
+    swprintf_s(b, L"%g", std::round(v * 100.f) / 100.f);
     return b;
 }
 
@@ -18168,10 +21360,10 @@ std::wstring VizLookValue(const std::wstring& key) {
     if (key == L"barGap") return VizNumText(s.barGap);
     if (key == L"barMaxSize") return VizNumText(s.barMaxSize);
     if (key == L"barRadius") return VizNumText(s.barRadiusTL);
-    if (key == L"reflection") return std::to_wstring(s.reflection);
-    if (key == L"fxGlow") return std::to_wstring(s.fxGlow);
+    if (key == L"reflection") return VizNumText(s.reflection);
+    if (key == L"fxGlow") return VizNumText(s.fxGlow);
     if (key == L"fxGlowRadius") return VizNumText(s.fxGlowRadius);
-    if (key == L"fxBloom") return std::to_wstring(s.fxBloom);
+    if (key == L"fxBloom") return VizNumText(s.fxBloom);
     if (key == L"fxBloomRadius") return VizNumText(s.fxBloomRadius);
     return L"";
 }
@@ -18220,6 +21412,7 @@ static bool VizSaveStylePreset(const std::wstring& rawName) {
     std::wstring body;
     for (const wchar_t* k : kLookKeys) body += std::wstring(k) + L"=" + VizLookValue(k) + L"\n";
     Wh_SetStringValue((L"stylePreset:" + name).c_str(), body.c_str());
+    Wh_SetStringValue(L"lastStyleName", name.c_str());  // (what a shared setup is called)
     std::vector<std::wstring> names = VizStylePresetNames();
     if (std::find(names.begin(), names.end(), name) == names.end()) {
         names.push_back(name);
@@ -18252,10 +21445,11 @@ bool VizApplyStylePreset(const std::wstring& name) {
         }
         pos = nl + 1;
     }
+    Wh_SetStringValue(L"lastStyleName", name.c_str());  // (what a shared setup is called)
     return true;
 }
 
-// ---- Sharing setups (2.3) ----
+// ---- Sharing setups ----
 // A setup is plain text anyone can read: a first line, its name and the parts it carries, then the
 // settings in those parts that differ from the defaults, then quick settings as quick.<key>. It goes
 // around as a file (.ttstyle), as a one-line code (TT2: and the text packed, for chats), or through
@@ -18269,16 +21463,18 @@ struct VizSetupKey {
     bool text;
     unsigned part;
 };
+// ---- settings table (made by tools/table/make-settings-table.py, don't edit by hand): begin
+// Every setting a style shares: its default (as text) and the part of a style it is in.
 static const VizSetupKey kSetupKeys[] = {
     {L"appearance.shape", L"stereo", true, 1},
-    {L"appearance.reflection", L"0", false, 1},
-    {L"appearance.fxGlow", L"0", false, 1},
+    {L"appearance.reflection", L"0", true, 1},
+    {L"appearance.fxGlow", L"0", true, 1},
     {L"appearance.fxGlowRadius", L"6", true, 1},
-    {L"appearance.fxBloom", L"0", false, 1},
+    {L"appearance.fxBloom", L"0", true, 1},
     {L"appearance.fxBloomRadius", L"16", true, 1},
     {L"appearance.fxOutlineWidth", L"0", true, 1},
     {L"appearance.fxOutlineColor", L"#B0FFFFFF", true, 1},
-    {L"appearance.fxShadow", L"0", false, 1},
+    {L"appearance.fxShadow", L"0", true, 1},
     {L"appearance.fxShadowColor", L"#000000", true, 1},
     {L"appearance.fxShadowX", L"2", true, 1},
     {L"appearance.fxShadowY", L"3", true, 1},
@@ -18289,7 +21485,7 @@ static const VizSetupKey kSetupKeys[] = {
     {L"appearance.barDashGap", L"2", true, 1},
     {L"appearance.barTilt", L"0", true, 1},
     {L"appearance.barMirrorGap", L"0", true, 1},
-    {L"appearance.afterimage", L"0", false, 1},
+    {L"appearance.afterimage", L"0", true, 1},
     {L"appearance.afterimageLength", L"1.2", true, 1},
     {L"appearance.orientation", L"horizontal", true, 1},
     {L"appearance.barCount", L"32", false, 1},
@@ -18302,12 +21498,12 @@ static const VizSetupKey kSetupKeys[] = {
     {L"appearance.color", L"#FFFFFFFF", true, 1},
     {L"appearance.gradientColor1", L"#FF1ED760", true, 1},
     {L"appearance.gradientColor2", L"#FF00B4FF", true, 1},
-    {L"appearance.sensitivity", L"150", false, 2},
+    {L"appearance.sensitivity", L"150", true, 2},
     {L"appearance.sensitivityCurve", L"knee", true, 2},
-    {L"appearance.inputGain", L"0", false, 2},
+    {L"appearance.inputGain", L"0", true, 2},
     {L"appearance.autoGain", L"0", false, 2},
-    {L"appearance.autoGainMaxBoost", L"12", false, 2},
-    {L"appearance.smoothing", L"0", false, 2},
+    {L"appearance.autoGainMaxBoost", L"12", true, 2},
+    {L"appearance.smoothing", L"0", true, 2},
     {L"appearance.eqPreset", L"default", true, 2},
     {L"appearance.fftSize", L"2048", true, 2},
     {L"appearance.freqScale", L"log", true, 2},
@@ -18315,20 +21511,20 @@ static const VizSetupKey kSetupKeys[] = {
     {L"appearance.peakFreqAlignH", L"right", true, 4},
     {L"appearance.peakFreqAlignV", L"top", true, 4},
     {L"appearance.oscilloscopeMultibandEnabled", L"0", false, 2},
-    {L"appearance.oscilloscopeWindowMs", L"24", false, 2},
-    {L"appearance.oscilloscopeDamping", L"0", false, 2},
+    {L"appearance.oscilloscopeWindowMs", L"24", true, 2},
+    {L"appearance.oscilloscopeDamping", L"0", true, 2},
     {L"appearance.verticalAnchor", L"bottom", true, 1},
     {L"appearance.peakHoldEnabled", L"0", false, 1},
     {L"appearance.peakHoldColor", L"#FF00B4FF", true, 1},
     {L"appearance.beatFlashEnabled", L"0", false, 1},
     {L"appearance.beatFlashColor", L"#FFFFFFFF", true, 1},
-    {L"appearance.beatFlashIntensity", L"80", false, 1},
-    {L"appearance.rainbowSpeed", L"40", false, 1},
+    {L"appearance.beatFlashIntensity", L"80", true, 1},
+    {L"appearance.rainbowSpeed", L"40", true, 1},
     {L"appearance.nowPlayingEnabled", L"0", false, 4},
     {L"appearance.nowPlayingColor", L"#FFFFFFFF", true, 4},
     {L"appearance.nowPlayingFont", L"Segoe UI", true, 4},
     {L"appearance.nowPlayingFontSize", L"16", true, 4},
-    {L"appearance.nowPlayingDisplaySeconds", L"6", false, 4},
+    {L"appearance.nowPlayingDisplaySeconds", L"6", true, 4},
     {L"appearance.nowPlayingOffsetX", L"0", true, 4},
     {L"appearance.nowPlayingOffsetY", L"0", true, 4},
     {L"appearance.nowPlayingBgColor", L"#00000000", true, 4},
@@ -18354,16 +21550,19 @@ static const VizSetupKey kSetupKeys[] = {
     {L"progress.gap", L"6", true, 4},
     {L"progress.color", L"#FFFFFFFF", true, 4},
     {L"progress.trackColor", L"#40FFFFFF", true, 4},
+    {L"progress.clickToSeek", L"0", false, 4},
+    {L"progress.seekAppsMode", L"except", true, 4},
+    {L"progress.seekApps", L"", true, 4},
     {L"terminal.style", L"columns", true, 1},
     {L"terminal.font", L"Consolas", true, 1},
     {L"terminal.fontSize", L"14", true, 1},
     {L"terminal.rows", L"16", false, 1},
     {L"terminal.meterColumns", L"40", false, 1},
-    {L"terminal.hotThreshold", L"75", false, 1},
+    {L"terminal.hotThreshold", L"75", true, 1},
     {L"terminal.columnGlyph", L"#", true, 1},
     {L"terminal.peakGlyph", L"-", true, 1},
     {L"terminal.ramp", L" .:-=+*#%@", true, 1},
-    {L"terminal.scrollRate", L"20", false, 1},
+    {L"terminal.scrollRate", L"20", true, 1},
     {L"terminal.lowColor", L"#FF33FF66", true, 1},
     {L"terminal.highColor", L"#FFFF3B3B", true, 1},
     {L"terminal.dimColor", L"#FF1E6B34", true, 1},
@@ -18371,9 +21570,9 @@ static const VizSetupKey kSetupKeys[] = {
     {L"analysis.engine", L"precision", true, 2},
     {L"analysis.bandLayout", L"scale", true, 2},
     {L"analysis.octaveFraction", L"6", true, 2},
-    {L"analysis.minFrequency", L"20", false, 2},
-    {L"analysis.maxFrequency", L"20000", false, 2},
-    {L"analysis.tuningA4", L"440", false, 2},
+    {L"analysis.minFrequency", L"20", true, 2},
+    {L"analysis.maxFrequency", L"20000", true, 2},
+    {L"analysis.tuningA4", L"440", true, 2},
     {L"analysis.weighting", L"z", true, 2},
     {L"analysis.tilt", L"1.5", true, 2},
     {L"analysis.detector", L"rms", true, 2},
@@ -18381,15 +21580,68 @@ static const VizSetupKey kSetupKeys[] = {
     {L"analysis.window", L"hann", true, 2},
     {L"analysis.bassDetail", L"2", true, 2},
     {L"analysis.channel", L"mix", true, 2},
-    {L"analysis.dbFloor", L"-72", false, 2},
-    {L"analysis.dbCeiling", L"-12", false, 2},
+    {L"analysis.dbFloor", L"-72", true, 2},
+    {L"analysis.dbCeiling", L"-12", true, 2},
     {L"analysis.ballistics", L"snappy", true, 2},
-    {L"analysis.attackMs", L"10", false, 2},
-    {L"analysis.releaseDbPerSecond", L"20", false, 2},
-    {L"analysis.peakHoldMs", L"500", false, 2},
+    {L"analysis.attackMs", L"10", true, 2},
+    {L"analysis.releaseDbPerSecond", L"20", true, 2},
+    {L"analysis.peakHoldMs", L"500", true, 2},
     {L"analysis.peakFall", L"gravity", true, 2},
     {L"analysis.readout", L"frequency", true, 4},
     {L"analysis.loudnessResetOnTrack", L"1", false, 4},
+    {L"bass.lowHz", L"20", true, 2},
+    {L"bass.highHz", L"150", true, 2},
+    {L"bass.gainDb", L"0", true, 2},
+    {L"bass.attackPct", L"100", true, 2},
+    {L"bass.releasePct", L"100", true, 2},
+    {L"bass.hitSensitivity", L"50", true, 2},
+    {L"bass.hitWindowMs", L"60", true, 2},
+    {L"bass.lowZoneHz", L"300", true, 2},
+    {L"bass.scopeFocusHz", L"0", true, 2},
+    {L"bassLine.enabled", L"0", false, 4},
+    {L"bassLine.style", L"line", true, 1},
+    {L"bassLine.placement", L"below", true, 1},
+    {L"bassLine.layer", L"front", true, 1},
+    {L"bassLine.height", L"28", true, 1},
+    {L"bassLine.width", L"0", true, 1},
+    {L"bassLine.gap", L"6", true, 1},
+    {L"bassLine.thickness", L"1.5", true, 1},
+    {L"bassLine.offsetX", L"0", true, 8},
+    {L"bassLine.offsetY", L"0", true, 8},
+    {L"bassLine.bodyColor", L"#FFFFFFFF", true, 1},
+    {L"bassLine.kickColor", L"#FFFF3B3B", true, 1},
+    {L"bassLine.snareColor", L"#FFFFD23B", true, 1},
+    {L"bassLine.window", L"2", true, 2},
+    {L"bassLine.lowHz", L"30", true, 2},
+    {L"bassLine.highHz", L"300", true, 2},
+    {L"bassLine.floorDb", L"-85", true, 2},
+    {L"bassLine.depthDb", L"36", true, 2},
+    {L"bassLine.boostDb", L"45", true, 2},
+    {L"bassLine.smoothMs", L"80", true, 2},
+    {L"bassLine.kickSens", L"60", true, 2},
+    {L"bassLine.snareSens", L"50", true, 2},
+    {L"bassLine.cooldownMs", L"90", true, 2},
+    {L"depth.enabled", L"0", false, 4},
+    {L"depth.autoCut", L"0", false, 4},
+    {L"depth.cutterVersion", L"", true, 4},
+    {L"depth.cutterSha", L"", true, 4},
+    {L"depth.source", L"folder", true, 4},
+    {L"depth.folder", L"", true, 4},
+    {L"depth.file", L"", true, 4},
+    {L"depth.fit", L"fill", true, 4},
+    {L"depth.scale", L"100", true, 4},
+    {L"depth.offsetX", L"0", true, 4},
+    {L"depth.offsetY", L"0", true, 4},
+    {L"depth.keyBackground", L"dark", true, 4},
+    {L"depth.keyThreshold", L"6", true, 4},
+    {L"depth.keySoftness", L"12", true, 4},
+    {L"glass.enabled", L"0", false, 1},
+    {L"glass.bend", L"8", true, 1},
+    {L"glass.bendStyle", L"lens", true, 1},
+    {L"glass.bendBand", L"10", true, 1},
+    {L"glass.edge", L"55", true, 1},
+    {L"glass.tint", L"30", true, 1},
+    {L"glass.frost", L"0", true, 1},
     {L"position.host", L"desktop", true, 8},
     {L"position.panelBackdrop", L"acrylic", true, 8},
     {L"position.horizontalPosition", L"50", true, 8},
@@ -18397,12 +21649,26 @@ static const VizSetupKey kSetupKeys[] = {
     {L"position.pixelSnap", L"1", false, 8},
     {L"position.dockSide", L"below", true, 8},
     {L"position.dockAlign", L"center", true, 8},
-    {L"position.dockGap", L"0", false, 8},
-    {L"position.dockShift", L"0", false, 8},
+    {L"position.dockGap", L"0", true, 8},
+    {L"position.dockShift", L"0", true, 8},
     {L"position.split", L"0", false, 8},
-    {L"position.splitAt", L"50", false, 8},
-    {L"position.splitGap", L"200", false, 8},
-    {L"position.splitShift", L"0", false, 8},
+    {L"position.splitAt", L"50", true, 8},
+    {L"position.splitGap", L"200", true, 8},
+    {L"position.splitShift", L"0", true, 8},
+    {L"interaction.keyMoveEnabled", L"0", false, 8},
+    {L"interaction.keyMoveModifier", L"ctrl_alt", true, 8},
+    {L"interaction.keyMoveKeys", L"both", true, 8},
+    {L"interaction.keyMoveStep", L"1", true, 8},
+    {L"interaction.keyMoveFastStep", L"10", true, 8},
+    {L"interaction.keyMoveFineStep", L"0.25", true, 8},
+    {L"interaction.keyMoveFineKey", L"none", true, 8},
+    {L"interaction.keyMoveFastKey", L"shift", true, 8},
+    {L"interaction.dragEnabled", L"0", false, 8},
+    {L"interaction.dragSnap", L"1", false, 8},
+    {L"interaction.dragSnapDistance", L"8", true, 8},
+    {L"interaction.dragModifier", L"ctrl", true, 8},
+    {L"interaction.dragButton", L"middle", true, 8},
+    {L"interaction.contextMenu", L"right_click", true, 8},
     {L"media_controls.enabled", L"0", false, 4},
     {L"media_controls.iconColor", L"#FFFFFFFF", true, 4},
     {L"media_controls.iconSize", L"32", true, 4},
@@ -18425,18 +21691,1896 @@ static const VizSetupKey kSetupKeys[] = {
     {L"media_controls.cardBorderColor", L"#00FFFFFF", true, 4},
     {L"media_controls.cardBorderSize", L"0", true, 4},
     {L"media_controls.cardCornerRadius", L"12", true, 4},
+    {L"media_controls.cardArtCornerRadius", L"-1", true, 4},
     {L"media_controls.cardArtSize", L"0", true, 4},
+    {L"media_controls.cardArtHeight", L"0", true, 4},
+    {L"media_controls.cardArtShows", L"art", true, 4},
     {L"media_controls.cardAccent", L"icon", true, 4},
     {L"media_controls.cardAccentColor", L"#FFFFFFFF", true, 4},
+    {L"media_controls.cardTitle", L"both", true, 4},
+    {L"media_controls.cardTitleScroll", L"hover", true, 4},
+    {L"media_controls.cardClickOpens", L"1", false, 4},
+    {L"media_controls.backdrop", L"solid", true, 4},
     {L"background.enabled", L"1", false, 1},
     {L"background.color", L"#60000000", true, 1},
     {L"background.padding", L"24", true, 1},
     {L"background.cornerRadius", L"14", true, 1},
-    {L"background.blur", L"0", false, 1},
+    {L"background.blur", L"0", true, 1},
     {L"background.borderSize", L"0", true, 1},
     {L"background.borderColor", L"#40FFFFFF", true, 1},
     {L"performance.targetFps", L"60", false, 2},
+    {L"performance.pauseOnFullscreen", L"1", false, 2},
+    {L"performance.pauseWhenSilentSeconds", L"10", true, 2},
+    {L"performance.deepIdle", L"1", false, 2},
+    {L"performance.perfStats", L"0", false, 2},
+    {L"performance.autoHideEnabled", L"0", false, 2},
+    {L"performance.autoHideDelaySeconds", L"15", true, 2},
+    {L"performance.pauseWhenObscured", L"0", false, 2},
+    {L"performance.obscuredThresholdPercent", L"100", true, 2},
+    {L"hardware.workload", L"hybrid", true, 2},
+    {L"hardware.renderer", L"d3d11", true, 2},
+    {L"hardware.opaquePanel", L"auto", true, 2},
+    {L"hardware.frameSync", L"auto", true, 2},
+    {L"hardware.lowLatency", L"off", true, 2},
+    {L"hardware.frameGen", L"off", true, 2},
+    {L"hardware.engineCores", L"auto", true, 2},
 };
+
+// Every setting, for the quick-settings panel: its group, its name on the settings page, what kind of
+// control it is (0 switch, 1 number, 2 text, 3 choice, 4 colour), its default and, for a choice,
+// value=label lines.
+struct VizSettingInfo {
+    const wchar_t* key;
+    const wchar_t* group;
+    const wchar_t* section;  // its sub-page in the panel, or empty
+    const wchar_t* name;
+    unsigned char kind;
+    const wchar_t* def;
+    const wchar_t* options;
+    const wchar_t* tip;  // what it is and where it shows, then a line with a value to try
+};
+static const VizSettingInfo kSettingsInfo[] = {
+    {L"appearance.shape", L"Appearance", L"Shape and Bars", L"Shape", 3, L"stereo", L"stereo=Stereo\nmountain=Mountain\nmirror=Mirror\nwave=Wave\nbreathe=Breathe\ndots=Dots\nradial=Radial\noscilloscope=Oscilloscope\ngoniometer=Goniometer (stereo field)\nterminal=Terminal (text characters, see the Terminal section)\nled=LED Meter (segmented, green / amber / red)\nline=Line Spectrum (filled curve, glowing edge)\nbloom=Polar Bloom (Radial as one filled shape)\nspectrogram=Spectrogram (scrolling colour history)\nvu=VU Needles (two analog meters, L and R)\nstereo_field=Stereo Field (left above, right below)\nparticles=Particles (bars plus sparks on each beat)",
+     L"The kind of picture the visualizer draws. Changes the whole visualizer.\nStereo: bars growing up from a line.\nMountain: the bars joined into one filled ridge.\nMirror: bars growing both ways from a centre line.\nWave: a smooth curve through the bar tops.\nBreathe: one soft shape that swells with the level.\nDots: a dot at each bar's top instead of a bar.\nRadial: bars around a circle.\nOscilloscope: the sound's actual waveform as a line, like a lab scope.\nGoniometer: a stereo cloud showing how wide the mix is.\nTerminal: the spectrum drawn in text characters.\nLED Meter: segmented bars, green, amber, red.\nLine Spectrum: a filled curve with a glowing edge.\nPolar Bloom: Radial drawn as one filled flower.\nSpectrogram: a scrolling colour history of the spectrum.\nVU Needles: two analog meters, left and right.\nStereo Field: left channel above the line, right below.\nParticles: bars plus sparks that fly off on each beat.\nTry: Oscilloscope for a thin glowing wave, Stereo for classic bars, Particles for a lively beat-driven look."},
+    {L"appearance.reflection", L"Appearance", L"Shape and Bars", L"Reflection", 1, L"0", L"",
+     L"A faded mirror image of the bars on a floor under them. Shows below the visualizer, only with bars that grow up from the bottom.\nTry: 40 for a glossy floor, 100 for a full reflection."},
+    {L"appearance.fxGlow", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Glow", 1, L"0", L"",
+     L"A soft light around every bar, dot or line. Makes the visualizer itself glow.\nTry: 30 for a neon look, 5 for a faint edge glow."},
+    {L"appearance.fxGlowRadius", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Glow Radius", 1, L"6", L"",
+     L"How far the glow reaches out from each bar. Only matters with Glow above 0.\nTry: 3 for a tight halo, 12 for a hazy one."},
+    {L"appearance.fxBloom", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Bloom", 1, L"0", L"",
+     L"Light bleeding out of the whole picture, like a camera lens catching something bright. Spreads past the bars onto the panel.\nTry: 15 for a dreamy shine, 50 for a strong blown-out look."},
+    {L"appearance.fxBloomRadius", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Bloom Radius", 1, L"16", L"",
+     L"How far the bloom light spreads. Only matters with Bloom above 0.\nTry: 4 for a close shine, 24 for a wide wash."},
+    {L"appearance.fxOutlineWidth", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Outline Width", 1, L"0", L"",
+     L"A thin line just inside each bar's edge. Bars keep their size.\nTry: 1 with a white Outline Color for crisp, drawn-looking bars."},
+    {L"appearance.fxOutlineColor", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Outline Color", 4, L"#B0FFFFFF", L"",
+     L"The colour of the bar outline. Only shows with Outline Width above 0.\nTry: #B0FFFFFF for a soft white edge."},
+    {L"appearance.fxShadow", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Shadow", 1, L"0", L"",
+     L"A drop shadow behind every bar, dot and line, falling on the panel or wallpaper.\nTry: 50 to lift the bars off a busy wallpaper."},
+    {L"appearance.fxShadowColor", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Shadow Color", 4, L"#000000", L"",
+     L"The shadow's colour.\nTry: #000000 for a normal shadow, your accent colour for a coloured echo."},
+    {L"appearance.fxShadowX", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Shadow Offset X", 1, L"2", L"",
+     L"How far the shadow sits to the right of the bars (negative is left).\nTry: 2 for a subtle offset, 0 for a shadow straight below."},
+    {L"appearance.fxShadowY", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Shadow Offset Y", 1, L"3", L"",
+     L"How far the shadow sits below the bars (negative is above).\nTry: 3 for a light-from-above look."},
+    {L"appearance.fxShadowSoftness", L"Appearance", L"Glow, Bloom, Outline and Shadow", L"Shadow Softness", 1, L"4", L"",
+     L"How blurry the shadow's edge is. 0 is a hard, flat shadow.\nTry: 0 for a retro pixel shadow, 6 for a soft one."},
+    {L"appearance.barHollow", L"Appearance", L"Shape and Bars", L"Hollow Bars", 0, L"0", L"",
+     L"Draws bars as outlines with the inside left see-through.\nTry: On with Hollow Line Width 1.5 for a wireframe look."},
+    {L"appearance.barHollowWidth", L"Appearance", L"Shape and Bars", L"Hollow Line Width", 1, L"1.5", L"",
+     L"How thick the outline of a hollow bar is. Only with Hollow Bars on.\nTry: 1 for hairlines, 3 for bold outlines."},
+    {L"appearance.barDash", L"Appearance", L"Shape and Bars", L"Dash Length", 1, L"0", L"",
+     L"Cuts every bar into dashes along its length, like an LED segment meter. 0 keeps bars solid.\nTry: 2 with Dash Gap 1 for a dotted meter look."},
+    {L"appearance.barDashGap", L"Appearance", L"Shape and Bars", L"Dash Gap", 1, L"2", L"",
+     L"The space between the dashes. Only with Dash Length above 0.\nTry: 1 for tight segments, 3 for open ones."},
+    {L"appearance.barTilt", L"Appearance", L"Shape and Bars", L"Tilt", 1, L"0", L"",
+     L"Leans every bar sideways from its base, like italic text.\nTry: 15 for a sense of speed, -15 to lean the other way."},
+    {L"appearance.barMirrorGap", L"Appearance", L"Shape and Bars", L"Mirror Gap", 1, L"0", L"",
+     L"With Anchor set to Middle, pulls the top and bottom halves of the bars apart, leaving a spine.\nTry: 2 for a thin centre line through the bars."},
+    {L"appearance.afterimage", L"Appearance", L"Shape and Bars", L"Afterimage", 1, L"0", L"",
+     L"A see-through trail behind each bar that jumps up with it and sinks back slowly.\nTry: 25 for a ghostly echo of every hit."},
+    {L"appearance.afterimageLength", L"Appearance", L"Shape and Bars", L"Afterimage Length", 1, L"1.2", L"",
+     L"How many seconds the afterimage trail takes to sink away. Only with Afterimage above 0.\nTry: 1.75 for a slow fade, 0.5 for a quick flicker."},
+    {L"appearance.orientation", L"Appearance", L"Shape and Bars", L"Orientation", 3, L"horizontal", L"horizontal=Horizontal\nvertical=Vertical",
+     L"Which way the visualizer runs.\nHorizontal: bars side by side across the screen, growing up (or down).\nVertical: bars stacked down the screen, growing sideways, to stand along a screen edge.\nTry: Vertical beside a window or along the side of the screen."},
+    {L"appearance.barCount", L"Appearance", L"Shape and Bars", L"Bar Count", 1, L"32", L"",
+     L"How many bars are drawn across the visualizer. More bars means more detail and thinner spacing.\nTry: 32 for chunky bars, 135 for a fine, detailed spectrum."},
+    {L"appearance.barWidth", L"Appearance", L"Shape and Bars", L"Bar Width", 1, L"6", L"",
+     L"How thick each bar is, in pixels.\nTry: 2 for a fine line look, 8 for bold blocks."},
+    {L"appearance.barGap", L"Appearance", L"Shape and Bars", L"Bar Gap", 1, L"4", L"",
+     L"The space between bars, in pixels.\nTry: 1 for a near-solid wall, 4 for clearly separate bars."},
+    {L"appearance.barMaxSize", L"Appearance", L"Shape and Bars", L"Bar Max Size", 1, L"140", L"",
+     L"How tall a bar can get at full volume, in pixels. Sets the visualizer's height.\nTry: 18 for a slim strip, 140 for a tall display."},
+    {L"appearance.barIdleSize", L"Appearance", L"Shape and Bars", L"Bar Idle Size", 1, L"4", L"",
+     L"The height bars keep when nothing is playing, so it never goes fully flat. -1 hides them.\nTry: 2 for a resting line, -1 to vanish in silence."},
+    {L"appearance.barCornerRadius", L"Appearance", L"Shape and Bars", L"Bar Corner Radius", 1, L"3", L"",
+     L"How round the bar corners are. One number for all, or four for each corner.\nTry: 0 for square pixel bars, 3 for soft pills."},
+    {L"appearance.colorMode", L"Appearance", L"Colours", L"Color Mode", 3, L"solid", L"solid=Solid\ngradient=Gradient\nreactive_gradient=Reactive Gradient\naccent=Windows Accent Color\nalbum_art=Album Art Color\ndynamic_album=Dynamic Album Gradient\nacrylic=Acrylic\nrainbow=Rainbow Cycle\ntourne=Tourne (Teal/Red)",
+     L"Where the bar colours come from.\nSolid: every bar in Color.\nGradient: a fade from Gradient Color 1 on the left to 2 on the right.\nReactive Gradient: each bar picks between the two by how loud it is (quiet = 1, loud = 2).\nWindows Accent Color: your Windows accent colour.\nAlbum Art Color: the main colour of the playing song's cover.\nDynamic Album Gradient: a gradient made from the cover's colours.\nAcrylic: see-through frosted bars tinted with Color.\nRainbow Cycle: colours that keep cycling (speed below).\nTourne: the Tourne teal-to-red fade.\nTry: Reactive Gradient so loud hits change colour, Album Art Color to match each song."},
+    {L"appearance.color", L"Appearance", L"Colours", L"Color", 4, L"#FFFFFFFF", L"",
+     L"The bar colour when Color Mode is Solid (and the tint for Acrylic).\nTry: your palette red #E57474, or #15FFA2 for neon green."},
+    {L"appearance.gradientColor1", L"Appearance", L"Colours", L"Gradient Color 1", 4, L"#FF1ED760", L"",
+     L"The first colour of the gradient (left, or the quiet end for Reactive Gradient).\nTry: #4CE38D for a green-to-red Tourne fade."},
+    {L"appearance.gradientColor2", L"Appearance", L"Colours", L"Gradient Color 2", 4, L"#FF00B4FF", L"",
+     L"The second colour of the gradient (right, or the loud end for Reactive Gradient).\nTry: #A95D5D to end the fade in a muted red."},
+    {L"appearance.sensitivity", L"Appearance", L"Sensitivity", L"Sensitivity", 1, L"150", L"",
+     L"How strongly the bars react to sound. Higher fills the bars with quieter music.\nTry: 100 for a calm look, 200 if bars barely move."},
+    {L"appearance.sensitivityCurve", L"Appearance", L"Sensitivity", L"Sensitivity Curve", 3, L"knee", L"exponential=Exponential (Soft)\nknee=Knee (Balanced)\npower=Power (Headroom)",
+     L"What happens when a loud sound would push a bar past the top.\nExponential (Soft): squeezes early and smoothly; loud parts look gentle and nothing slams the ceiling, but big hits look smaller.\nKnee (Balanced): leaves quiet and medium levels exactly as they are and only squeezes the loudest part; the usual choice.\nPower (Headroom): squeezes least and latest, so hits stay punchy and bars reach the top more often.\nTry: Knee for most music, Power for punchy electronic, Exponential for calm, smooth motion."},
+    {L"appearance.inputGain", L"Appearance", L"Sensitivity", L"Input Gain (dB)", 1, L"0", L"",
+     L"A fixed volume boost or cut on the sound before the visualizer reads it, in dB.\nTry: 3 if your player volume is low, -3 if everything maxes out."},
+    {L"appearance.autoGain", L"Appearance", L"Sensitivity", L"Auto Gain", 0, L"0", L"",
+     L"Lifts quiet sources automatically so they still fill the bars. Loud music is unchanged.\nTry: On if you switch between quiet podcasts and loud music."},
+    {L"appearance.autoGainMaxBoost", L"Appearance", L"Sensitivity", L"Auto Gain Max Boost (dB)", 1, L"12", L"",
+     L"The most Auto Gain is allowed to lift a quiet sound, in dB.\nTry: 9 for gentle help, 18 for very quiet sources."},
+    {L"appearance.smoothing", L"Appearance", L"Sensitivity", L"Motion Smoothing", 1, L"0", L"",
+     L"Makes bars rise and fall more slowly for a steadier, calmer motion.\nTry: 0 for snappy, 6 for smooth and easy to watch."},
+    {L"appearance.eqPreset", L"Appearance", L"Sensitivity", L"EQ Preset", 3, L"default", L"default=Default\nbass=Bass\nrock=Rock\npop=Pop\njazz=Jazz\nelectronic=Electronic",
+     L"Boosts parts of the sound before it's drawn, to suit a music style.\nDefault: no change.\nBass: lifts the low end, for hip-hop and EDM.\nRock: lifts lows and highs a little, mids flat.\nPop: lifts vocals and mids.\nJazz: gentle lift to mids and highs.\nElectronic: lifts sub-bass and treble.\nTry: Default for an honest view, Bass if your music is bass-heavy but the left bars look flat."},
+    {L"appearance.fftSize", L"Appearance", L"Sensitivity", L"FFT Size", 3, L"2048", L"1024=1024 (Fastest)\n2048=2048\n4096=4096\n8192=8192 (Most Detailed)",
+     L"How finely the sound is split into pitches before it becomes bars.\n1024: fastest reaction, least detail (bass bars blur together).\n2048: the balance; the sweet spot with the Precision engine.\n4096: more detail in the bass, a touch slower.\n8192: the most detail, slightly laggier and more CPU.\nTry: 2048 for most setups, 8192 for many thin bars on a big screen."},
+    {L"appearance.freqScale", L"Appearance", L"Sensitivity", L"Frequency Scale", 3, L"log", L"log=Log (natural, matches previous behavior)\nlinear=Linear (Hz-even spacing)\nmel=Mel (perceptual pitch spacing)\nbark=Bark (critical bands, Traunmueller)\nerb=ERB (auditory filter bandwidths, Glasberg and Moore)",
+     L"How bars are spread from low to high pitch.\nLog: each octave gets equal room, like a piano; the natural look.\nLinear: equal Hz per bar; bass squashed into a few bars on the left, treble takes most of the width.\nMel: spaced like the pitches we hear as evenly spaced.\nBark: spaced like the ear's critical bands; more room for the mids.\nERB: spaced like the ear's own filters; a balanced, ear-like spread.\nTry: Log for music, ERB for an evenly busy spectrum."},
+    {L"appearance.peakFreqEnabled", L"Appearance", L"Readout", L"Peak Frequency Readout", 0, L"0", L"",
+     L"Shows a small number with the strongest pitch right now (or loudness, see Readout Content), near the bars.\nTry: On with the Terminal font for a studio meter look."},
+    {L"appearance.peakFreqAlignH", L"Appearance", L"Readout", L"Peak Readout - Horizontal Position", 3, L"right", L"left=Left\ncenter=Center\nright=Right",
+     L"Where the readout sits from left to right.\nLeft, Center or Right of the visualizer.\nTry: Right to keep it clear of the bass on the left."},
+    {L"appearance.peakFreqAlignV", L"Appearance", L"Readout", L"Peak Readout - Vertical Position", 3, L"top", L"above=Above (outside)\ntop=Top (inside)\nmiddle=Middle\nbottom=Bottom (inside)\nbelow=Below (outside)",
+     L"Where the readout sits from top to bottom.\nAbove: outside, over the visualizer.\nTop: inside, along the top.\nMiddle: inside, centred.\nBottom: inside, along the bottom.\nBelow: outside, under the visualizer.\nTry: Above for a clean label that never covers the bars."},
+    {L"appearance.oscilloscopeMultibandEnabled", L"Appearance", L"Oscilloscope", L"Multiband Oscilloscope Coloring", 0, L"0", L"",
+     L"Colours the Oscilloscope line by which part of the sound is strongest: low, mid or high.\nTry: On for a scope that changes colour with the music."},
+    {L"appearance.oscilloscopeWindowMs", L"Appearance", L"Oscilloscope", L"Oscilloscope Time Window (ms)", 1, L"24", L"",
+     L"How much time the Oscilloscope line shows end to end. Short looks like a lab scope, long like a rolling wave.\nTry: 24 for sharp wave cycles, 175 for a smooth ribbon."},
+    {L"appearance.oscilloscopeDamping", L"Appearance", L"Oscilloscope", L"Oscilloscope Damping", 1, L"0", L"",
+     L"Slows how fast the Oscilloscope line changes shape so it is easier to follow.\nTry: 0 for raw and jittery, 80 for a slow, flowing line."},
+    {L"appearance.verticalAnchor", L"Appearance", L"Shape and Bars", L"Anchor", 3, L"bottom", L"top=Top\nmiddle=Middle\nbottom=Bottom",
+     L"Where bars grow from.\nBottom: up from a floor, the classic equalizer.\nTop: down from a ceiling, like icicles.\nMiddle: both ways from a centre line, like a waveform.\nTry: Middle for a waveform look, Bottom for a classic equalizer."},
+    {L"appearance.peakHoldEnabled", L"Appearance", L"Colours", L"Peak Hold Caps", 0, L"0", L"",
+     L"Small caps that hang at each bar's recent highest point, then fall.\nTry: On with a bright cap colour for a classic hi-fi look."},
+    {L"appearance.peakHoldColor", L"Appearance", L"Colours", L"Peak Hold Cap Color", 4, L"#FF00B4FF", L"",
+     L"The colour of the peak caps. Always used, whatever the Color Mode.\nTry: #15FFA2 for neon caps over red bars."},
+    {L"appearance.beatFlashEnabled", L"Appearance", L"Colours", L"Beat Flash", 0, L"0", L"",
+     L"Briefly flashes the bars toward the Beat Flash Color on every bass hit.\nTry: On to make kicks pop."},
+    {L"appearance.beatFlashColor", L"Appearance", L"Colours", L"Beat Flash Color", 4, L"#FFFFFFFF", L"",
+     L"The colour bars flash toward on a beat. Lower its alpha for a gentler tint.\nTry: #15FFA2 for a green pulse, #80FFFFFF for a soft white one."},
+    {L"appearance.beatFlashIntensity", L"Appearance", L"Colours", L"Beat Flash Intensity", 1, L"80", L"",
+     L"How fast and strongly a beat reaches the flash colour.\nTry: 80 for a clear flash, 150 for a punchy strobe."},
+    {L"appearance.rainbowSpeed", L"Appearance", L"Colours", L"Rainbow Cycle Speed", 1, L"40", L"",
+     L"How fast the colours cycle with Color Mode set to Rainbow.\nTry: 20 for a slow drift, 80 for a fast party cycle."},
+    {L"appearance.nowPlayingEnabled", L"Appearance", L"Now Playing", L"Now Playing Text", 0, L"0", L"",
+     L"Shows the song's artist and title near the visualizer.\nTry: On with a pixel font for a retro display."},
+    {L"appearance.nowPlayingColor", L"Appearance", L"Now Playing", L"Now Playing Text Color", 4, L"#FFFFFFFF", L"",
+     L"The colour of the song title text.\nTry: your palette red #E57474."},
+    {L"appearance.nowPlayingFont", L"Appearance", L"Now Playing", L"Now Playing Font", 2, L"Segoe UI", L"",
+     L"The font for the song text (any installed font).\nTry: a pixel font like Delicatus, or Segoe UI for clean text."},
+    {L"appearance.nowPlayingFontSize", L"Appearance", L"Now Playing", L"Now Playing Font Size", 1, L"16", L"",
+     L"The size of the song text, in points.\nTry: 14 for a subtle label, 20 for a headline."},
+    {L"appearance.nowPlayingDisplaySeconds", L"Appearance", L"Now Playing", L"Now Playing Display Seconds", 1, L"6", L"",
+     L"How long the song text stays after a track changes. 0 keeps it on all the time.\nTry: 0 for an always-on widget, 6 for a brief pop-up."},
+    {L"appearance.nowPlayingOffsetX", L"Appearance", L"Now Playing", L"Now Playing Offset X", 1, L"0", L"",
+     L"Slides the song text left (negative) or right, in pixels.\nTry: small steps like 10 to clear the panel edge."},
+    {L"appearance.nowPlayingOffsetY", L"Appearance", L"Now Playing", L"Now Playing Offset Y", 1, L"0", L"",
+     L"Slides the song text up (negative) or down, in pixels.\nTry: -4 to give it a little more room above the bars."},
+    {L"appearance.nowPlayingBgColor", L"Appearance", L"Now Playing", L"Now Playing Background", 4, L"#00000000", L"",
+     L"A small panel just behind the song text, so it reads over a busy wallpaper. Transparent means none.\nTry: #141B1E for a dark label box."},
+    {L"appearance.nowPlayingBgPadding", L"Appearance", L"Now Playing", L"Now Playing Background Padding", 1, L"6", L"",
+     L"The space between the song text and the edge of its panel.\nTry: 4 for a snug box, 8 for a roomy one."},
+    {L"appearance.nowPlayingBgCornerRadius", L"Appearance", L"Now Playing", L"Now Playing Background Corner Radius", 1, L"6", L"",
+     L"How round the song text panel's corners are.\nTry: 0 for square, 6 for soft."},
+    {L"appearance.nowPlayingBgBorderSize", L"Appearance", L"Now Playing", L"Now Playing Background Border Size", 1, L"0", L"",
+     L"An outline around the song text panel. 0 is none.\nTry: 1 with your accent colour for a framed label."},
+    {L"appearance.nowPlayingBgBorderColor", L"Appearance", L"Now Playing", L"Now Playing Background Border Color", 4, L"#40FFFFFF", L"",
+     L"The colour of the song text panel's outline.\nTry: #64AA89 for a muted green frame."},
+    {L"appearance.peakFreqOffsetX", L"Appearance", L"Readout", L"Peak Readout Offset X", 1, L"0", L"",
+     L"Slides the readout left (negative) or right, in pixels.\nTry: small steps like 6 for fine placement."},
+    {L"appearance.peakFreqOffsetY", L"Appearance", L"Readout", L"Peak Readout Offset Y", 1, L"0", L"",
+     L"Slides the readout up (negative) or down, in pixels.\nTry: -2 to lift it off the bars."},
+    {L"appearance.peakFreqBgColor", L"Appearance", L"Readout", L"Peak Readout Background", 4, L"#00000000", L"",
+     L"A small panel just behind the readout so it reads over the bars. Transparent means none.\nTry: #141B1E for a dark tag."},
+    {L"appearance.peakFreqBgPadding", L"Appearance", L"Readout", L"Peak Readout Background Padding", 1, L"6", L"",
+     L"The space between the readout and the edge of its panel.\nTry: 4."},
+    {L"appearance.peakFreqBgCornerRadius", L"Appearance", L"Readout", L"Peak Readout Background Corner Radius", 1, L"6", L"",
+     L"How round the readout panel's corners are.\nTry: 0 for square, 6 for soft."},
+    {L"appearance.peakFreqBgBorderSize", L"Appearance", L"Readout", L"Peak Readout Background Border Size", 1, L"0", L"",
+     L"An outline around the readout panel. 0 is none.\nTry: 1 for a framed tag."},
+    {L"appearance.peakFreqBgBorderColor", L"Appearance", L"Readout", L"Peak Readout Background Border Color", 4, L"#40FFFFFF", L"",
+     L"The colour of the readout panel's outline.\nTry: #64AA89."},
+    {L"appearance.nowPlayingLayout", L"Appearance", L"Now Playing", L"Now Playing Layout", 3, L"one_line", L"one_line=One line\ntwo_lines=Two lines (title, then artist)",
+     L"How the song text is laid out.\nOne line: \"Artist - Title\".\nTwo lines: the title, with the artist under it in its own colour.\nTry: Two lines for a media-card feel."},
+    {L"appearance.nowPlayingPlacement", L"Appearance", L"Now Playing", L"Now Playing Placement", 3, L"above", L"above=Above the visualizer\npanel_top=Inside the panel, top\npanel_bottom=Inside the panel, bottom",
+     L"Where the song text goes.\nAbove the visualizer: over the panel, outside it.\nInside the panel, top: in the panel's padding above the bars.\nInside the panel, bottom: in the padding below them (give the panel enough padding on that side).\nTry: Inside the panel, top, with 20 top padding for a tidy widget."},
+    {L"appearance.nowPlayingAlign", L"Appearance", L"Now Playing", L"Now Playing Alignment", 3, L"center", L"center=Center\nleft=Left\nright=Right",
+     L"Lines the song text up on the left, in the centre, or on the right of the bars.\nTry: Left to line it up with the first bar."},
+    {L"appearance.nowPlayingArtistColor", L"Appearance", L"Now Playing", L"Now Playing Artist Color", 4, L"#B3FFFFFF", L"",
+     L"The colour of the artist part of the song text.\nTry: #64AA89 to set the artist apart from the title."},
+    {L"appearance.textRendering", L"Appearance", L"Now Playing", L"Text Rendering", 3, L"smooth", L"smooth=Smooth\npixel=Pixel (no antialiasing)",
+     L"How the song text, readout and Terminal text are drawn.\nSmooth: soft, antialiased edges; right for normal fonts.\nPixel: hard pixels with no smoothing; right for pixel fonts at their design size (or a multiple).\nTry: Pixel with a pixel font for crisp retro text."},
+    {L"audio.source", L"Audio Source", L"", L"Audio Source", 3, L"default_output", L"default_output=Default output (what you hear)\ndefault_input=Default input\nnamed=A device by name (below)",
+     L"What the visualizer listens to.\nDefault output: what you hear, from your speakers or headphones.\nDefault input: your microphone or line-in.\nA device by name: any output or input, virtual cables included, named in Device Name.\nTry: Default output to follow your music."},
+    {L"audio.deviceName", L"Audio Source", L"", L"Device Name", 2, L"", L"",
+     L"Part of a device's name to listen to, when Audio Source is a named device.\nTry: \"CABLE Output\" for a virtual cable."},
+    {L"progress.enabled", L"Track Progress", L"", L"Track Progress Bar", 0, L"0", L"",
+     L"A thin bar showing how far into the song you are, near the visualizer.\nTry: On with Height 2 for a subtle progress line."},
+    {L"progress.placement", L"Track Progress", L"", L"Placement", 3, L"below", L"below=Below the panel\nabove=Above the panel\npanel_bottom=Inside the panel, under the bars",
+     L"Where the song progress bar sits.\nBelow the panel: under the visualizer.\nAbove the panel: over it.\nInside the panel, under the bars: in the panel's bottom padding.\nTry: Inside the panel for a built-in look."},
+    {L"progress.height", L"Track Progress", L"", L"Height", 1, L"2", L"",
+     L"How thick the progress bar is, in pixels.\nTry: 2 for a hairline, 4 for a clear bar."},
+    {L"progress.gap", L"Track Progress", L"", L"Gap", 1, L"6", L"",
+     L"The space between the progress bar and the panel (or the bars).\nTry: 3."},
+    {L"progress.color", L"Track Progress", L"", L"Color", 4, L"#FFFFFFFF", L"",
+     L"The colour of the played part of the progress bar.\nTry: #64AA89 for muted green."},
+    {L"progress.trackColor", L"Track Progress", L"", L"Track Color", 4, L"#40FFFFFF", L"",
+     L"The colour of the not-yet-played part of the progress bar.\nTry: #141B1E for a dark track."},
+    {L"progress.clickToSeek", L"Track Progress", L"Click to Seek", L"Click to Seek", 0, L"0", L"",
+     L"Lets you click or drag along the progress bar to jump in the song.\nTry: On if you want a scrubber on the desktop."},
+    {L"progress.seekAppsMode", L"Track Progress", L"Click to Seek", L"Seek App List", 3, L"except", L"except=Seek, except while these apps run\nonly=Seek only while these apps run",
+     L"How the Seek Apps list is used.\nExcept: click-to-seek works unless one of those apps is running (list your games).\nOnly: click-to-seek works only while one of them is running.\nTry: Except, listing your games, so a click in a game never skips your song."},
+    {L"progress.seekApps", L"Track Progress", L"Click to Seek", L"Seek Apps", 2, L"", L"",
+     L"App names where click-to-seek is turned off (or only on), separated by commas.\nTry: \"obs64, League of Legends\"."},
+    {L"terminal.style", L"Terminal", L"", L"Terminal Style", 3, L"columns", L"columns=Columns\nwaterfall=Waterfall\nmeters=Meters",
+     L"The look of the Terminal shape.\nColumns: each bar as a column of characters.\nWaterfall: a scrolling spectrum in characters, newest line on top.\nMeters: Bass, Mid, Treble and Volume as text meters.\nTry: Waterfall for a hacker-screen look."},
+    {L"terminal.font", L"Terminal", L"", L"Font", 2, L"Consolas", L"",
+     L"The font for the Terminal shape (a fixed-width one).\nTry: Scientifica or Cascadia Mono."},
+    {L"terminal.fontSize", L"Terminal", L"", L"Font Size", 1, L"14", L"",
+     L"The text size of the Terminal shape, which sets the size of its whole grid.\nTry: 12 for a dense grid."},
+    {L"terminal.rows", L"Terminal", L"", L"Rows", 1, L"16", L"",
+     L"How many text lines tall the Terminal columns or waterfall are.\nTry: 16 for a short block, 80 for a tall wall."},
+    {L"terminal.meterColumns", L"Terminal", L"", L"Meter Width", 1, L"40", L"",
+     L"How many characters wide the Terminal meters are.\nTry: 40."},
+    {L"terminal.hotThreshold", L"Terminal", L"", L"Hot Threshold (%)", 1, L"75", L"",
+     L"How high (as a percentage) a character has to be to turn the Hot Color.\nTry: 75 for only the peaks to light up."},
+    {L"terminal.columnGlyph", L"Terminal", L"", L"Column Glyph", 2, L"#", L"",
+     L"The character the Terminal columns are built from.\nTry: a full block for solid columns, # for classic text."},
+    {L"terminal.peakGlyph", L"Terminal", L"", L"Peak Glyph", 2, L"-", L"",
+     L"The character used for peak caps in Terminal columns.\nTry: - or _."},
+    {L"terminal.ramp", L"Terminal", L"", L"Waterfall Ramp", 2, L" .:-=+*#%@", L"",
+     L"The characters from quiet to loud for the Terminal waterfall.\nTry: \" .:-=+*#%@\" for classic ASCII shading."},
+    {L"terminal.scrollRate", L"Terminal", L"", L"Waterfall Speed", 1, L"20", L"",
+     L"How many lines per second the Terminal waterfall scrolls.\nTry: 7 for slow, 20 for lively."},
+    {L"terminal.lowColor", L"Terminal", L"Colours", L"Color", 4, L"#FF33FF66", L"",
+     L"The main text colour of the Terminal shape.\nTry: #64AA89 for muted green."},
+    {L"terminal.highColor", L"Terminal", L"Colours", L"Hot Color", 4, L"#FFFF3B3B", L"",
+     L"The colour of the loudest characters in the Terminal shape.\nTry: #A95D5D for a red hot zone."},
+    {L"terminal.dimColor", L"Terminal", L"Colours", L"Dim Color", 4, L"#FF1E6B34", L"",
+     L"The colour of the faintest Terminal waterfall characters.\nTry: your palette red #E57474 for a two-tone screen."},
+    {L"terminal.labelColor", L"Terminal", L"Colours", L"Label Color", 4, L"#FFB8FFB8", L"",
+     L"The colour of the labels on the Terminal meters.\nTry: #A95D5D."},
+    {L"analysis.engine", L"Analysis (Precision Engine)", L"Bands", L"Analysis Engine", 3, L"precision", L"precision=Precision (every bar its own band)\nclassic=Classic (1.4, 7 bands)",
+     L"How the sound is measured.\nPrecision: every bar gets its own true band, sharp bass and fast treble; everything else in Analysis applies.\nClassic: the old 1.4 way, 7 bands the bars blend between; softer, blobbier movement.\nTry: Precision."},
+    {L"analysis.bandLayout", L"Analysis (Precision Engine)", L"Bands", L"Band Layout", 3, L"scale", L"scale=Frequency Scale (uses Bar Count)\niec=IEC 61260 fractional-octave bands\nmusical=Musical notes (equal temperament)",
+     L"How the spectrum is cut into bars.\nFrequency Scale: Bar Count bars spread over Min to Max Frequency on the Frequency Scale.\nIEC 61260: the standard audio-analyzer bands (width set by Octave Fraction); Bar Count is ignored.\nMusical notes: one bar per note, tuned to A4; Bar Count is ignored.\nTry: Musical with 1/12 for a piano-like spectrum."},
+    {L"analysis.octaveFraction", L"Analysis (Precision Engine)", L"Bands", L"Octave Fraction", 3, L"6", L"1=1/1 octave\n3=1/3 octave\n6=1/6 octave\n12=1/12 octave (semitone)\n24=1/24 octave (quarter tone)",
+     L"How wide each band is for the IEC and Musical layouts; narrower means more, thinner bars.\n1/1: one bar per octave, about 10 bars.\n1/3: the classic studio analyzer, about 30 bars.\n1/6: about 60 bars.\n1/12: one bar per semitone (musical note).\n1/24: a quarter tone, about 240 bars.\nTry: 1/3 for a studio look, 1/12 for notes."},
+    {L"analysis.minFrequency", L"Analysis (Precision Engine)", L"Bands", L"Min Frequency (Hz)", 1, L"20", L"",
+     L"The lowest pitch the visualizer shows (left end).\nTry: 20 for deep bass, 40 to drop the rumble."},
+    {L"analysis.maxFrequency", L"Analysis (Precision Engine)", L"Bands", L"Max Frequency (Hz)", 1, L"20000", L"",
+     L"The highest pitch the visualizer shows (right end).\nTry: 16000 to drop empty treble bars."},
+    {L"analysis.tuningA4", L"Analysis (Precision Engine)", L"Bands", L"Tuning (A4, Hz)", 1, L"440", L"",
+     L"The reference pitch for the Musical layout.\nTry: 440, the standard."},
+    {L"analysis.weighting", L"Analysis (Precision Engine)", L"Levels", L"Weighting", 3, L"z", L"z=Z (flat)\na=A (IEC 61672)\nc=C (IEC 61672)",
+     L"Reshapes the levels like human hearing.\nZ: flat, the honest signal.\nA: like the ear at quiet volume; pulls the bass way down, so mids and highs dominate.\nC: like the ear at loud volume; only trims the deepest bass and highest treble.\nTry: Z for an honest view, A for a treble-forward look."},
+    {L"analysis.tilt", L"Analysis (Precision Engine)", L"Levels", L"Tilt (dB per octave)", 3, L"1.5", L"0=0 (pink noise flat)\n1.5=1.5 (typical mix flat)\n3=3\n4.5=4.5\n6=6",
+     L"Tips the spectrum up toward the treble (dB per octave), because music naturally gets quieter higher up.\n0: pink noise reads flat; real music slopes down.\n1.5: a typical modern mix looks level.\n3 to 6: the treble lifted more and more, so hi-hats and air show strongly.\nTry: 1.5 for level-looking music, 3 if the right side looks dead."},
+    {L"analysis.detector", L"Analysis (Precision Engine)", L"Levels", L"Detector", 3, L"rms", L"rms=RMS (band power)\npeak=Peak (loudest bin)",
+     L"What each bar measures in its band.\nRMS: the total energy of everything in the band; right for music.\nPeak: only the band's loudest single pitch; jumpier, closer to how a pure tone measures.\nTry: RMS for music."},
+    {L"analysis.levelReference", L"Analysis (Precision Engine)", L"Levels", L"Level Reference", 3, L"third_octave", L"third_octave=Third-octave (independent of bar count)\nband=Band (true band power)",
+     L"How bar heights are scaled.\nThird-octave: every band compared as if it were a standard 1/3-octave band, so heights stay the same when you change Bar Count or layout.\nBand: each band's real power, so wide bars read taller than narrow ones.\nTry: Third-octave."},
+    {L"analysis.window", L"Analysis (Precision Engine)", L"Levels", L"FFT Window", 3, L"hann", L"hann=Hann\nhamming=Hamming\nblackman_harris=Blackman-Harris (high dynamic range)\nflat_top=Flat-top (accurate tone levels)",
+     L"A filter that decides how sharp or clean the bars look (the FFT window).\nHann: the all-round choice.\nHamming: slightly sharper peaks, a little more smearing.\nBlackman-Harris: quiet details stay visible next to loud ones; peaks slightly wider.\nFlat-top: exact loudness of pure tones, but blurry.\nTry: Blackman-Harris for clean, separated peaks."},
+    {L"analysis.bassDetail", L"Analysis (Precision Engine)", L"Levels", L"Bass Detail", 3, L"2", L"2=High (3 tiers)\n1=Standard (2 tiers)\n0=Off (single FFT)",
+     L"How much extra detail is measured in the bass (extra measuring passes).\nHigh: 3 passes; bass bars are real and separate, even at 1/12 or 1/24 octave.\nStandard: 2 passes; good for most.\nOff: one pass, like the classic engine; bass bars blur together.\nTry: High for crisp bass bars."},
+    {L"analysis.channel", L"Analysis (Precision Engine)", L"Levels", L"Channel", 3, L"mix", L"mix=Mix (all channels)\nleft=Left\nright=Right\nmid=Mid (L+R)\nside=Side (L-R)",
+     L"Which part of the stereo sound is shown.\nMix: both channels together.\nLeft or Right: one channel only.\nMid: what both speakers share (vocals, bass, kick).\nSide: the difference between them, showing where the stereo width is.\nTry: Mix, or Side to watch the stereo width."},
+    {L"analysis.dbFloor", L"Analysis (Precision Engine)", L"Levels", L"Display Floor (dBFS)", 1, L"-72", L"",
+     L"The quietest sound that still shows. Lower shows more detail, and more hiss.\nTry: -72 for clean, -105 for every whisper."},
+    {L"analysis.dbCeiling", L"Analysis (Precision Engine)", L"Levels", L"Display Ceiling (dBFS)", 1, L"-12", L"",
+     L"The level that fills a bar completely. Lower makes bars hit the top sooner.\nTry: -20 for lively bars, -35 for very full ones."},
+    {L"analysis.ballistics", L"Analysis (Precision Engine)", L"Motion", L"Ballistics", 3, L"snappy", L"snappy=Snappy\nsmooth=Smooth\nanalyzer=Analyzer (20 dB/s)\nvu=VU\nppm_ebu=PPM, EBU (Type II)\nppm_din=PPM, DIN (Type I)\ncustom=Custom",
+     L"How bars rise and fall.\nSnappy: fast up and down, punchy (the old feel).\nSmooth: softer rise and fall.\nAnalyzer: falls at a steady 20 dB a second, like hardware analyzers.\nVU: slow, averaged movement like a VU meter.\nPPM EBU / PPM DIN: broadcast peak meters; jump up instantly and fall back slowly (EBU slower, DIN faster).\nCustom: uses Custom Attack and Custom Release below.\nTry: Snappy for punchy, Analyzer for a calm studio fall."},
+    {L"analysis.attackMs", L"Analysis (Precision Engine)", L"Motion", L"Custom Attack (ms)", 1, L"10", L"",
+     L"How fast bars rise with Ballistics set to Custom, in milliseconds.\nTry: 10 for instant, 50 for softer."},
+    {L"analysis.releaseDbPerSecond", L"Analysis (Precision Engine)", L"Motion", L"Custom Release (dB/s)", 1, L"20", L"",
+     L"How fast bars fall with Ballistics set to Custom.\nTry: 20 for steady, 60 for quick drops."},
+    {L"analysis.peakHoldMs", L"Analysis (Precision Engine)", L"Motion", L"Peak Hold Time (ms)", 1, L"500", L"",
+     L"How long peak caps hang before falling, in milliseconds.\nTry: 500 for a classic hang, 275 for a quicker one."},
+    {L"analysis.peakFall", L"Analysis (Precision Engine)", L"Motion", L"Peak Fall", 3, L"gravity", L"gravity=Gravity\nlinear=Linear",
+     L"How peak caps drop after hanging.\nGravity: they speed up as they fall, like a dropped object; the classic analyzer look.\nLinear: they fall at a steady speed.\nTry: Gravity."},
+    {L"analysis.readout", L"Analysis (Precision Engine)", L"", L"Readout Content", 3, L"frequency", L"frequency=Peak frequency\nloudness=Loudness (LUFS M / S / I)\nloudness_full=Loudness, true peak, PLR, correlation\nboth=Peak frequency and loudness",
+     L"What the readout shows.\nPeak frequency: the loudest pitch right now, in Hz.\nLoudness: how loud it is, in LUFS (momentary, short-term and integrated, the streaming standard).\nLoudness full: adds true peak, PLR (dynamics) and stereo correlation.\nBoth: frequency and loudness together.\nTry: Loudness to see how loud a track is mastered."},
+    {L"analysis.loudnessResetOnTrack", L"Analysis (Precision Engine)", L"", L"Reset Integrated Loudness On Track Change", 0, L"1", L"",
+     L"Starts the loudness reading fresh at every new song.\nTry: On to measure each song on its own."},
+    {L"bass.lowHz", L"Bass", L"", L"Bass Range - Low Edge (Hz)", 1, L"20", L"",
+     L"The lowest pitch that counts as bass, for bass boost and beat detection.\nTry: 20."},
+    {L"bass.highHz", L"Bass", L"", L"Bass Range - High Edge (Hz)", 1, L"150", L"",
+     L"The highest pitch that counts as bass. Higher includes kick punch, lower only deep sub.\nTry: 175 to include kicks, 100 for sub-bass only."},
+    {L"bass.gainDb", L"Bass", L"", L"Bass Gain (dB)", 1, L"0", L"",
+     L"Turns the bass bars up or down, in dB.\nTry: 3 for bigger bass bars, -3 to calm them."},
+    {L"bass.attackPct", L"Bass", L"", L"Bass Attack Time (%)", 1, L"100", L"",
+     L"How fast bass bars rise compared with the rest. Under 100 is punchier.\nTry: 70 for snappier kicks."},
+    {L"bass.releasePct", L"Bass", L"", L"Bass Release Time (%)", 1, L"100", L"",
+     L"How long bass bars take to fall compared with the rest. Over 100 lets bass hang.\nTry: 150 for a sustained bass look."},
+    {L"bass.hitSensitivity", L"Bass", L"", L"Bass Hit Sensitivity", 1, L"50", L"",
+     L"How big a bass jump counts as a beat for Beat Flash and Particles.\nTry: 65 to catch more beats, 35 for only hard kicks."},
+    {L"bass.hitWindowMs", L"Bass", L"", L"Bass Hit Window (ms)", 1, L"60", L"",
+     L"How far back a beat is compared to. Short catches every bump, long only real hits.\nTry: 60."},
+    {L"bass.lowZoneHz", L"Bass", L"", L"Low Zone Edge (Hz)", 1, L"300", L"",
+     L"Where the low colour zone ends, for multiband scope colours and the bass meter.\nTry: 300."},
+    {L"bass.scopeFocusHz", L"Bass", L"", L"Oscilloscope Bass Focus (Hz)", 1, L"0", L"",
+     L"Shows only the bass on the Oscilloscope so a bass note holds still as clean waves. 0 shows everything.\nTry: 150 with a 50 ms Time Window for a bass-only scope."},
+    {L"bassLine.enabled", L"Bass Line", L"", L"Bass Line", 0, L"0", L"",
+     L"A separate thin lane that follows only the bass, with kicks and snares lighting up in their own colours.\nTry: On with Placement Overlay for a bass pulse over the bars."},
+    {L"bassLine.style", L"Bass Line", L"Look", L"Style", 3, L"line", L"line=Line (scrolling trace)\nfill=Fill (scrolling columns)\nbar=Bar (live meter)",
+     L"The look of the bass lane.\nLine: a scrolling trace, like a heart monitor.\nFill: the same history as filled columns.\nBar: one live meter that flashes on kicks and snares.\nTry: Line for a heartbeat trace."},
+    {L"bassLine.placement", L"Bass Line", L"Look", L"Placement", 3, L"below", L"below=Below the panel\nabove=Above the panel\noverlay=Inside the bars, along the bottom\ncover=Over the whole bar block (synced with the bars)",
+     L"Where the bass lane sits.\nBelow or Above: outside the panel.\nOverlay: inside the bars, along the bottom.\nCover: over the whole bar block, in step with the bars.\nTry: Overlay to run it through the visualizer."},
+    {L"bassLine.layer", L"Bass Line", L"Look", L"Layer", 3, L"front", L"front=In front of the bars\nbehind=Behind the bars",
+     L"Whether the bass lane is drawn over the bars, scope or wave, or behind them. Only matters where they overlap."},
+    {L"bassLine.height", L"Bass Line", L"Look", L"Height", 1, L"28", L"",
+     L"How tall the bass lane is, in pixels.\nTry: 28 for a slim lane, 60 for a bold one."},
+    {L"bassLine.width", L"Bass Line", L"Look", L"Width", 1, L"0", L"",
+     L"How wide the bass lane is. 0 matches the bars.\nTry: 0."},
+    {L"bassLine.gap", L"Bass Line", L"Look", L"Gap", 1, L"6", L"",
+     L"The space between the bass lane and the panel.\nTry: 6."},
+    {L"bassLine.thickness", L"Bass Line", L"Look", L"Line Thickness", 1, L"1.5", L"",
+     L"How thick the bass line is, in pixels (Line style).\nTry: 1 for fine, 2.5 for bold."},
+    {L"bassLine.offsetX", L"Bass Line", L"Look", L"Offset X", 1, L"0", L"",
+     L"Slides the bass lane left (negative) or right, in pixels.\nTry: small steps like 4."},
+    {L"bassLine.offsetY", L"Bass Line", L"Look", L"Offset Y", 1, L"0", L"",
+     L"Slides the bass lane up (negative) or down, in pixels.\nTry: small steps like -4."},
+    {L"bassLine.bodyColor", L"Bass Line", L"Look", L"Body Color", 4, L"#FFFFFFFF", L"",
+     L"The colour of the bass lane itself.\nTry: your palette red #E57474."},
+    {L"bassLine.kickColor", L"Bass Line", L"Look", L"Kick Color", 4, L"#FFFF3B3B", L"",
+     L"The colour kicks and 808 hits flash in the bass lane.\nTry: #4CE38D for green kicks."},
+    {L"bassLine.snareColor", L"Bass Line", L"Look", L"Snare Color", 4, L"#FFFFD23B", L"",
+     L"The colour snares and claps flash in the bass lane.\nTry: #A95D5D for muted red snares."},
+    {L"bassLine.window", L"Bass Line", L"Detection", L"Time Window (s)", 1, L"2", L"",
+     L"How many seconds of history the bass lane shows. Shorter is faster and spikier.\nTry: 0.75 for quick spikes, 4 for a slow trace."},
+    {L"bassLine.lowHz", L"Bass Line", L"Detection", L"Body Low Edge (Hz)", 1, L"30", L"",
+     L"The lowest pitch the bass lane follows.\nTry: 30."},
+    {L"bassLine.highHz", L"Bass Line", L"Detection", L"Body High Edge (Hz)", 1, L"300", L"",
+     L"The highest pitch the bass lane follows. 120 keeps it to kick and sub; 300 adds the low end of voices.\nTry: 120 for a tight bass-only lane."},
+    {L"bassLine.floorDb", L"Bass Line", L"Detection", L"Floor (dBFS)", 1, L"-85", L"",
+     L"Bass quieter than this never shows in the lane.\nTry: -85."},
+    {L"bassLine.depthDb", L"Bass Line", L"Detection", L"Depth (dB)", 1, L"36", L"",
+     L"How much loudness range the lane covers from empty to full. Smaller is more dramatic.\nTry: 24 for big swings, 48 for an even line."},
+    {L"bassLine.boostDb", L"Bass Line", L"Detection", L"Max Boost (dB)", 1, L"45", L"",
+     L"How far the lane may lift quiet bass to fill itself. 0 turns that off.\nTry: 45."},
+    {L"bassLine.smoothMs", L"Bass Line", L"Detection", L"Body Release (ms)", 1, L"80", L"",
+     L"How slowly the lane falls after a loud moment.\nTry: 80 for wobbly, 300 for held notes."},
+    {L"bassLine.kickSens", L"Bass Line", L"Detection", L"Kick Sensitivity", 1, L"60", L"",
+     L"How easily a kick or 808 hit is detected. 0 turns kicks off.\nTry: 75 to catch softer kicks."},
+    {L"bassLine.snareSens", L"Bass Line", L"Detection", L"Snare Sensitivity", 1, L"50", L"",
+     L"How easily a snare or clap is detected. 0 turns snares off.\nTry: 65."},
+    {L"bassLine.cooldownMs", L"Bass Line", L"Detection", L"Hit Cooldown (ms)", 1, L"90", L"",
+     L"The shortest time between two hits of the same kind, so one 808 doesn't show as several.\nTry: 90, or 150 for boomy tracks."},
+    {L"depth.enabled", L"Depth", L"", L"Depth", 0, L"0", L"",
+     L"Puts the visualizer behind the person or object in your wallpaper, like a phone lock screen clock. Needs a cut-out picture.\nTry: On with Auto Cut-out on."},
+    {L"depth.autoCut", L"Depth", L"", L"Auto Cut-out", 0, L"0", L"",
+     L"Makes the cut-out picture for each wallpaper by itself, in the background, the first time it's needed.\nTry: On."},
+    {L"depth.cutterVersion", L"Depth", L"Cutter", L"Cutter Version", 2, L"", L"",
+     L"Which version of the background remover to install. Empty is the newest.\nTry: leave empty."},
+    {L"depth.cutterSha", L"Depth", L"Cutter", L"Cutter SHA-256", 2, L"", L"",
+     L"A checksum the background remover's download must match, for safety. Empty skips the check.\nTry: leave empty unless you pin a version."},
+    {L"depth.cutter", L"Depth", L"Cutter", L"Cutter Command", 2, L"rembg i \"{in}\" \"{out}\"", L"",
+     L"The command that cuts the subject out of a wallpaper.\nTry: leave as it is."},
+    {L"depth.source", L"Depth", L"Picture", L"Source", 3, L"folder", L"folder=Folder (cut-out named after the wallpaper)\nfile=File (one cut-out image)\nkey=Key (remove the wallpaper's plain background)",
+     L"Where the cut-out of your wallpaper's subject comes from.\nFolder: a PNG named after the wallpaper, found in the Cutout Folder or next to the wallpaper; follows wallpaper changes.\nFile: one cut-out image, whatever the wallpaper is.\nKey: no cut-out needed; the wallpaper's plain dark (or light) background is made see-through.\nTry: Folder with Auto Cut-out on."},
+    {L"depth.folder", L"Depth", L"Picture", L"Cutout Folder", 2, L"", L"",
+     L"The folder with the cut-out pictures. Empty looks next to the wallpaper.\nTry: leave empty."},
+    {L"depth.file", L"Depth", L"Picture", L"Cutout File", 2, L"", L"",
+     L"One cut-out picture to use, with Source set to File.\nTry: a PNG with a transparent background."},
+    {L"depth.fit", L"Depth", L"Picture", L"Fit", 3, L"fill", L"fill=Fill\nfit=Fit\nstretch=Stretch\ncenter=Center",
+     L"How the cut-out sits on the screen; use the same as your wallpaper's fit in Windows.\nFill: covers the screen, cropping the edges.\nFit: all of it shows, with bars at the sides.\nStretch: pulled to the screen's shape.\nCenter: actual size in the middle.\nTry: Fill."},
+    {L"depth.scale", L"Depth", L"Picture", L"Scale (%)", 1, L"100", L"",
+     L"Nudges the cut-out's size to line up with the wallpaper.\nTry: 100."},
+    {L"depth.offsetX", L"Depth", L"Picture", L"Offset X", 1, L"0", L"",
+     L"Nudges the cut-out left (negative) or right to line up with the wallpaper.\nTry: 0."},
+    {L"depth.offsetY", L"Depth", L"Picture", L"Offset Y", 1, L"0", L"",
+     L"Nudges the cut-out up (negative) or down to line up with the wallpaper.\nTry: 0."},
+    {L"depth.keyBackground", L"Depth", L"Key", L"Key Background", 3, L"dark", L"dark=Dark\nlight=Light",
+     L"With Source set to Key, which background is removed.\nDark: a dark background becomes see-through.\nLight: a light one does.\nTry: Dark."},
+    {L"depth.keyThreshold", L"Depth", L"Key", L"Key Threshold (%)", 1, L"6", L"",
+     L"With Source set to Key, how dark (or light) counts as background.\nTry: 6, raise it if a haze shows."},
+    {L"depth.keySoftness", L"Depth", L"Key", L"Key Softness (%)", 1, L"12", L"",
+     L"With Source set to Key, how soft the cut-out's edge is.\nTry: 12."},
+    {L"glass.enabled", L"Glass Bars", L"", L"Glass Bars", 0, L"0", L"",
+     L"Draws the bars as glass that shows your wallpaper behind them, bent like a lens and tinted with the bar colour.\nTry: On with Frost 2 and Tint 0 for clear glass."},
+    {L"glass.bend", L"Glass Bars", L"", L"Bend (px)", 1, L"8", L"",
+     L"How much the glass bends the wallpaper at the bar edges. 0 is flat glass.\nTry: 8 for a lens, 30 for strong warping."},
+    {L"glass.bendStyle", L"Glass Bars", L"", L"Bend Style", 3, L"lens", L"lens=Lens\nedge=Edge",
+     L"How the glass bends the wallpaper behind each bar.\nLens: the whole bar bends it, like a magnifying glass.\nEdge: only a band along the edges bends it, the middle stays clear, like liquid glass.\nTry: Edge for a liquid-glass rim."},
+    {L"glass.bendBand", L"Glass Bars", L"", L"Edge Band (px)", 1, L"10", L"",
+     L"With Bend Style set to Edge, how wide the bent band is.\nTry: 10."},
+    {L"glass.edge", L"Glass Bars", L"", L"Edge Light (%)", 1, L"55", L"",
+     L"How bright the light along the glass edge is.\nTry: 55 for a clear rim, 0 for none."},
+    {L"glass.tint", L"Glass Bars", L"", L"Tint (%)", 1, L"30", L"",
+     L"How much of the bar colour tints the glass. 0 is clear, 100 is solid colour.\nTry: 0 for clear, 30 for tinted glass."},
+    {L"glass.frost", L"Glass Bars", L"", L"Frost (%)", 1, L"0", L"",
+     L"Blurs what the glass shows, like frosted glass.\nTry: 2 for a hint, 20 for frosted."},
+    {L"position.host", L"Position", L"", L"Place In", 3, L"desktop", L"desktop=Desktop (behind apps)\ntaskbar=Taskbar\npanel=Panel (a window of its own)",
+     L"Where the visualizer lives.\nDesktop: on the wallpaper, behind your apps.\nTaskbar: inside the taskbar; positions become percent of the taskbar.\nPanel: a small window of its own that floats with your apps; drag to move, drag an edge to scale.\nTry: Desktop."},
+    {L"position.panelBackdrop", L"Position", L"Panel", L"Panel Backdrop", 3, L"acrylic", L"none=Clear\nacrylic=Acrylic (frosted)\nmica=Mica",
+     L"With Place In set to Panel, what's behind the visualizer in its window.\nClear: nothing.\nAcrylic: frosted, blurred glass.\nMica: the softer Windows 11 tinted material.\nTry: Acrylic for frosted glass."},
+    {L"position.panelHotkey", L"Position", L"Panel", L"Panel Hotkey", 2, L"", L"",
+     L"With Place In set to Panel, a key combo that shows or hides it.\nTry: Alt+V."},
+    {L"position.horizontalPosition", L"Position", L"", L"Horizontal Position", 1, L"50", L"",
+     L"Where the visualizer sits across the screen, in percent. A drag or keyboard move overrides it.\nTry: 50 for centred."},
+    {L"position.verticalPosition", L"Position", L"", L"Vertical Position", 1, L"88", L"",
+     L"Where the visualizer sits down the screen, in percent. A drag or keyboard move overrides it.\nTry: 88 for near the bottom."},
+    {L"position.monitor", L"Position", L"", L"Monitor", 1, L"1", L"",
+     L"Which monitor the visualizer shows on (1 is the first).\nTry: 1."},
+    {L"position.pixelSnap", L"Position", L"", L"Pixel Snap", 0, L"1", L"",
+     L"Keeps every edge on whole pixels so it stays sharp. Off allows in-between sizes and positions.\nTry: On for crisp pixels."},
+    {L"position.dockApp", L"Position", L"Dock To App", L"Dock To App", 2, L"", L"",
+     L"An app the visualizer sticks to and follows around the screen.\nTry: Spotify."},
+    {L"position.dockSide", L"Position", L"Dock To App", L"Dock Side", 3, L"below", L"below=Below the window\nabove=Above the window\nleft=Left of the window\nright=Right of the window",
+     L"Which side of the docked app the visualizer sits on: below, above, left or right of its window.\nTry: Below."},
+    {L"position.dockAlign", L"Position", L"Dock To App", L"Dock Alignment", 3, L"center", L"start=Start (left or top)\ncenter=Centre\nend=End (right or bottom)",
+     L"Where along that side it sits.\nStart: the left (or top) end.\nCentre: the middle.\nEnd: the right (or bottom) end.\nTry: Centre."},
+    {L"position.dockGap", L"Position", L"Dock To App", L"Dock Gap", 1, L"0", L"",
+     L"The space between the docked app and the visualizer. Negative overlaps.\nTry: 4."},
+    {L"position.dockShift", L"Position", L"Dock To App", L"Dock Shift", 1, L"0", L"",
+     L"Slides the visualizer along the docked app's side.\nTry: 0."},
+    {L"position.split", L"Position", L"Split", L"Split Into Two Pieces", 0, L"0", L"",
+     L"Cuts the visualizer in two and moves the second half, e.g. to sit either side of centred taskbar icons.\nTry: On with Split Gap 200."},
+    {L"position.splitAt", L"Position", L"Split", L"Split Point", 1, L"50", L"",
+     L"Where the cut goes, in percent along the visualizer.\nTry: 50."},
+    {L"position.splitGap", L"Position", L"Split", L"Split Gap", 1, L"200", L"",
+     L"How far the second half moves along the visualizer, in pixels.\nTry: the width of what sits between, like 200."},
+    {L"position.splitShift", L"Position", L"Split", L"Split Shift", 1, L"0", L"",
+     L"How far the second half moves across the visualizer, in pixels.\nTry: 0."},
+    {L"interaction.keyMoveEnabled", L"Interaction", L"Keyboard Move", L"Enable Keyboard Move", 0, L"0", L"",
+     L"Lets you nudge the visualizer with the keyboard while holding the move keys.\nTry: On."},
+    {L"interaction.keyMoveModifier", L"Interaction", L"Keyboard Move", L"Keyboard Move Modifier", 3, L"ctrl_alt", L"ctrl_alt=Ctrl + Alt\nctrl_shift=Ctrl + Shift\nalt_shift=Alt + Shift\nwin_alt=Win + Alt\nwin_shift=Win + Shift\nctrl=Ctrl\nalt=Alt\nshift=Shift\nwin=Win",
+     L"The keys you hold while tapping a direction to move the visualizer. The keys are swallowed, so apps never get them: two-key combos (Ctrl + Alt, Alt + Shift) are safe; a single key (Ctrl, Alt) steals shortcuts like Ctrl+S.\nTry: Alt + Shift."},
+    {L"interaction.keyMoveKeys", L"Interaction", L"Keyboard Move", L"Keyboard Move Direction Keys", 3, L"both", L"both=Arrow Keys and WASD\narrows=Arrow Keys only\nwasd=WASD only",
+     L"Which keys move it.\nArrow Keys and WASD: both.\nArrow Keys only.\nWASD only.\nTry: Arrow Keys only, so WASD stays free for games."},
+    {L"interaction.keyMoveStep", L"Interaction", L"Keyboard Move", L"Keyboard Move Step", 1, L"1", L"",
+     L"How many pixels one key press moves it.\nTry: 1."},
+    {L"interaction.keyMoveFastStep", L"Interaction", L"Keyboard Move", L"Keyboard Move Fast Step", 1, L"10", L"",
+     L"How many pixels one press moves it while holding the Fast Key.\nTry: 10."},
+    {L"interaction.keyMoveFineStep", L"Interaction", L"Keyboard Move", L"Keyboard Move Fine Step", 3, L"0.25", L"0.5=1/2 pixel\n0.25=1/4 pixel\n0.125=1/8 pixel\n0.0625=1/16 pixel",
+     L"The tiny step used while holding the Fine Key: 1/2, 1/4, 1/8 or 1/16 of a pixel. Only shows as movement with Pixel Snap off.\nTry: 1/4 pixel."},
+    {L"interaction.keyMoveFineKey", L"Interaction", L"Keyboard Move", L"Keyboard Move Fine Key", 3, L"none", L"none=None\nshift=Shift\nctrl=Ctrl\nalt=Alt\nwin=Win",
+     L"The extra key held for the fine step: None, Shift, Ctrl, Alt or Win. It can't be one already used by the modifier or the Fast Key.\nTry: Ctrl."},
+    {L"interaction.keyMoveFastKey", L"Interaction", L"Keyboard Move", L"Keyboard Move Fast Key", 3, L"shift", L"shift=Shift\nctrl=Ctrl\nalt=Alt\nwin=Win\nnone=None (disable fast step)",
+     L"The extra key held for the big step: Shift, Ctrl, Alt or Win, or None to turn the big step off.\nTry: Shift."},
+    {L"interaction.dragEnabled", L"Interaction", L"Drag", L"Enable Drag-to-Move", 0, L"0", L"",
+     L"Lets you drag the visualizer with the mouse while holding the drag key.\nTry: On."},
+    {L"interaction.dragSnap", L"Interaction", L"Drag", L"Snap While Dragging", 0, L"1", L"",
+     L"Makes the visualizer catch on screen edges and the centre while dragging.\nTry: On."},
+    {L"interaction.dragSnapDistance", L"Interaction", L"Drag", L"Snap Distance", 1, L"8", L"",
+     L"How close an edge must get before it snaps, in pixels.\nTry: 8."},
+    {L"interaction.dragModifier", L"Interaction", L"Drag", L"Drag Modifier Key", 3, L"ctrl", L"none=None\nctrl=Ctrl\nalt=Alt\nshift=Shift\nwin=Win",
+     L"The key held while dragging the visualizer.\nNone: just the mouse button drags it (it can then catch clicks meant for the desktop).\nCtrl, Alt, Shift or Win: only drags while that key is held.\nTry: None with the left button for easy moving, Ctrl to keep the desktop clickable."},
+    {L"interaction.dragButton", L"Interaction", L"Drag", L"Drag Mouse Button", 3, L"middle", L"left=Left Click\nmiddle=Middle Click\nright=Right Click",
+     L"The mouse button that drags it: left, middle or right.\nTry: Left."},
+    {L"interaction.contextMenu", L"Interaction", L"", L"Right-Click Menu", 3, L"right_click", L"right_click=Right-Click\nctrl_right_click=Ctrl + Right-Click\noff=Off",
+     L"How this menu opens.\nRight-Click: right-click the visualizer.\nCtrl + Right-Click: only with Ctrl held, leaving a plain right-click to the desktop.\nOff: never.\nTry: Right-Click."},
+    {L"interaction.menuFont", L"Interaction", L"", L"Menu Font", 2, L"", L"",
+     L"The font of the right-click menu, the quick-settings panel and the Style Editor, by its name as Windows lists it (CozetteVector, scientifica, Consolas). Empty uses Tourne's menu font in Tourne Desktop, else Windows' own menu font. A name that isn't installed is ignored"},
+    {L"interaction.menuFontSize", L"Interaction", L"", L"Menu Font Size", 1, L"0", L"",
+     L"The size of that font, in pixels at 100% scaling (it grows with the display's scaling). 0 keeps the font's own size. Pixel fonts look sharpest at their own size or a whole multiple of it, for example 13 or 26 for Cozette"},
+    {L"media_controls.enabled", L"Media Controls", L"", L"Enabled", 0, L"0", L"",
+     L"Shows a small player (buttons or a card with album art) for whatever is playing.\nTry: On with Layout set to Card."},
+    {L"media_controls.iconColor", L"Media Controls", L"Strip", L"Icon Color", 4, L"#FFFFFFFF", L"",
+     L"The colour of the play, pause, next and previous buttons.\nTry: #64AA89 for muted green."},
+    {L"media_controls.iconPrevPath", L"Media Controls", L"Strip", L"Previous Icon Path", 2, L"", L"",
+     L"A picture to use for the Previous button instead of the built-in one.\nTry: leave empty."},
+    {L"media_controls.iconPlayPath", L"Media Controls", L"Strip", L"Play Icon Path", 2, L"", L"",
+     L"A picture to use for the Play button instead of the built-in one.\nTry: leave empty."},
+    {L"media_controls.iconPausePath", L"Media Controls", L"Strip", L"Pause Icon Path", 2, L"", L"",
+     L"A picture to use for the Pause button instead of the built-in one.\nTry: leave empty."},
+    {L"media_controls.iconNextPath", L"Media Controls", L"Strip", L"Next Icon Path", 2, L"", L"",
+     L"A picture to use for the Next button instead of the built-in one.\nTry: leave empty."},
+    {L"media_controls.iconSize", L"Media Controls", L"Strip", L"Icon Size", 1, L"32", L"",
+     L"How big each player button is, in pixels.\nTry: 16 for small, 32 for easy clicking."},
+    {L"media_controls.iconSpacing", L"Media Controls", L"Strip", L"Icon Spacing", 1, L"14", L"",
+     L"The space between player buttons.\nTry: 10."},
+    {L"media_controls.plateColor", L"Media Controls", L"Strip", L"Backing Plate Color", 4, L"#00000000", L"",
+     L"A panel behind the player buttons. Transparent means none.\nTry: #141B1E for a dark plate."},
+    {L"media_controls.platePadding", L"Media Controls", L"Strip", L"Backing Plate Padding", 1, L"0", L"",
+     L"The space between the buttons and the plate's edge.\nTry: 4."},
+    {L"media_controls.plateCornerRadius", L"Media Controls", L"Strip", L"Backing Plate Corner Radius", 1, L"8", L"",
+     L"How round the plate's corners are.\nTry: 0 for square, 8 for soft."},
+    {L"media_controls.plateBorderSize", L"Media Controls", L"Strip", L"Backing Plate Border Size", 1, L"0", L"",
+     L"An outline around the plate. 0 is none.\nTry: 1."},
+    {L"media_controls.plateBorderColor", L"Media Controls", L"Strip", L"Backing Plate Border Color", 4, L"#40FFFFFF", L"",
+     L"The colour of the plate's outline.\nTry: #64AA89."},
+    {L"media_controls.stacking", L"Media Controls", L"Place", L"Stacking", 3, L"top", L"top=Always on top (covers apps, even ones run as administrator)\nnormal=Normal window (apps you click on cover it)",
+     L"Whether the player stays above other windows.\nAlways on top: covers apps, even admin ones.\nNormal window: apps you click on cover it.\nTry: Always on top with Hide When Covered on."},
+    {L"media_controls.hideWhenCovered", L"Media Controls", L"Place", L"Hide When Covered", 0, L"0", L"",
+     L"Hides the player while a window sits over it.\nTry: On."},
+    {L"media_controls.coveredThresholdPercent", L"Media Controls", L"Place", L"Hide When Covered - Threshold", 3, L"50", L"5=5% covered\n10=10% covered\n15=15% covered\n20=20% covered\n25=25% covered\n30=30% covered\n35=35% covered\n40=40% covered\n45=45% covered\n50=50% covered\n55=55% covered\n60=60% covered\n65=65% covered\n70=70% covered\n75=75% covered\n80=80% covered\n85=85% covered\n90=90% covered\n95=95% covered\n100=100% covered (fully hidden)",
+     L"How much of the player has to be under a window before it hides: from 5% (hides as soon as a window touches it) to 100% (only when fully covered).\nTry: 50."},
+    {L"media_controls.horizontalPosition", L"Media Controls", L"Place", L"Horizontal Position", 1, L"50", L"",
+     L"Where the player sits across the screen, in percent.\nTry: 50."},
+    {L"media_controls.verticalPosition", L"Media Controls", L"Place", L"Vertical Position", 1, L"95", L"",
+     L"Where the player sits down the screen, in percent.\nTry: 95."},
+    {L"media_controls.anchor", L"Media Controls", L"Place", L"Anchor", 3, L"screen", L"screen=Screen (Position settings)\npanel_top_left=Panel, top left\npanel_top_right=Panel, top right\npanel_bottom_left=Panel, bottom left\npanel_bottom_right=Panel, bottom right",
+     L"Where the player is placed.\nScreen: by the Horizontal and Vertical Position percentages.\nPanel corners: pinned inside that corner of the visualizer's panel, moving with it.\nTry: Panel, top right, to keep it with the visualizer."},
+    {L"media_controls.anchorOffsetX", L"Media Controls", L"Place", L"Anchor Inset X", 1, L"8", L"",
+     L"How far in from the panel's side the pinned player sits.\nTry: 8."},
+    {L"media_controls.anchorOffsetY", L"Media Controls", L"Place", L"Anchor Inset Y", 1, L"8", L"",
+     L"How far in from the panel's top or bottom the pinned player sits.\nTry: 8."},
+    {L"media_controls.layout", L"Media Controls", L"", L"Layout", 3, L"strip", L"strip=Strip (three buttons)\ncard=Card (art, title, seek, output, volume)",
+     L"What kind of player it is.\nStrip: just previous, play/pause and next.\nCard: a small card with album art, title, a seek bar, an output switch and volume.\nTry: Card."},
+    {L"media_controls.cardBackground", L"Media Controls", L"Card", L"Card Background", 4, L"#9E0A0A0D", L"",
+     L"The card's fill colour.\nTry: #121C21 for your dark ground."},
+    {L"media_controls.cardBorderColor", L"Media Controls", L"Card", L"Card Border Color", 4, L"#00FFFFFF", L"",
+     L"The colour of the card's border.\nTry: #64AA89."},
+    {L"media_controls.cardBorderSize", L"Media Controls", L"Card", L"Card Border Size", 1, L"0", L"",
+     L"How thick the card's border is.\nTry: 1."},
+    {L"media_controls.cardCornerRadius", L"Media Controls", L"Card", L"Card Corner Radius", 1, L"12", L"",
+     L"How round the card's corners are. One number, or four for each corner.\nTry: 0 for square, 12 for soft."},
+    {L"media_controls.cardArtCornerRadius", L"Media Controls", L"Card", L"Card Art Corner Radius", 1, L"-1", L"",
+     L"How round the album art's corners are. -1 follows the card.\nTry: -1."},
+    {L"media_controls.cardArtSize", L"Media Controls", L"Card", L"Card Art Size", 1, L"0", L"",
+     L"How wide the album art is, which sets the card's width. 0 sizes it from the icons.\nTry: 150."},
+    {L"media_controls.cardArtHeight", L"Media Controls", L"Card", L"Card Art Height", 1, L"0", L"",
+     L"How tall the card's art (or what's in its place) is. 0 keeps it square. Dragging the card's top or bottom edge sets it.\nTry: 0 for square art, 60 for a short wide banner."},
+    {L"media_controls.cardArtShows", L"Media Controls", L"Card", L"In the Art's Place", 3, L"art", L"art=Album art\nbuttons=Nothing (just the text and controls)\nvisualizer=Mini visualizer\nbigtype=Big type\ncolours=Colour block\nplayer=Player badge\nclock=Clock and time left",
+     L"What the top of the card shows.\nAlbum art: the song's cover.\nNothing: no art, just a slim row of buttons, so the card is only text and controls.\nMini visualizer: the Table's bars drawn small, in your colours.\nBig type: the title as large as it fits, artist under it.\nColour block: the cover's main colours as stripes, no picture.\nPlayer badge: the playing app's icon and name.\nClock: the time, with the time left in the song.\nTry: Mini visualizer for a card that dances, Colour block for a calm swatch."},
+    {L"media_controls.cardAccent", L"Media Controls", L"Card", L"Card Accent", 3, L"icon", L"icon=Icon Color\ncustom=Card Accent Color\nalbum=Album art\nwindows=Windows accent",
+     L"The colour of the card's seek bar, volume bar and their knobs.\nIcon Color: same as the icons.\nCard Accent Color: the colour you set below.\nAlbum art: the cover's main colour, changing with each song.\nWindows accent: your Windows accent colour.\nTry: Album art so the card matches each song."},
+    {L"media_controls.cardAccentColor", L"Media Controls", L"Card", L"Card Accent Color", 4, L"#FFFFFFFF", L"",
+     L"The seek and volume colour, with Card Accent set to a custom colour.\nTry: #E57474."},
+    {L"media_controls.cardTitle", L"Media Controls", L"Card", L"Card Track Title", 3, L"both", L"both=Title and artist\ntitle=Title only\noff=Off",
+     L"What text shows under the art.\nTitle and artist.\nTitle only.\nOff: no text, a smaller card.\nTry: Title and artist."},
+    {L"media_controls.cardTitleScroll", L"Media Controls", L"Card", L"Card Title Scrolling", 3, L"hover", L"hover=Scroll on hover\nalways=Always scroll\nnever=Never scroll",
+     L"What a title too long for the card does.\nScroll on hover: scrolls while your pointer is over the card, otherwise fades at the end.\nAlways scroll: keeps scrolling.\nNever scroll: just fades at the end.\nTry: Scroll on hover."},
+    {L"media_controls.cardClickOpens", L"Media Controls", L"Card", L"Click Title to Open Player", 0, L"1", L"",
+     L"Clicking the title opens the app that is playing.\nTry: On."},
+    {L"media_controls.backdrop", L"Media Controls", L"Card", L"Backdrop", 3, L"solid", L"solid=Solid\nclear=Clear\nblur=Blur\nacrylic=Acrylic",
+     L"What's behind the card or buttons.\nSolid: the background colour as set.\nClear: no fill, floating on the desktop (it still takes clicks).\nBlur: the desktop behind it blurred, tinted by the background colour.\nAcrylic: frosted glass, tinted the same way.\nTry: Acrylic for frosted glass, Clear to float."},
+    {L"background.enabled", L"Background", L"", L"Enabled", 0, L"1", L"",
+     L"A panel behind the visualizer.\nTry: On."},
+    {L"background.color", L"Background", L"", L"Color", 4, L"#60000000", L"",
+     L"The panel's colour. Lower the alpha to see the wallpaper through it.\nTry: #60000000 for a soft dark panel, fully clear to hide it."},
+    {L"background.padding", L"Background", L"", L"Padding", 1, L"24", L"",
+     L"The space between the bars and the panel's edge. One number, or four for left, right, top, bottom.\nTry: 4 for snug, 24 for roomy."},
+    {L"background.cornerRadius", L"Background", L"", L"Corner Radius", 1, L"14", L"",
+     L"How round the panel's corners are.\nTry: 0 for square, 14 for soft."},
+    {L"background.blur", L"Background", L"", L"Blur", 1, L"0", L"",
+     L"Blurs the wallpaper behind the panel, like frosted glass.\nTry: 10."},
+    {L"background.borderSize", L"Background", L"", L"Border Size", 1, L"0", L"",
+     L"An outline around the panel. 0 is none.\nTry: 1."},
+    {L"background.borderColor", L"Background", L"", L"Border Color", 4, L"#40FFFFFF", L"",
+     L"The colour of the panel's outline.\nTry: #64AA89."},
+    {L"performance.targetFps", L"Performance", L"", L"Target FPS", 1, L"60", L"",
+     L"How many times a second the visualizer redraws. Higher is smoother and uses a bit more power.\nTry: 60, or 0 to match your screen."},
+    {L"performance.pauseOnFullscreen", L"Performance", L"", L"Pause On Fullscreen", 0, L"1", L"",
+     L"Stops drawing while a game or video is fullscreen.\nTry: On."},
+    {L"performance.pauseWhenSilentSeconds", L"Performance", L"", L"Pause When Silent (seconds)", 1, L"10", L"",
+     L"After this many seconds of silence, the visualizer nearly stops drawing to save power.\nTry: 5."},
+    {L"performance.deepIdle", L"Performance", L"", L"Deep Idle", 0, L"1", L"",
+     L"Shortly after going quiet, stops listening to the sound entirely so the PC can sleep, waking when sound plays.\nTry: On."},
+    {L"performance.perfStats", L"Performance", L"", L"Performance Stats", 0, L"0", L"",
+     L"Writes what the visualizer costs to the log every 30 seconds.\nTry: Off unless you're checking performance."},
+    {L"performance.autoHideEnabled", L"Performance", L"Hiding", L"Auto-Hide When Idle", 0, L"0", L"",
+     L"Fades the whole visualizer out after a stretch of silence.\nTry: On for a clean desktop when nothing plays."},
+    {L"performance.autoHideDelaySeconds", L"Performance", L"Hiding", L"Auto-Hide Delay (seconds)", 1, L"15", L"",
+     L"How many seconds of silence before it fades out.\nTry: 7.5."},
+    {L"performance.pauseWhenObscured", L"Performance", L"Hiding", L"Pause When Covered", 0, L"0", L"",
+     L"Stops drawing while windows cover the visualizer.\nTry: On."},
+    {L"performance.obscuredThresholdPercent", L"Performance", L"Hiding", L"Pause When Covered - Threshold", 3, L"100", L"5=5% covered\n10=10% covered\n15=15% covered\n20=20% covered\n25=25% covered\n30=30% covered\n35=35% covered\n40=40% covered\n45=45% covered\n50=50% covered\n55=55% covered\n60=60% covered\n65=65% covered\n70=70% covered\n75=75% covered\n80=80% covered\n85=85% covered\n90=90% covered\n95=95% covered\n100=100% covered (fully hidden)",
+     L"How much of the visualizer has to be under windows before it stops drawing to save power: from 5% (stops as soon as a window touches it) to 100% (only when fully hidden).\nTry: 55 to save power without stopping while it's mostly visible."},
+    {L"hardware.workload", L"Hardware", L"", L"Workload", 3, L"hybrid", L"hybrid=Hybrid - CPU analysis, GPU drawing (recommended)\ngpu=GPU - analysis and drawing on the GPU\ncpu=CPU - everything on the processor\nnpu=NPU analysis, GPU drawing (experimental)",
+     L"Which chip does the work.\nHybrid: the processor measures the sound, the graphics card draws; cheapest on almost every PC.\nGPU: the graphics card does both; the processor only copies audio.\nCPU: the processor does everything, drawing included.\nNPU: an Intel AI chip measures the sound (experimental, rarely saves power).\nTry: Hybrid."},
+    {L"hardware.renderDevice", L"Hardware", L"", L"Drawing Device", 3, L"auto", L"auto=Auto (GPU driving the monitor)\nintegrated=Integrated GPU (lowest power)\ndiscrete=Discrete GPU (highest performance)\ncpu=CPU (software rendering)",
+     L"Which graphics chip draws.\nAuto: the one your monitor is plugged into (best almost always).\nIntegrated: the built-in chip, lowest power.\nDiscrete: the graphics card, highest performance.\nCPU: drawn in software.\nTry: Auto."},
+    {L"hardware.renderer", L"Hardware", L"", L"Renderer", 3, L"d3d11", L"d3d11=Direct3D 11 (recommended)\ndirect2d=Direct2D (1.5 path)",
+     L"How the visualizer is drawn.\nDirect3D 11: fast, skips frames where nothing moved, and needed for glow, bloom, glass and outlines.\nDirect2D: the older 1.5 way, kept for comparison and as a fallback.\nTry: Direct3D 11."},
+    {L"hardware.opaquePanel", L"Hardware", L"", L"Opaque Panel", 3, L"auto", L"auto=Auto\noff=Off",
+     L"With a fully solid panel (or Blur on) and Auto-Hide off, lets Windows skip blending behind it to save work.\nAuto: does that when it can.\nOff: always blends.\nTry: Auto."},
+    {L"hardware.npuRuntimePath", L"Hardware", L"", L"NPU Runtime Folder", 2, L"", L"",
+     L"Where the NPU software lives, for Workload set to NPU.\nTry: leave empty."},
+    {L"hardware.frameSync", L"Hardware", L"", L"Frame Sync", 3, L"auto", L"auto=Auto (VSync on integrated GPU or CPU drawing)\noff=Off (timer, any FPS)\nvsync=VSync (capped at the refresh rate)\nadaptive=Adaptive (VSync up to the refresh rate, uncapped above)\nfast=Fast Sync (uncapped, newest frame shown)",
+     L"How frames line up with your screen's refresh.\nAuto: VSync on integrated graphics or CPU drawing, otherwise Off.\nOff: a plain timer at Target FPS, any value.\nVSync: every frame on its own refresh, capped at the refresh rate; smoothest.\nAdaptive: VSync up to the refresh rate, uncapped above.\nFast Sync: uncapped, always showing the newest frame.\nTry: VSync for the smoothest motion."},
+    {L"hardware.lowLatency", L"Hardware", L"", L"Low Latency", 3, L"off", L"off=Off\non=On (a quarter refresh ahead)\nultra=Ultra (just in time)",
+     L"How close to the screen's refresh each frame is drawn (with Frame Sync on); closer means bars react sooner.\nOff: half a refresh ahead, safest.\nOn: a quarter refresh ahead.\nUltra: just in time, measured on this PC; the least delay.\nTry: On for snappier bars."},
+    {L"hardware.frameGen", L"Hardware", L"", L"Frame Generation", 3, L"off", L"off=Off\nx2=x2 (half-rate analysis, halfway frames)",
+     L"Draws an in-between frame for every two real ones.\nOff: every frame measured and drawn.\nx2: the sound is measured at half the rate and halfway frames fill in; less work, one frame more delay.\nTry: Off."},
+    {L"hardware.engineCores", L"Hardware", L"", L"Engine Cores", 3, L"auto", L"auto=Auto (Windows decides)\nefficiency=Efficiency cores (lowest power)\nperformance=Performance cores (steadiest timing)\ncustom=Custom (the cores in Custom Cores)",
+     L"Which processor cores run the visualizer.\nAuto: Windows decides.\nEfficiency: the low-power cores; least power.\nPerformance: the fast cores; steadiest timing.\nCustom: the cores listed in Custom Cores.\nTry: Efficiency on a laptop, Auto otherwise."},
+    {L"hardware.engineCoreList", L"Hardware", L"", L"Custom Cores", 2, L"", L"",
+     L"The exact processor cores to use, with Engine Cores set to Custom.\nTry: leave empty."},
+};
+// ---- settings table: end
+
+// ---- Quick settings panel (2.3) ------------------------------------------------------------
+// Right-click opens this in place of the menu (Shift + right-click still opens the menu, and so does
+// its "More" row). Every setting is in it, a page per group, with a search over names, groups and
+// choices. Rows edit in place: a switch flips, a choice opens its list, a number drags left and right
+// (Shift for fine steps, a click to type one), a colour opens the picker, text is typed.
+// It is built once and then only shown and hidden; only the rows in view are drawn, and the search
+// runs over lowercase text made once. While a number is dragged the visualizer follows at most every
+// 50 ms, except for settings that rebuild the engine or the device, which wait for the release.
+// Where a change goes: in Tourne Desktop, its settings (tourne-gui.conf, as the Studio writes them, so
+// the Studio shows it too), taking the setting out of an applied style and out of the quick settings
+// so the new value shows. In Windhawk, which has no way for a mod to write its settings page, the
+// applied-style layer.
+namespace {
+enum QpKind { kQpAction, kQpGroup, kQpSetting, kQpStyle, kQpSep, kQpSection };
+enum QpAct { kQpOpenPlayer, kQpShowNowPlaying, kQpPause, kQpStyleEditor, kQpStyles, kQpMore };
+struct QpRow {
+    int kind;
+    int index;  // kSettingsInfo index, a QpAct, or a style's place in s_qpStyles
+    std::wstring label;
+};
+constexpr UINT_PTR kQpApplyTimer = 1, kQpWatchTimer = 2, kQpWheelTimer = 3, kQpTipTimer = 4;
+
+HWND s_qpWnd = nullptr, s_qpSearch = nullptr, s_qpEdit = nullptr;
+int s_qpDpi = 96;
+std::vector<std::wstring> s_qpHay;  // per setting: name, group, key and choices, lowercase
+std::vector<std::wstring> s_qpGroups;
+std::vector<std::wstring> s_qpStyles;
+std::vector<QpRow> s_qpRows;
+std::wstring s_qpPage;  // "" home, a group's name, "\x1Styles"
+std::wstring s_qpSection;  // a sub-page of the group, or ""
+std::vector<std::wstring> s_qpSections;
+int s_qpScroll = 0, s_qpHover = -1, s_qpEditRow = -1;
+bool s_qpModal = false, s_qpWasActive = false;
+bool s_qpPinned = false;  // pinned: stays open and on top when it's left
+POINT s_qpAt{};
+// A number being dragged.
+int s_qpDragRow = -1;
+bool s_qpDragMoved = false;
+int s_qpDragX = 0;
+double s_qpDragStart = 0, s_qpDragStep = 1;
+int s_qpWheelSetting = -1, s_qpWheelRest = 0;  // the number being scrolled (kSettingsInfo index), part-notches
+// How far a notch of the wheel moves a number ("quickScrollStep"), picked from the right-click menu.
+constexpr double kQpWheelSteps[] = {0.1, 0.25, 0.5, 1, 5, 10, 15, 20, 25};
+ULONGLONG s_qpLastApply = 0;
+bool s_qpApplyDue = false;
+
+// Quick settings (the menu's) and the setting each stands in for: a change from the panel takes the
+// quick one away, so the new value shows.
+const std::pair<const wchar_t*, const wchar_t*> kQpQuickFor[] = {
+    {L"shape", L"appearance.shape"}, {L"colorMode", L"appearance.colorMode"}, {L"color", L"appearance.color"},
+    {L"grad1", L"appearance.gradientColor1"}, {L"grad2", L"appearance.gradientColor2"},
+    {L"peakHold", L"appearance.peakHoldEnabled"}, {L"beatFlash", L"appearance.beatFlashEnabled"},
+    {L"barWidth", L"appearance.barWidth"}, {L"barGap", L"appearance.barGap"}, {L"barMaxSize", L"appearance.barMaxSize"},
+    {L"barRadius", L"appearance.barCornerRadius"}, {L"reflection", L"appearance.reflection"},
+    {L"fxGlow", L"appearance.fxGlow"}, {L"fxGlowRadius", L"appearance.fxGlowRadius"}, {L"fxBloom", L"appearance.fxBloom"},
+    {L"fxBloomRadius", L"appearance.fxBloomRadius"}, {L"termStyle", L"terminal.style"},
+    {L"engine", L"analysis.engine"}, {L"bandLayout", L"analysis.bandLayout"}, {L"weighting", L"analysis.weighting"},
+    {L"ballistics", L"analysis.ballistics"}, {L"workload", L"hardware.workload"}, {L"renderer", L"hardware.renderer"},
+    {L"targetFps", L"performance.targetFps"}, {L"nowPlaying", L"appearance.nowPlayingEnabled"},
+    {L"progress", L"progress.enabled"}, {L"bassLine", L"bassLine.enabled"}, {L"depth", L"depth.enabled"},
+    {L"depthAuto", L"depth.autoCut"}, {L"glass", L"glass.enabled"}, {L"mediaControls", L"media_controls.enabled"},
+    {L"pixelSnap", L"position.pixelSnap"}, {L"audioSource", L"audio.source"},
+};
+
+int Qp(int v) { return MulDiv(v, s_qpDpi, 96); }
+COLORREF QpCol(DWORD rgb) { return RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF); }
+
+// The panel looks like Tourne Desktop's menus (the right-click menu here included): its colours, font,
+// capitals, frame and pixel scale, read from it each time the panel opens (TourneMenuLookFor, and
+// TourneMenuPaintFrame for the frame). In Windhawk, where there is no Tourne Desktop, the same look's
+// defaults with Windows' menu font. Layout must match TourneMenuLookC in taskbar-host.cpp.
+struct TourneMenuLookC {
+    uint32_t ground, line, edge, text, accent, dim, hover, hoverText, band;
+    HFONT font;
+    int scale, frame, caps;
+    uint32_t frameLine;  // the frame's line (where a colour gradient ends), 0xFFFFFFFF when there is no frame
+};
+struct QpLookT {
+    COLORREF ground, line, edge, text, accent, dim, hover, hoverText;
+    COLORREF border;  // the menus' outer line (the band with a frame, else the edge): the search box's hint
+    HFONT font = nullptr;
+    bool ownFont = false, caps = false, frame = false;
+    int s = 1;  // the menus' pixel scale
+};
+QpLookT s_qpLook;
+using QpFrameFn = void (*)(HDC, int, int, RECT*);
+
+void QpLoadLook(int dpi) {
+    if (s_qpLook.ownFont && s_qpLook.font) DeleteObject(s_qpLook.font);
+    s_qpLook = {};
+    TourneMenuLookC c{0x121C21, 0x1E2F36, 0x4F8F6A, 0x66EA97, 0x15FFA2, 0x5D8D6F, 0x1F3D34, 0xFFFFFFFF, 0x151F24, nullptr,
+                      std::max(1, (dpi + 48) / 96), 0, 0, 0xFFFFFFFF};
+    using LookFn = BOOL (*)(TourneMenuLookC*, int);
+    static LookFn lookFor = (LookFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuLookFor");
+    if (lookFor) lookFor(&c, (int)sizeof(c));
+    s_qpLook.ground = QpCol(c.ground), s_qpLook.line = QpCol(c.line), s_qpLook.edge = QpCol(c.edge);
+    s_qpLook.text = QpCol(c.text), s_qpLook.accent = QpCol(c.accent), s_qpLook.dim = QpCol(c.dim);
+    s_qpLook.hover = QpCol(c.hover);
+    s_qpLook.hoverText = c.hoverText == 0xFFFFFFFF ? s_qpLook.text : QpCol(c.hoverText);
+    s_qpLook.s = std::max(1, c.scale);
+    s_qpLook.caps = c.caps != 0;
+    s_qpLook.frame = c.frame != 0;
+    s_qpLook.border = c.frameLine != 0xFFFFFFFF ? QpCol(c.frameLine) : s_qpLook.edge;
+    s_qpLook.font = c.font;
+    if (!s_qpLook.font) {
+        NONCLIENTMETRICSW nm{sizeof(nm)};
+        SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, sizeof(nm), &nm, 0, dpi);
+        s_qpLook.font = CreateFontIndirectW(&nm.lfMenuFont);
+        s_qpLook.ownFont = true;
+    }
+    // Menu Font and Menu Font Size, over whichever font that is. A face Windows doesn't have keeps the one above.
+    PCWSTR face = VizSettingString(L"interaction.menuFont");
+    PCWSTR size = VizSettingString(L"interaction.menuFontSize");
+    const int sizePx = size ? std::clamp(_wtoi(size), 0, 96) : 0;
+    LOGFONTW lf{};
+    if (((face && *face) || sizePx > 0) && GetObjectW(s_qpLook.font, sizeof(lf), &lf)) {
+        if (face && *face) wcsncpy_s(lf.lfFaceName, face, _TRUNCATE);
+        if (sizePx > 0) lf.lfHeight = -MulDiv(sizePx, dpi, 96), lf.lfWidth = 0;
+        HFONT made = CreateFontIndirectW(&lf);
+        bool ok = made != nullptr;
+        if (ok && face && *face) {  // (Windows hands back a stand-in for an unknown face; that one isn't kept)
+            HDC dc = GetDC(nullptr);
+            HGDIOBJ old = SelectObject(dc, made);
+            WCHAR got[LF_FACESIZE] = L"";
+            GetTextFaceW(dc, LF_FACESIZE, got);
+            SelectObject(dc, old);
+            ReleaseDC(nullptr, dc);
+            ok = !_wcsicmp(got, face);
+            if (!ok) Wh_Log(L"[Menu] Menu Font \"%s\" isn't installed; keeping the menu font", face);
+        }
+        if (ok) {
+            if (s_qpLook.ownFont) DeleteObject(s_qpLook.font);
+            s_qpLook.font = made, s_qpLook.ownFont = true;
+        } else if (made) {
+            DeleteObject(made);
+        }
+    }
+    VizSettingFree(face);
+    VizSettingFree(size);
+}
+
+std::wstring QpCaps(std::wstring t) {
+    if (s_qpLook.caps && !t.empty()) CharUpperBuffW(t.data(), (DWORD)t.size());
+    return t;
+}
+
+std::wstring QpLower(std::wstring s) {
+    for (auto& c : s) c = (wchar_t)towlower(c);
+    return s;
+}
+
+const wchar_t* QpQuickKeyFor(const wchar_t* setting) {
+    for (const auto& q : kQpQuickFor)
+        if (!wcscmp(q.second, setting)) return q.first;
+    return nullptr;
+}
+
+// What a setting is now, as the visualizer uses it: a quick setting standing in for it wins.
+std::wstring QpValue(int i) {
+    if (const wchar_t* quick = QpQuickKeyFor(kSettingsInfo[i].key))
+        for (const auto& kv : g_menuOverrides)
+            if (kv.first == quick) return kv.second;
+    PCWSTR s = VizSettingString(kSettingsInfo[i].key);
+    std::wstring v = s ? s : L"";
+    VizSettingFree(s);
+    return v;
+}
+
+bool QpOn(const std::wstring& v) { return v == L"1" || v == L"true" || v == L"on" || v == L"yes"; }
+
+std::vector<std::pair<std::wstring, std::wstring>> QpOptions(int i) {
+    std::vector<std::pair<std::wstring, std::wstring>> out;
+    std::wstring s = kSettingsInfo[i].options;
+    for (size_t pos = 0; pos < s.size();) {
+        size_t nl = s.find(L'\n', pos);
+        if (nl == std::wstring::npos) nl = s.size();
+        std::wstring line = s.substr(pos, nl - pos);
+        size_t eq = line.find(L'=');
+        if (eq != std::wstring::npos) out.push_back({line.substr(0, eq), line.substr(eq + 1)});
+        pos = nl + 1;
+    }
+    return out;
+}
+
+// Settings that rebuild the analysis, the device or the window: applied on release only.
+bool QpHeavy(const wchar_t* key) {
+    static const wchar_t* const kHeavy[] = {L"hardware.", L"audio.", L"analysis.engine", L"appearance.fftSize",
+                                            L"position.host", L"depth.", L"analysis.window"};
+    for (auto h : kHeavy)
+        if (!wcsncmp(key, h, wcslen(h))) return true;
+    return false;
+}
+
+void QpApplyNow() {
+    s_qpApplyDue = false;
+    s_qpLastApply = GetTickCount64();
+    ApplySettingsChanged();
+}
+
+// Sets a value: live while dragging (final = false), kept for good on release (final = true).
+void QpSet(int i, const std::wstring& value, bool final) {
+    const wchar_t* key = kSettingsInfo[i].key;
+    auto& pend = g_panelPending[key];
+    pend.value = value;
+    pend.written = false;
+    if (final) {
+        if (const wchar_t* quick = QpQuickKeyFor(key)) {
+            size_t before = g_menuOverrides.size();
+            g_menuOverrides.erase(std::remove_if(g_menuOverrides.begin(), g_menuOverrides.end(),
+                                                 [&](const auto& kv) { return kv.first == quick; }),
+                                  g_menuOverrides.end());
+            if (g_menuOverrides.size() != before) VizSaveMenuOverrides();
+        }
+#ifdef TD_PREFIX
+        if (!g_setupLayerLoaded) VizSetupLoad();
+        if (g_setupLayer.erase(key)) VizSetupSave();
+        if (td::WriteSetting(TD_PREFIX, key, value)) pend.written = true;
+        else Wh_Log(L"[Quick] couldn't write %s", key);
+#else
+        if (!g_setupLayerLoaded) VizSetupLoad();
+        g_setupLayer[key] = value;
+        VizSetupSave();
+        g_panelPending.erase(key);
+#endif
+        Wh_Log(L"[Quick] %s = %s", key, value.c_str());
+    }
+    if (!final && QpHeavy(key)) return;
+    if (final || GetTickCount64() - s_qpLastApply >= 50) {
+        QpApplyNow();
+    } else if (!s_qpApplyDue && s_qpWnd) {
+        s_qpApplyDue = true;
+        SetTimer(s_qpWnd, kQpApplyTimer, 50, nullptr);
+    }
+}
+
+std::wstring QpNumberText(double v, double step) {
+    WCHAR b[64];
+    if (step >= 1 && step == std::floor(step)) swprintf_s(b, L"%.0f", v);
+    else if (step >= 0.1 && fabs(step * 10 - std::round(step * 10)) < 1e-9) swprintf_s(b, L"%.1f", v);
+    else swprintf_s(b, L"%.2f", v);
+    std::wstring s = b;
+    if (s.find(L'.') != std::wstring::npos) {
+        while (s.back() == L'0') s.pop_back();
+        if (s.back() == L'.') s.pop_back();
+    }
+    return s == L"-0" ? L"0" : s;
+}
+
+double QpStepFor(double v) {
+    double a = fabs(v);
+    return a < 1 ? 0.05 : a < 10 ? 0.1 : a < 100 ? 1 : a < 1000 ? 5 : 10;
+}
+
+double QpWheelStep() {
+    WCHAR b[16] = {};
+    double v = Wh_GetStringValue(L"quickScrollStep", b, ARRAYSIZE(b)) ? _wtof(b) : 1;
+    for (double s : kQpWheelSteps)
+        if (fabs(s - v) < 1e-9) return s;
+    return 1;
+}
+
+// A whole-number setting (a count, a size in pixels) moves by whole steps however small the wheel's is.
+bool QpWholeNumber(int i) {
+    for (const auto& k : kSetupKeys)
+        if (!wcscmp(k.name, kSettingsInfo[i].key)) return !k.text;
+    return !wcschr(kSettingsInfo[i].def, L'.');
+}
+
+bool QpIsNumber(const std::wstring& v) {
+    if (v.empty()) return false;
+    WCHAR* end = nullptr;
+    wcstod(v.c_str(), &end);
+    return end && *end == 0;
+}
+
+void QpBuildIndex() {
+    if (!s_qpHay.empty()) return;
+    for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo); i++) {
+        const auto& s = kSettingsInfo[i];
+        std::wstring h = std::wstring(s.name) + L" " + s.group + L" " + s.section + L" " + s.key + L" ";
+        for (auto& o : QpOptions((int)i)) h += o.second + L" ";
+        s_qpHay.push_back(QpLower(h));
+        if (std::find(s_qpGroups.begin(), s_qpGroups.end(), s.group) == s_qpGroups.end()) s_qpGroups.push_back(s.group);
+    }
+}
+
+void QpFill() {
+    s_qpRows.clear();
+    WCHAR q[256] = {};
+    if (s_qpSearch) GetWindowTextW(s_qpSearch, q, ARRAYSIZE(q));
+    std::wstring query = QpLower(q);
+    if (!query.empty()) {
+        std::vector<std::wstring> words;
+        for (size_t pos = 0; pos < query.size();) {
+            size_t sp = query.find(L' ', pos);
+            if (sp == std::wstring::npos) sp = query.size();
+            if (sp > pos) words.push_back(query.substr(pos, sp - pos));
+            pos = sp + 1;
+        }
+        for (size_t i = 0; i < s_qpHay.size() && s_qpRows.size() < 300; i++) {
+            bool all = true;
+            for (auto& w : words)
+                if (s_qpHay[i].find(w) == std::wstring::npos) { all = false; break; }
+            if (all) {
+                const auto& st = kSettingsInfo[i];
+                std::wstring where = std::wstring(st.group) + (*st.section ? std::wstring(L" · ") + st.section : L"");
+                s_qpRows.push_back({kQpSetting, (int)i, where + L"  ·  " + st.name});
+            }
+        }
+    } else if (s_qpPage.empty()) {
+        s_qpRows.push_back({kQpAction, kQpStyles, L"My Styles"});
+        s_qpRows.push_back({kQpAction, kQpStyleEditor, L"Style Editor..."});
+        s_qpRows.push_back({kQpSep, 0, L""});
+        for (size_t g = 0; g < s_qpGroups.size(); g++) s_qpRows.push_back({kQpGroup, (int)g, s_qpGroups[g]});
+        s_qpRows.push_back({kQpSep, 0, L""});
+        s_qpRows.push_back({kQpAction, kQpOpenPlayer, L"Open Player"});
+        s_qpRows.push_back({kQpAction, kQpShowNowPlaying, L"Show Now Playing"});
+        s_qpRows.push_back({kQpAction, kQpPause, L"Pause Visualizer"});
+        s_qpRows.push_back({kQpAction, kQpMore, L"More (audio source, cut-outs, panel)..."});
+    } else if (s_qpPage == L"\x1Styles") {
+        s_qpStyles = VizStylePresetNames();
+        for (size_t k = 0; k < s_qpStyles.size(); k++) s_qpRows.push_back({kQpStyle, (int)k, s_qpStyles[k]});
+        if (s_qpStyles.empty()) s_qpRows.push_back({kQpAction, kQpStyleEditor, L"No styles yet: make one in the Style Editor..."});
+    } else if (!s_qpSection.empty()) {
+        for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo); i++)
+            if (s_qpPage == kSettingsInfo[i].group && s_qpSection == kSettingsInfo[i].section)
+                s_qpRows.push_back({kQpSetting, (int)i, kSettingsInfo[i].name});
+    } else {
+        // A group's page: its sub-pages first, then what belongs to none of them. Media Controls also has the
+        // player's actions on top and the card's main options at the bottom (they stay in Card too).
+        bool media = false;
+        for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo) && !media; i++)
+            media = s_qpPage == kSettingsInfo[i].group && !wcsncmp(kSettingsInfo[i].key, L"media_controls.", 15);
+        if (media) {
+            s_qpRows.push_back({kQpAction, kQpOpenPlayer, L"Open Player"});
+            s_qpRows.push_back({kQpAction, kQpShowNowPlaying, L"Show Now Playing"});
+            s_qpRows.push_back({kQpSep, 0, L""});
+        }
+        s_qpSections.clear();
+        for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo); i++)
+            if (s_qpPage == kSettingsInfo[i].group && *kSettingsInfo[i].section &&
+                std::find(s_qpSections.begin(), s_qpSections.end(), kSettingsInfo[i].section) == s_qpSections.end())
+                s_qpSections.push_back(kSettingsInfo[i].section);
+        for (size_t k = 0; k < s_qpSections.size(); k++) s_qpRows.push_back({kQpSection, (int)k, s_qpSections[k]});
+        bool sep = !s_qpSections.empty();
+        for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo); i++)
+            if (s_qpPage == kSettingsInfo[i].group && !*kSettingsInfo[i].section) {
+                if (sep) s_qpRows.push_back({kQpSep, 0, L""}), sep = false;
+                s_qpRows.push_back({kQpSetting, (int)i, kSettingsInfo[i].name});
+            }
+        if (media) {
+            static const wchar_t* kCardMain[] = {L"media_controls.cardArtShows", L"media_controls.backdrop",
+                                                 L"media_controls.cardArtSize", L"media_controls.cardArtHeight"};
+            s_qpRows.push_back({kQpSep, 0, L""});
+            for (const wchar_t* key : kCardMain)
+                for (size_t i = 0; i < ARRAYSIZE(kSettingsInfo); i++)
+                    if (!wcscmp(kSettingsInfo[i].key, key)) s_qpRows.push_back({kQpSetting, (int)i, kSettingsInfo[i].name});
+        }
+    }
+    s_qpScroll = 0;
+    s_qpHover = -1;
+}
+
+// Layout, in the menus' own terms: rows as tall as theirs, the check square, text inset and chevron
+// where they put them, separators as theirs. Inside the frame: a header (where you are), the search
+// box, then the rows.
+RECT s_qpInner{};  // inside the frame (TourneMenuPaintFrame's answer, or the 1 px edge)
+
+int QpS(int v) { return v * s_qpLook.s; }
+int QpTextH() {
+    static int h = 0;
+    static HFONT f = nullptr;
+    if (f != s_qpLook.font || !h) {
+        HDC dc = GetDC(nullptr);
+        HGDIOBJ o = SelectObject(dc, s_qpLook.font);
+        TEXTMETRICW tm{};
+        GetTextMetricsW(dc, &tm);
+        SelectObject(dc, o);
+        ReleaseDC(nullptr, dc);
+        h = tm.tmHeight;
+        f = s_qpLook.font;
+    }
+    return h;
+}
+int QpRowH() { return std::max(QpS(20), QpTextH() + QpS(9)); }
+int QpSepH() { return QpS(9); }
+int QpPad() { return s_qpLook.frame ? QpS(6) : QpS(3); }
+int QpHeaderTop() { return s_qpInner.top + QpPad(); }
+RECT QpSearchRect() {
+    int top = QpHeaderTop() + QpRowH() + QpS(3);
+    return {s_qpInner.left + QpS(8), top, s_qpInner.right - QpS(8), top + QpRowH()};
+}
+RECT QpListRect() {
+    RECT sr = QpSearchRect();
+    return {s_qpInner.left, sr.bottom + QpSepH(), s_qpInner.right, s_qpInner.bottom - QpPad()};
+}
+int QpHeightOf(int r) { return s_qpRows[r].kind == kQpSep ? QpSepH() : QpRowH(); }
+int QpTopOf(int r) {
+    int y = 0;
+    for (int i = 0; i < r; i++) y += QpHeightOf(i);
+    return y;
+}
+int QpTotalH() { return s_qpRows.empty() ? 0 : QpTopOf((int)s_qpRows.size()); }
+
+int QpRowAt(POINT p) {
+    RECT lr = QpListRect();
+    if (!PtInRect(&lr, p)) return -1;
+    int y = p.y - lr.top + s_qpScroll;
+    for (int r = 0, top = 0; r < (int)s_qpRows.size(); r++) {
+        int h = QpHeightOf(r);
+        if (y >= top && y < top + h) return s_qpRows[r].kind == kQpSep ? -1 : r;
+        top += h;
+    }
+    return -1;
+}
+
+RECT QpRowRect(int row) {
+    RECT lr = QpListRect();
+    int top = lr.top + QpTopOf(row) - s_qpScroll;
+    return {lr.left, top, lr.right, top + QpHeightOf(row)};
+}
+
+RECT QpHeaderRect() { return {s_qpInner.left, QpHeaderTop(), s_qpInner.right, QpHeaderTop() + QpRowH()}; }
+// The pin, at the header's right end.
+RECT QpPinRect() {
+    RECT hr = QpHeaderRect();
+    return {hr.right - QpS(26), hr.top, hr.right - QpS(4), hr.bottom};
+}
+// "Back": the header's chevron and title, when there is somewhere to go back to (the rest of the
+// header moves the panel).
+bool QpOnHeader(POINT p) {
+    bool deeper = !s_qpPage.empty() || (s_qpSearch && GetWindowTextLengthW(s_qpSearch));
+    RECT hr = QpHeaderRect();
+    hr.right = hr.left + QpS(110);
+    return deeper && PtInRect(&hr, p);
+}
+bool QpOnPin(POINT p) {
+    RECT pr = QpPinRect();
+    return PtInRect(&pr, p) != FALSE;
+}
+
+// The value's part of a setting row (where a number drags and text is typed).
+RECT QpValueRect(int row) {
+    RECT rr = QpRowRect(row);
+    return {rr.right - QpS(150), rr.top + QpS(2), rr.right - QpS(22), rr.bottom - QpS(2)};
+}
+
+void QpText(HDC dc, const std::wstring& s, RECT r, COLORREF c, UINT flags) {
+    SelectObject(dc, s_qpLook.font);
+    SetTextColor(dc, c);
+    std::wstring t = QpCaps(s);
+    DrawTextW(dc, t.c_str(), (int)t.size(), &r, flags | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_END_ELLIPSIS);
+}
+
+void QpFillRect(HDC dc, RECT r, COLORREF c) {
+    SetDCBrushColor(dc, c);
+    FillRect(dc, &r, (HBRUSH)GetStockObject(DC_BRUSH));
+}
+
+// The menus' submenu arrow (4 x 8 at their scale), or turned round for "back".
+void QpChevron(HDC dc, int x, int yMid, COLORREF c, bool back) {
+    static constexpr const char* kChevron[] = {"#...", "##..", ".##.", "..##", "..##", ".##.", "##..", "#..."};
+    int s = s_qpLook.s, y = yMid - 4 * s;
+    SetDCBrushColor(dc, c);
+    for (int row = 0; row < 8; row++)
+        for (int col = 0; col < 4; col++)
+            if (kChevron[row][back ? 3 - col : col] == '#') {
+                RECT dot{x + col * s, y + row * s, x + (col + 1) * s, y + (row + 1) * s};
+                FillRect(dc, &dot, (HBRUSH)GetStockObject(DC_BRUSH));
+            }
+}
+
+void QpPaint(HDC target) {
+    RECT rc;
+    GetClientRect(s_qpWnd, &rc);
+    HDC dc = CreateCompatibleDC(target);
+    HBITMAP bmp = CreateCompatibleBitmap(target, rc.right, rc.bottom);
+    HGDIOBJ oldB = SelectObject(dc, bmp);
+    SetBkMode(dc, TRANSPARENT);
+    const auto& L = s_qpLook;
+    static QpFrameFn frame = (QpFrameFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuPaintFrame");
+    if (frame) {
+        frame(dc, rc.right, rc.bottom, &s_qpInner);
+    } else {
+        QpFillRect(dc, rc, L.ground);
+        SetDCBrushColor(dc, L.edge);
+        FrameRect(dc, &rc, (HBRUSH)GetStockObject(DC_BRUSH));
+        s_qpInner = {1, 1, rc.right - 1, rc.bottom - 1};
+    }
+    const int s = L.s;
+    const int textX = L.frame ? QpS(31) : QpS(26), checkX = L.frame ? QpS(15) : QpS(9);
+    // Where we are, as the menu's header reads ("TOURNE'TABLE").
+    bool deeper = !s_qpPage.empty() || GetWindowTextLengthW(s_qpSearch);
+    std::wstring title = GetWindowTextLengthW(s_qpSearch) ? L"Search" : s_qpPage.empty() ? L"Tourne'Table"
+                         : s_qpPage == L"\x1Styles" ? L"My Styles" : !s_qpSection.empty() ? s_qpSection : s_qpPage;
+    RECT hr = {s_qpInner.left, QpHeaderTop(), s_qpInner.right, QpHeaderTop() + QpRowH()};
+    if (deeper) {
+        if (s_qpHover == -2) QpFillRect(dc, {hr.left + 2 * s, hr.top, hr.right - 2 * s, hr.bottom}, L.hover);
+        QpChevron(dc, hr.left + QpS(10), (hr.top + hr.bottom) / 2, L.text, true);
+        QpText(dc, title, {hr.left + textX, hr.top, hr.right - QpS(8), hr.bottom}, L.text, DT_LEFT);
+    } else {
+        QpText(dc, title, {hr.left + QpS(8), hr.top + 2 * s, hr.right - QpS(8), hr.bottom}, L.dim, DT_LEFT);
+    }
+    {   // The pin: a pixel pin, the accent colour when it's pinned.
+        static constexpr const char* kPin[] = {"..####..", "..####..", "..#..#..", "..#..#..", ".######.", "########", "...##...", "...##...", "...##...", "....#..."};
+        RECT pr = QpPinRect();
+        if (s_qpHover == -3) QpFillRect(dc, {pr.left, pr.top, pr.right - 2 * s, pr.bottom}, L.hover);
+        int px = (pr.left + pr.right) / 2 - 4 * s, py = (pr.top + pr.bottom) / 2 - 5 * s;
+        SetDCBrushColor(dc, s_qpPinned ? L.accent : L.dim);
+        for (int r = 0; r < 10; r++)
+            for (int c = 0; c < 8; c++)
+                if (kPin[r][c] == '#') {
+                    RECT d{px + c * s, py + r * s, px + (c + 1) * s, py + (r + 1) * s};
+                    FillRect(dc, &d, (HBRUSH)GetStockObject(DC_BRUSH));
+                }
+    }
+    // The search box: a line round the edit control that sits in it.
+    RECT sr = QpSearchRect();
+    QpFillRect(dc, sr, L.ground);
+    SetDCBrushColor(dc, GetFocus() == s_qpSearch ? L.edge : L.line);
+    FrameRect(dc, &sr, (HBRUSH)GetStockObject(DC_BRUSH));
+    RECT sep1 = {s_qpInner.left + QpS(6), sr.bottom + QpSepH() / 2, s_qpInner.right - QpS(6), sr.bottom + QpSepH() / 2 + s};
+    QpFillRect(dc, sep1, L.line);
+    // The rows in view.
+    RECT lr = QpListRect();
+    HRGN clip = CreateRectRgnIndirect(&lr);
+    SelectClipRgn(dc, clip);
+    for (int r = 0, top = lr.top - s_qpScroll; r < (int)s_qpRows.size(); top += QpHeightOf(r), r++) {
+        int h = QpHeightOf(r);
+        if (top + h < lr.top) continue;
+        if (top > lr.bottom) break;
+        const QpRow& row = s_qpRows[r];
+        RECT rr = {lr.left, top, lr.right, top + h};
+        if (row.kind == kQpSep) {
+            QpFillRect(dc, {rr.left + QpS(6), (rr.top + rr.bottom) / 2, rr.right - QpS(6), (rr.top + rr.bottom) / 2 + s}, L.line);
+            continue;
+        }
+        bool hot = r == s_qpHover || r == s_qpDragRow;
+        if (hot) QpFillRect(dc, {rr.left + 2 * s, rr.top, rr.right - 2 * s, rr.bottom}, L.hover);
+        COLORREF ink = hot ? L.hoverText : L.text;
+        RECT name = {rr.left + textX, rr.top, rr.right - QpS(22), rr.bottom};
+        int mid = (rr.top + rr.bottom) / 2;
+        auto check = [&](bool on) {
+            if (on) QpFillRect(dc, {rr.left + checkX, mid - 3 * s, rr.left + checkX + 6 * s, mid + 3 * s}, L.accent);
+        };
+        if (row.kind == kQpGroup || row.kind == kQpSection || (row.kind == kQpAction && row.index == kQpStyles)) {
+            QpText(dc, row.label, name, ink, DT_LEFT);
+            QpChevron(dc, rr.right - QpS(12), mid, ink, false);
+        } else if (row.kind == kQpAction || row.kind == kQpStyle) {
+            if (row.kind == kQpAction && row.index == kQpPause) check(g_userPaused.load());
+            QpText(dc, row.label, name, ink, DT_LEFT);
+        } else {
+            const auto& st = kSettingsInfo[row.index];
+            RECT vr = QpValueRect(r);
+            std::wstring v = r == s_qpEditRow ? L"" : QpValue(row.index);
+            if (st.kind == 0) {
+                // A switch is a menu toggle: the square when it's on.
+                check(QpOn(v));
+                QpText(dc, row.label, name, ink, DT_LEFT);
+                continue;
+            }
+            name.right = vr.left - QpS(6);
+            QpText(dc, row.label, name, ink, DT_LEFT);
+            if (st.kind == 3) {
+                std::wstring label = v;
+                for (auto& o : QpOptions(row.index))
+                    if (o.first == v) { label = o.second; break; }
+                size_t cut = label.find(L" (");
+                if (cut != std::wstring::npos && cut > 0) label = label.substr(0, cut);
+                QpText(dc, label, vr, L.dim, DT_RIGHT);
+                QpChevron(dc, rr.right - QpS(12), mid, ink, false);
+            } else if (st.kind == 4) {
+                BYTE a, cr, cg, cb;
+                RECT sw = {vr.right - QpS(8), mid - QpS(4), vr.right, mid + QpS(4)};
+                if (ParseColorHex(v.c_str(), &a, &cr, &cg, &cb)) {
+                    // Mixed over the panel's ground by its alpha, so a see-through colour looks see-through.
+                    auto mix = [a](BYTE c, BYTE g) { return (BYTE)((c * a + g * (255 - a)) / 255); };
+                    QpFillRect(dc, sw, RGB(mix(cr, GetRValue(L.ground)), mix(cg, GetGValue(L.ground)), mix(cb, GetBValue(L.ground))));
+                }
+                SetDCBrushColor(dc, L.line);
+                FrameRect(dc, &sw, (HBRUSH)GetStockObject(DC_BRUSH));
+                QpText(dc, v, {vr.left, vr.top, sw.left - QpS(6), vr.bottom}, L.dim, DT_RIGHT);
+            } else {
+                bool num = st.kind == 1 && QpIsNumber(v);
+                if (num && hot) {
+                    // Drag it: the arrows the menus use, either side of the number.
+                    QpChevron(dc, vr.right + QpS(6), mid, L.accent, false);
+                }
+                QpText(dc, v, vr, num && hot ? L.accent : L.dim, DT_RIGHT);
+            }
+        }
+    }
+    SelectClipRgn(dc, nullptr);
+    DeleteObject(clip);
+    if (s_qpRows.empty()) QpText(dc, L"Nothing matches", {lr.left + textX, lr.top, lr.right, lr.top + QpRowH()}, L.dim, DT_LEFT);
+    BitBlt(target, 0, 0, rc.right, rc.bottom, dc, 0, 0, SRCCOPY);
+    SelectObject(dc, oldB);
+    DeleteObject(bmp);
+    DeleteDC(dc);
+}
+
+void QpRedraw() {
+    if (s_qpWnd) InvalidateRect(s_qpWnd, nullptr, FALSE);
+}
+
+void QpSavePlace();
+void QpLayout();
+
+// A setting's tip, beside the panel after the pointer rests on its row: what it is and where it shows,
+// then a value to try. Drawn in the menus' look; it never takes the pointer or the focus.
+HWND s_qpTip = nullptr;
+int s_qpTipRow = -1;
+std::wstring s_qpTipName, s_qpTipWhat, s_qpTipTry;
+
+void QpTipHide() {
+    if (s_qpWnd) KillTimer(s_qpWnd, kQpTipTimer);
+    if (s_qpTip && IsWindowVisible(s_qpTip)) ShowWindow(s_qpTip, SW_HIDE);
+    s_qpTipRow = -1;
+}
+
+// The tip's pieces laid out at a width: the name, the words, then the Try line. Returns the height.
+int QpTipLayout(HDC dc, int w, RECT* name, RECT* what, RECT* tryit) {
+    int pad = QpS(8), y = s_qpInner.top;
+    HGDIOBJ of = SelectObject(dc, s_qpLook.font);
+    auto measure = [&](const std::wstring& t, RECT* r, int gapAfter) {
+        *r = {pad, y, w - pad, y};
+        if (t.empty()) return;
+        std::wstring c = QpCaps(t);
+        RECT m = *r;
+        DrawTextW(dc, c.c_str(), (int)c.size(), &m, DT_CALCRECT | DT_WORDBREAK | DT_NOPREFIX);
+        r->bottom = r->top + (m.bottom - m.top);
+        y = r->bottom + gapAfter;
+    };
+    y = QpPad() + QpS(4);
+    measure(s_qpTipName, name, QpS(6));
+    measure(s_qpTipWhat, what, QpS(6));
+    measure(s_qpTipTry, tryit, 0);
+    SelectObject(dc, of);
+    return y + QpPad() + QpS(4);
+}
+
+LRESULT CALLBACK QpTipProc(HWND w, UINT m, WPARAM wp, LPARAM lp) {
+    if (m == WM_NCHITTEST) return HTTRANSPARENT;
+    if (m == WM_MOUSEACTIVATE) return MA_NOACTIVATE;
+    if (m == WM_ERASEBKGND) return 1;
+    if (m == WM_PAINT) {
+        PAINTSTRUCT ps;
+        HDC target = BeginPaint(w, &ps);
+        RECT rc;
+        GetClientRect(w, &rc);
+        HDC dc = CreateCompatibleDC(target);
+        HBITMAP bmp = CreateCompatibleBitmap(target, rc.right, rc.bottom);
+        HGDIOBJ ob = SelectObject(dc, bmp);
+        static QpFrameFn frame = (QpFrameFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuPaintFrame");
+        RECT inner{};
+        if (frame) {
+            frame(dc, rc.right, rc.bottom, &inner);
+        } else {
+            QpFillRect(dc, rc, s_qpLook.ground);
+            SetDCBrushColor(dc, s_qpLook.edge);
+            FrameRect(dc, &rc, (HBRUSH)GetStockObject(DC_BRUSH));
+        }
+        SetBkMode(dc, TRANSPARENT);
+        RECT nr, wr, tr;
+        QpTipLayout(dc, rc.right, &nr, &wr, &tr);
+        SelectObject(dc, s_qpLook.font);
+        auto text = [&](const std::wstring& t, RECT r, COLORREF c) {
+            if (t.empty()) return;
+            std::wstring u = QpCaps(t);
+            SetTextColor(dc, c);
+            DrawTextW(dc, u.c_str(), (int)u.size(), &r, DT_WORDBREAK | DT_NOPREFIX);
+        };
+        text(s_qpTipName, nr, s_qpLook.dim);
+        text(s_qpTipWhat, wr, s_qpLook.text);
+        text(s_qpTipTry, tr, s_qpLook.accent);
+        BitBlt(target, 0, 0, rc.right, rc.bottom, dc, 0, 0, SRCCOPY);
+        SelectObject(dc, ob);
+        DeleteObject(bmp);
+        DeleteDC(dc);
+        EndPaint(w, &ps);
+        return 0;
+    }
+    return DefWindowProcW(w, m, wp, lp);
+}
+
+void QpTipShow(int row) {
+    if (row < 0 || row >= (int)s_qpRows.size() || s_qpRows[row].kind != kQpSetting) return;
+    const auto& st = kSettingsInfo[s_qpRows[row].index];
+    if (!st.tip || !*st.tip) return;
+    std::wstring tip = st.tip;
+    size_t cut = tip.rfind(L"\nTry:");  // (the words, a line per option for a choice, then the Try line)
+    s_qpTipName = std::wstring(st.group) + (*st.section ? std::wstring(L" \u00b7 ") + st.section : L"") + L" \u00b7 " + st.name;
+    s_qpTipWhat = tip.substr(0, cut);
+    s_qpTipTry = cut == std::wstring::npos ? L"" : tip.substr(cut + 1);
+    HINSTANCE inst = GetModuleHandleW(nullptr);
+    if (!s_qpTip) {
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = QpTipProc;
+        wc.hInstance = inst;
+        wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wc.lpszClassName = L"TourneTableQuickTip";
+        RegisterClassW(&wc);
+        s_qpTip = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT, wc.lpszClassName, L"",
+                                  WS_POPUP, 0, 0, 10, 10, s_qpWnd, nullptr, inst, nullptr);
+        if (!s_qpTip) return;
+    }
+    // Beside the panel, level with the row: on the right when it fits on that screen, else the left.
+    int w = QpS(180) + MulDiv(200, s_qpDpi ? s_qpDpi : 96, 96);  // (wide enough for a line per option)
+    HDC sdc = GetDC(s_qpTip);
+    RECT a, b, c;
+    int h = QpTipLayout(sdc, w, &a, &b, &c);
+    ReleaseDC(s_qpTip, sdc);
+    RECT pr, rr = QpRowRect(row);
+    GetWindowRect(s_qpWnd, &pr);
+    MapWindowPoints(s_qpWnd, nullptr, (POINT*)&rr, 2);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(MonitorFromWindow(s_qpWnd, MONITOR_DEFAULTTONEAREST), &mi);
+    RECT wa = mi.rcWork;
+    int gap = QpS(4);
+    int x = pr.right + gap + w <= wa.right ? pr.right + gap : pr.left - gap - w;
+    x = std::clamp(x, (int)wa.left, std::max((int)wa.left, (int)wa.right - w));
+    int y = std::clamp((int)rr.top - QpPad(), (int)wa.top, std::max((int)wa.top, (int)wa.bottom - h));
+    s_qpTipRow = row;
+    SetWindowPos(s_qpTip, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    InvalidateRect(s_qpTip, nullptr, FALSE);
+}
+
+void QpHide() {
+    QpTipHide();
+    if (s_qpEdit) DestroyWindow(s_qpEdit), s_qpEdit = nullptr, s_qpEditRow = -1;
+    if (s_qpWnd && s_qpWheelSetting >= 0) SendMessageW(s_qpWnd, WM_TIMER, kQpWheelTimer, 0);  // (a scrolled number is kept)
+    if (s_qpWnd && IsWindowVisible(s_qpWnd)) QpSavePlace();
+    if (s_qpWnd) {
+        KillTimer(s_qpWnd, kQpWatchTimer);
+        ShowWindow(s_qpWnd, SW_HIDE);
+    }
+}
+
+void QpEndEdit(bool keep) {
+    if (!s_qpEdit) return;
+    HWND e = s_qpEdit;
+    int row = s_qpEditRow;
+    s_qpEdit = nullptr;
+    s_qpEditRow = -1;
+    if (keep && row >= 0 && row < (int)s_qpRows.size()) {
+        WCHAR b[1024] = {};
+        GetWindowTextW(e, b, ARRAYSIZE(b));
+        int i = s_qpRows[row].index;
+        BYTE a, r, g, bl;
+        std::wstring v = b;
+        if (kSettingsInfo[i].kind == 4 && !v.empty() && v[0] != L'#') v = L"#" + v;
+        if (kSettingsInfo[i].kind != 4 || ParseColorHex(v.c_str(), &a, &r, &g, &bl)) QpSet(i, v, true);
+    }
+    DestroyWindow(e);
+    QpRedraw();
+}
+
+LRESULT CALLBACK QpEditProc(HWND w, UINT m, WPARAM wp, LPARAM lp, UINT_PTR id, DWORD_PTR) {
+    if (m == WM_KEYDOWN && (wp == VK_RETURN || wp == VK_ESCAPE)) {
+        if (id == 2) {  // the inline value box
+            QpEndEdit(wp == VK_RETURN);
+            SetFocus(s_qpSearch);
+            return 0;
+        }
+        if (wp == VK_ESCAPE) {
+            if (GetWindowTextLengthW(w)) SetWindowTextW(w, L"");
+            else if (!s_qpSection.empty()) { s_qpSection.clear(); QpFill(); QpRedraw(); }
+            else if (!s_qpPage.empty()) { s_qpPage.clear(); QpFill(); QpRedraw(); }
+            else QpHide();
+            return 0;
+        }
+    }
+    if (m == WM_CHAR && (wp == VK_RETURN || wp == VK_ESCAPE)) return 0;
+    if (m == WM_KILLFOCUS && id == 2) PostMessageW(s_qpWnd, WM_APP + 40, 0, 0);
+    if (m == WM_PAINT && id == 1 && !GetWindowTextLengthW(w)) {
+        // The hint, in the menus' border colour (a cue banner only comes in Windows' grey).
+        LRESULT r = DefSubclassProc(w, m, wp, lp);
+        RECT tr{};
+        SendMessageW(w, EM_GETRECT, 0, (LPARAM)&tr);
+        HDC dc = GetDC(w);
+        HGDIOBJ of = SelectObject(dc, (HFONT)SendMessageW(w, WM_GETFONT, 0, 0));
+        SetBkMode(dc, TRANSPARENT);
+        SetTextColor(dc, s_qpLook.border);
+        std::wstring hint = QpCaps(L"Search every setting");
+        DrawTextW(dc, hint.c_str(), (int)hint.size(), &tr, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_END_ELLIPSIS);
+        SelectObject(dc, of);
+        ReleaseDC(w, dc);
+        return r;
+    }
+    return DefSubclassProc(w, m, wp, lp);
+}
+
+void QpBeginEdit(int row) {
+    QpEndEdit(true);
+    RECT vr = QpValueRect(row);
+    s_qpEditRow = row;
+    s_qpEdit = CreateWindowExW(0, L"EDIT", QpValue(s_qpRows[row].index).c_str(), WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+                               vr.left, vr.top + QpS(1), vr.right - vr.left, vr.bottom - vr.top - QpS(2), s_qpWnd,
+                               nullptr, GetModuleHandleW(nullptr), nullptr);
+    SendMessageW(s_qpEdit, WM_SETFONT, (WPARAM)s_qpLook.font, TRUE);
+    SetWindowSubclass(s_qpEdit, QpEditProc, 2, 0);
+    SetFocus(s_qpEdit);
+    SendMessageW(s_qpEdit, EM_SETSEL, 0, -1);
+    QpRedraw();
+}
+
+void QpPickColour(int i) {
+    BYTE a = 255, r = 255, g = 255, b = 255;
+    ParseColorHex(QpValue(i).c_str(), &a, &r, &g, &b);
+    static COLORREF custom[16] = {RGB(0x12, 0x1C, 0x21), RGB(0x1E, 0x30, 0x36), RGB(0x64, 0xAA, 0x89), RGB(0xE5, 0x74, 0x74),
+                                  RGB(0xA9, 0x5D, 0x5D), RGB(0x30, 0x52, 0x45), RGB(0x4C, 0xE3, 0x8D), RGB(0x15, 0xFF, 0xA2)};
+    CHOOSECOLORW cc{sizeof(cc)};
+    cc.hwndOwner = s_qpWnd;
+    cc.rgbResult = RGB(r, g, b);
+    cc.lpCustColors = custom;
+    cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+    s_qpModal = true;
+    BOOL ok = ChooseColorW(&cc);
+    s_qpModal = false;
+    if (!ok) return;
+    WCHAR out[16];
+    BYTE nr = GetRValue(cc.rgbResult), ng = GetGValue(cc.rgbResult), nb = GetBValue(cc.rgbResult);
+    if (a == 255) swprintf_s(out, L"#%02X%02X%02X", nr, ng, nb);
+    else swprintf_s(out, L"#%02X%02X%02X%02X", a, nr, ng, nb);
+    QpSet(i, out, true);
+}
+
+void QpChoose(int row) {
+    int i = s_qpRows[row].index;
+    auto opts = QpOptions(i);
+    std::wstring now = QpValue(i);
+    HMENU m = CreatePopupMenu();
+    for (size_t k = 0; k < opts.size(); k++)
+        AppendMenuW(m, MF_STRING | (opts[k].first == now ? MF_CHECKED : 0), 100 + k, opts[k].second.c_str());
+    RECT vr = QpValueRect(row);
+    POINT p = {vr.right, vr.bottom};
+    ClientToScreen(s_qpWnd, &p);
+    s_qpModal = true;
+    UINT cmd = VizTrackMenu(m, TPM_RETURNCMD | TPM_RIGHTALIGN | TPM_NONOTIFY, p.x, p.y, s_qpWnd);
+    s_qpModal = false;
+    DestroyMenu(m);
+    if (cmd >= 100 && cmd < 100 + opts.size()) QpSet(i, opts[cmd - 100].first, true);
+}
+
+void QpRowMenu(int row, POINT screen) {
+    int i = s_qpRows[row].index;
+    HMENU m = CreatePopupMenu();
+    std::wstring def = kSettingsInfo[i].def;
+    AppendMenuW(m, MF_STRING, 1, (L"Reset to default (" + (def.empty() ? std::wstring(L"empty") : def) + L")").c_str());
+    AppendMenuW(m, MF_STRING, 2, L"Copy its name");
+    if (kSettingsInfo[i].kind == 4) AppendMenuW(m, MF_STRING, 3, L"Pick a colour (keeps its alpha)");
+    if (kSettingsInfo[i].kind == 1) {
+        HMENU steps = CreatePopupMenu();
+        double now = QpWheelStep();
+        for (int k = 0; k < (int)ARRAYSIZE(kQpWheelSteps); k++)
+            AppendMenuW(steps, MF_STRING | (kQpWheelSteps[k] == now ? MF_CHECKED : 0), 10 + k,
+                        QpNumberText(kQpWheelSteps[k], 0.01).c_str());
+        AppendMenuW(m, MF_SEPARATOR, 0, nullptr);
+        AppendMenuW(m, MF_POPUP, (UINT_PTR)steps, L"Scroll step");
+    }
+    s_qpModal = true;
+    UINT cmd = VizTrackMenu(m, TPM_RETURNCMD | TPM_NONOTIFY, screen.x, screen.y, s_qpWnd);
+    s_qpModal = false;
+    DestroyMenu(m);
+    if (cmd >= 10 && cmd < 10 + ARRAYSIZE(kQpWheelSteps))
+        Wh_SetStringValue(L"quickScrollStep", QpNumberText(kQpWheelSteps[cmd - 10], 0.01).c_str());
+    if (cmd == 1) QpSet(i, def, true);
+    if (cmd == 3) QpPickColour(i);
+    if (cmd == 2 && OpenClipboard(s_qpWnd)) {
+        std::wstring k = kSettingsInfo[i].key;
+        EmptyClipboard();
+        if (HGLOBAL g = GlobalAlloc(GMEM_MOVEABLE, (k.size() + 1) * sizeof(WCHAR))) {
+            memcpy(GlobalLock(g), k.c_str(), (k.size() + 1) * sizeof(WCHAR));
+            GlobalUnlock(g);
+            SetClipboardData(CF_UNICODETEXT, g);
+        }
+        CloseClipboard();
+    }
+}
+
+void QpClick(int row, POINT p) {
+    const QpRow& r = s_qpRows[row];
+    if (r.kind == kQpGroup) {
+        s_qpPage = s_qpGroups[r.index];
+        s_qpSection.clear();
+        QpFill();
+    } else if (r.kind == kQpSection) {
+        s_qpSection = s_qpSections[r.index];
+        QpFill();
+    } else if (r.kind == kQpStyle) {
+        if (VizApplyStylePreset(r.label)) QpApplyNow();
+    } else if (r.kind == kQpAction) {
+        switch (r.index) {
+            case kQpOpenPlayer: VizOpenPlayer(); QpHide(); return;
+            case kQpShowNowPlaying: VizShowNowPlayingAgain(); break;
+            case kQpPause:
+                g_userPaused.store(!g_userPaused.load());
+                if (g_userPaused.load()) PauseForFullscreen();
+                else ResumeFromFullscreen();
+                break;
+            case kQpStyles: s_qpPage = L"\x1Styles"; QpFill(); break;
+            case kQpStyleEditor: QpHide(); VizOpenStyleEditor(); return;
+            case kQpMore: {
+                QpHide();
+                POINT at = s_qpAt;
+                g_forceClassicMenu = true;
+                VizShowContextMenu(at);
+                g_forceClassicMenu = false;
+                return;
+            }
+        }
+    } else {
+        const auto& s = kSettingsInfo[r.index];
+        RECT vr = QpValueRect(row);
+        std::wstring v = QpValue(r.index);
+        if (s.kind == 0) QpSet(r.index, QpOn(v) ? L"0" : L"1", true);
+        else if (s.kind == 3) QpChoose(row);
+        else if (s.kind == 4 && p.x >= vr.right - QpS(12)) QpPickColour(r.index);  // the swatch
+        else if (s.kind == 4) QpBeginEdit(row);  // typed, so #AARRGGBB keeps its alpha
+        else if (s.kind == 1 && QpIsNumber(v) && PtInRect(&vr, p)) {
+            s_qpDragRow = row;
+            s_qpDragMoved = false;
+            s_qpDragX = p.x;
+            s_qpDragStart = _wtof(v.c_str());
+            s_qpDragStep = QpStepFor(s_qpDragStart);
+            SetCapture(s_qpWnd);
+            return;
+        } else QpBeginEdit(row);
+    }
+    QpRedraw();
+}
+
+LRESULT CALLBACK QpWndProc(HWND w, UINT m, WPARAM wp, LPARAM lp) {
+    switch (m) {
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(w, &ps);
+            QpPaint(dc);
+            EndPaint(w, &ps);
+            return 0;
+        }
+        case WM_ERASEBKGND:
+            return 1;
+        case WM_CTLCOLOREDIT:
+            SetTextColor((HDC)wp, s_qpLook.text);
+            SetBkColor((HDC)wp, (HWND)lp == s_qpEdit ? s_qpLook.hover : s_qpLook.ground);
+            SetDCBrushColor((HDC)wp, (HWND)lp == s_qpEdit ? s_qpLook.hover : s_qpLook.ground);
+            return (LRESULT)GetStockObject(DC_BRUSH);
+        case WM_COMMAND:
+            if ((HWND)lp == s_qpSearch && HIWORD(wp) == EN_CHANGE) {
+                QpFill();
+                QpRedraw();
+            }
+            return 0;
+        case WM_APP + 40:  // the inline box lost focus: keep what was typed
+            QpEndEdit(true);
+            return 0;
+        case WM_MOUSEMOVE: {
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            if (s_qpDragRow >= 0) {
+                int dx = p.x - s_qpDragX;
+                if (!s_qpDragMoved && abs(dx) < QpS(3)) return 0;
+                s_qpDragMoved = true;
+                double step = (GetKeyState(VK_SHIFT) & 0x8000) ? s_qpDragStep / 10 : s_qpDragStep;
+                double v = s_qpDragStart + std::round(dx / (double)QpS(4)) * step;
+                QpSet(s_qpRows[s_qpDragRow].index, QpNumberText(v, step), false);
+                QpRedraw();
+                return 0;
+            }
+            int r = QpRowAt(p);
+            if (r < 0 && QpOnPin(p)) r = -3;
+            else if (r < 0 && QpOnHeader(p)) r = -2;  // the header row, as "back"
+            if (r != s_qpHover) {
+                s_qpHover = r;
+                QpTipHide();
+                if (r >= 0 && s_qpRows[r].kind == kQpSetting && !s_qpEdit) SetTimer(w, kQpTipTimer, 450, nullptr);
+                QpRedraw();
+            }
+            TRACKMOUSEEVENT t{sizeof(t), TME_LEAVE, w, 0};
+            TrackMouseEvent(&t);
+            return 0;
+        }
+        case WM_MOUSELEAVE:
+            QpTipHide();
+            if (s_qpHover != -1) s_qpHover = -1, QpRedraw();
+            return 0;
+        case WM_SETCURSOR:
+            if (LOWORD(lp) == HTCLIENT && s_qpHover >= 0 && s_qpRows[s_qpHover].kind == kQpSetting &&
+                kSettingsInfo[s_qpRows[s_qpHover].index].kind == 1) {
+                POINT p;
+                GetCursorPos(&p);
+                ScreenToClient(w, &p);
+                RECT vr = QpValueRect(s_qpHover);
+                if (PtInRect(&vr, p) && QpIsNumber(QpValue(s_qpRows[s_qpHover].index))) {
+                    SetCursor(LoadCursor(nullptr, IDC_SIZEWE));
+                    return TRUE;
+                }
+            }
+            break;
+        case WM_LBUTTONDOWN: {
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            QpTipHide();
+            QpEndEdit(true);
+            if (QpOnPin(p)) {
+                s_qpPinned = !s_qpPinned;
+                QpSavePlace();
+                QpRedraw();
+                return 0;
+            }
+            if (QpOnHeader(p)) {
+                if (GetWindowTextLengthW(s_qpSearch)) SetWindowTextW(s_qpSearch, L"");
+                else if (!s_qpSection.empty()) s_qpSection.clear(), QpFill();
+                else s_qpPage.clear(), QpFill();
+                QpRedraw();
+                return 0;
+            }
+            int r = QpRowAt(p);
+            if (r >= 0) QpClick(r, p);
+            return 0;
+        }
+        case WM_LBUTTONUP:
+            if (s_qpDragRow >= 0) {
+                int row = s_qpDragRow;
+                s_qpDragRow = -1;
+                ReleaseCapture();
+                if (s_qpDragMoved) {
+                    auto it = g_panelPending.find(kSettingsInfo[s_qpRows[row].index].key);
+                    if (it != g_panelPending.end()) QpSet(s_qpRows[row].index, std::wstring(it->second.value), true);
+                } else {
+                    QpBeginEdit(row);  // a click without a drag: type it
+                }
+                QpRedraw();
+            }
+            return 0;
+        case WM_RBUTTONUP: {
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            QpTipHide();
+            int r = QpRowAt(p);
+            if (r >= 0 && s_qpRows[r].kind == kQpSetting) {
+                ClientToScreen(w, &p);
+                QpRowMenu(r, p);
+                QpRedraw();
+            }
+            return 0;
+        }
+        case WM_MOUSEWHEEL: {
+            QpTipHide();
+            // Over a number's value: the wheel turns it, by the scroll step (written once it stops).
+            POINT wpt = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            ScreenToClient(w, &wpt);
+            int wr = s_qpDragRow < 0 ? QpRowAt(wpt) : -1;
+            if (wr >= 0 && s_qpRows[wr].kind == kQpSetting && kSettingsInfo[s_qpRows[wr].index].kind == 1) {
+                RECT vr = QpValueRect(wr);
+                int i = s_qpRows[wr].index;
+                std::wstring v = QpValue(i);
+                auto held = g_panelPending.find(kSettingsInfo[i].key);  // (still being scrolled: a quick setting would hide it)
+                if (s_qpWheelSetting == i && held != g_panelPending.end() && !held->second.written) v = held->second.value;
+                if (PtInRect(&vr, wpt) && QpIsNumber(v)) {
+                    QpEndEdit(true);
+                    if (s_qpWheelSetting != i) {
+                        if (s_qpWheelSetting >= 0) {
+                            auto it = g_panelPending.find(kSettingsInfo[s_qpWheelSetting].key);
+                            if (it != g_panelPending.end()) QpSet(s_qpWheelSetting, std::wstring(it->second.value), true);
+                        }
+                        s_qpWheelSetting = i, s_qpWheelRest = 0;
+                    }
+                    s_qpWheelRest += GET_WHEEL_DELTA_WPARAM(wp);
+                    int notches = s_qpWheelRest / WHEEL_DELTA;
+                    s_qpWheelRest -= notches * WHEEL_DELTA;
+                    if (notches) {
+                        double step = QpWheelStep();
+                        if (QpWholeNumber(i)) step = std::max(1.0, std::round(step));
+                        double nv = std::round((_wtof(v.c_str()) + notches * step) / step) * step;
+                        QpSet(i, QpNumberText(nv, step < 1 ? step : 1), false);
+                        QpRedraw();
+                    }
+                    SetTimer(w, kQpWheelTimer, 400, nullptr);
+                    return 0;
+                }
+            }
+            RECT lr = QpListRect();
+            int total = QpTotalH() - (lr.bottom - lr.top);
+            s_qpScroll = std::clamp(s_qpScroll - GET_WHEEL_DELTA_WPARAM(wp) * QpRowH() * 3 / WHEEL_DELTA, 0, std::max(0, total));
+            QpEndEdit(true);
+            QpRedraw();
+            return 0;
+        }
+        case WM_TIMER:
+            if (wp == kQpTipTimer) {
+                KillTimer(w, kQpTipTimer);
+                if (s_qpHover >= 0 && s_qpDragRow < 0 && !s_qpEdit && !s_qpModal && IsWindowVisible(w)) QpTipShow(s_qpHover);
+            } else if (wp == kQpWheelTimer) {
+                KillTimer(w, kQpWheelTimer);
+                if (s_qpWheelSetting >= 0) {
+                    auto it = g_panelPending.find(kSettingsInfo[s_qpWheelSetting].key);
+                    if (it != g_panelPending.end() && !it->second.written) QpSet(s_qpWheelSetting, std::wstring(it->second.value), true);
+                    s_qpWheelSetting = -1, s_qpWheelRest = 0;
+                    QpRedraw();
+                }
+            } else if (wp == kQpApplyTimer) {
+                KillTimer(w, kQpApplyTimer);
+                if (s_qpApplyDue) QpApplyNow();
+            } else if (wp == kQpWatchTimer && !s_qpModal && !s_qpPinned && IsWindowVisible(w)) {
+                // Away when it's left: another window took the foreground after it had it, or a click
+                // landed outside it.
+                HWND fg = GetForegroundWindow();
+                bool ours = fg == w || GetAncestor(fg, GA_ROOTOWNER) == w;
+                if (ours) s_qpWasActive = true;
+                POINT c;
+                GetCursorPos(&c);
+                RECT wr;
+                GetWindowRect(w, &wr);
+                bool pressedOutside = !PtInRect(&wr, c) && ((GetAsyncKeyState(VK_LBUTTON) | GetAsyncKeyState(VK_RBUTTON)) & 0x8000);
+                if ((s_qpWasActive && !ours) || pressedOutside) QpHide();
+            }
+            return 0;
+        case WM_NCHITTEST: {
+            // Edges and corners size it (the frame's band, or a few pixels in); the header moves it.
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            ScreenToClient(w, &p);
+            RECT rc;
+            GetClientRect(w, &rc);
+            int e = std::max(QpS(4), (int)s_qpInner.left);
+            bool l = p.x < e, r = p.x >= rc.right - e, t = p.y < e, b = p.y >= rc.bottom - e;
+            if (t && l) return HTTOPLEFT;
+            if (t && r) return HTTOPRIGHT;
+            if (b && l) return HTBOTTOMLEFT;
+            if (b && r) return HTBOTTOMRIGHT;
+            if (l) return HTLEFT;
+            if (r) return HTRIGHT;
+            if (t) return HTTOP;
+            if (b) return HTBOTTOM;
+            RECT hr = QpHeaderRect();
+            if (PtInRect(&hr, p) && !QpOnPin(p) && !QpOnHeader(p)) return HTCAPTION;
+            return HTCLIENT;
+        }
+        case WM_GETMINMAXINFO: {
+            auto* mm = (MINMAXINFO*)lp;
+            mm->ptMinTrackSize = {QpS(220), QpS(200)};
+            return 0;
+        }
+        case WM_SIZE:
+            QpLayout();
+            QpRedraw();
+            return 0;
+        case WM_ENTERSIZEMOVE:
+            s_qpModal = true;  // (not hidden for losing the pointer while it moves)
+            return 0;
+        case WM_EXITSIZEMOVE:
+            s_qpModal = false;
+            QpSavePlace();
+            return 0;
+        case WM_CLOSE:
+            QpHide();
+            return 0;
+        case WM_DESTROY:
+            if (s_qpTip) DestroyWindow(s_qpTip), s_qpTip = nullptr;
+            s_qpWnd = nullptr;
+            s_qpSearch = nullptr;
+            return 0;
+    }
+    return DefWindowProcW(w, m, wp, lp);
+}
+
+// Where the frame leaves room inside at the window's size, and the search box in its place.
+void QpLayout() {
+    if (!s_qpWnd) return;
+    RECT rc;
+    GetClientRect(s_qpWnd, &rc);
+    static QpFrameFn frame = (QpFrameFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuPaintFrame");
+    HDC sdc = GetDC(s_qpWnd), mdc = CreateCompatibleDC(sdc);
+    HBITMAP mb = CreateCompatibleBitmap(sdc, std::max(1L, rc.right), std::max(1L, rc.bottom));
+    HGDIOBJ ob = SelectObject(mdc, mb);
+    if (frame) frame(mdc, rc.right, rc.bottom, &s_qpInner);
+    else s_qpInner = {1, 1, rc.right - 1, rc.bottom - 1};
+    SelectObject(mdc, ob);
+    DeleteObject(mb);
+    DeleteDC(mdc);
+    ReleaseDC(s_qpWnd, sdc);
+    RECT sr = QpSearchRect();
+    int eh = QpTextH() + QpS(2);
+    MoveWindow(s_qpSearch, sr.left + QpS(6), (sr.top + sr.bottom - eh) / 2, sr.right - sr.left - QpS(12), eh, FALSE);
+    RECT lr = QpListRect();
+    s_qpScroll = std::clamp(s_qpScroll, 0, std::max(0, QpTotalH() - (int)(lr.bottom - lr.top)));
+}
+
+// Its place, size and pin, kept between openings ("quickPanel": x y w h pinned, screen pixels); opened from
+// the media card it has a place of its own ("quickPanelMedia").
+const wchar_t* s_qpPlaceKey = L"quickPanel";
+
+void QpSavePlace() {
+    if (!s_qpWnd) return;
+    RECT r;
+    GetWindowRect(s_qpWnd, &r);
+    WCHAR b[96];
+    swprintf_s(b, L"%ld %ld %ld %ld %d", r.left, r.top, r.right - r.left, r.bottom - r.top, s_qpPinned ? 1 : 0);
+    Wh_SetStringValue(s_qpPlaceKey, b);
+}
+
+bool QpLoadPlace(RECT* out) {
+    WCHAR b[96] = {};
+    s_qpPinned = false;
+    if (!Wh_GetStringValue(s_qpPlaceKey, b, ARRAYSIZE(b))) return false;
+    long x, y, w, h;
+    int pin = 0;
+    if (swscanf_s(b, L"%ld %ld %ld %ld %d", &x, &y, &w, &h, &pin) < 4 || w < 100 || h < 100) return false;
+    s_qpPinned = pin != 0;
+    *out = {x, y, x + w, y + h};
+    // Only where it can still be seen (a screen may have gone since).
+    RECT top = {x + 20, y, x + w - 20, y + 30}, onScreen;
+    HMONITOR m = MonitorFromRect(&top, MONITOR_DEFAULTTONULL);
+    MONITORINFO mi{sizeof(mi)};
+    return m && GetMonitorInfoW(m, &mi) && IntersectRect(&onScreen, &top, &mi.rcWork);
+}
+}  // namespace
+
+// A setting changed from somewhere other than the panel (the card's corners): written as the panel writes one.
+void VizWriteSetting(const wchar_t* key, const std::wstring& value) {
+    for (int i = 0; i < (int)ARRAYSIZE(kSettingsInfo); i++)
+        if (!wcscmp(kSettingsInfo[i].key, key)) return QpSet(i, value, true);
+}
+
+// Opens the panel at a point (screen pixels). Message thread.
+bool VizQuickPanelOpen(POINT pt) {
+    QpBuildIndex();
+    if (s_qpWnd && IsWindowVisible(s_qpWnd)) QpSavePlace();  // (where it was, under the place it was opened for)
+    s_qpPlaceKey = g_qpForMedia ? L"quickPanelMedia" : L"quickPanel";
+    HINSTANCE inst = GetModuleHandleW(nullptr);
+    if (!s_qpWnd) {
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = QpWndProc;
+        wc.hInstance = inst;
+        wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wc.lpszClassName = L"TourneTableQuickSettings";
+        RegisterClassW(&wc);
+        s_qpWnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST, wc.lpszClassName, L"Tourne'Table quick settings", WS_POPUP,
+                                  pt.x, pt.y, 10, 10, nullptr, nullptr, inst, nullptr);
+        if (!s_qpWnd) return false;
+        s_qpSearch = CreateWindowExW(0, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL, 0, 0, 10, 10, s_qpWnd, nullptr, inst,
+                                     nullptr);
+        SetWindowSubclass(s_qpSearch, QpEditProc, 1, 0);
+    }
+    // Sized for the screen it opens on.
+    HMONITOR mon = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+    UINT dx = 96, dy = 96;
+    GetDpiForMonitor(mon, MDT_EFFECTIVE_DPI, &dx, &dy);
+    // The menus' look as it is now (they follow the theme and the bar's settings).
+    s_qpDpi = (int)dx;
+    QpLoadLook(s_qpDpi);
+    SendMessageW(s_qpSearch, WM_SETFONT, (WPARAM)s_qpLook.font, FALSE);
+    LONG_PTR es = GetWindowLongPtrW(s_qpSearch, GWL_STYLE);
+    SetWindowLongPtrW(s_qpSearch, GWL_STYLE, s_qpLook.caps ? es | ES_UPPERCASE : es & ~(LONG_PTR)ES_UPPERCASE);
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(mon, &mi);
+    int w = QpS(300), h = std::min(QpS(560), (int)(mi.rcWork.bottom - mi.rcWork.top) - Qp(16));
+    int x = std::clamp((int)pt.x, (int)mi.rcWork.left + Qp(8), (int)mi.rcWork.right - w - Qp(8));
+    int y = pt.y - h < mi.rcWork.top ? (int)pt.y : (int)pt.y - h;
+    y = std::clamp(y, (int)mi.rcWork.top + Qp(8), (int)mi.rcWork.bottom - h - Qp(8));
+    RECT kept;
+    if (QpLoadPlace(&kept)) x = kept.left, y = kept.top, w = kept.right - kept.left, h = kept.bottom - kept.top;
+    s_qpAt = pt;
+    SetWindowPos(s_qpWnd, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE);
+    QpLayout();
+    SetWindowTextW(s_qpSearch, L"");
+    s_qpPage.clear();
+    s_qpSection.clear();
+    if (g_qpForMedia)  // (on Media Controls' page; back goes home as ever)
+        for (const auto& st : kSettingsInfo)
+            if (!wcsncmp(st.key, L"media_controls.", 15)) {
+                s_qpPage = st.group;
+                break;
+            }
+    QpFill();
+    s_qpWasActive = false;
+    ShowWindow(s_qpWnd, SW_SHOW);
+    // The right-click was taken by a mouse hook, so this process may not be allowed the foreground on
+    // its own: join the foreground window's input for the moment it takes.
+    HWND fg = GetForegroundWindow();
+    DWORD fgThread = fg ? GetWindowThreadProcessId(fg, nullptr) : 0, me = GetCurrentThreadId();
+    bool joined = fgThread && fgThread != me && AttachThreadInput(me, fgThread, TRUE);
+    SetForegroundWindow(s_qpWnd);
+    SetFocus(s_qpSearch);
+    if (joined) AttachThreadInput(me, fgThread, FALSE);
+    SetTimer(s_qpWnd, kQpWatchTimer, 150, nullptr);
+    QpRedraw();
+    return true;
+}
+
+void VizQuickPanelClose() {
+    if (s_qpWnd) DestroyWindow(s_qpWnd);
+    if (s_qpLook.ownFont && s_qpLook.font) DeleteObject(s_qpLook.font), s_qpLook.font = nullptr;
+}
 
 struct VizQuickPart {
     const wchar_t* key;
@@ -18449,12 +23593,11 @@ static const VizQuickPart kQuickParts[] = {
     {L"fxGlow", kPartLook},       {L"fxGlowRadius", kPartLook}, {L"fxBloom", kPartLook},     {L"fxBloomRadius", kPartLook},
     {L"termStyle", kPartLook},    {L"pixelText", kPartLook},    {L"engine", kPartMotion},    {L"bandLayout", kPartMotion},
     {L"weighting", kPartMotion},  {L"ballistics", kPartMotion}, {L"targetFps", kPartMotion}, {L"nowPlaying", kPartExtras},
-    {L"progress", kPartExtras},   {L"mediaControls", kPartExtras}, {L"readout", kPartExtras}, {L"pixelSnap", kPartPlace},
+    {L"progress", kPartExtras},   {L"bassLine", kPartExtras}, {L"depth", kPartExtras}, {L"depthAuto", kPartExtras}, {L"glass", kPartLook}, {L"mediaControls", kPartExtras}, {L"readout", kPartExtras}, {L"pixelSnap", kPartPlace},
 };
 
-static const wchar_t kCommunityFiles[] = L"https://raw.githubusercontent.com/USER-TOURNE/TOURNE-TABLE/main/community/setups/";
-static const wchar_t kCommunityFolder[] = L"https://github.com/USER-TOURNE/TOURNE-TABLE/tree/main/community/setups";
-static const wchar_t kCommunityIssue[] = L"https://github.com/USER-TOURNE/TOURNE-TABLE/issues/new";
+static const wchar_t kCommunityPage[] = L"https://user-tourne.github.io/Tourne-Style/";  // every style, with a live preview
+static const wchar_t kCommunityIssue[] = L"https://github.com/USER-TOURNE/Tourne-Style/issues/new";
 
 unsigned VizQuickPartOf(const std::wstring& key) {
     for (const auto& q : kQuickParts)
@@ -18517,13 +23660,12 @@ std::wstring VizOneLine(std::wstring v) {
 
 // What a setting is now (an imported setup's value, else the settings page's), as text.
 std::wstring VizSettingNow(const VizSetupKey& k) {
-    if (!k.text) return std::to_wstring(Wh_GetIntSetting(k.name));
-    PCWSTR s = Wh_GetStringSetting(k.name);
+    if (!k.text) return std::to_wstring(VizSettingInt(k.name));
+    PCWSTR s = VizSettingString(k.name);
     std::wstring v = s ? s : L"";
-    Wh_FreeStringSetting(s);
+    VizSettingFree(s);
     if (v.empty() && *k.def) {  // (a size saved as a whole number before 2.1)
-        int n = Wh_GetIntSetting(k.name);
-        if (n) v = std::to_wstring(n);
+        v = std::to_wstring(VizSettingInt(k.name));
     }
     return v;
 }
@@ -18777,78 +23919,9 @@ bool VizOpenSetupFile(HWND owner, std::wstring* text) {
     return ok;
 }
 
-// ---- The community list: setups in a folder of the TOURNE-TABLE repository on GitHub ----
-// index.txt there has a line per setup, "file|name|author|about". Nothing is fetched until the
-// Community button is pressed, and then only those small text files.
-struct VizCommunityItem {
-    std::wstring file, name, author;
-};
-constexpr UINT WM_APP_SHARE_LIST = WM_APP + 60;   // wParam: reached; lParam: std::vector<VizCommunityItem>*
-constexpr UINT WM_APP_SHARE_SETUP = WM_APP + 61;  // lParam: std::wstring* (empty: not reached)
-
-bool VizFetchText(const std::wstring& url, std::wstring* out) {
-    IStream* stream = nullptr;
-    if (url.rfind(L"https://", 0) != 0 || FAILED(URLOpenBlockingStreamW(nullptr, url.c_str(), &stream, 0, nullptr)) || !stream)
-        return false;
-    std::string data;
-    char buf[8192];
-    for (;;) {
-        ULONG got = 0;
-        HRESULT hr = stream->Read(buf, sizeof(buf), &got);
-        if (FAILED(hr) || !got) break;
-        data.append(buf, got);
-        if (data.size() > 256 * 1024) break;
-    }
-    stream->Release();
-    if (data.empty() || data.size() > 256 * 1024) return false;
-    *out = VizShareWide(data);
-    return true;
-}
-
-bool VizCommunityFileName(const std::wstring& f) {
-    if (f.size() < 9 || f.size() > 80 || f.compare(f.size() - 8, 8, L".ttstyle") != 0) return false;
-    for (wchar_t c : f)
-        if (!(iswalnum(c) || c == L'-' || c == L'_' || c == L'.')) return false;
-    return f.find(L"..") == std::wstring::npos;
-}
-
-void VizFetchCommunityList(HWND notify) {
-    std::thread([notify] {
-        HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-        auto* items = new std::vector<VizCommunityItem>;
-        std::wstring text;
-        bool ok = VizFetchText(std::wstring(kCommunityFiles) + L"index.txt?t=" + std::to_wstring(GetTickCount64()), &text);
-        for (size_t pos = 0; ok && pos < text.size() && items->size() < 200;) {
-            size_t nl = text.find(L'\n', pos);
-            if (nl == std::wstring::npos) nl = text.size();
-            std::wstring line = text.substr(pos, nl - pos);
-            pos = nl + 1;
-            while (!line.empty() && iswspace(line.back())) line.pop_back();
-            if (line.empty() || line[0] == L'#') continue;
-            std::wstring parts[4];
-            size_t at = 0;
-            for (int i = 0; i < 4; i++) {
-                size_t bar = i < 3 ? line.find(L'|', at) : std::wstring::npos;
-                parts[i] = line.substr(at, bar == std::wstring::npos ? std::wstring::npos : bar - at);
-                if (bar == std::wstring::npos) break;
-                at = bar + 1;
-            }
-            if (VizCommunityFileName(parts[0])) items->push_back({parts[0], parts[1].substr(0, 60), parts[2].substr(0, 40)});
-        }
-        if (SUCCEEDED(com)) CoUninitialize();
-        if (!PostMessageW(notify, WM_APP_SHARE_LIST, ok, (LPARAM)items)) delete items;
-    }).detach();
-}
-
-void VizFetchCommunitySetup(HWND notify, const std::wstring& file) {
-    std::thread([notify, file] {
-        HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-        auto* text = new std::wstring;
-        if (!VizFetchText(std::wstring(kCommunityFiles) + file, text)) text->clear();
-        if (SUCCEEDED(com)) CoUninitialize();
-        if (!PostMessageW(notify, WM_APP_SHARE_SETUP, 0, (LPARAM)text)) delete text;
-    }).detach();
-}
+// ---- The community list: setups in a folder of the Tourne-Style repository on GitHub ----
+// The mod never downloads anything itself: Community opens the folder in the browser, and a setup
+// found there comes in with Paste code or Open file.
 
 std::wstring VizUrlEncode(const std::wstring& w) {
     std::string s = VizShareUtf8(w);
@@ -18865,16 +23938,56 @@ std::wstring VizUrlEncode(const std::wstring& w) {
     return out;
 }
 
+// The visualizer as it is on screen, for a shared setup: its box and a little room around it, with the
+// window asking (the editor) out of the way for the moment it takes. Goes on the clipboard as a picture,
+// so Ctrl+V in the GitHub issue attaches it. False when nothing is drawn yet or the clipboard is busy.
+bool VizShareScreenshot(HWND owner) {
+    if (!g_drawRectValid.load(std::memory_order_relaxed)) return false;
+    const LONG pad = lroundf(16.f * g_dpiScale);
+    RECT r = {g_drawRectL.load(std::memory_order_relaxed) - pad, g_drawRectT.load(std::memory_order_relaxed) - pad,
+              g_drawRectR.load(std::memory_order_relaxed) + pad, g_drawRectB.load(std::memory_order_relaxed) + pad};
+    const int vx = GetSystemMetrics(SM_XVIRTUALSCREEN), vy = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    RECT screen = {vx, vy, vx + GetSystemMetrics(SM_CXVIRTUALSCREEN), vy + GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    if (!IntersectRect(&r, &r, &screen)) return false;
+    RECT ow = {};
+    const bool hide = owner && IsWindowVisible(owner) && GetWindowRect(owner, &ow) && IntersectRect(&ow, &ow, &r);
+    if (hide) {
+        ShowWindow(owner, SW_HIDE);
+        DwmFlush();  // (twice: the frame without the editor composed and on screen)
+        DwmFlush();
+    }
+    const int w = r.right - r.left, h = r.bottom - r.top;
+    HDC screenDc = GetDC(nullptr);
+    HDC mem = CreateCompatibleDC(screenDc);
+    HBITMAP bmp = CreateCompatibleBitmap(screenDc, w, h);
+    HGDIOBJ old = SelectObject(mem, bmp);
+    BitBlt(mem, 0, 0, w, h, screenDc, r.left, r.top, SRCCOPY | CAPTUREBLT);
+    SelectObject(mem, old);
+    DeleteDC(mem);
+    ReleaseDC(nullptr, screenDc);
+    if (hide) ShowWindow(owner, SW_SHOWNA);
+    bool ok = false;
+    if (bmp && OpenClipboard(owner)) {
+        EmptyClipboard();
+        ok = SetClipboardData(CF_BITMAP, bmp) != nullptr;  // (the clipboard owns it now; Windows offers it as a DIB too)
+        CloseClipboard();
+    }
+    if (!ok && bmp) DeleteObject(bmp);
+    return ok;
+}
+
 // Opens a new GitHub issue with the setup in it, for the person to send; Tourne adds the good ones
-// to the community folder.
+// to the community folder. Named after the style in use, with its screenshot ready to paste.
 void VizShareToCommunity(HWND owner, unsigned parts, const std::wstring& name) {
     std::wstring text = VizExportSetup(parts, name);
+    const bool shot = VizShareScreenshot(owner);
     std::wstring head = std::wstring(kCommunityIssue) + L"?title=" + VizUrlEncode(L"Setup: " + name) + L"&body=";
-    std::wstring url = head + VizUrlEncode(L"Made in Tourne'Table. A screenshot helps people pick it.\n\n```\n" + text + L"```\n");
-    if (url.size() > 7000) {  // (too long for a link: it goes on the clipboard instead)
-        VizClipboardSet(owner, text);
-        url = head + VizUrlEncode(L"Made in Tourne'Table. Paste the setup here (it's on your clipboard):\n\n```\n\n```\n");
-    }
+    std::wstring intro = shot ? L"Made in Tourne'Table. Its screenshot is on your clipboard: click the empty line below and "
+                                L"press Ctrl+V to add it.\n\n\n\n"
+                              : L"Made in Tourne'Table. A screenshot helps people pick it.\n\n";
+    std::wstring url = head + VizUrlEncode(intro + L"```\n" + text + L"```\n");
+    // Too long for a link as text: the packed one-line code instead, which Paste code takes the same way.
+    if (url.size() > 7000) url = head + VizUrlEncode(intro + L"```\n" + VizShareCode(text) + L"\n```\n");
     ShellExecuteW(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 }
 
@@ -18890,7 +24003,6 @@ enum : int {
     kIdPartLook, kIdPartMotion, kIdPartExtras, kIdPartPlace,
 };
 constexpr UINT_PTR kShareTimer = 2;
-bool s_communityBusy = false;
 
 // The ticked parts (Look, Motion, Extras, Place).
 unsigned EditorParts(HWND hWnd) {
@@ -18905,6 +24017,7 @@ std::wstring EditorSetupName(HWND hWnd) {
     WCHAR name[64] = {};
     GetDlgItemTextW(hWnd, kIdPreset, name, ARRAYSIZE(name));
     std::wstring n = VizCleanPresetName(name);
+    if (n.empty()) n = VizCleanPresetName(VizReadValue(L"lastStyleName"));  // the style last loaded or saved
     return n.empty() ? L"My setup" : n;
 }
 
@@ -18912,14 +24025,15 @@ struct EditorSlider {
     const wchar_t* key;
     const wchar_t* label;
     int lo, hi;
-    int scale;  // slider steps per unit: 10 moves in tenths of a pixel
+    int scale;  // slider steps per unit: 100 moves in hundredths
 };
+// Every slider steps by 0.01 (arrow keys), 0.1 (Page Up / Down) or freely by dragging.
 const EditorSlider kSliders[] = {
-    {L"barWidth", L"Bar width", 1, 40, 10},       {L"barGap", L"Bar gap", 0, 30, 10},
-    {L"barMaxSize", L"Height", 10, 400, 1},       {L"barRadius", L"Corner radius", 0, 20, 10},
-    {L"reflection", L"Reflection", 0, 100, 1},    {L"fxGlow", L"Glow", 0, 100, 1},
-    {L"fxGlowRadius", L"Glow radius", 1, 32, 10}, {L"fxBloom", L"Bloom", 0, 100, 1},
-    {L"fxBloomRadius", L"Bloom radius", 4, 64, 1},
+    {L"barWidth", L"Bar width", 1, 40, 100},       {L"barGap", L"Bar gap", 0, 30, 100},
+    {L"barMaxSize", L"Height", 10, 400, 100},      {L"barRadius", L"Corner radius", 0, 20, 100},
+    {L"reflection", L"Reflection", 0, 100, 100},   {L"fxGlow", L"Glow", 0, 100, 100},
+    {L"fxGlowRadius", L"Glow radius", 1, 32, 100}, {L"fxBloom", L"Bloom", 0, 100, 100},
+    {L"fxBloomRadius", L"Bloom radius", 4, 64, 100},
 };
 HFONT s_editorFont = nullptr;
 COLORREF s_customColors[16] = {};
@@ -18970,29 +24084,1018 @@ void EditorPickColor(HWND hWnd, const wchar_t* key) {
     EditorApplyNow(hWnd);
 }
 
+// ---- The editor's look: Tourne's (the styles page and Tourne's menus) ----
+// Ground #121c21, labels in the dim teal, text in the menus' green, values in red, the neon green for what
+// the mouse is on; flat buttons, square boxes and a thin slider; the pixel font when it's installed.
+namespace vizlook {
+// The editor's colours: the styles page's palette until FollowMenu gives them Tourne's menu look (its ground,
+// lines, text, accent and the frame's red), which is what the editor is drawn in.
+COLORREF kGround = RGB(0x12, 0x1c, 0x21), kPanel = RGB(0x15, 0x20, 0x25), kRaised = RGB(0x1b, 0x2a, 0x30),
+         kEdge = RGB(0x24, 0x39, 0x3f), kText = RGB(0x66, 0xea, 0x97), kDim = RGB(0x6b, 0xa6, 0xa0),
+         kNeon = RGB(0x15, 0xff, 0xa2), kGreen = RGB(0x64, 0xaa, 0x89), kRed = RGB(0xff, 0x8f, 0x8f),
+         kHotText = RGB(0x66, 0xea, 0x97);  // what's under the mouse is written in: the menus' hover text
+
+void FollowMenu() {
+    const auto& L = s_qpLook;
+    // Its text in the menus' frame red, as the quick panel's search hint; the lists' choices in the menus' green.
+    kGround = L.ground, kPanel = L.line, kRaised = L.hover, kEdge = L.line, kText = L.border, kDim = L.dim;
+    kNeon = L.accent, kGreen = L.edge, kRed = L.border, kHotText = L.hoverText;
+}
+HBRUSH Brush(COLORREF c) {
+    static std::vector<std::pair<COLORREF, HBRUSH>> made;
+    for (auto& [k, b] : made)
+        if (k == c) return b;
+    HBRUSH b = CreateSolidBrush(c);
+    made.push_back({c, b});
+    return b;
+}
+void Fill(HDC dc, RECT r, COLORREF c) { FillRect(dc, &r, Brush(c)); }
+void Frame(HDC dc, RECT r, COLORREF c) { FrameRect(dc, &r, Brush(c)); }
+
+// The pixel font if there is one, else the given one.
+HFONT Font(int px, const LOGFONTW& fallback) {
+    for (PCWSTR face : {L"CozetteVector", L"scientifica"}) {
+        LOGFONTW lf{};
+        lf.lfHeight = -px;
+        lf.lfCharSet = DEFAULT_CHARSET;
+        lf.lfQuality = NONANTIALIASED_QUALITY;
+        wcsncpy_s(lf.lfFaceName, face, _TRUNCATE);
+        HFONT font = CreateFontIndirectW(&lf);
+        HDC dc = GetDC(nullptr);
+        HGDIOBJ old = SelectObject(dc, font);
+        WCHAR got[LF_FACESIZE] = L"";
+        GetTextFaceW(dc, LF_FACESIZE, got);
+        SelectObject(dc, old);
+        ReleaseDC(nullptr, dc);
+        if (!_wcsicmp(got, face)) return font;
+        DeleteObject(font);
+    }
+    return CreateFontIndirectW(&fallback);
+}
+
+// Dark drop-down frames (Windows' own dark combo look), by name so no import is needed.
+void DarkControl(HWND c) {
+    using SetTheme = HRESULT(WINAPI*)(HWND, LPCWSTR, LPCWSTR);
+    static SetTheme set = (SetTheme)GetProcAddress(LoadLibraryW(L"uxtheme.dll"), "SetWindowTheme");
+    if (set) set(c, L"DarkMode_CFD", nullptr);
+}
+
+// A button or tick box (NM_CUSTOMDRAW from comctl32 6): drawn whole, Windows' look skipped.
+LRESULT Button(NMCUSTOMDRAW* cd) {
+    if (cd->dwDrawStage != CDDS_PREPAINT) return CDRF_DODEFAULT;
+    HWND c = cd->hdr.hwndFrom;
+    HDC dc = cd->hdc;
+    RECT r = cd->rc;
+    bool hot = cd->uItemState & CDIS_HOT, down = cd->uItemState & CDIS_SELECTED,
+         focus = cd->uItemState & CDIS_FOCUS, off = cd->uItemState & CDIS_DISABLED;
+    LONG type = GetWindowLongW(c, GWL_STYLE) & BS_TYPEMASK;
+    WCHAR raw[128] = L"";
+    GetWindowTextW(c, raw, ARRAYSIZE(raw));
+    std::wstring label = QpCaps(raw);
+    HGDIOBJ oldFont = SelectObject(dc, (HFONT)SendMessageW(c, WM_GETFONT, 0, 0));
+    SetBkMode(dc, TRANSPARENT);
+    // Under the mouse only the text changes, to the menus' hover text; nothing behind it.
+    Fill(dc, r, kGround);
+    if (type == BS_AUTOCHECKBOX || type == BS_CHECKBOX) {
+        // As the menus' toggles: a square in the menu's line, the accent square inside when it's on.
+        int side = std::min<int>(r.bottom - r.top - 8, MulDiv(10, GetDpiForWindow(c), 96));
+        RECT box = {r.left + 1, (r.top + r.bottom - side) / 2, r.left + 1 + side, (r.top + r.bottom + side) / 2};
+        Frame(dc, box, hot || focus ? kNeon : kGreen);
+        if (SendMessageW(c, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            RECT in = box;
+            InflateRect(&in, -2, -2);
+            Fill(dc, in, kNeon);
+        }
+        RECT t = r;
+        t.left = box.right + side / 2;
+        SetTextColor(dc, off ? kDim : hot ? kHotText : kText);
+        DrawTextW(dc, label.c_str(), -1, &t, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+    } else {
+        // As the styles page's: [ LABEL ], brackets dim; the primary one (Save) filled, with a red offset shadow.
+        bool primary = GetPropW(c, L"TourneTablePrimary") != nullptr;
+        int sh = primary ? std::max(2, MulDiv(2, GetDpiForWindow(c), 96)) : 0;
+        RECT b = {r.left, r.top, r.right - sh, r.bottom - sh};
+        if (primary) {
+            if (!down) Fill(dc, {b.left + sh, b.top + sh, r.right, r.bottom}, kRed);
+            if (down) OffsetRect(&b, sh, sh);
+            Fill(dc, b, kNeon);
+        } else {
+            Fill(dc, b, down ? kRaised : kGround);
+            Frame(dc, b, focus ? kNeon : kGreen);
+        }
+        COLORREF ink = primary ? kGround : off ? kDim : hot ? kHotText : kText;
+        COLORREF bracket = primary ? kRaised : kDim;
+        SIZE whole{}, open{}, word{};
+        std::wstring withBrackets = L"[ " + label + L" ]";
+        GetTextExtentPoint32W(dc, withBrackets.c_str(), (int)withBrackets.size(), &whole);
+        bool fits = whole.cx + 6 <= b.right - b.left;
+        GetTextExtentPoint32W(dc, L"[ ", 2, &open);
+        GetTextExtentPoint32W(dc, label.c_str(), (int)label.size(), &word);
+        int x = (b.left + b.right - (fits ? whole.cx : word.cx)) / 2;
+        RECT t = {x, b.top, b.right, b.bottom};
+        if (fits) {
+            SetTextColor(dc, bracket);
+            DrawTextW(dc, L"[", -1, &t, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+            t.left += open.cx;
+        }
+        SetTextColor(dc, ink);
+        DrawTextW(dc, label.c_str(), -1, &t, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+        if (fits) {
+            t.left += word.cx;
+            SetTextColor(dc, bracket);
+            DrawTextW(dc, L" ]", -1, &t, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+        }
+    }
+    SelectObject(dc, oldFont);
+    return CDRF_SKIPDEFAULT;
+}
+
+// A slider: a thin line, the part up to the thumb in green, and a small neon block for the thumb.
+LRESULT Slider(NMCUSTOMDRAW* cd) {
+    if (cd->dwDrawStage == CDDS_PREPAINT) return CDRF_NOTIFYITEMDRAW;
+    if (cd->dwDrawStage != CDDS_ITEMPREPAINT) return CDRF_DODEFAULT;
+    HDC dc = cd->hdc;
+    RECT r = cd->rc;
+    if (cd->dwItemSpec == TBCD_CHANNEL) {
+        RECT thumb{};
+        SendMessageW(cd->hdr.hwndFrom, TBM_GETTHUMBRECT, 0, (LPARAM)&thumb);
+        int mid = (r.top + r.bottom) / 2;
+        Fill(dc, {r.left, mid - 1, r.right, mid + 1}, kEdge);
+        Fill(dc, {r.left, mid - 1, (thumb.left + thumb.right) / 2, mid + 1}, kGreen);
+        return CDRF_SKIPDEFAULT;
+    }
+    if (cd->dwItemSpec == TBCD_THUMB) {
+        int w = std::max(4, (int)(r.right - r.left) / 2), mid = (r.left + r.right) / 2;
+        RECT t = {mid - w / 2, r.top + 2, mid - w / 2 + w, r.bottom - 2};
+        Fill(dc, t, (cd->uItemState & (CDIS_HOT | CDIS_SELECTED)) ? kText : kNeon);
+        return CDRF_SKIPDEFAULT;
+    }
+    return CDRF_SKIPDEFAULT;  // (no tics)
+}
+
+// The editor's drawing messages: true when answered (with *result).
+bool Message(HWND wnd, UINT msg, WPARAM wp, LPARAM lp, int valueIdFrom, LRESULT* result) {
+    switch (msg) {
+        case WM_NOTIFY: {
+            auto* cd = (NMCUSTOMDRAW*)lp;
+            if (cd->hdr.code != NM_CUSTOMDRAW) return false;
+            WCHAR cls[32] = L"";
+            GetClassNameW(cd->hdr.hwndFrom, cls, ARRAYSIZE(cls));
+            if (!_wcsicmp(cls, L"Button")) *result = Button(cd);
+            else if (!_wcsicmp(cls, TRACKBAR_CLASSW)) *result = Slider(cd);
+            else return false;
+            return true;
+        }
+        case WM_ERASEBKGND: {
+            RECT r;
+            GetClientRect(wnd, &r);
+            Fill((HDC)wp, r, kGround);
+            *result = 1;
+            return true;
+        }
+        case WM_CTLCOLORSTATIC: {
+            HDC dc = (HDC)wp;
+            int id = GetDlgCtrlID((HWND)lp);
+            WCHAR cls[32] = L"";
+            GetClassNameW((HWND)lp, cls, ARRAYSIZE(cls));
+            bool edit = !_wcsicmp(cls, L"Edit");  // (a read-only edit asks this too)
+            SetBkColor(dc, edit ? kPanel : kGround);
+            // The numbers beside the sliders in red, as the styles page shows its values; labels dim.
+            SetTextColor(dc, edit ? kText : id >= valueIdFrom ? kRed : kDim);
+            *result = (LRESULT)Brush(edit ? kPanel : kGround);
+            return true;
+        }
+        case WM_CTLCOLOREDIT:
+        case WM_CTLCOLORLISTBOX: {
+            HDC dc = (HDC)wp;
+            SetBkColor(dc, kPanel);
+            SetTextColor(dc, kText);
+            *result = (LRESULT)Brush(kPanel);
+            return true;
+        }
+        case WM_CTLCOLORBTN:
+        case WM_CTLCOLORDLG:
+            *result = (LRESULT)Brush(kGround);
+            return true;
+    }
+    return false;
+}
+}  // namespace vizlook
+
+// ---- Style tiles in the Style Editor (2.3) -------------------------------------------------
+// Every style as a small tile that plays it on a test beat: your own (My Styles) and the community's,
+// read from the styles page's list on GitHub when that tab is first opened. Hovering changes nothing;
+// a click puts the style on and asks whether to keep it (No puts yours back). The tiles are drawn on the
+// CPU into one small bitmap, 30 times a second, only while the editor is open, and only the tiles in
+// view; the visualizer's own device is never touched. They follow the same rules as the styles page's
+// previews (its drawing was ported from there): the colour mode, bar sizes and proportions, the
+// shape's family, peak caps, a panel, and glass over a stand-in wallpaper.
+struct VizTile {
+    std::wstring name, about;
+    std::wstring text;  // a My Styles body (quick keys), or a community setup's text
+    bool community = false;
+    // The look, worked out once.
+    int family = 0;  // 0 bars, 1 mirror, 2 filled line, 3 scope, 4 dots, 5 LED
+    int mode = 0;    // 0 one colour, 1 across, 2 by level, 3 by level's alpha (acrylic)
+    BYTE c1[4]{255, 255, 255, 255}, g1[4]{255, 30, 215, 96}, g2[4]{255, 0, 180, 255}, peakC[4]{255, 255, 255, 255};
+    BYTE panel[4]{};
+    int bars = 32;
+    float barW = 6, gap = 4, radius = 0;
+    bool glass = false, peak = false;
+    float y[128]{}, pk[128]{};
+};
+std::vector<VizTile> s_tilesMine, s_tilesCommunity;
+int s_tilesTab = 0;  // 0 mine, 1 community
+int s_tilesScroll = 0, s_tilesHover = -1, s_tilesTrying = -1;
+std::atomic<int> s_communityState{0};  // 0 not asked, 1 fetching, 2 here, 3 failed
+std::mutex s_communityMutex;
+std::vector<VizTile> s_communityFetched;
+std::thread s_communityThread;
+bool s_tilesRegistered = false;
+HWND s_tilesWnd = nullptr;
+ULONGLONG s_tilesStart = 0;
+// What the visualizer had before a tile was tried, put back when the pointer leaves.
+bool s_tilesHaveSnapshot = false;
+std::map<std::wstring, std::wstring> s_snapLayer;
+std::vector<std::pair<std::wstring, std::wstring>> s_snapQuick;
+constexpr UINT_PTR kTilesFrameTimer = 1;
+constexpr UINT WM_APP_TILES_FETCHED = WM_APP + 41;
+static const wchar_t kCommunityRaw[] = L"https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/community/setups/";
+
+std::map<std::wstring, std::wstring> TileValues(const VizTile& t) {
+    std::map<std::wstring, std::wstring> v;
+    if (t.community) {
+        VizSetup s = VizParseSetup(t.text);
+        for (auto& kv : s.values) v[kv.first] = kv.second;
+    } else {
+        for (size_t pos = 0; pos < t.text.size();) {
+            size_t nl = t.text.find(L'\n', pos);
+            if (nl == std::wstring::npos) nl = t.text.size();
+            std::wstring line = t.text.substr(pos, nl - pos);
+            size_t eq = line.find(L'=');
+            if (eq != std::wstring::npos && eq > 0) v[L"quick." + line.substr(0, eq)] = line.substr(eq + 1);
+            pos = nl + 1;
+        }
+    }
+    return v;
+}
+
+void TileWorkOut(VizTile& t) {
+    auto v = TileValues(t);
+    auto get = [&](const wchar_t* quick, const wchar_t* setting, const wchar_t* def) -> std::wstring {
+        if (quick) {
+            auto q = v.find(std::wstring(L"quick.") + quick);
+            if (q != v.end()) return q->second;
+        }
+        auto s = v.find(setting);
+        return s != v.end() ? s->second : def;
+    };
+    auto colour = [&](BYTE out[4], const std::wstring& s) {
+        BYTE a, r, g, b;
+        if (ParseColorHex(s.c_str(), &a, &r, &g, &b)) out[0] = a, out[1] = r, out[2] = g, out[3] = b;
+    };
+    std::wstring shape = get(L"shape", L"appearance.shape", L"stereo");
+    t.family = shape == L"mirror" || shape == L"stereo_field" || shape == L"breathe" ? 1
+             : shape == L"line" || shape == L"mountain" || shape == L"bloom" ? 2
+             : shape == L"oscilloscope" || shape == L"wave" || shape == L"goniometer" ? 3
+             : shape == L"dots" || shape == L"terminal" || shape == L"particles" ? 4
+             : shape == L"led" ? 5 : 0;
+    std::wstring mode = get(L"colorMode", L"appearance.colorMode", L"solid");
+    t.mode = mode == L"gradient" || mode == L"tourne" || mode == L"album_art" || mode == L"rainbow" ? 1
+           : mode == L"reactive_gradient" || mode == L"dynamic_album" ? 2 : mode == L"acrylic" ? 3 : 0;
+    colour(t.c1, get(L"color", L"appearance.color", L"#FFFFFFFF"));
+    colour(t.g1, get(L"grad1", L"appearance.gradientColor1", L"#FF1ED760"));
+    colour(t.g2, get(L"grad2", L"appearance.gradientColor2", L"#FF00B4FF"));
+    if (mode == L"tourne") {
+        BYTE a[4] = {255, 95, 153, 147}, b[4] = {255, 229, 116, 116};
+        memcpy(t.g1, a, 4), memcpy(t.g2, b, 4);
+    }
+    t.bars = std::clamp(_wtoi(get(nullptr, L"appearance.barCount", L"32").c_str()), 4, 128);
+    t.barW = std::max(0.5f, (float)_wtof(get(L"barWidth", L"appearance.barWidth", L"6").c_str()));
+    t.gap = std::max(0.f, (float)_wtof(get(L"barGap", L"appearance.barGap", L"4").c_str()));
+    t.radius = std::max(0.f, (float)_wtof(get(L"barRadius", L"appearance.barCornerRadius", L"3").c_str()));
+    t.peak = get(L"peakHold", L"appearance.peakHoldEnabled", L"0") == L"1";
+    colour(t.peakC, get(nullptr, L"appearance.peakHoldColor", L"#FF00B4FF"));
+    t.glass = get(L"glass", L"glass.enabled", L"0") == L"1";
+    if (get(nullptr, L"background.enabled", L"0") == L"1") colour(t.panel, get(nullptr, L"background.color", L"#60000000"));
+}
+
+// The styles page's test track: a kick every half second, a snare on two and four, hats, a melody.
+float TileTarget(int i, int n, float t) {
+    float x = i / (float)std::max(1, n - 1), beat = fmodf(t, 0.5f);
+    int bar = (int)(t / 0.5f) % 4;
+    float kick = expf(-beat * 9) * expf(-x * 7) * 0.95f;
+    float snare = (bar == 1 || bar == 3) ? expf(-beat * 7) * expf(-powf((x - 0.45f) * 3.2f, 2)) * 0.7f : 0.f;
+    float hat = expf(-fmodf(t * 4, 0.25f) * 30) * std::max(0.f, x - 0.55f) * 0.9f;
+    float mel = 0.45f * expf(-powf((x - (0.35f + 0.2f * sinf(t * 0.7f))) * 6, 2)) * (0.75f + 0.25f * sinf(t * 5.3f));
+    float bed = 0.28f * (1 - x * 0.6f) * (0.85f + 0.15f * sinf(t * 1.7f + i * 1.3f));
+    return std::min(1.f, kick + snare + hat + mel + bed);
+}
+
+// Pixels: BGRA, premultiplied not needed (the bitmap is opaque).
+struct TileCanvas {
+    uint32_t* px;
+    int w, h;
+    void blend(int x, int y, const BYTE c[4], float a) {
+        if (x < 0 || y < 0 || x >= w || y >= h || a <= 0) return;
+        a = std::min(1.f, a * c[0] / 255.f);
+        uint32_t& d = px[(size_t)y * w + x];
+        int dr = (d >> 16) & 255, dg = (d >> 8) & 255, db = d & 255;
+        dr += (int)((c[1] - dr) * a), dg += (int)((c[2] - dg) * a), db += (int)((c[3] - db) * a);
+        d = 0xFF000000u | (dr << 16) | (dg << 8) | db;
+    }
+    void rect(float x0, float y0, float x1, float y1, const BYTE c[4], float a = 1.f) {
+        for (int y = std::max(0, (int)y0); y < std::min(h, (int)ceilf(y1)); y++)
+            for (int x = std::max(0, (int)x0); x < std::min(w, (int)ceilf(x1)); x++) blend(x, y, c, a);
+    }
+};
+
+void TileColour(const VizTile& t, int i, float level, BYTE out[4]) {
+    float x = t.bars > 1 ? i / (float)(t.bars - 1) : 0.f;
+    float k = t.mode == 1 ? x : t.mode == 2 ? level : 0.f;
+    if (t.mode == 1 || t.mode == 2) {
+        for (int c = 0; c < 4; c++) out[c] = (BYTE)(t.g1[c] + (t.g2[c] - t.g1[c]) * k);
+    } else {
+        memcpy(out, t.c1, 4);
+        if (t.mode == 3) out[0] = (BYTE)std::min(180.f, 180.f * level);
+    }
+}
+
+void TileDraw(TileCanvas& cv, VizTile& t, int ox, int oy, int tw, int th, float time, float dt) {
+    // Ground: a stand-in wallpaper for glass, else the page's dark.
+    for (int y = 0; y < th; y++) {
+        float f = y / (float)th;
+        BYTE sky[4] = {255, (BYTE)(29 + (201 - 29) * f), (BYTE)(58 + (138 - 58) * f), (BYTE)(82 + (138 - 82) * f)};
+        BYTE dark[4] = {255, 12, 20, 23};
+        for (int x = 0; x < tw; x++) cv.blend(ox + x, oy + y, t.glass ? sky : dark, 1.f);
+    }
+    for (int i = 0; i < t.bars && i < 128; i++) {
+        float target = TileTarget(i, t.bars, time);
+        float k = 1 - expf(-dt * (target > t.y[i] ? 60.f : 6.f));
+        t.y[i] += (target - t.y[i]) * k;
+        if (t.y[i] >= t.pk[i]) t.pk[i] = t.y[i];
+        else t.pk[i] = std::max(t.y[i], t.pk[i] - dt * 0.6f);
+    }
+    const int pad = std::max(4, tw / 16);
+    const float areaW = (float)(tw - 2 * pad), areaH = (float)(th - 2 * pad);
+    const int half = pad / 2;
+    if (t.panel[0]) cv.rect((float)(ox + half), (float)(oy + half), (float)(ox + tw - half), (float)(oy + th - half), t.panel);
+    const int n = t.bars;
+    const float full = n * t.barW + (n - 1) * t.gap;
+    const float kx = areaW / std::max(1.f, full);
+    const float bw = std::max(1.f, t.barW * kx), step = (t.barW + t.gap) * kx;
+    const float base = (float)oy + pad + areaH, mid = (float)oy + pad + areaH / 2;
+    const float left = (float)ox + pad;
+    BYTE c[4];
+    if (t.family == 2 || t.family == 3) {
+        // A line through the tops (filled below for Line), or a scope wave across the middle.
+        for (int x = 0; x < (int)areaW; x++) {
+            int i = std::min(n - 1, (int)(x / areaW * n));
+            float lv = t.y[i];
+            TileColour(t, i, lv, c);
+            if (t.family == 3) {
+                float e = 0;
+                for (int j = 0; j < n; j++) e += t.y[j];
+                e = std::min(1.f, e / n * 1.6f);
+                float yy = mid + sinf(x * 0.31f + time * 6) * sinf(x * 0.05f + time) * areaH * 0.45f * e;
+                cv.rect(left + x, yy - 1, left + x + 1, yy + 1, c);
+            } else {
+                float top = base - lv * areaH;
+                cv.rect(left + x, top, left + x + 1, base, c, 0.45f);
+                cv.rect(left + x, top - 1, left + x + 1, top + 1, c);
+            }
+        }
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        float lv = t.y[i], x = left + i * step;
+        TileColour(t, i, lv, c);
+        if (t.family == 4 || t.family == 5) {
+            int segs = std::max(4, (int)(areaH / std::max(2.f, bw + 1)));
+            int lit = (int)(lv * segs);
+            for (int sg = 0; sg < lit; sg++) {
+                float y1 = base - sg * (areaH / segs), y0 = y1 - std::max(1.f, areaH / segs - 1);
+                BYTE led[4];
+                memcpy(led, c, 4);
+                if (t.family == 5 && t.mode == 0) {
+                    float tt = (sg + 0.5f) / segs;
+                    BYTE g[4] = {255, 56, 227, 107}, a[4] = {255, 255, 176, 0}, r[4] = {255, 255, 59, 48};
+                    memcpy(led, tt >= 0.85f ? r : tt >= 0.6f ? a : g, 4);
+                }
+                cv.rect(x, y0, x + bw, y1, led);
+            }
+            continue;
+        }
+        float h = std::max(1.f, lv * areaH);
+        float y0 = t.family == 1 ? mid - h / 2 : base - h, y1 = t.family == 1 ? mid + h / 2 : base;
+        if (t.glass) {
+            BYTE edge[4] = {255, 255, 255, 255};
+            cv.rect(x, y0, x + bw, y1, c, 0.35f);
+            cv.rect(x, y0, x + 1, y1, edge, 0.55f);
+            cv.rect(x, y0, x + bw, y0 + 1, edge, 0.55f);
+        } else {
+            cv.rect(x, y0, x + bw, y1, c);
+        }
+        if (t.peak) {
+            float py = (t.family == 1 ? mid - t.pk[i] * areaH / 2 : base - t.pk[i] * areaH) - 3;
+            cv.rect(x, py, x + bw, py + 1.5f, t.peakC);
+        }
+    }
+}
+
+std::vector<VizTile>& TilesNow() { return s_tilesTab ? s_tilesCommunity : s_tilesMine; }
+
+void TilesLoadMine() {
+    s_tilesMine.clear();
+    for (auto& n : VizStylePresetNames()) {
+        VizTile t;
+        t.name = n;
+        t.text = VizReadValue(L"stylePreset:" + n);
+        TileWorkOut(t);
+        s_tilesMine.push_back(std::move(t));
+    }
+}
+
+std::wstring TilesFetch(const std::wstring& url) {
+    IStream* st = nullptr;
+    if (FAILED(URLOpenBlockingStreamW(nullptr, url.c_str(), &st, 0, nullptr)) || !st) return L"";
+    std::string bytes;
+    char buf[4096];
+    ULONG got = 0;
+    while (SUCCEEDED(st->Read(buf, sizeof(buf), &got)) && got) {
+        bytes.append(buf, got);
+        if (bytes.size() > 512 * 1024) break;
+    }
+    st->Release();
+    return VizShareWide(bytes);
+}
+
+// The community list: index.txt, then each style in it. Its own thread; the tiles hear when it's done.
+void TilesFetchCommunity() {
+    int expect = s_communityState.load();
+    if ((expect != 0 && expect != 3) || !s_communityState.compare_exchange_strong(expect, 1)) return;
+    if (s_communityThread.joinable()) s_communityThread.join();  // (a failed try, already done)
+    s_communityThread = std::thread([] {
+        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        std::vector<VizTile> got;
+        std::wstring index = TilesFetch(std::wstring(kCommunityRaw) + L"index.txt");
+        for (size_t pos = 0; pos < index.size() && got.size() < 200;) {
+            size_t nl = index.find(L'\n', pos);
+            if (nl == std::wstring::npos) nl = index.size();
+            std::wstring line = index.substr(pos, nl - pos);
+            pos = nl + 1;
+            while (!line.empty() && (line.back() == L'\r' || line.back() == L' ')) line.pop_back();
+            if (line.empty() || line[0] == L'#') continue;
+            std::vector<std::wstring> f;
+            for (size_t a = 0;;) {
+                size_t b = line.find(L'|', a);
+                f.push_back(line.substr(a, b == std::wstring::npos ? std::wstring::npos : b - a));
+                if (b == std::wstring::npos || f.size() == 3) {
+                    if (b != std::wstring::npos) f.push_back(line.substr(b + 1));
+                    break;
+                }
+                a = b + 1;
+            }
+            if (f.size() < 2) continue;
+            bool okName = !f[0].empty() && f[0].size() < 80;
+            for (wchar_t ch : f[0]) okName = okName && (iswalnum(ch) || ch == L'-' || ch == L'_' || ch == L'.');
+            if (!okName) continue;
+            VizTile t;
+            t.community = true;
+            t.name = f[1];
+            t.about = f.size() > 3 ? f[3] : L"";
+            t.text = TilesFetch(std::wstring(kCommunityRaw) + f[0]);
+            if (!VizParseSetup(t.text).ok) continue;
+            TileWorkOut(t);
+            got.push_back(std::move(t));
+        }
+        {
+            std::lock_guard<std::mutex> lock(s_communityMutex);
+            s_communityFetched = std::move(got);
+        }
+        s_communityState.store(s_communityFetched.empty() ? 3 : 2);
+        CoUninitialize();
+        if (s_tilesWnd) PostMessageW(s_tilesWnd, WM_APP_TILES_FETCHED, 0, 0);
+    });
+}
+
+int TilesPx(HWND w, int v) { return MulDiv(v, GetDpiForWindow(w), 96); }
+int TilesTabH(HWND w) { return TilesPx(w, 24); }
+void TilesGeom(HWND w, int* cols, int* tw, int* th, int* lab) {
+    RECT rc;
+    GetClientRect(w, &rc);
+    *cols = std::max(3, (int)(rc.right / TilesPx(w, 118)));
+    int g = TilesPx(w, 6);
+    *tw = (rc.right - g * (*cols + 1)) / *cols;
+    *th = *tw * 55 / 100;
+    *lab = TilesPx(w, 18);
+}
+RECT TileRect(HWND w, int i) {
+    int cols, tw, th, lab;
+    TilesGeom(w, &cols, &tw, &th, &lab);
+    int g = TilesPx(w, 6);
+    int x = g + (i % cols) * (tw + g), y = TilesTabH(w) + g + (i / cols) * (th + lab + g) - s_tilesScroll;
+    return {x, y, x + tw, y + th + lab};
+}
+int TileAt(HWND w, POINT p) {
+    if (p.y < TilesTabH(w)) return -1;
+    for (int i = 0; i < (int)TilesNow().size(); i++) {
+        RECT r = TileRect(w, i);
+        if (PtInRect(&r, p)) return i;
+    }
+    return -1;
+}
+
+void TilesSnapshot() {
+    if (s_tilesHaveSnapshot) return;
+    if (!g_setupLayerLoaded) VizSetupLoad();
+    s_snapLayer = g_setupLayer;
+    s_snapQuick = g_menuOverrides;
+    s_tilesHaveSnapshot = true;
+}
+void TilesRestore() {
+    if (!s_tilesHaveSnapshot) return;
+    g_setupLayer = s_snapLayer;
+    g_menuOverrides = s_snapQuick;
+    VizSetupSave();
+    VizSaveMenuOverrides();
+    s_tilesHaveSnapshot = false;
+    s_tilesTrying = -1;
+    ApplySettingsChanged();
+}
+void TilesTry(int i) {
+    auto& v = TilesNow();
+    if (i < 0 || i >= (int)v.size()) return;
+    TilesSnapshot();
+    g_setupLayer = s_snapLayer;
+    g_menuOverrides = s_snapQuick;
+    if (v[i].community) {
+        VizSetup s = VizParseSetup(v[i].text);
+        VizApplySetup(s, s.parts & (kPartLook | kPartMotion | kPartExtras));  // (where it sits stays yours)
+    } else {
+        VizApplyStylePreset(v[i].name);
+        VizSaveMenuOverrides();
+    }
+    s_tilesTrying = i;
+    ApplySettingsChanged();
+}
+// A click puts the style on and asks: Yes keeps it, No (or closing the question) puts yours back.
+// Nothing changes on hover.
+void TilesKeep(int i) {
+    auto& v = TilesNow();
+    if (i < 0 || i >= (int)v.size()) return;
+    std::wstring name = v[i].name;
+    TilesTry(i);
+    if (s_tilesWnd) InvalidateRect(s_tilesWnd, nullptr, FALSE);
+    std::wstring ask = L"Keep \"" + name + L"\"?\n\nIt's on now, in place of your current look. No puts yours back.";
+    bool keep = MessageBoxW(GetAncestor(s_tilesWnd, GA_ROOT), ask.c_str(), L"Tourne'Table", MB_YESNO | MB_ICONQUESTION) == IDYES;
+    if (!keep) {
+        TilesRestore();
+    } else {
+        s_tilesHaveSnapshot = false;  // what's on now stays
+        s_tilesTrying = -1;
+    }
+    if (g_styleEditorWnd) EditorSync(g_styleEditorWnd);
+}
+
+void TilesPaint(HWND w, HDC target) {
+    RECT rc;
+    GetClientRect(w, &rc);
+    if (rc.right <= 0 || rc.bottom <= 0) return;
+    BITMAPINFO bi{};
+    bi.bmiHeader = {sizeof(BITMAPINFOHEADER), rc.right, -rc.bottom, 1, 32, BI_RGB};
+    void* bits = nullptr;
+    HDC dc = CreateCompatibleDC(target);
+    HBITMAP bmp = CreateDIBSection(target, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
+    if (!bmp || !bits) {
+        DeleteDC(dc);
+        return;
+    }
+    HGDIOBJ ob = SelectObject(dc, bmp);
+    TileCanvas cv{(uint32_t*)bits, rc.right, rc.bottom};
+    const uint32_t ground = 0xFF000000u | (GetRValue(vizlook::kGround) << 16) | (GetGValue(vizlook::kGround) << 8) | GetBValue(vizlook::kGround);
+    for (int i = 0; i < cv.w * cv.h; i++) cv.px[i] = ground;
+    static ULONGLONG last = 0;
+    ULONGLONG now = GetTickCount64();
+    float dt = last ? std::min(0.1f, (now - last) / 1000.f) : 1 / 30.f;
+    last = now;
+    float time = (now - s_tilesStart) / 1000.f;
+    auto& v = TilesNow();
+    int cols, tw, th, lab;
+    TilesGeom(w, &cols, &tw, &th, &lab);
+    for (int i = 0; i < (int)v.size(); i++) {
+        RECT r = TileRect(w, i);
+        if (r.bottom < TilesTabH(w) || r.top > rc.bottom) continue;
+        TileDraw(cv, v[i], r.left, r.top, tw, th, time + i * 0.37f, dt);
+        if (i == s_tilesHover || i == s_tilesTrying) {
+            BYTE edge[4] = {255, GetRValue(vizlook::kNeon), GetGValue(vizlook::kNeon), GetBValue(vizlook::kNeon)};
+            cv.rect((float)r.left, (float)r.top, (float)r.right, (float)r.top + 1, edge);
+            cv.rect((float)r.left, (float)r.top + th - 1, (float)r.right, (float)r.top + th, edge);
+            cv.rect((float)r.left, (float)r.top, (float)r.left + 1, (float)r.top + th, edge);
+            cv.rect((float)r.right - 1, (float)r.top, (float)r.right, (float)r.top + th, edge);
+        }
+    }
+    // Text over the pixels: the tabs and each tile's name.
+    SetBkMode(dc, TRANSPARENT);
+    HGDIOBJ of = SelectObject(dc, s_editorFont ? s_editorFont : GetStockObject(DEFAULT_GUI_FONT));
+    for (int i = 0; i < (int)v.size(); i++) {
+        RECT r = TileRect(w, i);
+        if (r.bottom < TilesTabH(w) || r.top > rc.bottom) continue;
+        RECT nr = {r.left, r.top + th, r.right, r.bottom};
+        // "> NAME", as the styles page names its cards.
+        SetTextColor(dc, vizlook::kDim);
+        DrawTextW(dc, L"> ", -1, &nr, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+        SIZE gt{};
+        GetTextExtentPoint32W(dc, L"> ", 2, &gt);
+        nr.left += gt.cx;
+        std::wstring name = QpCaps(v[i].name);
+        SetTextColor(dc, i == s_tilesTrying ? vizlook::kNeon : i == s_tilesHover ? vizlook::kHotText : vizlook::kText);
+        DrawTextW(dc, name.c_str(), -1, &nr, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX);
+    }
+    // The tab strip last, over a cleared band, so tiles scrolled up go under it rather than through it.
+    vizlook::Fill(dc, {0, 0, rc.right, TilesTabH(w)}, vizlook::kGround);
+    vizlook::Fill(dc, {0, TilesTabH(w) - 1, rc.right, TilesTabH(w)}, vizlook::kEdge);
+    const wchar_t* tabs[2] = {L"My Styles", L"Community"};
+    for (int k = 0; k < 2; k++) {
+        RECT tr = {k * rc.right / 2, 0, (k + 1) * rc.right / 2, TilesTabH(w)};
+        std::wstring tab = QpCaps(tabs[k]);
+        SetTextColor(dc, k == s_tilesTab ? vizlook::kNeon : vizlook::kDim);
+        DrawTextW(dc, tab.c_str(), -1, &tr, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+        if (k == s_tilesTab) {
+            RECT ul = {tr.left + TilesPx(w, 20), tr.bottom - std::max(2, s_qpLook.s), tr.right - TilesPx(w, 20), tr.bottom};
+            vizlook::Fill(dc, ul, vizlook::kNeon);
+        }
+    }
+    std::wstring empty;
+    if (v.empty())
+        empty = s_tilesTab == 0 ? L"No styles saved yet: set one up below and press Save."
+              : s_communityState.load() == 1 ? L"Getting the community's styles..."
+              : s_communityState.load() == 3 ? L"Couldn't reach the styles page. Try again later." : L"";
+    if (!empty.empty()) {
+        RECT er = {TilesPx(w, 8), TilesTabH(w), rc.right - TilesPx(w, 8), rc.bottom};
+        SetTextColor(dc, vizlook::kDim);
+        empty = QpCaps(empty);
+        DrawTextW(dc, empty.c_str(), -1, &er, DT_CENTER | DT_VCENTER | DT_WORDBREAK);
+    }
+    SelectObject(dc, of);
+    BitBlt(target, 0, 0, rc.right, rc.bottom, dc, 0, 0, SRCCOPY);
+    SelectObject(dc, ob);
+    DeleteObject(bmp);
+    DeleteDC(dc);
+}
+
+LRESULT CALLBACK TilesProc(HWND w, UINT m, WPARAM wp, LPARAM lp) {
+    switch (m) {
+        case WM_CREATE:
+            s_tilesWnd = w;
+            s_tilesStart = GetTickCount64();
+            TilesLoadMine();
+            SetTimer(w, kTilesFrameTimer, 33, nullptr);
+            return 0;
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(w, &ps);
+            TilesPaint(w, dc);
+            EndPaint(w, &ps);
+            return 0;
+        }
+        case WM_ERASEBKGND:
+            return 1;
+        case WM_TIMER:
+            if (wp == kTilesFrameTimer) {
+                // Only while the editor is on screen and not minimised.
+                if (IsWindowVisible(GetAncestor(w, GA_ROOT)) && !IsIconic(GetAncestor(w, GA_ROOT))) InvalidateRect(w, nullptr, FALSE);
+            }
+            return 0;
+        case WM_MOUSEMOVE: {
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            int i = TileAt(w, p);
+            if (i != s_tilesHover) {
+                s_tilesHover = i;
+            }
+            TRACKMOUSEEVENT t{sizeof(t), TME_LEAVE, w, 0};
+            TrackMouseEvent(&t);
+            return 0;
+        }
+        case WM_MOUSELEAVE:
+            s_tilesHover = -1;
+            return 0;
+        case WM_LBUTTONDOWN: {
+            POINT p = {GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            if (p.y < TilesTabH(w)) {
+                RECT rc;
+                GetClientRect(w, &rc);
+                int tab = p.x < rc.right / 2 ? 0 : 1;
+                if (tab != s_tilesTab) {
+                    TilesRestore();
+                    s_tilesTab = tab;
+                    s_tilesScroll = 0;
+                    if (tab == 1) TilesFetchCommunity();
+                    if (tab == 0) TilesLoadMine();
+                }
+                return 0;
+            }
+            int i = TileAt(w, p);
+            if (i >= 0) TilesKeep(i);
+            return 0;
+        }
+        case WM_MOUSEWHEEL: {
+            int cols, tw, th, lab;
+            TilesGeom(w, &cols, &tw, &th, &lab);
+            RECT rc;
+            GetClientRect(w, &rc);
+            int rows = ((int)TilesNow().size() + cols - 1) / cols;
+            int total = rows * (th + lab + TilesPx(w, 6)) + TilesPx(w, 6) - (rc.bottom - TilesTabH(w));
+            s_tilesScroll = std::clamp(s_tilesScroll - GET_WHEEL_DELTA_WPARAM(wp) * (th + lab) / WHEEL_DELTA, 0, std::max(0, total));
+            return 0;
+        }
+        case WM_APP_TILES_FETCHED: {
+            std::lock_guard<std::mutex> lock(s_communityMutex);
+            s_tilesCommunity = s_communityFetched;
+            return 0;
+        }
+        case WM_DESTROY:
+            KillTimer(w, kTilesFrameTimer);
+            TilesRestore();
+            s_tilesWnd = nullptr;
+            s_tilesHover = -1;
+            return 0;
+    }
+    return DefWindowProcW(w, m, wp, lp);
+}
+
+// The tiles' control, as a child of the editor.
+HWND VizStyleTilesCreate(HWND parent, int x, int y, int w, int h) {
+    if (!s_tilesRegistered) {
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = TilesProc;
+        wc.hInstance = GetCurrentModuleHandle();
+        wc.hCursor = LoadCursor(nullptr, IDC_HAND);
+        wc.lpszClassName = L"TourneTableStyleTiles";
+        s_tilesRegistered = RegisterClassW(&wc) != 0;
+    }
+    return CreateWindowExW(0, L"TourneTableStyleTiles", L"", WS_CHILD | WS_VISIBLE, x, y, w, h, parent, nullptr,
+                           GetCurrentModuleHandle(), nullptr);
+}
+
+// A style was saved or deleted in the editor: the tiles show it.
+void VizStyleTilesRefresh() {
+    if (s_tilesWnd && s_tilesTab == 0) TilesLoadMine();
+}
+
+// The mod is going: the community fetch is waited for (it can't post into code that's gone) and the class goes.
+void VizStyleTilesUnload() {
+    if (s_communityThread.joinable()) s_communityThread.join();
+    if (s_tilesRegistered) {
+        UnregisterClassW(L"TourneTableStyleTiles", GetCurrentModuleHandle());
+        s_tilesRegistered = false;
+    }
+}
+
+// The window: sized, moved and pinned on top by hand, and found again where it was left ("styleEditorPlace":
+// x y w h pinned, screen pixels). Any size: wider stretches the controls (and narrow puts each label over its
+// controls), taller gives the tiles more room; too short for everything, the settings under the tiles scroll.
+constexpr int kIdPin = 90, kIdClose = 91;
+HWND s_edTiles = nullptr, s_edPin = nullptr, s_edClose = nullptr;
+int s_edHeaderH = 0, s_edTilesTop = 0;  // the header (dragged by, with its title, pin and close) and the tiles' top
+bool s_edPinned = true;
+SIZE s_edBase{}, s_edMin{};  // the client and window size it's built at; the smallest it goes
+int s_edTilesH = 0;
+std::vector<std::pair<HWND, RECT>> s_edBelow;  // controls under the tiles, where they sit at the base size
+// The settings under the tiles as built, to lay out again at any size: a label (its own line when narrow), a
+// control (x and width in the controls' column, which stretches), or the closing note (the whole width).
+struct EdPart {
+    HWND wnd;
+    int kind;  // 0 label, 1 control, 2 the note
+    int x, y, w, h;  // at the base size: x in the controls' column, y from the settings' top
+    bool combo;
+};
+std::vector<EdPart> s_edParts;
+int s_edScroll = 0, s_edFormTop = 0, s_edFormH = 0, s_edFormView = 0;  // (the settings' scroll, place and height)
+
+void EditorSavePlace(HWND hWnd) {
+    WINDOWPLACEMENT wpl{sizeof(wpl)};
+    if (!GetWindowPlacement(hWnd, &wpl)) return;
+    RECT r = wpl.rcNormalPosition;
+    WCHAR b[96];
+    swprintf_s(b, L"%ld %ld %ld %ld %d", r.left, r.top, r.right - r.left, r.bottom - r.top, s_edPinned ? 1 : 0);
+    Wh_SetStringValue(L"styleEditorPlace", b);
+}
+
+bool EditorLoadPlace(RECT* out, bool* pinned) {
+    WCHAR b[96] = {};
+    if (!Wh_GetStringValue(L"styleEditorPlace", b, ARRAYSIZE(b))) return false;
+    long x, y, w, h;
+    int pin = 1;
+    if (swscanf_s(b, L"%ld %ld %ld %ld %d", &x, &y, &w, &h, &pin) < 4 || w <= 0 || h <= 0) return false;
+    *pinned = pin != 0;
+    *out = {x, y, x + w, y + h};
+    POINT mid = {x + w / 2, y + std::min(h / 2, 40L)};  // (its title bar on a screen that's still there)
+    return MonitorFromPoint(mid, MONITOR_DEFAULTTONULL) != nullptr;
+}
+
+void EditorSetPinned(HWND hWnd, bool on) {
+    s_edPinned = on;
+    SetWindowPos(hWnd, on ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    if (s_edPin) InvalidateRect(s_edPin, nullptr, FALSE);
+}
+
+void EditorLayout(HWND hWnd) {
+    if (!s_edBase.cy || !s_edTiles) return;
+    RECT rc;
+    GetClientRect(hWnd, &rc);
+    const UINT dpi = GetDpiForWindow(hWnd);
+    auto px = [&](int v) { return MulDiv(v, dpi ? dpi : 96, 96); };
+    const int L = px(12), labelW = px(96), ctlW0 = px(260), gap = px(10), bottom = px(10);
+    const int width = std::max(px(60), (int)rc.right - 2 * L);
+    // Side by side while the controls get at least 200 px, else each label on a line of its own above them.
+    const bool stacked = width - labelW < px(200);
+    // The controls grow with the window up to twice their size, then stay (stretched past that they read badly).
+    const int colX = stacked ? L : L + labelW, colW = std::min(stacked ? width : width - labelW, 2 * ctlW0);
+    const float k = colW / (float)ctlW0;
+    const int labelH = px(18);
+    // The note wraps to the width; its height follows.
+    int noteH = px(80);
+    for (auto& e : s_edParts)
+        if (e.kind == 2) {
+            WCHAR text[1024] = L"";
+            GetWindowTextW(e.wnd, text, ARRAYSIZE(text));
+            HDC dc = GetDC(e.wnd);
+            HGDIOBJ of = SelectObject(dc, s_editorFont);
+            RECT m = {0, 0, width, 0};
+            DrawTextW(dc, text, -1, &m, DT_CALCRECT | DT_WORDBREAK | DT_NOPREFIX);
+            SelectObject(dc, of);
+            ReleaseDC(e.wnd, dc);
+            noteH = m.bottom + px(4);
+        }
+    // The settings' height at this width, then the tiles take what's left (never under a small strip).
+    int shift = 0, formH = 0;
+    for (auto& e : s_edParts) {
+        if (e.kind == 0 && stacked) shift += labelH;
+        int b = e.y + shift + (e.kind == 2 ? noteH : e.h);
+        formH = std::max(formH, b);
+    }
+    formH += bottom;
+    const int tilesMin = px(90);
+    int tilesH = std::max(tilesMin, (int)rc.bottom - s_edTilesTop - gap - formH);
+    s_edFormTop = s_edTilesTop + tilesH + gap;
+    s_edFormView = std::max(0, (int)rc.bottom - s_edFormTop);
+    s_edFormH = formH;
+    s_edScroll = std::clamp(s_edScroll, 0, std::max(0, formH - s_edFormView));
+    HDWP d = BeginDeferWindowPos((int)s_edParts.size() + 3);
+    if (d) d = DeferWindowPos(d, s_edTiles, nullptr, L, s_edTilesTop, width, tilesH, SWP_NOZORDER | SWP_NOACTIVATE);
+    int bs = px(18), by = (s_edHeaderH - bs) / 2 + px(2);
+    if (d && s_edClose) d = DeferWindowPos(d, s_edClose, nullptr, rc.right - L - bs, by, bs, bs, SWP_NOZORDER | SWP_NOACTIVATE);
+    if (d && s_edPin) d = DeferWindowPos(d, s_edPin, nullptr, rc.right - L - 2 * bs - px(4), by, bs, bs, SWP_NOZORDER | SWP_NOACTIVATE);
+    shift = 0;
+    for (auto& e : s_edParts) {
+        int x, y, w, h;
+        if (e.kind == 0) {
+            x = L, w = stacked ? width : labelW - px(4), h = e.h;
+            y = s_edFormTop + e.y + shift - (stacked ? px(5) : 0);
+            if (stacked) shift += labelH;
+        } else if (e.kind == 2) {
+            x = L, y = s_edFormTop + e.y + shift, w = width, h = noteH;
+        } else {
+            x = colX + (int)std::lround(e.x * k), w = std::max(px(16), (int)std::lround(e.w * k));
+            y = s_edFormTop + e.y + shift, h = e.combo ? px(320) : e.h;  // (a drop-down's height is its list's)
+        }
+        y -= s_edScroll;
+        // Out of the settings' view (scrolled under the tiles, or past the bottom): hidden.
+        bool shown = y >= s_edFormTop - px(2) && y + std::min(h, px(26)) <= (int)rc.bottom + px(2);
+        if (d) d = DeferWindowPos(d, e.wnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE | (shown ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
+    }
+    if (d) EndDeferWindowPos(d);
+    // Every part drawn again: moved labels and the note otherwise keep what was under them before.
+    RedrawWindow(hWnd, nullptr, nullptr, RDW_INVALIDATE | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN);
+}
+
+// Scrolls the settings under the tiles, when they don't all fit.
+void EditorScroll(HWND hWnd, int by) {
+    int was = s_edScroll;
+    s_edScroll = std::clamp(s_edScroll + by, 0, std::max(0, s_edFormH - s_edFormView));
+    if (s_edScroll != was) EditorLayout(hWnd);
+}
+
+// The header's buttons, drawn as the quick-settings panel's: the pin (lit when the editor stays on top) and
+// close, in the menus' pixel scale.
+// The mouse over the pin or close: they light (owner-drawn buttons aren't told about hover themselves).
+LRESULT CALLBACK EditorPinHoverProc(HWND w, UINT m, WPARAM wp, LPARAM lp, UINT_PTR, DWORD_PTR) {
+    if (m == WM_MOUSEMOVE && !GetPropW(w, L"TourneTableHot")) {
+        SetPropW(w, L"TourneTableHot", (HANDLE)1);
+        TRACKMOUSEEVENT t{sizeof(t), TME_LEAVE, w, 0};
+        TrackMouseEvent(&t);
+        InvalidateRect(w, nullptr, FALSE);
+    } else if (m == WM_MOUSELEAVE) {
+        RemovePropW(w, L"TourneTableHot");
+        InvalidateRect(w, nullptr, FALSE);
+    } else if (m == WM_NCDESTROY) {
+        RemovePropW(w, L"TourneTableHot");
+    }
+    return DefSubclassProc(w, m, wp, lp);
+}
+
+void EditorDrawPin(const DRAWITEMSTRUCT* di) {
+    static constexpr const char* kPin[] = {"..####..", "..####..", "..#..#..", "..#..#..", ".######.", "########", "...##...", "...##...", "...##...", "....#..."};
+    static constexpr const char* kClose[] = {"#......#", ".#....#.", "..#..#..", "...##...", "...##...", "..#..#..", ".#....#.", "#......#", "........", "........"};
+    bool close = di->CtlID == kIdClose;
+    RECT r = di->rcItem;
+    bool down = (di->itemState & ODS_SELECTED) != 0, hot = down || GetPropW(di->hwndItem, L"TourneTableHot");
+    // The menus' hover overlay under the mouse; close goes red on it, as a window's close does.
+    vizlook::Fill(di->hDC, r, close && hot ? vizlook::kRed : vizlook::kGround);
+    int s = std::max(1, s_qpLook.s);
+    int x = (r.left + r.right) / 2 - 4 * s, y = (r.top + r.bottom) / 2 - (close ? 4 : 5) * s;
+    HBRUSH b = vizlook::Brush(close ? (hot ? vizlook::kGround : vizlook::kDim) : s_edPinned || hot ? vizlook::kNeon : vizlook::kDim);
+    for (int row = 0; row < 10; row++)
+        for (int col = 0; col < 8; col++)
+            if ((close ? kClose : kPin)[row][col] == '#') {
+                RECT p{x + col * s, y + row * s, x + (col + 1) * s, y + (row + 1) * s};
+                FillRect(di->hDC, &p, b);
+            }
+}
+
+// The frame (the menus' own, painted round the whole window) and the header's title.
+void EditorPaint(HWND hWnd) {
+    PAINTSTRUCT ps;
+    HDC dc = BeginPaint(hWnd, &ps);
+    RECT rc, inner{};
+    GetClientRect(hWnd, &rc);
+    static QpFrameFn frame = (QpFrameFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuPaintFrame");
+    if (frame) {
+        frame(dc, rc.right, rc.bottom, &inner);
+    } else {
+        vizlook::Fill(dc, rc, vizlook::kGround);
+        vizlook::Frame(dc, rc, vizlook::kGreen);
+        inner = {1, 1, rc.right - 1, rc.bottom - 1};
+    }
+    const UINT dpi = GetDpiForWindow(hWnd);
+    auto px = [&](int v) { return MulDiv(v, dpi ? dpi : 96, 96); };
+    SetBkMode(dc, TRANSPARENT);
+    HGDIOBJ old = SelectObject(dc, s_editorFont ? s_editorFont : s_qpLook.font);
+    std::wstring title = QpCaps(L"Tourne'Table // Style Editor");
+    RECT tr = {px(12), inner.top, rc.right - px(64), s_edHeaderH};
+    SetTextColor(dc, vizlook::kDim);
+    DrawTextW(dc, title.c_str(), -1, &tr, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX | DT_END_ELLIPSIS);
+    // A separator under the header, as the menus draw theirs.
+    vizlook::Fill(dc, {px(10), s_edHeaderH, rc.right - px(10), s_edHeaderH + std::max(1, s_qpLook.s)}, vizlook::kEdge);
+    // The settings don't all fit: a thin bar at the right shows where they're scrolled to (the wheel scrolls them).
+    if (s_edFormH > s_edFormView && s_edFormView > 0) {
+        int track = s_edFormView, thumb = std::max(px(16), track * s_edFormView / s_edFormH);
+        int at = s_edFormTop + (track - thumb) * s_edScroll / std::max(1, s_edFormH - s_edFormView);
+        vizlook::Fill(dc, {rc.right - px(5), at, rc.right - px(3), at + thumb}, vizlook::kNeon);
+    }
+    SelectObject(dc, old);
+    EndPaint(hWnd, &ps);
+}
+
 void EditorBuild(HWND hWnd) {
     const UINT dpi = GetDpiForWindow(hWnd);
     auto px = [&](int v) { return MulDiv(v, dpi ? dpi : 96, 96); };
-    NONCLIENTMETRICSW ncm = {sizeof(ncm)};
-    if (!s_editorFont && SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0)) {
-        ncm.lfMessageFont.lfHeight = -px(12);
-        s_editorFont = CreateFontIndirectW(&ncm.lfMessageFont);
+    // Tourne's menu look: its colours, font, caps and pixel scale (the quick-settings panel's own copy of it).
+    if (!s_qpLook.font || !(s_qpWnd && IsWindowVisible(s_qpWnd))) QpLoadLook((int)(dpi ? dpi : 96));
+    vizlook::FollowMenu();
+    if (!s_editorFont) {
+        LOGFONTW lf{};
+        if (s_qpLook.font && GetObjectW(s_qpLook.font, sizeof(lf), &lf)) {
+            s_editorFont = CreateFontIndirectW(&lf);
+        } else {
+            NONCLIENTMETRICSW ncm = {sizeof(ncm)};
+            SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0);
+            ncm.lfMessageFont.lfHeight = -px(12);
+            s_editorFont = vizlook::Font(px(13), ncm.lfMessageFont);
+        }
     }
+    DWORD square = 1;  // DWMWCP_DONOTROUND: square, as the menus are
+    DwmSetWindowAttribute(hWnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, &square, sizeof(square));
     HINSTANCE inst = GetCurrentModuleHandle();
     int y = px(12);
     const int L = px(12), labelW = px(96), ctlX = L + labelW, ctlW = px(260), rowH = px(30);
     auto add = [&](const wchar_t* cls, const wchar_t* text, DWORD style, int x, int yy, int w, int h, int id) {
-        HWND c = CreateWindowExW(0, cls, text, WS_CHILD | WS_VISIBLE | style, x, yy, w, h, hWnd,
+        std::wstring shown = !_wcsicmp(cls, L"STATIC") ? QpCaps(text) : std::wstring(text);  // (buttons capitalise as they draw)
+        HWND c = CreateWindowExW(0, cls, shown.c_str(), WS_CHILD | WS_VISIBLE | style, x, yy, w, h, hWnd,
                                  (HMENU)(INT_PTR)id, inst, nullptr);
         if (c && s_editorFont) SendMessageW(c, WM_SETFONT, (WPARAM)s_editorFont, FALSE);
+        if (c && !_wcsicmp(cls, L"COMBOBOX")) vizlook::DarkControl(c);
         return c;
     };
     auto label = [&](const wchar_t* text) { add(L"STATIC", text, SS_LEFT, L, y + px(5), labelW, px(20), -1); };
 
+    // The header (its title painted, dragged by), its pin and close, then every style as a tile, playing; click
+    // one to put it on (and keep it or not).
+    s_edHeaderH = std::max(px(28), QpRowH() + px(6));
+    s_edPin = add(L"BUTTON", L"Pin on top", BS_OWNERDRAW, L + labelW + ctlW - px(40), px(5), px(18), px(18), kIdPin);
+    s_edClose = add(L"BUTTON", L"Close", BS_OWNERDRAW, L + labelW + ctlW - px(18), px(5), px(18), px(18), kIdClose);
+    SetWindowSubclass(s_edPin, EditorPinHoverProc, 1, 0);
+    SetWindowSubclass(s_edClose, EditorPinHoverProc, 1, 0);
+    y = s_edTilesTop = s_edHeaderH + px(8);
+    s_edTilesH = px(206);
+    s_edTiles = VizStyleTilesCreate(hWnd, L, y, labelW + ctlW, s_edTilesH);
+    y += s_edTilesH + px(10);
     label(L"Saved style");
-    add(L"COMBOBOX", L"", CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP, ctlX, y, px(118), px(200), kIdPreset);
+    add(L"COMBOBOX", L"", CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, ctlX, y, px(118), px(200), kIdPreset);
     add(L"BUTTON", L"Load", BS_PUSHBUTTON | WS_TABSTOP, ctlX + px(122), y, px(44), px(24), kIdLoad);
-    add(L"BUTTON", L"Save", BS_PUSHBUTTON | WS_TABSTOP, ctlX + px(170), y, px(44), px(24), kIdSave);
+    SetPropW(add(L"BUTTON", L"Save", BS_PUSHBUTTON | WS_TABSTOP, ctlX + px(170), y, px(44), px(24), kIdSave), L"TourneTablePrimary",
+             (HANDLE)1);
     add(L"BUTTON", L"Delete", BS_PUSHBUTTON | WS_TABSTOP, ctlX + px(218), y, px(50), px(24), kIdDelete);
     y += rowH + px(6);
     label(L"Share");
@@ -19010,11 +25113,11 @@ void EditorBuild(HWND hWnd) {
     add(L"BUTTON", L"Place", BS_AUTOCHECKBOX | WS_TABSTOP, ctlX + px(198), y, px(62), px(22), kIdPartPlace);
     y += rowH + px(6);
     label(L"Base style");
-    HWND shape = add(L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP, ctlX, y, ctlW, px(320), kIdShape);
+    HWND shape = add(L"COMBOBOX", L"", CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, ctlX, y, ctlW, px(320), kIdShape);
     for (const auto& o : kShapes) SendMessageW(shape, CB_ADDSTRING, 0, (LPARAM)o.label);
     y += rowH;
     label(L"Color mode");
-    HWND cm = add(L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP, ctlX, y, ctlW, px(320), kIdColorMode);
+    HWND cm = add(L"COMBOBOX", L"", CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP, ctlX, y, ctlW, px(320), kIdColorMode);
     for (const auto& o : kColorModes) SendMessageW(cm, CB_ADDSTRING, 0, (LPARAM)o.label);
     y += rowH;
     label(L"Colors");
@@ -19027,22 +25130,46 @@ void EditorBuild(HWND hWnd) {
     y += rowH;
     for (int i = 0; i < (int)ARRAYSIZE(kSliders); i++) {
         label(kSliders[i].label);
-        HWND tb = add(TRACKBAR_CLASSW, L"", TBS_HORZ | TBS_NOTICKS | WS_TABSTOP, ctlX - px(4), y, ctlW - px(36), px(26),
+        HWND tb = add(TRACKBAR_CLASSW, L"", TBS_HORZ | TBS_NOTICKS | WS_TABSTOP, ctlX - px(4), y, ctlW - px(44), px(26),
                       kIdSliderBase + i);
-        SendMessageW(tb, TBM_SETRANGE, FALSE, MAKELPARAM(kSliders[i].lo * kSliders[i].scale, kSliders[i].hi * kSliders[i].scale));
-        add(L"STATIC", L"", SS_RIGHT, ctlX + ctlW - px(36), y + px(5), px(36), px(20), kIdSliderBase + 100 + i);
+        // MIN / MAX rather than SETRANGE: positions above 32767 don't fit its packed words.
+        SendMessageW(tb, TBM_SETRANGEMIN, FALSE, kSliders[i].lo * kSliders[i].scale);
+        SendMessageW(tb, TBM_SETRANGEMAX, FALSE, kSliders[i].hi * kSliders[i].scale);
+        SendMessageW(tb, TBM_SETLINESIZE, 0, 1);
+        SendMessageW(tb, TBM_SETPAGESIZE, 0, kSliders[i].scale / 10);
+        add(L"STATIC", L"", SS_RIGHT, ctlX + ctlW - px(44), y + px(5), px(44), px(20), kIdSliderBase + 100 + i);
         y += px(28);
     }
     y += px(4);
     add(L"STATIC",
         L"Changes apply at once. Reset Quick Settings in the right-click menu returns to the settings page. "
         L"Reflection, Glow and Bloom need the Direct3D 11 renderer. Share carries the ticked parts; your audio "
-        L"device, hotkeys and file paths stay out. Community reads its list from GitHub only when pressed.",
+        L"device, hotkey, monitor, docked app, GPU, cores and file paths stay out. Community opens the styles page in your browser.",
         SS_LEFT, L, y, labelW + ctlW, px(80), -1);
     y += px(88);
     RECT rc = {0, 0, labelW + ctlW + L * 2, y};
     AdjustWindowRectExForDpi(&rc, GetWindowLongW(hWnd, GWL_STYLE), FALSE, GetWindowLongW(hWnd, GWL_EXSTYLE), dpi);
+    s_edBase = {}, s_edBelow.clear(), s_edParts.clear(), s_edScroll = 0;
+    // Every setting's place as built, for EditorLayout to lay out again at any size.
+    const int formTop = s_edTilesTop + s_edTilesH + px(10);
+    for (HWND c = GetWindow(hWnd, GW_CHILD); c; c = GetWindow(c, GW_HWNDNEXT)) {
+        if (c == s_edTiles || c == s_edPin || c == s_edClose) continue;
+        RECT r;
+        GetWindowRect(c, &r);
+        MapWindowPoints(nullptr, hWnd, (POINT*)&r, 2);
+        WCHAR cls[32] = L"";
+        GetClassNameW(c, cls, ARRAYSIZE(cls));
+        bool label = !_wcsicmp(cls, L"Static") && GetDlgCtrlID(c) == 0xFFFF;
+        int kind = label && r.right - r.left >= labelW + ctlW - px(2) ? 2 : label && r.left == L ? 0 : 1;
+        s_edParts.push_back({c, kind, (int)r.left - ctlX, (int)r.top - formTop, (int)(r.right - r.left), (int)(r.bottom - r.top),
+                             !_wcsicmp(cls, L"ComboBox")});
+    }
     SetWindowPos(hWnd, nullptr, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
+    s_edMin = {px(220), s_edHeaderH + px(170)};  // (any size above a small one)
+    RECT cr;
+    GetClientRect(hWnd, &cr);
+    s_edBase = {cr.right, cr.bottom};
+    EditorLayout(hWnd);
     WCHAR parts[64] = {};
     unsigned ticked = Wh_GetStringValue(L"shareParts", parts, ARRAYSIZE(parts)) ? VizPartsFrom(parts)
                                                                                : (kPartLook | kPartMotion | kPartExtras);
@@ -19052,9 +25179,77 @@ void EditorBuild(HWND hWnd) {
 }
 
 LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (LRESULT looked; vizlook::Message(hWnd, msg, wParam, lParam, kIdSliderBase + 100, &looked)) return looked;
     switch (msg) {
         case WM_CREATE:
             EditorBuild(hWnd);
+            return 0;
+        case WM_PAINT:
+            EditorPaint(hWnd);
+            return 0;
+        case WM_NCHITTEST: {
+            // Its edges and corners size it, its header moves it (the menus have no title bar).
+            POINT p = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            ScreenToClient(hWnd, &p);
+            RECT rc;
+            GetClientRect(hWnd, &rc);
+            int k = MulDiv(6, GetDpiForWindow(hWnd), 96);
+            bool l = p.x < k, r = p.x >= rc.right - k, t = p.y < k, b = p.y >= rc.bottom - k;
+            if (t && l) return HTTOPLEFT;
+            if (t && r) return HTTOPRIGHT;
+            if (b && l) return HTBOTTOMLEFT;
+            if (b && r) return HTBOTTOMRIGHT;
+            if (l) return HTLEFT;
+            if (r) return HTRIGHT;
+            if (t) return HTTOP;
+            if (b) return HTBOTTOM;
+            if (p.y < s_edHeaderH) return HTCAPTION;
+            return HTCLIENT;
+        }
+        case WM_MEASUREITEM:
+            if (wParam == kIdShape || wParam == kIdColorMode || (wParam == kIdPreset && ((MEASUREITEMSTRUCT*)lParam)->itemID != (UINT)-1)) {
+                ((MEASUREITEMSTRUCT*)lParam)->itemHeight = MulDiv(18, GetDpiForWindow(hWnd), 96);
+                return TRUE;
+            }
+            break;
+        case WM_DRAWITEM:
+            if (wParam == kIdPin || wParam == kIdClose) {
+                EditorDrawPin((const DRAWITEMSTRUCT*)lParam);
+                return TRUE;
+            }
+            if (wParam == kIdShape || wParam == kIdColorMode || wParam == kIdPreset) {
+                // The choices in the menus' text green, against the editor's red (Windows' combo draws them white), the one under
+                // the mouse as a menu's row (its hover colour and hover text).
+                auto* di = (const DRAWITEMSTRUCT*)lParam;
+                bool hot = (di->itemState & ODS_SELECTED) && !(di->itemState & ODS_COMBOBOXEDIT);
+                vizlook::Fill(di->hDC, di->rcItem, hot ? vizlook::kRaised : vizlook::kPanel);  // (an open list's hot row: the menus' hover)
+                if (di->itemID != (UINT)-1) {
+                    WCHAR text[128] = L"";
+                    if (SendMessageW(di->hwndItem, CB_GETLBTEXTLEN, di->itemID, 0) < (LRESULT)ARRAYSIZE(text))
+                        SendMessageW(di->hwndItem, CB_GETLBTEXT, di->itemID, (LPARAM)text);
+                    RECT t = di->rcItem;
+                    t.left += MulDiv(4, GetDpiForWindow(hWnd), 96);
+                    SetBkMode(di->hDC, TRANSPARENT);
+                    SetTextColor(di->hDC, hot ? vizlook::kHotText : s_qpLook.text);
+                    DrawTextW(di->hDC, text, -1, &t, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_NOPREFIX);
+                }
+                return TRUE;
+            }
+            break;
+        case WM_SIZE:
+            EditorLayout(hWnd);
+            return 0;
+        case WM_MOUSEWHEEL: {
+            POINT p = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+            ScreenToClient(hWnd, &p);
+            if (p.y >= s_edFormTop) EditorScroll(hWnd, -GET_WHEEL_DELTA_WPARAM(wParam) * MulDiv(40, GetDpiForWindow(hWnd), 96) / WHEEL_DELTA);
+            return 0;
+        }
+        case WM_GETMINMAXINFO:
+            if (s_edMin.cx) ((MINMAXINFO*)lParam)->ptMinTrackSize = {s_edMin.cx, s_edMin.cy};
+            return 0;
+        case WM_EXITSIZEMOVE:
+            EditorSavePlace(hWnd);
             return 0;
         case WM_HSCROLL: {
             HWND tb = (HWND)lParam;
@@ -19077,6 +25272,15 @@ LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
             return 0;
         case WM_COMMAND: {
             int id = LOWORD(wParam), code = HIWORD(wParam);
+            if (id == kIdClose) {
+                DestroyWindow(hWnd);
+                return 0;
+            }
+            if (id == kIdPin) {
+                EditorSetPinned(hWnd, !s_edPinned);
+                EditorSavePlace(hWnd);
+                return 0;
+            }
             if ((id == kIdShape || id == kIdColorMode) && code == CBN_SELCHANGE) {
                 int sel = (int)SendDlgItemMessageW(hWnd, id, CB_GETCURSEL, 0, 0);
                 const VizMenuOption* opts = id == kIdShape ? kShapes : kColorModes;
@@ -19114,10 +25318,20 @@ LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
                 VizImportSetup(hWnd, text, EditorParts(hWnd));
                 EditorSync(hWnd);
             } else if (id == kIdShareCommunity) {
-                if (s_communityBusy) return 0;
-                s_communityBusy = true;
-                SetDlgItemTextW(hWnd, kIdShareCommunity, L"Loading...");
-                VizFetchCommunityList(hWnd);
+                HMENU m = CreatePopupMenu();
+                AppendMenuW(m, MF_STRING, 1001, L"Browse Community Styles (opens in your browser)");
+                AppendMenuW(m, MF_STRING, 1000, L"Share Mine to the Community...");
+                RECT rc = {};
+                GetWindowRect(GetDlgItem(hWnd, kIdShareCommunity), &rc);
+                UINT cmd = VizTrackMenu(m, TPM_RETURNCMD | TPM_RIGHTBUTTON, rc.left, rc.bottom, hWnd);
+                DestroyMenu(m);
+                if (cmd == 1000) {
+                    unsigned parts = EditorParts(hWnd);
+                    if (parts) VizShareToCommunity(hWnd, parts, EditorSetupName(hWnd));
+                    else MessageBeep(MB_ICONWARNING);
+                } else if (cmd == 1001) {
+                    ShellExecuteW(nullptr, L"open", kCommunityPage, nullptr, nullptr, SW_SHOWNORMAL);
+                }
             } else if (id == kIdLoad || id == kIdSave || id == kIdDelete) {
                 WCHAR name[64] = {};
                 GetDlgItemTextW(hWnd, kIdPreset, name, ARRAYSIZE(name));
@@ -19129,9 +25343,11 @@ LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
                 if (id == kIdSave) {
                     VizSaveStylePreset(n);
                     EditorFillPresets(hWnd, n);
+                    VizStyleTilesRefresh();
                 } else if (id == kIdDelete) {
                     VizDeleteStylePreset(n);
                     EditorFillPresets(hWnd, L"");
+                    VizStyleTilesRefresh();
                 } else if (VizApplyStylePreset(n)) {
                     EditorApplyNow(hWnd);
                     EditorSync(hWnd);
@@ -19139,55 +25355,18 @@ LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
             }
             return 0;
         }
-        case WM_APP_SHARE_LIST: {
-            std::unique_ptr<std::vector<VizCommunityItem>> items((std::vector<VizCommunityItem>*)lParam);
-            s_communityBusy = false;
-            SetDlgItemTextW(hWnd, kIdShareCommunity, L"Community");
-            HMENU m = CreatePopupMenu();
-            if (!wParam) AppendMenuW(m, MF_STRING | MF_GRAYED, 0, L"Couldn't reach the community list");
-            else if (items->empty()) AppendMenuW(m, MF_STRING | MF_GRAYED, 0, L"No community setups yet");
-            for (size_t i = 0; i < items->size() && i < 60; i++) {
-                const auto& it = (*items)[i];
-                std::wstring text = (it.name.empty() ? it.file : it.name) + (it.author.empty() ? L"" : L"  (by " + it.author + L")");
-                AppendMenuW(m, MF_STRING, 1 + i, text.c_str());
-            }
-            AppendMenuW(m, MF_SEPARATOR, 0, nullptr);
-            AppendMenuW(m, MF_STRING, 1000, L"Share Mine to the Community...");
-            AppendMenuW(m, MF_STRING, 1001, L"Open the Community Folder");
-            RECT rc = {};
-            GetWindowRect(GetDlgItem(hWnd, kIdShareCommunity), &rc);
-            UINT cmd = TrackPopupMenu(m, TPM_RETURNCMD | TPM_RIGHTBUTTON, rc.left, rc.bottom, 0, hWnd, nullptr);
-            DestroyMenu(m);
-            if (cmd >= 1 && cmd <= items->size() && cmd <= 60) {
-                s_communityBusy = true;
-                SetDlgItemTextW(hWnd, kIdShareCommunity, L"Loading...");
-                VizFetchCommunitySetup(hWnd, (*items)[cmd - 1].file);
-            } else if (cmd == 1000) {
-                unsigned parts = EditorParts(hWnd);
-                if (parts) VizShareToCommunity(hWnd, parts, EditorSetupName(hWnd));
-                else MessageBeep(MB_ICONWARNING);
-            } else if (cmd == 1001) {
-                ShellExecuteW(nullptr, L"open", kCommunityFolder, nullptr, nullptr, SW_SHOWNORMAL);
-            }
-            return 0;
-        }
-        case WM_APP_SHARE_SETUP: {
-            std::unique_ptr<std::wstring> text((std::wstring*)lParam);
-            s_communityBusy = false;
-            SetDlgItemTextW(hWnd, kIdShareCommunity, L"Community");
-            if (text->empty()) MessageBoxW(hWnd, L"Couldn't get that setup from GitHub.", L"Tourne'Table", MB_OK | MB_ICONWARNING);
-            else VizImportSetup(hWnd, *text, EditorParts(hWnd));
-            EditorSync(hWnd);
-            return 0;
-        }
         case WM_CLOSE:
             DestroyWindow(hWnd);
             return 0;
         case WM_DESTROY:
+            EditorSavePlace(hWnd);
             KillTimer(hWnd, kApplyTimer);
             KillTimer(hWnd, kShareTimer);
-            s_communityBusy = false;
             g_styleEditorWnd = nullptr;
+            s_edTiles = s_edPin = s_edClose = nullptr;
+            if (s_editorFont) DeleteObject(s_editorFont), s_editorFont = nullptr;  // (the menu's look is read again next time)
+            s_edBelow.clear();
+            s_edBase = {};
             return 0;
     }
     return DefWindowProcW(hWnd, msg, wParam, lParam);
@@ -19218,15 +25397,22 @@ void VizOpenStyleEditor() {
         at.x = g_drawRectL.load(std::memory_order_relaxed);
         at.y = std::max<LONG>(0, g_drawRectT.load(std::memory_order_relaxed) - 600);
     }
-    g_styleEditorWnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST, kStyleEditorClass, L"Tourne'Table Style Editor",
-                                       WS_CAPTION | WS_SYSMENU | WS_POPUP, at.x, at.y, 400, 600, nullptr, nullptr,
+    RECT kept{};
+    bool pinned = true, haveKept = EditorLoadPlace(&kept, &pinned);
+    s_edPinned = pinned;
+    g_styleEditorWnd = CreateWindowExW(WS_EX_TOOLWINDOW | (pinned ? WS_EX_TOPMOST : 0), kStyleEditorClass, L"Tourne'Table Style Editor",
+                                       WS_POPUP | WS_CLIPCHILDREN, at.x, at.y, 400, 600, nullptr, nullptr,
                                        GetCurrentModuleHandle(), nullptr);
     if (!g_styleEditorWnd) return;
+    if (haveKept)  // (no smaller than it's built at)
+        SetWindowPos(g_styleEditorWnd, nullptr, kept.left, kept.top, std::max(kept.right - kept.left, s_edMin.cx),
+                     std::max(kept.bottom - kept.top, s_edMin.cy), SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(g_styleEditorWnd, SW_SHOW);
     SetForegroundWindow(g_styleEditorWnd);
 }
 
 void UnregisterStyleEditorClass() {
+    VizStyleTilesUnload();
     if (s_editorFont) {
         DeleteObject(s_editorFont);
         s_editorFont = nullptr;
@@ -19358,6 +25544,7 @@ LRESULT CALLBACK MessageWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                     FlushSettingsIssues();
                 }
             } else if (wParam == TIMER_ID_MSG_FULLSCREEN_WATCH) {
+                VizSeekAppsRefresh();
                 // The media strip is a plain layered window living alongside
                 // whatever else is topmost, and it's the one piece of this mod
                 // that has to survive in that crowd -- another app taking
@@ -19398,7 +25585,11 @@ LRESULT CALLBACK MessageWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                             !(g_overlayInPanel && g_panelHidden) &&
                             (!IsWindowVisible(g_mediaWnd) ||
                              (g_settings.mediaOnTop &&
-                              !(GetWindowLongPtr(g_mediaWnd, GWL_EXSTYLE) & WS_EX_TOPMOST)))) {
+                              !(GetWindowLongPtr(g_mediaWnd, GWL_EXSTYLE) & WS_EX_TOPMOST)) ||
+                             [] {
+                                 RECT r;
+                                 return GetWindowRect(g_mediaWnd, &r) && VizTaskbarOverlaps(r, true);
+                             }())) {
                             Wh_Log(L"[Media] window not visible/topmost, re-asserting");
                             RepositionAndRepaintMediaControls();
                         }
@@ -19441,8 +25632,26 @@ LRESULT CALLBACK MessageWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             if (!g_unloading) VizShowContextMenu(POINT{(LONG)(int)wParam, (LONG)(int)lParam});
             return 0;
 
+        case WM_APP_MEDIA_MENU:  // (the quick-settings panel opens on Media Controls, in its own place)
+            g_qpForMedia = true;
+            if (!g_unloading) VizShowContextMenu(POINT{(LONG)(int)wParam, (LONG)(int)lParam});
+            g_qpForMedia = false;
+            return 0;
+
+        case WM_APP_SEEK_AT:
+            if (!g_unloading) VizSeekAtX((LONG)(int)wParam);
+            return 0;
+
+        case WM_APP_WRITE_SETTING: {
+            std::unique_ptr<std::pair<std::wstring, std::wstring>> kv((std::pair<std::wstring, std::wstring>*)lParam);
+            if (!g_unloading && kv) VizWriteSetting(kv->first.c_str(), kv->second);
+            return 0;
+        }
+
+
         case WM_DESTROY:
             VizDockStop();
+            s_cardVol.Reset();  // a COM object of this thread's apartment: released before CoUninitialize
             g_messageWnd = nullptr;
             return 0;
 
@@ -19613,15 +25822,15 @@ void CreateMessageWindow() {
 void LoadSettings() {
     g_settingsIssues.clear();
     VizLoadMenuOverrides();
-    g_settings.showSettingsErrors = Wh_GetIntSetting(L"validation.showErrors") != 0;
+    g_settings.showSettingsErrors = VizSettingInt(L"validation.showErrors") != 0;
 
-    PCWSTR shape = Wh_GetStringSetting(L"appearance.shape");
+    PCWSTR shape = VizSettingString(L"appearance.shape");
     VizParseShape(shape, &g_settings.shape, &g_settings.style);
-    Wh_FreeStringSetting(shape);
-    g_settings.reflection = std::clamp(Wh_GetIntSetting(L"appearance.reflection"), 0, 100);
-    g_settings.fxGlow = std::clamp(Wh_GetIntSetting(L"appearance.fxGlow"), 0, 100);
+    VizSettingFree(shape);
+    g_settings.reflection = ReadSizeSetting(L"appearance.reflection", 0.f, 100.f, 0.f);
+    g_settings.fxGlow = ReadSizeSetting(L"appearance.fxGlow", 0.f, 100.f, 0.f);
     g_settings.fxGlowRadius = ReadSizeSetting(L"appearance.fxGlowRadius", 0.5f, 32.f, 6.f);
-    g_settings.fxBloom = std::clamp(Wh_GetIntSetting(L"appearance.fxBloom"), 0, 100);
+    g_settings.fxBloom = ReadSizeSetting(L"appearance.fxBloom", 0.f, 100.f, 0.f);
     g_settings.fxBloomRadius = ReadSizeSetting(L"appearance.fxBloomRadius", 4.f, 64.f, 16.f);
     g_settings.fxOutlineWidth = ReadNumberSetting(L"appearance.fxOutlineWidth", L"Appearance", L"Outline Width", 0.f, 0.f, 16.f);
     {
@@ -19631,25 +25840,25 @@ void LoadSettings() {
         ReadColorSetting(L"appearance.fxShadowColor", L"Appearance", L"Shadow Color", 255, 0, 0, 0,
                          &dummy, &g_settings.fxShadowR, &g_settings.fxShadowG, &g_settings.fxShadowB);
     }
-    g_settings.fxShadow = std::clamp(Wh_GetIntSetting(L"appearance.fxShadow"), 0, 100);
+    g_settings.fxShadow = ReadSizeSetting(L"appearance.fxShadow", 0.f, 100.f, 0.f);
     g_settings.fxShadowX = ReadNumberSetting(L"appearance.fxShadowX", L"Appearance", L"Shadow Offset X", 2.f, -32.f, 32.f);
     g_settings.fxShadowY = ReadNumberSetting(L"appearance.fxShadowY", L"Appearance", L"Shadow Offset Y", 3.f, -32.f, 32.f);
     g_settings.fxShadowSoft = ReadNumberSetting(L"appearance.fxShadowSoftness", L"Appearance", L"Shadow Softness", 4.f, 0.f, 32.f);
-    g_settings.barHollow = Wh_GetIntSetting(L"appearance.barHollow") != 0;
+    g_settings.barHollow = VizSettingInt(L"appearance.barHollow") != 0;
     g_settings.barHollowWidth = ReadSizeSetting(L"appearance.barHollowWidth", 0.25f, 16.f, 1.5f);
     g_settings.barDash = ReadSizeSetting(L"appearance.barDash", 0.f, 200.f, 0.f);
     g_settings.barDashGap = ReadSizeSetting(L"appearance.barDashGap", 0.f, 200.f, 2.f);
     g_settings.barTilt = ReadSizeSetting(L"appearance.barTilt", -60.f, 60.f, 0.f);
     g_settings.barMirrorGap = ReadSizeSetting(L"appearance.barMirrorGap", 0.f, 400.f, 0.f);
-    g_settings.afterimage = std::clamp(Wh_GetIntSetting(L"appearance.afterimage"), 0, 100);
+    g_settings.afterimage = ReadSizeSetting(L"appearance.afterimage", 0.f, 100.f, 0.f);
     g_settings.afterimageSeconds = ReadSizeSetting(L"appearance.afterimageLength", 0.1f, 10.f, 1.2f);
 
-    PCWSTR orientation = Wh_GetStringSetting(L"appearance.orientation");
+    PCWSTR orientation = VizSettingString(L"appearance.orientation");
     g_settings.orientation =
         (wcscmp(orientation, L"vertical") == 0) ? VizOrientation::Vertical : VizOrientation::Horizontal;
-    Wh_FreeStringSetting(orientation);
+    VizSettingFree(orientation);
 
-    g_settings.barCount = std::clamp(Wh_GetIntSetting(L"appearance.barCount"), 1, VIZ_BARS_MAX);
+    g_settings.barCount = std::clamp(VizSettingInt(L"appearance.barCount"), 1, VIZ_BARS_MAX);
     g_settings.barWidth = ReadSizeSetting(L"appearance.barWidth", 0.1f, 400.f, 6.f);
     g_settings.barGap = ReadSizeSetting(L"appearance.barGap", 0.f, 400.f, 4.f);
     g_settings.barMaxSize = ReadSizeSetting(L"appearance.barMaxSize", 2.f, 4000.f, 140.f);
@@ -19665,7 +25874,7 @@ void LoadSettings() {
         g_settings.barRadiusBL = v[3];
     }
 
-    PCWSTR colorMode = Wh_GetStringSetting(L"appearance.colorMode");
+    PCWSTR colorMode = VizSettingString(L"appearance.colorMode");
     g_settings.colorMode = (wcscmp(colorMode, L"gradient") == 0)          ? VizColorMode::Gradient
                            : (wcscmp(colorMode, L"reactive_gradient") == 0) ? VizColorMode::ReactiveGradient
                            : (wcscmp(colorMode, L"accent") == 0)            ? VizColorMode::Accent
@@ -19675,7 +25884,7 @@ void LoadSettings() {
                            : (wcscmp(colorMode, L"rainbow") == 0)           ? VizColorMode::RainbowCycle
                            : (wcscmp(colorMode, L"tourne") == 0)            ? VizColorMode::Tourne
                                                                              : VizColorMode::Solid;
-    Wh_FreeStringSetting(colorMode);
+    VizSettingFree(colorMode);
 
     ReadColorSetting(L"appearance.color", L"Appearance", L"Color", 255, 255, 255, 255,
                      &g_settings.colorA, &g_settings.colorR, &g_settings.colorG, &g_settings.colorB);
@@ -19686,40 +25895,41 @@ void LoadSettings() {
                      255, 0, 180, 255,
                      &g_settings.grad2A, &g_settings.grad2R, &g_settings.grad2G, &g_settings.grad2B);
 
-    g_settings.sensitivity = std::clamp(Wh_GetIntSetting(L"appearance.sensitivity"), 0, 300);
+    g_settings.sensitivity = ReadSizeSetting(L"appearance.sensitivity", 0.f, 300.f, 150.f);
 
-    PCWSTR sensCurve = Wh_GetStringSetting(L"appearance.sensitivityCurve");
+    PCWSTR sensCurve = VizSettingString(L"appearance.sensitivityCurve");
     g_settings.sensitivityCurve = (wcscmp(sensCurve, L"exponential") == 0) ? VizSensitivityCurve::Exponential
                                  : (wcscmp(sensCurve, L"power") == 0)      ? VizSensitivityCurve::Power
                                                                            : VizSensitivityCurve::Knee;
-    Wh_FreeStringSetting(sensCurve);
+    VizSettingFree(sensCurve);
 
     g_settings.inputGainDb =
-        (float)std::clamp(Wh_GetIntSetting(L"appearance.inputGain"), -24, 24);
-    g_settings.autoGain = Wh_GetIntSetting(L"appearance.autoGain") != 0;
+        ReadSizeSetting(L"appearance.inputGain", -24.f, 24.f, 0.f);
+    g_settings.autoGain = VizSettingInt(L"appearance.autoGain") != 0;
     g_settings.autoGainMaxDb =
-        (float)std::clamp(Wh_GetIntSetting(L"appearance.autoGainMaxBoost"), 0, 24);
+        ReadSizeSetting(L"appearance.autoGainMaxBoost", 0.f, 24.f, 12.f);
 
-    g_settings.smoothing = std::clamp(Wh_GetIntSetting(L"appearance.smoothing"), 0, 100);
+    g_settings.smoothing = ReadSizeSetting(L"appearance.smoothing", 0.f, 100.f, 0.f);
 
-    PCWSTR eq = Wh_GetStringSetting(L"appearance.eqPreset");
+    PCWSTR eq = VizSettingString(L"appearance.eqPreset");
     g_settings.eq = (wcscmp(eq, L"bass") == 0)       ? VizEQ::Bass
                    : (wcscmp(eq, L"rock") == 0)       ? VizEQ::Rock
                    : (wcscmp(eq, L"pop") == 0)        ? VizEQ::Pop
                    : (wcscmp(eq, L"jazz") == 0)       ? VizEQ::Jazz
                    : (wcscmp(eq, L"electronic") == 0) ? VizEQ::Electronic
                                                        : VizEQ::Default;
-    Wh_FreeStringSetting(eq);
+    VizSettingFree(eq);
 
     g_settings.horizontalPosition = ReadNumberSetting(L"position.horizontalPosition", L"Position",
                                                       L"Horizontal Position", 50.0f, 0.0f, 100.0f);
     g_settings.verticalPosition = ReadNumberSetting(L"position.verticalPosition", L"Position",
                                                     L"Vertical Position", 88.0f, 0.0f, 100.0f);
-    g_settings.monitor = std::max(1, Wh_GetIntSetting(L"position.monitor"));
+    g_settings.monitor = std::max(1, VizSettingInt(L"position.monitor"));
 
-    g_settings.keyMoveEnabled = Wh_GetIntSetting(L"interaction.keyMoveEnabled") != 0;
+    g_settings.keyMoveEnabled = VizSettingInt(L"interaction.keyMoveEnabled") != 0;
+    VizSyncKeyboardHook();
 
-    PCWSTR keyMoveModifier = Wh_GetStringSetting(L"interaction.keyMoveModifier");
+    PCWSTR keyMoveModifier = VizSettingString(L"interaction.keyMoveModifier");
     g_settings.keyMoveModifier =
         (wcscmp(keyMoveModifier, L"ctrl_shift") == 0) ? (VIZ_MOD_CTRL | VIZ_MOD_SHIFT)
         : (wcscmp(keyMoveModifier, L"alt_shift") == 0) ? (VIZ_MOD_ALT | VIZ_MOD_SHIFT)
@@ -19730,38 +25940,38 @@ void LoadSettings() {
         : (wcscmp(keyMoveModifier, L"shift") == 0)     ? (unsigned)VIZ_MOD_SHIFT
         : (wcscmp(keyMoveModifier, L"win") == 0)       ? (unsigned)VIZ_MOD_WIN
                                                        : (VIZ_MOD_CTRL | VIZ_MOD_ALT);
-    Wh_FreeStringSetting(keyMoveModifier);
+    VizSettingFree(keyMoveModifier);
 
-    PCWSTR keyMoveKeys = Wh_GetStringSetting(L"interaction.keyMoveKeys");
+    PCWSTR keyMoveKeys = VizSettingString(L"interaction.keyMoveKeys");
     g_settings.keyMoveKeys = (wcscmp(keyMoveKeys, L"arrows") == 0) ? VizKeyMoveKeys::Arrows
                             : (wcscmp(keyMoveKeys, L"wasd") == 0)  ? VizKeyMoveKeys::Wasd
                                                                    : VizKeyMoveKeys::Both;
-    Wh_FreeStringSetting(keyMoveKeys);
+    VizSettingFree(keyMoveKeys);
 
     g_settings.keyMoveStep = ReadSizeSetting(L"interaction.keyMoveStep", 0.01f, 500.f, 1.f);
     g_settings.keyMoveFastStep = ReadSizeSetting(L"interaction.keyMoveFastStep", 0.01f, 500.f, 10.f);
 
-    PCWSTR keyMoveFastKey = Wh_GetStringSetting(L"interaction.keyMoveFastKey");
+    PCWSTR keyMoveFastKey = VizSettingString(L"interaction.keyMoveFastKey");
     g_settings.keyMoveFastKey = (wcscmp(keyMoveFastKey, L"ctrl") == 0)  ? (unsigned)VIZ_MOD_CTRL
                                : (wcscmp(keyMoveFastKey, L"alt") == 0)  ? (unsigned)VIZ_MOD_ALT
                                : (wcscmp(keyMoveFastKey, L"win") == 0)  ? (unsigned)VIZ_MOD_WIN
                                : (wcscmp(keyMoveFastKey, L"none") == 0) ? (unsigned)VIZ_MOD_NONE
                                                                         : (unsigned)VIZ_MOD_SHIFT;
-    Wh_FreeStringSetting(keyMoveFastKey);
+    VizSettingFree(keyMoveFastKey);
     {
-        PCWSTR v = Wh_GetStringSetting(L"interaction.keyMoveFineKey");
+        PCWSTR v = VizSettingString(L"interaction.keyMoveFineKey");
         g_settings.keyMoveFineKey = (wcscmp(v, L"shift") == 0) ? (unsigned)VIZ_MOD_SHIFT
                                   : (wcscmp(v, L"ctrl") == 0)  ? (unsigned)VIZ_MOD_CTRL
                                   : (wcscmp(v, L"alt") == 0)   ? (unsigned)VIZ_MOD_ALT
                                   : (wcscmp(v, L"win") == 0)   ? (unsigned)VIZ_MOD_WIN
                                                                : (unsigned)VIZ_MOD_NONE;
-        Wh_FreeStringSetting(v);
-        v = Wh_GetStringSetting(L"interaction.keyMoveFineStep");
+        VizSettingFree(v);
+        v = VizSettingString(L"interaction.keyMoveFineStep");
         float f = v ? (float)_wtof(v) : 0.f;
         g_settings.keyMoveFineStep = (f > 0.f) ? std::clamp(f, 1.0f / 64.0f, 1.0f) : 0.25f;
-        Wh_FreeStringSetting(v);
+        VizSettingFree(v);
         g_settings.keyMoveFine = false;  // a quick setting only
-        g_settings.pixelSnap = Wh_GetIntSetting(L"position.pixelSnap") != 0;
+        g_settings.pixelSnap = VizSettingInt(L"position.pixelSnap") != 0;
     }
 
     // A single-key modifier turns everyday shortcuts into visualizer moves, and
@@ -19789,7 +25999,7 @@ void LoadSettings() {
                 if (wasd) detail += L", plus ";
                 detail += modName + L"+arrow keys (word-by-word cursor movement)";
             }
-            detail += L", and 1-4 and Home alongside it.\r\n      "
+            detail += L", and 1-5 and Home alongside it.\r\n      "
                       L"Everything still works -- this is only a heads-up. Switch to a two-key "
                       L"combo such as Ctrl + Alt, or set Direction Keys to Arrow Keys only, to "
                       L"get those shortcuts back.";
@@ -19810,27 +26020,27 @@ void LoadSettings() {
         g_settings.keyMoveFastKey = VIZ_MOD_NONE;
     }
 
-    g_settings.dragEnabled = Wh_GetIntSetting(L"interaction.dragEnabled") != 0;
+    g_settings.dragEnabled = VizSettingInt(L"interaction.dragEnabled") != 0;
     {
-        PCWSTR host = Wh_GetStringSetting(L"position.host");
+        PCWSTR host = VizSettingString(L"position.host");
         g_settings.hostTaskbar = wcscmp(host, L"taskbar") == 0;
         g_settings.hostPanel = wcscmp(host, L"panel") == 0;
-        Wh_FreeStringSetting(host);
-        PCWSTR backdrop = Wh_GetStringSetting(L"position.panelBackdrop");
+        VizSettingFree(host);
+        PCWSTR backdrop = VizSettingString(L"position.panelBackdrop");
         g_settings.panelBackdrop = wcscmp(backdrop, L"none") == 0 ? 0 : wcscmp(backdrop, L"mica") == 0 ? 2 : 1;
-        Wh_FreeStringSetting(backdrop);
-        PCWSTR hotkey = Wh_GetStringSetting(L"position.panelHotkey");
+        VizSettingFree(backdrop);
+        PCWSTR hotkey = VizSettingString(L"position.panelHotkey");
         g_settings.panelHotkey = hotkey ? hotkey : L"";
-        Wh_FreeStringSetting(hotkey);
+        VizSettingFree(hotkey);
     }
-    g_settings.splitEnabled = Wh_GetIntSetting(L"position.split") != 0;
-    g_settings.splitAt = std::clamp((float)Wh_GetIntSetting(L"position.splitAt"), 1.f, 99.f);
-    g_settings.splitGap = std::clamp((float)Wh_GetIntSetting(L"position.splitGap"), -8000.f, 8000.f);
-    g_settings.splitShift = std::clamp((float)Wh_GetIntSetting(L"position.splitShift"), -8000.f, 8000.f);
+    g_settings.splitEnabled = VizSettingInt(L"position.split") != 0;
+    g_settings.splitAt = ReadSizeSetting(L"position.splitAt", 1.f, 99.f, 50.f);
+    g_settings.splitGap = ReadSizeSetting(L"position.splitGap", -8000.f, 8000.f, 200.f);
+    g_settings.splitShift = ReadSizeSetting(L"position.splitShift", -8000.f, 8000.f, 0.f);
     {
-        PCWSTR app = Wh_GetStringSetting(L"position.dockApp");
+        PCWSTR app = VizSettingString(L"position.dockApp");
         std::wstring a = app ? app : L"";
-        Wh_FreeStringSetting(app);
+        VizSettingFree(app);
         while (!a.empty() && iswspace(a.back())) a.pop_back();
         size_t b = 0;
         while (b < a.size() && iswspace(a[b])) b++;
@@ -19838,39 +26048,39 @@ void LoadSettings() {
         for (auto& ch : a) ch = (WCHAR)towlower(ch);
         if (a.size() > 4 && a.compare(a.size() - 4, 4, L".exe") == 0) a.resize(a.size() - 4);
         g_settings.dockApp = a;
-        PCWSTR side = Wh_GetStringSetting(L"position.dockSide");
+        PCWSTR side = VizSettingString(L"position.dockSide");
         g_settings.dockSide = !wcscmp(side, L"above") ? 1 : !wcscmp(side, L"left") ? 2 : !wcscmp(side, L"right") ? 3 : 0;
-        Wh_FreeStringSetting(side);
-        PCWSTR align = Wh_GetStringSetting(L"position.dockAlign");
+        VizSettingFree(side);
+        PCWSTR align = VizSettingString(L"position.dockAlign");
         g_settings.dockAlign = !wcscmp(align, L"start") ? 0 : !wcscmp(align, L"end") ? 2 : 1;
-        Wh_FreeStringSetting(align);
-        g_settings.dockGap = std::clamp((float)Wh_GetIntSetting(L"position.dockGap"), -400.f, 400.f);
-        g_settings.dockShift = std::clamp((float)Wh_GetIntSetting(L"position.dockShift"), -4000.f, 4000.f);
+        VizSettingFree(align);
+        g_settings.dockGap = ReadSizeSetting(L"position.dockGap", -400.f, 400.f, 0.f);
+        g_settings.dockShift = ReadSizeSetting(L"position.dockShift", -4000.f, 4000.f, 0.f);
     }
-    g_settings.dragSnap = Wh_GetIntSetting(L"interaction.dragSnap") != 0;
-    g_settings.dragSnapDistance = std::clamp((float)Wh_GetIntSetting(L"interaction.dragSnapDistance"), 1.f, 64.f);
+    g_settings.dragSnap = VizSettingInt(L"interaction.dragSnap") != 0;
+    g_settings.dragSnapDistance = ReadSizeSetting(L"interaction.dragSnapDistance", 1.f, 64.f, 8.f);
 
-    PCWSTR dragModifier = Wh_GetStringSetting(L"interaction.dragModifier");
+    PCWSTR dragModifier = VizSettingString(L"interaction.dragModifier");
     g_settings.dragModifier = (wcscmp(dragModifier, L"none") == 0)  ? VizDragModifier::None
                              : (wcscmp(dragModifier, L"alt") == 0)   ? VizDragModifier::Alt
                              : (wcscmp(dragModifier, L"shift") == 0) ? VizDragModifier::Shift
                              : (wcscmp(dragModifier, L"win") == 0)   ? VizDragModifier::Win
                                                                      : VizDragModifier::Ctrl;
-    Wh_FreeStringSetting(dragModifier);
+    VizSettingFree(dragModifier);
 
-    PCWSTR dragButton = Wh_GetStringSetting(L"interaction.dragButton");
+    PCWSTR dragButton = VizSettingString(L"interaction.dragButton");
     g_settings.dragButton = (wcscmp(dragButton, L"left") == 0)  ? VizDragButton::Left
                            : (wcscmp(dragButton, L"right") == 0) ? VizDragButton::Right
                                                                   : VizDragButton::Middle;
-    Wh_FreeStringSetting(dragButton);
+    VizSettingFree(dragButton);
 
-    PCWSTR verticalAnchor = Wh_GetStringSetting(L"appearance.verticalAnchor");
+    PCWSTR verticalAnchor = VizSettingString(L"appearance.verticalAnchor");
     g_settings.verticalAnchor = (wcscmp(verticalAnchor, L"top")    == 0) ? VizAnchor::Top
                               : (wcscmp(verticalAnchor, L"middle") == 0) ? VizAnchor::Middle
                                                                          : VizAnchor::Bottom;
-    Wh_FreeStringSetting(verticalAnchor);
+    VizSettingFree(verticalAnchor);
 
-    g_settings.backgroundEnabled = Wh_GetIntSetting(L"background.enabled") != 0;
+    g_settings.backgroundEnabled = VizSettingInt(L"background.enabled") != 0;
 
     ReadColorSetting(L"background.color", L"Background", L"Color", 0x60, 0, 0, 0,
                      &g_settings.bgA, &g_settings.bgR, &g_settings.bgG, &g_settings.bgB);
@@ -19898,7 +26108,7 @@ void LoadSettings() {
         g_settings.bgRadiusBR = v[2];
         g_settings.bgRadiusBL = v[3];
     }
-    g_settings.bgBlur = std::max(0, Wh_GetIntSetting(L"background.blur"));
+    g_settings.bgBlur = ReadSizeSetting(L"background.blur", 0.f, 250.f, 0.f);
     g_settings.bgBorderSize = ReadSizeSetting(L"background.borderSize", 0.f, 100.f, 0.f);
 
     ReadColorSetting(L"background.borderColor", L"Background", L"Border Color", 0x40, 255, 255, 255,
@@ -19906,34 +26116,34 @@ void LoadSettings() {
                      &g_settings.borderB);
 
     // 0 = match the display (the engine thread reads the refresh rate).
-    g_settings.targetFps = std::max(0, Wh_GetIntSetting(L"performance.targetFps"));
-    g_settings.pauseOnFullscreen = Wh_GetIntSetting(L"performance.pauseOnFullscreen") != 0;
-    g_settings.pauseWhenSilentSeconds = std::max(0, Wh_GetIntSetting(L"performance.pauseWhenSilentSeconds"));
-    g_settings.deepIdle = Wh_GetIntSetting(L"performance.deepIdle") != 0;
-    g_perfStatsEnabled.store(Wh_GetIntSetting(L"performance.perfStats") != 0, std::memory_order_relaxed);
+    g_settings.targetFps = std::max(0, VizSettingInt(L"performance.targetFps"));
+    g_settings.pauseOnFullscreen = VizSettingInt(L"performance.pauseOnFullscreen") != 0;
+    g_settings.pauseWhenSilentSeconds = ReadSizeSetting(L"performance.pauseWhenSilentSeconds", 0.f, 86400.f, 10.f);
+    g_settings.deepIdle = VizSettingInt(L"performance.deepIdle") != 0;
+    g_perfStatsEnabled.store(VizSettingInt(L"performance.perfStats") != 0, std::memory_order_relaxed);
 
-    g_settings.peakHoldEnabled = Wh_GetIntSetting(L"appearance.peakHoldEnabled") != 0;
+    g_settings.peakHoldEnabled = VizSettingInt(L"appearance.peakHoldEnabled") != 0;
 
     ReadColorSetting(L"appearance.peakHoldColor", L"Appearance", L"Peak Hold Cap Color",
                      255, 0, 180, 255,
                      &g_settings.peakHoldA, &g_settings.peakHoldR, &g_settings.peakHoldG,
                      &g_settings.peakHoldB);
-    g_settings.beatFlashEnabled = Wh_GetIntSetting(L"appearance.beatFlashEnabled") != 0;
+    g_settings.beatFlashEnabled = VizSettingInt(L"appearance.beatFlashEnabled") != 0;
 
     ReadColorSetting(L"appearance.beatFlashColor", L"Appearance", L"Beat Flash Color",
                      255, 255, 255, 255,
                      &g_settings.beatFlashA, &g_settings.beatFlashR, &g_settings.beatFlashG,
                      &g_settings.beatFlashB);
 
-    g_settings.beatFlashIntensity = std::clamp(Wh_GetIntSetting(L"appearance.beatFlashIntensity"), 0, 300);
-    g_settings.rainbowSpeed = std::clamp(Wh_GetIntSetting(L"appearance.rainbowSpeed"), 1, 300);
+    g_settings.beatFlashIntensity = ReadSizeSetting(L"appearance.beatFlashIntensity", 0.f, 300.f, 80.f);
+    g_settings.rainbowSpeed = ReadSizeSetting(L"appearance.rainbowSpeed", 1.f, 300.f, 40.f);
 
-    g_settings.nowPlayingEnabled = Wh_GetIntSetting(L"appearance.nowPlayingEnabled") != 0;
+    g_settings.nowPlayingEnabled = VizSettingInt(L"appearance.nowPlayingEnabled") != 0;
     ReadColorSetting(L"appearance.nowPlayingColor", L"Appearance", L"Now Playing Text Color",
                      255, 255, 255, 255,
                      &g_settings.nowPlayingA, &g_settings.nowPlayingR, &g_settings.nowPlayingG,
                      &g_settings.nowPlayingB);
-    PCWSTR nowPlayingFont = Wh_GetStringSetting(L"appearance.nowPlayingFont");
+    PCWSTR nowPlayingFont = VizSettingString(L"appearance.nowPlayingFont");
     g_settings.nowPlayingFont = (nowPlayingFont && *nowPlayingFont) ? nowPlayingFont : L"Segoe UI";
     // Only worth checking when the text is actually going to be drawn -- an
     // unused font name being wrong isn't something to interrupt anyone over.
@@ -19949,10 +26159,10 @@ void LoadSettings() {
         g_fontCheckPending = false;
         if (g_messageWnd) KillTimer(g_messageWnd, TIMER_ID_MSG_FONT_RECHECK);
     }
-    Wh_FreeStringSetting(nowPlayingFont);
+    VizSettingFree(nowPlayingFont);
     g_settings.nowPlayingFontSize = ReadSizeSetting(L"appearance.nowPlayingFontSize", 6.f, 400.f, 16.f);
     g_settings.nowPlayingDisplaySeconds =
-        std::max(0, Wh_GetIntSetting(L"appearance.nowPlayingDisplaySeconds"));
+        ReadSizeSetting(L"appearance.nowPlayingDisplaySeconds", 0.f, 86400.f, 6.f);
 
     // Clamped rather than free: each pixel of offset widens the render surface
     // by the same amount, so a stray extra zero shouldn't silently cost memory
@@ -19984,50 +26194,50 @@ void LoadSettings() {
                      &g_settings.pfBgBorderA, &g_settings.pfBgBorderR,
                      &g_settings.pfBgBorderG, &g_settings.pfBgBorderB);
 
-    g_settings.autoHideEnabled = Wh_GetIntSetting(L"performance.autoHideEnabled") != 0;
-    g_settings.autoHideDelaySeconds = std::max(0, Wh_GetIntSetting(L"performance.autoHideDelaySeconds"));
-    g_settings.pauseWhenObscured = Wh_GetIntSetting(L"performance.pauseWhenObscured") != 0;
+    g_settings.autoHideEnabled = VizSettingInt(L"performance.autoHideEnabled") != 0;
+    g_settings.autoHideDelaySeconds = ReadSizeSetting(L"performance.autoHideDelaySeconds", 0.f, 86400.f, 15.f);
+    g_settings.pauseWhenObscured = VizSettingInt(L"performance.pauseWhenObscured") != 0;
     g_settings.obscuredThresholdPercent =
         ReadThresholdPercentSetting(L"performance.obscuredThresholdPercent", L"Performance",
                                     L"Pause When Covered - Threshold", 100);
 
-    PCWSTR fftSizeStr = Wh_GetStringSetting(L"appearance.fftSize");
+    PCWSTR fftSizeStr = VizSettingString(L"appearance.fftSize");
     int fftSize = _wtoi(fftSizeStr);
     g_settings.fftSize = (fftSize == 1024 || fftSize == 2048 || fftSize == 4096 || fftSize == 8192)
                               ? fftSize : 2048;
-    Wh_FreeStringSetting(fftSizeStr);
+    VizSettingFree(fftSizeStr);
 
-    PCWSTR freqScale = Wh_GetStringSetting(L"appearance.freqScale");
+    PCWSTR freqScale = VizSettingString(L"appearance.freqScale");
     g_settings.freqScale = (wcscmp(freqScale, L"linear") == 0) ? VizFreqScale::Linear
                           : (wcscmp(freqScale, L"mel") == 0)   ? VizFreqScale::Mel
                           : (wcscmp(freqScale, L"bark") == 0)  ? VizFreqScale::Bark
                           : (wcscmp(freqScale, L"erb") == 0)   ? VizFreqScale::Erb
                                                                 : VizFreqScale::Log;
-    Wh_FreeStringSetting(freqScale);
+    VizSettingFree(freqScale);
 
-    g_settings.peakFreqEnabled = Wh_GetIntSetting(L"appearance.peakFreqEnabled") != 0;
+    g_settings.peakFreqEnabled = VizSettingInt(L"appearance.peakFreqEnabled") != 0;
 
-    PCWSTR pfH = Wh_GetStringSetting(L"appearance.peakFreqAlignH");
+    PCWSTR pfH = VizSettingString(L"appearance.peakFreqAlignH");
     g_settings.peakFreqAlignH = (wcscmp(pfH, L"left") == 0)   ? VizTextAlignH::Left
                               : (wcscmp(pfH, L"center") == 0) ? VizTextAlignH::Center
                                                               : VizTextAlignH::Right;
-    Wh_FreeStringSetting(pfH);
+    VizSettingFree(pfH);
 
-    PCWSTR pfV = Wh_GetStringSetting(L"appearance.peakFreqAlignV");
+    PCWSTR pfV = VizSettingString(L"appearance.peakFreqAlignV");
     g_settings.peakFreqAlignV = (wcscmp(pfV, L"above") == 0)  ? VizTextAlignV::Above
                               : (wcscmp(pfV, L"middle") == 0) ? VizTextAlignV::Middle
                               : (wcscmp(pfV, L"bottom") == 0) ? VizTextAlignV::Bottom
                               : (wcscmp(pfV, L"below") == 0)  ? VizTextAlignV::Below
                                                               : VizTextAlignV::Top;
-    Wh_FreeStringSetting(pfV);
+    VizSettingFree(pfV);
     g_settings.oscilloscopeMultibandEnabled =
-        Wh_GetIntSetting(L"appearance.oscilloscopeMultibandEnabled") != 0;
+        VizSettingInt(L"appearance.oscilloscopeMultibandEnabled") != 0;
     g_settings.oscilloscopeWindowMs =
-        std::clamp(Wh_GetIntSetting(L"appearance.oscilloscopeWindowMs"), 5, 250);
+        ReadSizeSetting(L"appearance.oscilloscopeWindowMs", 5.f, 250.f, 24.f);
     g_settings.oscilloscopeDamping =
-        std::clamp(Wh_GetIntSetting(L"appearance.oscilloscopeDamping"), 0, 100);
+        ReadSizeSetting(L"appearance.oscilloscopeDamping", 0.f, 100.f, 0.f);
 
-    g_settings.mediaControlsEnabled = Wh_GetIntSetting(L"media_controls.enabled") != 0;
+    g_settings.mediaControlsEnabled = VizSettingInt(L"media_controls.enabled") != 0;
 
     ReadColorSetting(L"media_controls.iconColor", L"Media Controls", L"Icon Color",
                      255, 255, 255, 255,
@@ -20045,25 +26255,54 @@ void LoadSettings() {
 
     g_settings.mediaIconSize = ReadSizeSetting(L"media_controls.iconSize", 8.f, 256.f, 32.f);
     {
-        PCWSTR layout = Wh_GetStringSetting(L"media_controls.layout");
+        PCWSTR layout = VizSettingString(L"media_controls.layout");
         g_settings.mediaCard = layout && wcscmp(layout, L"card") == 0;
-        Wh_FreeStringSetting(layout);
+        VizSettingFree(layout);
     }
     ReadColorSetting(L"media_controls.cardBackground", L"Media Controls", L"Card Background", 158, 10, 10, 13,
                      &g_settings.cardBgA, &g_settings.cardBgR, &g_settings.cardBgG, &g_settings.cardBgB);
     ReadColorSetting(L"media_controls.cardBorderColor", L"Media Controls", L"Card Border Color", 0, 255, 255, 255,
                      &g_settings.cardBorderA, &g_settings.cardBorderR, &g_settings.cardBorderG, &g_settings.cardBorderB);
     g_settings.cardBorderSize = ReadSizeSetting(L"media_controls.cardBorderSize", 0.f, 20.f, 0.f);
-    g_settings.cardRadius = ReadSizeSetting(L"media_controls.cardCornerRadius", 0.f, 64.f, 12.f);
+    ReadQuadSetting(L"media_controls.cardCornerRadius", L"Media Controls", L"Card Corner Radius",
+                    L"top-left, top-right, bottom-right, bottom-left", 12.0f, false, g_settings.cardRadii);
+    for (float& r : g_settings.cardRadii) r = std::clamp(r, 0.f, 64.f);
+    g_settings.cardRadius = *std::max_element(g_settings.cardRadii, g_settings.cardRadii + 4);
+    ReadQuadSetting(L"media_controls.cardArtCornerRadius", L"Media Controls", L"Card Art Corner Radius",
+                    L"top-left, top-right, bottom-right, bottom-left", -1.0f, true, g_settings.cardArtRadii);
+    for (float& r : g_settings.cardArtRadii) r = std::min(r, 64.f);
     g_settings.cardArtSize = ReadSizeSetting(L"media_controls.cardArtSize", 0.f, 600.f, 0.f);
+    g_settings.cardArtHeight = ReadSizeSetting(L"media_controls.cardArtHeight", 0.f, 600.f, 0.f);
     {
-        PCWSTR acc = Wh_GetStringSetting(L"media_controls.cardAccent");
+        PCWSTR v = VizSettingString(L"media_controls.cardArtShows");
+        g_settings.cardArtShows = !v ? 0 : !wcscmp(v, L"buttons") ? 1 : !wcscmp(v, L"clock") ? 2 : !wcscmp(v, L"player") ? 3
+                                  : !wcscmp(v, L"visualizer") ? 4 : !wcscmp(v, L"bigtype") ? 5 : !wcscmp(v, L"colours") ? 6 : 0;
+        VizSettingFree(v);
+    }
+    {
+        PCWSTR acc = VizSettingString(L"media_controls.cardAccent");
         g_settings.cardAccentSource = !acc ? 0 : wcscmp(acc, L"custom") == 0 ? 1 : wcscmp(acc, L"album") == 0 ? 2
                                     : wcscmp(acc, L"windows") == 0 ? 3 : 0;
-        Wh_FreeStringSetting(acc);
+        VizSettingFree(acc);
     }
     ReadColorSetting(L"media_controls.cardAccentColor", L"Media Controls", L"Card Accent Color", 255, 255, 255, 255,
                      &g_settings.cardAccentA, &g_settings.cardAccentR, &g_settings.cardAccentG, &g_settings.cardAccentB);
+    {
+        PCWSTR t = VizSettingString(L"media_controls.cardTitle");
+        g_settings.cardTitle = !t ? 2 : wcscmp(t, L"off") == 0 ? 0 : wcscmp(t, L"title") == 0 ? 1 : 2;
+        VizSettingFree(t);
+        PCWSTR sc = VizSettingString(L"media_controls.cardTitleScroll");
+        g_settings.cardTitleScroll = !sc ? 1 : wcscmp(sc, L"never") == 0 ? 0 : wcscmp(sc, L"always") == 0 ? 2 : 1;
+        VizSettingFree(sc);
+        g_settings.cardClickOpens = VizSettingInt(L"media_controls.cardClickOpens") != 0;
+        PCWSTR bd = VizSettingString(L"media_controls.backdrop");
+        g_settings.mediaBackdrop = !bd                         ? 0
+                                   : wcscmp(bd, L"clear") == 0   ? 1
+                                   : wcscmp(bd, L"blur") == 0    ? 2
+                                   : wcscmp(bd, L"acrylic") == 0 ? 3
+                                                                 : 0;
+        VizSettingFree(bd);
+    }
     g_settings.mediaIconSpacing = ReadSizeSetting(L"media_controls.iconSpacing", 0.f, 200.f, 14.f);
 
     ReadColorSetting(L"media_controls.plateColor", L"Media Controls", L"Backing Plate Color",
@@ -20077,11 +26316,11 @@ void LoadSettings() {
                      L"Backing Plate Border Color", 0x40, 255, 255, 255,
                      &g_settings.mediaPlateBorderA, &g_settings.mediaPlateBorderR,
                      &g_settings.mediaPlateBorderG, &g_settings.mediaPlateBorderB);
-    g_settings.mediaHideWhenCovered = Wh_GetIntSetting(L"media_controls.hideWhenCovered") != 0;
+    g_settings.mediaHideWhenCovered = VizSettingInt(L"media_controls.hideWhenCovered") != 0;
     {
-        PCWSTR z = Wh_GetStringSetting(L"media_controls.stacking");
+        PCWSTR z = VizSettingString(L"media_controls.stacking");
         g_settings.mediaOnTop = wcscmp(z, L"normal") != 0;
-        Wh_FreeStringSetting(z);
+        VizSettingFree(z);
     }
     g_settings.mediaCoveredThresholdPercent =
         ReadThresholdPercentSetting(L"media_controls.coveredThresholdPercent", L"Media Controls",
@@ -20094,35 +26333,35 @@ void LoadSettings() {
         ReadNumberSetting(L"media_controls.verticalPosition", L"Media Controls",
                           L"Vertical Position", 95.0f, 0.0f, 100.0f);
 
-    PCWSTR renderDevice = Wh_GetStringSetting(L"hardware.renderDevice");
+    PCWSTR renderDevice = VizSettingString(L"hardware.renderDevice");
     g_settings.renderDevice = (wcscmp(renderDevice, L"integrated") == 0) ? VizRenderDevice::Integrated
                             : (wcscmp(renderDevice, L"discrete") == 0)   ? VizRenderDevice::Discrete
                             : (wcscmp(renderDevice, L"cpu") == 0)        ? VizRenderDevice::Cpu
                                                                          : VizRenderDevice::Auto;
-    Wh_FreeStringSetting(renderDevice);
+    VizSettingFree(renderDevice);
 
     // ---- 2.0: Workload, Renderer, Opaque Panel --------------------------------------
     {
-        PCWSTR v = Wh_GetStringSetting(L"hardware.workload");
+        PCWSTR v = VizSettingString(L"hardware.workload");
         g_settings.workload = (wcscmp(v, L"gpu") == 0)   ? VizWorkload::Gpu
                             : (wcscmp(v, L"cpu") == 0)   ? VizWorkload::Cpu
                             : (wcscmp(v, L"npu") == 0)   ? VizWorkload::Npu
                                                          : VizWorkload::Hybrid;
-        Wh_FreeStringSetting(v);
-        v = Wh_GetStringSetting(L"hardware.renderer");
+        VizSettingFree(v);
+        v = VizSettingString(L"hardware.renderer");
         g_settings.renderer = (wcscmp(v, L"direct2d") == 0) ? VizRenderer::Direct2D : VizRenderer::D3D11;
-        Wh_FreeStringSetting(v);
-        v = Wh_GetStringSetting(L"hardware.opaquePanel");
+        VizSettingFree(v);
+        v = VizSettingString(L"hardware.opaquePanel");
         g_settings.opaquePanel = (wcscmp(v, L"off") == 0) ? VizOpaquePanel::Off : VizOpaquePanel::Auto;
-        Wh_FreeStringSetting(v);
+        VizSettingFree(v);
     }
 
     // ---- 2.0: Analysis ------------------------------------------------------------------
     {
         auto str = [](PCWSTR key, auto&& fn) {
-            PCWSTR v = Wh_GetStringSetting(key);
+            PCWSTR v = VizSettingString(key);
             fn(v ? v : L"");
-            Wh_FreeStringSetting(v);
+            VizSettingFree(v);
         };
         str(L"analysis.engine", [](PCWSTR v) {
             g_settings.engine = (wcscmp(v, L"classic") == 0) ? VizEngineKind::Classic : VizEngineKind::Precision;
@@ -20136,12 +26375,12 @@ void LoadSettings() {
             int f = _wtoi(v);
             g_settings.octaveFraction = (f == 1 || f == 3 || f == 6 || f == 12 || f == 24) ? f : 6;
         });
-        g_settings.minFreq = std::clamp(Wh_GetIntSetting(L"analysis.minFrequency"), 10, 1000);
-        g_settings.maxFreq = std::clamp(Wh_GetIntSetting(L"analysis.maxFrequency"), 1000, 21000);
-        if (g_settings.maxFreq <= g_settings.minFreq * 2) g_settings.maxFreq = std::max(1000, g_settings.minFreq * 4);
+        g_settings.minFreq = ReadSizeSetting(L"analysis.minFrequency", 10.f, 1000.f, 20.f);
+        g_settings.maxFreq = ReadSizeSetting(L"analysis.maxFrequency", 1000.f, 21000.f, 20000.f);
+        if (g_settings.maxFreq <= g_settings.minFreq * 2) g_settings.maxFreq = std::max(1000.f, g_settings.minFreq * 4);
         {
-            int a4 = Wh_GetIntSetting(L"analysis.tuningA4");
-            g_settings.tuningA4 = (float)((a4 >= 400 && a4 <= 480) ? a4 : 440);
+            float a4 = ReadSizeSetting(L"analysis.tuningA4", 0.f, 1000.f, 440.f);
+            g_settings.tuningA4 = (a4 >= 400.f && a4 <= 480.f) ? a4 : 440.f;
         }
         str(L"analysis.weighting", [](PCWSTR v) {
             g_settings.weighting = (wcscmp(v, L"a") == 0) ? VizWeighting::A
@@ -20167,6 +26406,83 @@ void LoadSettings() {
         str(L"analysis.bassDetail", [](PCWSTR v) {
             g_settings.bassDetail = (*v) ? std::clamp(_wtoi(v), 0, 2) : 2;
         });
+        g_settings.bassLowHz = ReadSizeSetting(L"bass.lowHz", 10.f, 200.f, 20.f);
+        g_settings.bassHighHz = ReadSizeSetting(L"bass.highHz", 40.f, 500.f, 150.f);
+        if (g_settings.bassHighHz <= g_settings.bassLowHz * 1.5f) g_settings.bassHighHz = g_settings.bassLowHz * 1.5f;
+        g_settings.bassGainDb = ReadSizeSetting(L"bass.gainDb", -12.f, 12.f, 0.f);
+        g_settings.bassAttackPct = ReadSizeSetting(L"bass.attackPct", 25.f, 400.f, 100.f);
+        g_settings.bassReleasePct = ReadSizeSetting(L"bass.releasePct", 25.f, 400.f, 100.f);
+        g_settings.bassHitSens = ReadSizeSetting(L"bass.hitSensitivity", 0.f, 100.f, 50.f);
+        g_settings.bassHitWindowMs = ReadSizeSetting(L"bass.hitWindowMs", 20.f, 300.f, 60.f);
+        g_settings.lowZoneHz = ReadSizeSetting(L"bass.lowZoneHz", 100.f, 1000.f, 300.f);
+        {
+            float sf = ReadSizeSetting(L"bass.scopeFocusHz", 0.f, 500.f, 0.f);
+            g_settings.scopeFocusHz = (sf < 40.f) ? 0.f : sf;  // 1-39 reads as Off
+        }
+        // Depth
+        g_settings.depthEnabled = VizSettingInt(L"depth.enabled") != 0;
+        g_settings.depthAuto = VizSettingInt(L"depth.autoCut") != 0;
+        str(L"depth.cutter", [](PCWSTR v) { g_settings.depthCutter = v ? v : L""; });
+        str(L"depth.cutterVersion", [](PCWSTR v) { g_settings.depthCutterVersion = v ? v : L""; });
+        str(L"depth.cutterSha", [](PCWSTR v) { g_settings.depthCutterSha = v ? v : L""; });
+        str(L"depth.source", [](PCWSTR v) {
+            g_settings.depthSource = (wcscmp(v, L"file") == 0) ? VizDepthSource::File : (wcscmp(v, L"key") == 0) ? VizDepthSource::Key : VizDepthSource::Folder;
+        });
+        str(L"depth.fit", [](PCWSTR v) {
+            g_settings.depthFit = (wcscmp(v, L"fit") == 0) ? VizDepthFit::Fit : (wcscmp(v, L"stretch") == 0) ? VizDepthFit::Stretch : (wcscmp(v, L"center") == 0) ? VizDepthFit::Center : VizDepthFit::Fill;
+        });
+        str(L"depth.keyBackground", [](PCWSTR v) { g_settings.depthKeyLight = wcscmp(v, L"light") == 0; });
+        str(L"depth.folder", [](PCWSTR v) { g_settings.depthFolder = v ? v : L""; });
+        str(L"depth.file", [](PCWSTR v) { g_settings.depthFile = v ? v : L""; });
+        g_settings.depthScale = ReadSizeSetting(L"depth.scale", 20.f, 400.f, 100.f);
+        g_settings.depthOffsetX = ReadSizeSetting(L"depth.offsetX", -8000.f, 8000.f, 0.f);
+        g_settings.depthOffsetY = ReadSizeSetting(L"depth.offsetY", -8000.f, 8000.f, 0.f);
+        g_settings.depthKeyLow = ReadSizeSetting(L"depth.keyThreshold", 0.f, 100.f, 6.f);
+        g_settings.depthKeySoft = ReadSizeSetting(L"depth.keySoftness", 0.1f, 100.f, 12.f);
+        // Glass Bars
+        g_settings.glassEnabled = VizSettingInt(L"glass.enabled") != 0;
+        g_settings.glassBend = ReadSizeSetting(L"glass.bend", 0.f, 40.f, 8.f);
+        g_settings.glassEdge = ReadSizeSetting(L"glass.edge", 0.f, 100.f, 55.f);
+        g_settings.glassTint = ReadSizeSetting(L"glass.tint", 0.f, 100.f, 30.f);
+        g_settings.glassFrost = ReadSizeSetting(L"glass.frost", 0.f, 100.f, 0.f);
+        PCWSTR bendStyle = VizSettingString(L"glass.bendStyle");
+        g_settings.glassBendEdge = wcscmp(bendStyle, L"edge") == 0;
+        VizSettingFree(bendStyle);
+        g_settings.glassBendBand = ReadSizeSetting(L"glass.bendBand", 1.f, 40.f, 10.f);
+        // Bass Line lane
+        g_settings.laneEnabled = VizSettingInt(L"bassLine.enabled") != 0;
+        str(L"bassLine.style", [](PCWSTR v) {
+            g_settings.laneStyle = (wcscmp(v, L"fill") == 0) ? VizLaneStyle::Fill : (wcscmp(v, L"bar") == 0) ? VizLaneStyle::Bar : VizLaneStyle::Line;
+        });
+        str(L"bassLine.placement", [](PCWSTR v) {
+            g_settings.lanePlacement = (wcscmp(v, L"above") == 0) ? VizLanePlacement::Above : (wcscmp(v, L"overlay") == 0) ? VizLanePlacement::Overlay : (wcscmp(v, L"cover") == 0) ? VizLanePlacement::Cover : VizLanePlacement::Below;
+        });
+        str(L"bassLine.layer", [](PCWSTR v) {
+            g_settings.laneLayer = (wcscmp(v, L"behind") == 0) ? VizLaneLayer::Behind : VizLaneLayer::Front;
+        });
+        g_settings.laneHeight = ReadSizeSetting(L"bassLine.height", 4.f, 400.f, 28.f);
+        g_settings.laneWidth = ReadSizeSetting(L"bassLine.width", 0.f, 4000.f, 0.f);
+        g_settings.laneGap = ReadSizeSetting(L"bassLine.gap", 0.f, 400.f, 6.f);
+        g_settings.laneThickness = ReadSizeSetting(L"bassLine.thickness", 0.5f, 20.f, 1.5f);
+        g_settings.laneOffsetX = ReadSizeSetting(L"bassLine.offsetX", -4000.f, 4000.f, 0.f);
+        g_settings.laneOffsetY = ReadSizeSetting(L"bassLine.offsetY", -4000.f, 4000.f, 0.f);
+        g_settings.laneWindowS = ReadSizeSetting(L"bassLine.window", 0.5f, 12.f, 2.f);
+        g_settings.laneLowHz = ReadSizeSetting(L"bassLine.lowHz", 20.f, 200.f, 30.f);
+        g_settings.laneHighHz = ReadSizeSetting(L"bassLine.highHz", 60.f, 500.f, 300.f);
+        if (g_settings.laneHighHz < g_settings.laneLowHz * 1.5f) g_settings.laneHighHz = g_settings.laneLowHz * 1.5f;
+        g_settings.laneFloorDb = ReadSizeSetting(L"bassLine.floorDb", -100.f, -30.f, -85.f);
+        g_settings.laneDepthDb = ReadSizeSetting(L"bassLine.depthDb", 12.f, 70.f, 36.f);
+        g_settings.laneBoostDb = ReadSizeSetting(L"bassLine.boostDb", 0.f, 70.f, 45.f);
+        g_settings.laneSmoothMs = ReadSizeSetting(L"bassLine.smoothMs", 5.f, 800.f, 80.f);
+        g_settings.laneKickSens = ReadSizeSetting(L"bassLine.kickSens", 0.f, 100.f, 60.f);
+        g_settings.laneSnareSens = ReadSizeSetting(L"bassLine.snareSens", 0.f, 100.f, 50.f);
+        g_settings.laneCooldownMs = ReadSizeSetting(L"bassLine.cooldownMs", 20.f, 400.f, 90.f);
+        ReadColorSetting(L"bassLine.bodyColor", L"Bass Line", L"Body Color", 255, 255, 255, 255, &g_settings.laneBodyA,
+                         &g_settings.laneBodyR, &g_settings.laneBodyG, &g_settings.laneBodyB);
+        ReadColorSetting(L"bassLine.kickColor", L"Bass Line", L"Kick Color", 255, 255, 59, 59, &g_settings.laneKickA,
+                         &g_settings.laneKickR, &g_settings.laneKickG, &g_settings.laneKickB);
+        ReadColorSetting(L"bassLine.snareColor", L"Bass Line", L"Snare Color", 255, 255, 210, 59, &g_settings.laneSnareA,
+                         &g_settings.laneSnareR, &g_settings.laneSnareG, &g_settings.laneSnareB);
         str(L"analysis.channel", [](PCWSTR v) {
             g_settings.channel = (wcscmp(v, L"left") == 0)    ? VizChannel::Left
                                : (wcscmp(v, L"right") == 0)   ? VizChannel::Right
@@ -20174,10 +26490,10 @@ void LoadSettings() {
                                : (wcscmp(v, L"side") == 0)    ? VizChannel::Side
                                                               : VizChannel::Mix;
         });
-        g_settings.dbFloor = std::clamp(Wh_GetIntSetting(L"analysis.dbFloor"), -120, -20);
-        g_settings.dbCeiling = std::clamp(Wh_GetIntSetting(L"analysis.dbCeiling"), -60, 0);
+        g_settings.dbFloor = ReadSizeSetting(L"analysis.dbFloor", -120.f, -20.f, -72.f);
+        g_settings.dbCeiling = ReadSizeSetting(L"analysis.dbCeiling", -60.f, 0.f, -12.f);
         if (g_settings.dbCeiling - g_settings.dbFloor < 10) {
-            ReportSettingIssue(L"Analysis", L"Display Ceiling (dBFS)", std::to_wstring(g_settings.dbCeiling).c_str(),
+            ReportSettingIssue(L"Analysis", L"Display Ceiling (dBFS)", VizNumText(g_settings.dbCeiling).c_str(),
                                L"at least 10 dB above Display Floor", L"Display Floor + 10");
             g_settings.dbCeiling = g_settings.dbFloor + 10;
         }
@@ -20190,9 +26506,9 @@ void LoadSettings() {
                                   : (wcscmp(v, L"custom") == 0)     ? VizBallisticsPreset::Custom
                                                                     : VizBallisticsPreset::Snappy;
         });
-        g_settings.attackMs = std::clamp(Wh_GetIntSetting(L"analysis.attackMs"), 1, 500);
-        g_settings.releaseDbPerSec = std::clamp(Wh_GetIntSetting(L"analysis.releaseDbPerSecond"), 1, 200);
-        g_settings.peakHoldMs = std::clamp(Wh_GetIntSetting(L"analysis.peakHoldMs"), 0, 5000);
+        g_settings.attackMs = ReadSizeSetting(L"analysis.attackMs", 1.f, 500.f, 10.f);
+        g_settings.releaseDbPerSec = ReadSizeSetting(L"analysis.releaseDbPerSecond", 1.f, 200.f, 20.f);
+        g_settings.peakHoldMs = ReadSizeSetting(L"analysis.peakHoldMs", 0.f, 5000.f, 500.f);
         str(L"analysis.peakFall", [](PCWSTR v) {
             g_settings.peakFall = (wcscmp(v, L"linear") == 0) ? VizPeakFall::Linear : VizPeakFall::Gravity;
         });
@@ -20202,7 +26518,7 @@ void LoadSettings() {
                                : (wcscmp(v, L"both") == 0)            ? VizReadout::Both
                                                                       : VizReadout::Frequency;
         });
-        g_settings.loudnessResetOnTrack = Wh_GetIntSetting(L"analysis.loudnessResetOnTrack") != 0;
+        g_settings.loudnessResetOnTrack = VizSettingInt(L"analysis.loudnessResetOnTrack") != 0;
 
         // ---- 2.0: audio source, media widget, Terminal ------------------------------
         str(L"audio.source", [](PCWSTR v) {
@@ -20211,9 +26527,9 @@ void LoadSettings() {
                                                                            : L"";
         });
         if (g_settings.audioSourceKey == L"named") {
-            PCWSTR raw = Wh_GetStringSetting(L"audio.deviceName");
+            PCWSTR raw = VizSettingString(L"audio.deviceName");
             std::wstring name = raw ? raw : L"";
-            Wh_FreeStringSetting(raw);
+            VizSettingFree(raw);
             while (!name.empty() && iswspace(name.front())) name.erase(name.begin());
             while (!name.empty() && iswspace(name.back())) name.pop_back();
             if (name.empty()) {
@@ -20244,8 +26560,8 @@ void LoadSettings() {
                          &g_settings.npArtistB);
         str(L"appearance.textRendering", [](PCWSTR v) { g_settings.textPixel = wcscmp(v, L"pixel") == 0; });
 
-        g_settings.progressEnabled = Wh_GetIntSetting(L"progress.enabled") != 0;
-        g_settings.progressSeek = Wh_GetIntSetting(L"progress.clickToSeek") != 0;
+        g_settings.progressEnabled = VizSettingInt(L"progress.enabled") != 0;
+        g_settings.progressSeek = VizSettingInt(L"progress.clickToSeek") != 0;
         str(L"progress.seekAppsMode", [](PCWSTR v) { g_settings.progressSeekOnlyListed = wcscmp(v, L"only") == 0; });
         str(L"progress.seekApps", [](PCWSTR v) {
             g_settings.progressSeekApps.clear();
@@ -20301,15 +26617,15 @@ void LoadSettings() {
         });
         str(L"terminal.font", [](PCWSTR v) { g_settings.termFont = *v ? v : L"Consolas"; });
         g_settings.termFontSize = ReadSizeSetting(L"terminal.fontSize", 6.f, 96.f, 14.f);
-        g_settings.termRows = std::clamp(Wh_GetIntSetting(L"terminal.rows"), 2, 128);
-        g_settings.termMeterColumns = std::clamp(Wh_GetIntSetting(L"terminal.meterColumns"), 20, 200);
-        g_settings.termHotThreshold = std::clamp(Wh_GetIntSetting(L"terminal.hotThreshold"), 1, 100);
-        g_settings.termScrollRate = std::clamp(Wh_GetIntSetting(L"terminal.scrollRate"), 1, 120);
+        g_settings.termRows = std::clamp(VizSettingInt(L"terminal.rows"), 2, 128);
+        g_settings.termMeterColumns = std::clamp(VizSettingInt(L"terminal.meterColumns"), 20, 200);
+        g_settings.termHotThreshold = ReadSizeSetting(L"terminal.hotThreshold", 1.f, 100.f, 75.f);
+        g_settings.termScrollRate = ReadSizeSetting(L"terminal.scrollRate", 1.f, 120.f, 20.f);
         // Any one character each (2.1): ASCII as itself, anything else as a
         // custom glyph code. The font has to have it.
         g_termCustomGlyphs.clear();
         auto glyph = [](PCWSTR key, PCWSTR name, wchar_t def) {
-            PCWSTR v = Wh_GetStringSetting(key);
+            PCWSTR v = VizSettingString(key);
             std::vector<std::wstring> gs = VizTermSplitGlyphs(v ? v : L"");
             wchar_t c = 0;
             if (!gs.empty() && gs[0] != L" ") c = VizTermCodeFor(gs[0]);
@@ -20318,7 +26634,7 @@ void LoadSettings() {
                 ReportSettingIssue(L"Terminal", name, v ? v : L"", L"one character", d);
                 c = def;
             }
-            Wh_FreeStringSetting(v);
+            VizSettingFree(v);
             return c;
         };
         g_settings.termColumnGlyph = glyph(L"terminal.columnGlyph", L"Column Glyph", L'#');
@@ -20381,9 +26697,9 @@ void LoadSettings() {
 
     {
         // Same quote-stripping as the icon paths: "Copy as path" brings quotes.
-        PCWSTR raw = Wh_GetStringSetting(L"hardware.npuRuntimePath");
+        PCWSTR raw = VizSettingString(L"hardware.npuRuntimePath");
         std::wstring path = raw ? raw : L"";
-        Wh_FreeStringSetting(raw);
+        VizSettingFree(raw);
         while (!path.empty() && (path.front() == L'"' || path.front() == L' ')) path.erase(path.begin());
         while (!path.empty() && (path.back() == L'"' || path.back() == L' ' || path.back() == L'\\'))
             path.pop_back();
@@ -20400,14 +26716,50 @@ void LoadSettings() {
         g_settings.npuRuntimePath = path;
     }
 
-    PCWSTR smoothMode = Wh_GetStringSetting(L"hardware.smoothMode");
-    g_settings.smoothMode = (wcscmp(smoothMode, L"on") == 0)    ? VizSmoothMode::On
-                          : (wcscmp(smoothMode, L"off") == 0)   ? VizSmoothMode::Off
-                                                                : VizSmoothMode::Auto;
-    Wh_FreeStringSetting(smoothMode);
+    PCWSTR frameSync = VizSettingString(L"hardware.frameSync");
+    g_settings.frameSync = (wcscmp(frameSync, L"off") == 0)        ? VizFrameSync::Off
+                         : (wcscmp(frameSync, L"vsync") == 0)      ? VizFrameSync::VSync
+                         : (wcscmp(frameSync, L"adaptive") == 0)   ? VizFrameSync::Adaptive
+                         : (wcscmp(frameSync, L"fast") == 0)       ? VizFrameSync::Fast
+                                                                   : VizFrameSync::Auto;
+    VizSettingFree(frameSync);
+    if (g_settings.frameSync == VizFrameSync::Auto) {
+        // Smooth Mode, up to 2.1: On is VSync, Off is Off.
+        PCWSTR old = Wh_GetStringSetting(L"hardware.smoothMode");
+        if (old && wcscmp(old, L"on") == 0) g_settings.frameSync = VizFrameSync::VSync;
+        if (old && wcscmp(old, L"off") == 0) g_settings.frameSync = VizFrameSync::Off;
+        Wh_FreeStringSetting(old);
+    }
+
+    PCWSTR lowLatency = VizSettingString(L"hardware.lowLatency");
+    g_settings.lowLatency = (wcscmp(lowLatency, L"on") == 0)      ? VizLowLatency::On
+                          : (wcscmp(lowLatency, L"ultra") == 0)   ? VizLowLatency::Ultra
+                                                                  : VizLowLatency::Off;
+    VizSettingFree(lowLatency);
+    PCWSTR frameGen = VizSettingString(L"hardware.frameGen");
+    g_settings.frameGenX2 = wcscmp(frameGen, L"x2") == 0;
+    VizSettingFree(frameGen);
+    if (g_settings.frameGenX2 &&
+        (g_settings.engine != VizEngineKind::Precision || g_settings.workload == VizWorkload::Gpu)) {
+        ReportSettingWarning(L"Hardware", L"Frame Generation",
+                             L"x2 needs the Precision engine with analysis on the CPU (Workload Hybrid or CPU), "
+                             L"so it is off.");
+        g_settings.frameGenX2 = false;
+    }
+
+    PCWSTR cores = VizSettingString(L"hardware.engineCores");
+    g_settings.engineCores = (wcscmp(cores, L"efficiency") == 0)    ? VizEngineCores::Efficiency
+                           : (wcscmp(cores, L"performance") == 0)   ? VizEngineCores::Performance
+                           : (wcscmp(cores, L"custom") == 0)        ? VizEngineCores::Custom
+                                                                    : VizEngineCores::Auto;
+    VizSettingFree(cores);
+    PCWSTR coreList = VizSettingString(L"hardware.engineCoreList");
+    VizResolveEngineCores(g_settings.engineCores, coreList ? coreList : L"");
+    VizSettingFree(coreList);
 
     // The NPU worker reads only its own copies, taken here.
     ttnpu::Configure(g_settings.workload == VizWorkload::Npu, g_settings.npuRuntimePath);
+    g_gpuAnalysisFailed = false;  // tried again with the new settings
     VizPublishEngineConfig();
     // Smooth Mode's Auto depends on the device, which may not exist yet on the
     // first load; InitDirectX resolves it again once it does.
@@ -20482,6 +26834,7 @@ BOOL WhTool_ModInit() {
 }
 
 void WhTool_ModUninit() {
+    VizDepthShutdown();
     Wh_Log(L">");
 
     g_unloading = true;
@@ -20570,6 +26923,10 @@ void ApplySettingsChanged() {
     int oldMonitor = g_settings.monitor;
     VizColorMode oldColorMode = g_settings.colorMode;
 
+    if (g_settingsFromHost.exchange(false))
+        for (auto it = g_panelPending.begin(); it != g_panelPending.end();)
+            it = it->second.written ? g_panelPending.erase(it) : std::next(it);
+
     LoadSettings();
 
     // Place In changed: the window itself has to be made again (WM_DESTROY
@@ -20638,6 +26995,7 @@ void ApplySettingsChanged() {
 
 void WhTool_ModSettingsChanged() {
     Wh_Log(L">");
+    g_settingsFromHost.store(true);  // the settings caught up: the panel's written values can go
 
     // Has to land on the UI thread: it can create or resize windows that thread
     // owns. The overlay is preferred, but it's the one window that legitimately

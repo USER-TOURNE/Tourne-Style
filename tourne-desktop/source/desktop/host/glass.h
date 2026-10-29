@@ -33,6 +33,11 @@ void GlassApply();  // the settings changed
 void GlassStop();
 bool GlassMessage(HWND wnd, UINT msg, WPARAM wp, LPARAM lp);
 
+// Glass in admin apps (glass.yours.admin): a helper with admin rights, started by a logon task.
+void GlassAdminSync();                    // start, update or stop the helper to match the settings
+int GlassAdminSetup();                    // --glass-admin-setup (elevated): make the logon task and start it
+int GlassAdminRun(bool (*reload)());      // --glass-admin (elevated): the helper itself
+
 // TourneDesktop.exe --glass-preview out.png [--wallpaper picture] [--look id|all]
 int GlassPreview(const std::wstring& args);
 

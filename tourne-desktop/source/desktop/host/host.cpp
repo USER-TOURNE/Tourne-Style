@@ -28,6 +28,7 @@
 #include <shlobj.h>
 #include <sddl.h>
 #include <tlhelp32.h>
+#include <mmdeviceapi.h>
 
 #include <algorithm>
 #include <atomic>
@@ -48,12 +49,22 @@
 #include "studio.h"
 #include "glass.h"
 #include "crash.h"
+#if __has_include("build-stamp.h")
+#include "build-stamp.h"
+#endif
+#ifndef TD_BUILD
+#define TD_BUILD L"(not stamped)"
+#endif
 #include "identity.h"
 #include "killswitch.h"
 #include "keystrokes.h"
 #include "screen-shader.h"
 #include "capture.h"
 #include "launcher.h"
+#include "flyouts.h"
+#include "app-styler.h"
+#include "designer.h"
+#include "dots.h"
 #include "ui-sounds.h"
 #include "shell-mode.h"
 #include "notifications.h"
@@ -855,6 +866,31 @@ static std::wstring TableSetupText(const WindhawkTable& t) {
     return text;
 }
 
+// Every Windhawk copy's saved styles into the Table here's My Styles; a name it already has keeps its
+// own. Returns how many were added.
+static int MergeTableStyles(const std::vector<WindhawkTable>& tables) {
+    wchar_t buffer[8192] = L"";
+    GetStringValue(L"table", L"stylePresets", buffer, ARRAYSIZE(buffer));
+    std::vector<std::wstring> names = TableLines(buffer);
+    int styles = 0;
+    for (auto const& t : tables) {
+        auto list = t.values.find(L"stylePresets");
+        if (list == t.values.end()) continue;
+        for (auto const& name : TableLines(list->second)) {
+            auto body = t.values.find(L"stylePreset:" + name);
+            if (body == t.values.end() || body->second.empty() || std::find(names.begin(), names.end(), name) != names.end()) continue;
+            SetStringValue(L"table", (L"stylePreset:" + name).c_str(), body->second.c_str());
+            names.push_back(name);
+            styles++;
+        }
+    }
+    if (!styles) return 0;
+    std::wstring list;
+    for (auto const& n : names) list += n + L"\n";
+    SetStringValue(L"table", L"stylePresets", list.c_str());
+    return styles;
+}
+
 static bool ImportTable(std::wstring* report) {
     std::vector<WindhawkTable> tables = WindhawkTables();
     if (tables.empty()) {
@@ -898,24 +934,7 @@ static bool ImportTable(std::wstring* report) {
     for (auto const& [n, v] : main.numbers) RegSetKeyValueW(HKEY_CURRENT_USER, values.c_str(), n.c_str(), REG_DWORD, &v, sizeof(v));
 
     // Every copy's styles; a name the Table here already has keeps its own.
-    wchar_t buffer[8192] = L"";
-    GetStringValue(L"table", L"stylePresets", buffer, ARRAYSIZE(buffer));
-    std::vector<std::wstring> names = TableLines(buffer);
-    int styles = 0;
-    for (auto const& t : tables) {
-        auto list = t.values.find(L"stylePresets");
-        if (list == t.values.end()) continue;
-        for (auto const& name : TableLines(list->second)) {
-            auto body = t.values.find(L"stylePreset:" + name);
-            if (body == t.values.end() || body->second.empty() || std::find(names.begin(), names.end(), name) != names.end()) continue;
-            SetStringValue(L"table", (L"stylePreset:" + name).c_str(), body->second.c_str());
-            names.push_back(name);
-            styles++;
-        }
-    }
-    std::wstring list;
-    for (auto const& n : names) list += n + L"\n";
-    SetStringValue(L"table", L"stylePresets", list.c_str());
+    int styles = MergeTableStyles(tables);
 
     // Each copy as a setup file.
     std::wstring folder = KnownFolder(FOLDERID_Documents) + L"\\Tourne'Table setups";
@@ -956,6 +975,15 @@ static void AutoImportTable() {
     std::wstring report;
     if (!ImportTable(&report)) SetIntValue(L"table", L"importedFromWindhawk", 0);  // (looked once; the key now exists)
     else SetIntValue(L"table", L"importedFromWindhawk", 1);
+}
+
+// At every start: styles saved in Windhawk's Tourne'Table since last time join My Styles here too, so
+// the two lists stay in step (nothing else is copied; a name already here keeps its own).
+static void SyncTableStyles() {
+    bool built = false;
+    for (int i = 0; i < kModuleCount; i++) built = built || !wcscmp(kModules[i].prefix, L"table");
+    if (!built) return;
+    if (int added = MergeTableStyles(WindhawkTables())) Log(L"table: %d new styles from Windhawk", added);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1005,6 +1033,8 @@ static void ApplyServices() {
     if (g_started.count(L"shader")) ScreenShaderApply();
     if (g_started.count(L"capture")) CaptureApply();
     if (g_started.count(L"launcher")) LauncherApply();
+    if (g_started.count(L"flyouts")) FlyoutsApply();
+    if (g_started.count(L"appStyler")) AppStylerApply();
     if (g_started.count(L"sounds")) UiSoundsApply();
     ShellApply();
     NotifyApply();
@@ -1027,8 +1057,11 @@ static bool SuiteInThisProcess() {
     return found;
 }
 
+static bool g_explorerBar;  // Explorer's taskbar in place of Tourne's bar (the explorerbar command)
+
 static bool Wanted(int i) {
     bool found;
+    if (g_explorerBar && !wcscmp(kModules[i].prefix, L"taskbar")) return false;  // (until it's swapped back)
     return ToInt(Lookup(kModules[i].prefix, L"enabled", &found)) != 0;
 }
 
@@ -1090,6 +1123,17 @@ static void ApplyConfig() {
     }
 }
 
+// Plugins' settings as the runtime was last told them. One place compares, whatever changed them (the Studio's
+// live layer, its Save, an editor): Save reloads before the watcher does, so a before/after there saw nothing.
+static std::vector<std::pair<std::wstring, std::wstring>> g_pluginsSeen;  // (the host's thread only)
+
+static void TellPlugins() {
+    auto now = SettingsWithPrefix(L"plugins.");
+    if (now == g_pluginsSeen) return;
+    g_pluginsSeen = std::move(now);
+    PluginRuntimeSettingsChanged();
+}
+
 void SetLiveLayer(const Settings& set, const std::set<std::wstring>& removed) {
     if (set == g_live && removed == g_liveRemoved) return;
     g_live = set;
@@ -1097,11 +1141,12 @@ void SetLiveLayer(const Settings& set, const std::set<std::wstring>& removed) {
     Republish();
     ApplyConfig();
     ApplyServices();
+    TellPlugins();
 }
 
 static void StartServices() {
     if (g_startingUp) return;
-    for (const wchar_t* part : {L"theme", L"inject", L"glass", L"killswitch", L"keystrokes", L"shader", L"capture", L"launcher", L"sounds"}) {
+    for (const wchar_t* part : {L"theme", L"inject", L"glass", L"killswitch", L"keystrokes", L"shader", L"capture", L"launcher", L"flyouts", L"appStyler", L"sounds"}) {
         if (g_started.count(part) || CrashLeavesOff(part)) continue;
         if (part == std::wstring(L"theme")) ThemeEngineStart(g_host);
         else if (part == std::wstring(L"inject")) InjectorStart(g_host);
@@ -1110,6 +1155,8 @@ static void StartServices() {
         else if (part == std::wstring(L"shader")) ScreenShaderStart(g_host);
         else if (part == std::wstring(L"capture")) CaptureStart(g_host);
         else if (part == std::wstring(L"launcher")) LauncherStart(g_host);
+        else if (part == std::wstring(L"flyouts")) FlyoutsStart(g_host);
+        else if (part == std::wstring(L"appStyler")) AppStylerStart(g_host);
         else if (part == std::wstring(L"sounds")) UiSoundsStart(g_host);
         else KillswitchStart(g_host);
         g_started.insert(part);
@@ -1125,6 +1172,8 @@ static std::wstring PartTitle(const std::wstring& part) {
     if (part == L"shader") return L"the screen shader";
     if (part == L"capture") return L"Print Screen capture";
     if (part == L"launcher") return L"the launcher";
+    if (part == L"flyouts") return L"the flyouts";
+    if (part == L"appStyler") return L"the app styler";
     if (part == L"sounds") return L"UI sounds";
     for (int i = 0; i < kModuleCount; i++)
         if (part == std::wstring(L"module:") + kModules[i].prefix) return kModules[i].title;
@@ -1169,10 +1218,13 @@ static void StartupStep() {
             else if (part == L"shader") ScreenShaderStart(g_host);
             else if (part == L"capture") CaptureStart(g_host);
             else if (part == L"launcher") LauncherStart(g_host);
+            else if (part == L"flyouts") FlyoutsStart(g_host);
+            else if (part == L"appStyler") AppStylerStart(g_host);
             else if (part == L"sounds") UiSoundsStart(g_host);
             g_started.insert(part);
         }
-        SetTimer(g_host, kTimerStartup, 800, nullptr);
+        // A moment between parts, so a crash is put down to the right one: longer after a start that crashed.
+        SetTimer(g_host, kTimerStartup, CrashLeftOff().empty() ? 100 : 800, nullptr);
         return;
     }
     g_startingUp = false;
@@ -1196,6 +1248,7 @@ bool SaveGuiLayer(const Settings& gui) {
     ShellTryAgain();
     ApplyConfig();
     ApplyServices();
+    TellPlugins();
     return true;
 }
 
@@ -1332,6 +1385,113 @@ static void UpdateTray(HWND wnd) {
     ShowTray(wnd, ToInt(Lookup(L"desktop", L"trayIcon", &found)) != 0 || !found);
 }
 
+// "Copy diagnostics": what someone helping needs to know, as text to paste. The build, Windows, the screens,
+// the graphics card and sound device, the parts running, and every setting that isn't its default. Nothing
+// that points at the person: values that are paths, or that hold the account's name, are left out.
+static std::wstring Diagnostics() {
+    std::wstring out = L"Tourne Desktop diagnostics\r\nBuild: " TD_BUILD L"\r\n";
+    wchar_t line[512];
+    // Windows' own version (RtlGetVersion, as GetVersionEx is told a lie).
+    using RtlGetVersion_t = LONG(WINAPI*)(OSVERSIONINFOW*);
+    OSVERSIONINFOW v{sizeof(v)};
+    if (auto get = (RtlGetVersion_t)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetVersion")) get(&v);
+    swprintf(line, 512, L"Windows: %lu.%lu build %lu\r\n", v.dwMajorVersion, v.dwMinorVersion, v.dwBuildNumber);
+    out += line;
+    out += std::wstring(L"Shell mode: ") + (ShellUnderneath() ? L"on, Explorer underneath" : L"off") + L"\r\n";
+    // The graphics cards, and each screen: size, scale, refresh.
+    DISPLAY_DEVICEW dd{sizeof(dd)};
+    std::set<std::wstring> cards;
+    for (DWORD i = 0; EnumDisplayDevicesW(nullptr, i, &dd, 0); i++, dd.cb = sizeof(dd))
+        if (dd.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) cards.insert(dd.DeviceString);
+    for (auto const& c : cards) out += L"Graphics: " + c + L"\r\n";
+    EnumDisplayMonitors(
+        nullptr, nullptr,
+        [](HMONITOR m, HDC, LPRECT, LPARAM l) -> BOOL {
+            MONITORINFOEXW mi{};
+            mi.cbSize = sizeof(mi);
+            GetMonitorInfoW(m, &mi);
+            DEVMODEW dm{};
+            dm.dmSize = sizeof(dm);
+            EnumDisplaySettingsW(mi.szDevice, ENUM_CURRENT_SETTINGS, &dm);
+            UINT dpiX = 96, dpiY = 96;
+            using GetDpi_t = HRESULT(WINAPI*)(HMONITOR, int, UINT*, UINT*);
+            static auto getDpi = (GetDpi_t)GetProcAddress(LoadLibraryW(L"shcore.dll"), "GetDpiForMonitor");
+            if (getDpi) getDpi(m, 0, &dpiX, &dpiY);
+            wchar_t s[160];
+            swprintf(s, 160, L"Screen: %ldx%ld at %ld,%ld, %u%%, %lu Hz%ls\r\n", mi.rcMonitor.right - mi.rcMonitor.left,
+                     mi.rcMonitor.bottom - mi.rcMonitor.top, mi.rcMonitor.left, mi.rcMonitor.top, dpiX * 100 / 96,
+                     dm.dmDisplayFrequency, (mi.dwFlags & MONITORINFOF_PRIMARY) ? L" (main)" : L"");
+            *(std::wstring*)l += s;
+            return TRUE;
+        },
+        (LPARAM)&out);
+    // The sound device apps play to.
+    {
+        static const PROPERTYKEY kFriendlyName = {{0xa45c254e, 0xdf1c, 0x4efd, {0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0}}, 14};
+        HRESULT init = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        IMMDeviceEnumerator* e = nullptr;
+        if (SUCCEEDED(CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&e))) {
+            IMMDevice* d = nullptr;
+            if (SUCCEEDED(e->GetDefaultAudioEndpoint(eRender, eConsole, &d))) {
+                IPropertyStore* props = nullptr;
+                PROPVARIANT name;
+                PropVariantInit(&name);
+                if (SUCCEEDED(d->OpenPropertyStore(STGM_READ, &props)) && SUCCEEDED(props->GetValue(kFriendlyName, &name)) &&
+                    name.vt == VT_LPWSTR)
+                    out += std::wstring(L"Sound: ") + name.pwszVal + L"\r\n";
+                PropVariantClear(&name);
+                if (props) props->Release();
+                d->Release();
+            }
+            e->Release();
+        }
+        if (SUCCEEDED(init)) CoUninitialize();
+    }
+    out += L"Running:";
+    for (int i = 0; i < kModuleCount; i++)
+        if (g_running[i].on) out += std::wstring(L" ") + kModules[i].prefix;
+    for (auto const& part : g_started) out += L" " + part;
+    out += L"\r\n\r\nSettings not at their default:\r\n";
+    // Left out: a value that's a path, or holds the account's name.
+    wchar_t user[256] = L"";
+    DWORD userLen = 256;
+    GetUserNameW(user, &userLen);
+    std::wstring me = user;
+    for (auto& c : me) c = towlower(c);
+    int shown = 0, hidden = 0;
+    if (auto store = Current()) {
+        for (auto const& [key, value] : store->values) {
+            auto def = g_defaults.find(key);
+            if (def != g_defaults.end() && def->second == value) continue;
+            std::wstring low = value;
+            for (auto& c : low) c = towlower(c);
+            bool personal = value.find(L":\\") != std::wstring::npos || value.find(L":/") != std::wstring::npos || value.find(L"\\\\") != std::wstring::npos ||
+                            value.find(L"%") != std::wstring::npos || (me.size() > 2 && low.find(me) != std::wstring::npos);
+            if (personal) {
+                out += key + L" = (left out: a path or a name)\r\n";
+                hidden++;
+            } else {
+                out += key + L" = " + value + L"\r\n";
+            }
+            shown++;
+        }
+    }
+    swprintf(line, 512, L"(%d changed, %d of them left out)\r\n", shown, hidden);
+    out += line;
+    return out;
+}
+
+static void CopyToClipboard(HWND wnd, const std::wstring& text) {
+    if (!OpenClipboard(wnd)) return;
+    EmptyClipboard();
+    if (HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, (text.size() + 1) * sizeof(wchar_t))) {
+        memcpy(GlobalLock(mem), text.c_str(), (text.size() + 1) * sizeof(wchar_t));
+        GlobalUnlock(mem);
+        if (!SetClipboardData(CF_UNICODETEXT, mem)) GlobalFree(mem);
+    }
+    CloseClipboard();
+}
+
 static void TrayMenu(HWND wnd) {
     HMENU menu = CreatePopupMenu();
     AppendMenuW(menu, MF_STRING, 4, L"Open Tourne Studio");
@@ -1342,6 +1502,11 @@ static void TrayMenu(HWND wnd) {
     AppendMenuW(menu, MF_STRING, 3, L"Open the settings folder");
     AppendMenuW(menu, MF_STRING, 5, L"Import my Windhawk suite settings");
     AppendMenuW(menu, MF_STRING, 6, L"Bring in my Tourne'Table setups from Windhawk");
+    AppendMenuW(menu, MF_STRING, 7, L"Copy diagnostics (no paths or names)");
+    AppendMenuW(menu, MF_STRING, 8, L"Designer mode: pick a colour, click a part");
+    AppendMenuW(menu, MF_STRING, 10, L"Save my look to the gallery");
+    AppendMenuW(menu, MF_STRING, 11, L"Open the look gallery");
+    if (WindowsAccentSaved()) AppendMenuW(menu, MF_STRING, 12, L"Restore my Windows colours");
     InjectorMenu(menu, 100);
     AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
     for (int i = 0; i < kModuleCount; i++)
@@ -1351,7 +1516,11 @@ static void TrayMenu(HWND wnd) {
     POINT pt;
     GetCursorPos(&pt);
     SetForegroundWindow(wnd);
-    int id = TrackPopupMenuEx(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY, pt.x, pt.y, wnd, nullptr);
+    // In Tourne's menu look, as the bar draws its own (taskbar-host.cpp, TourneStyledMenu).
+    using Styled = UINT (*)(HMENU, UINT, int, int, HWND);
+    static Styled styled = (Styled)GetProcAddress(GetModuleHandleW(nullptr), "TourneStyledMenu");
+    UINT flags = TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY;
+    int id = styled ? (int)styled(menu, flags, pt.x, pt.y, wnd) : TrackPopupMenuEx(menu, flags, pt.x, pt.y, wnd, nullptr);
     PostMessageW(wnd, WM_NULL, 0, 0);
     DestroyMenu(menu);
     if (id == 1) ShellExecuteW(nullptr, L"open", ConfigPath().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
@@ -1368,13 +1537,82 @@ static void TrayMenu(HWND wnd) {
         bool ok = ImportTable(&report);
         MessageBoxW(nullptr, report.c_str(), L"Tourne Desktop", ok ? MB_ICONINFORMATION : MB_ICONWARNING);
     }
+    if (id == 8) PostMessageW(wnd, RegisterWindowMessageW(L"TourneDesktop.Designer"), 0, 0);
+    if (id == 10) PostMessageW(wnd, RegisterWindowMessageW(L"TourneDesktop.LookSave"), 0, 0);
+    if (id == 11) ShellExecuteW(nullptr, L"open", DotsGalleryFolder().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    if (id == 12) {
+        bool WriteStudioSettings(const std::vector<std::pair<std::wstring, std::wstring>>& set, const std::wstring& prefix,
+                                 const std::wstring& why);  // (below)
+        WriteStudioSettings({{L"theme.windows", L"off"}}, L"", L"accent-restore");  // (else the theme writes its accent again)
+        RestoreWindowsAccent();
+    }
+    if (id == 7) {
+        CopyToClipboard(wnd, Diagnostics());
+        Log(L"diagnostics copied");
+    }
     if (id == 9 && StudioClose()) DestroyWindow(wnd);
     if (id >= 100) InjectorMenuCommand(id, 100);
 }
 
 static UINT g_taskbarCreated, g_themeChanged;
 
+// The explorerbar command: Tourne's bar and tray put away and Explorer's taskbar shown (its tray takes the icons,
+// as apps are told a taskbar was made), or the other way round. to: 1 Explorer's, 2 Tourne's, 0 the other one.
+static void SwapBar(WPARAM to) {
+    bool explorer = to == 1 ? true : to == 2 ? false : !g_explorerBar;
+    if (explorer == g_explorerBar) return;
+    int bar = -1;
+    for (int i = 0; i < kModuleCount; i++)
+        if (!wcscmp(kModules[i].prefix, L"taskbar")) bar = i;
+    if (explorer) {
+        if (!ShellUnderneath()) {
+            Log(L"explorerbar: there's no Explorer underneath to show (shell mode only)");
+            return;
+        }
+        g_explorerBar = true;
+        if (bar >= 0) StopModule(bar);
+        TrayHostStop();
+        ShellShowExplorerBar(true);
+        PostMessageW(HWND_BROADCAST, RegisterWindowMessageW(L"TaskbarCreated"), 0, 0);  // (icons into Explorer's tray)
+    } else {
+        g_explorerBar = false;
+        ShellShowExplorerBar(false);
+        TrayHostStart();
+        TrayHostRetake();
+        if (bar >= 0 && Wanted(bar)) StartModule(bar);
+    }
+}
+
 static LRESULT CALLBACK HostProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    static const UINT explorerBar = RegisterWindowMessageW(L"TourneDesktop.ExplorerBar");
+    static const UINT designer = RegisterWindowMessageW(L"TourneDesktop.Designer");
+    if (msg == designer && designer) {
+        DesignerStart(wnd);
+        return 0;
+    }
+    // The look as it is now into the gallery, its screenshot taken once the menu that asked has gone.
+    static const UINT lookSave = RegisterWindowMessageW(L"TourneDesktop.LookSave");
+    if (msg == lookSave && lookSave) {
+        Sleep(250);
+        std::wstring saved, error;
+        Balloon b;
+        b.app = L"Tourne Desktop";
+        if (DotsSaveToGallery(L"", &saved, &error)) {
+            Log(L"look saved: %s", saved.c_str());
+            b.title = L"Look saved";
+            b.body = saved.substr(saved.find_last_of(L'\\') + 1) + L", in the look gallery";
+        } else {
+            Log(L"look not saved: %s", error.c_str());
+            b.title = L"Look not saved";
+            b.body = error;
+        }
+        FlyoutsBalloon(b);
+        return 0;
+    }
+    if (msg == explorerBar && explorerBar) {
+        SwapBar(wp);
+        return 0;
+    }
     if (ThemeEngineMessage(wnd, msg, wp, lp) || InjectorMessage(wnd, msg, wp, lp) || GlassMessage(wnd, msg, wp, lp) ||
         KillswitchMessage(wnd, msg, wp, lp))
         return 0;
@@ -1404,7 +1642,6 @@ static LRESULT CALLBACK HostProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
             if (wp == kTimerReload) {
                 KillTimer(wnd, kTimerReload);
                 auto before = Current();
-                auto pluginsBefore = SettingsWithPrefix(L"plugins.");
                 LoadConfig();
                 auto after = Current();
                 if (before && after && (before->user != after->user || before->gui != after->gui)) CrashTryAgain();
@@ -1412,7 +1649,7 @@ static LRESULT CALLBACK HostProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
                 ApplyServices();
                 UpdateTray(wnd);
                 StudioConfigReloaded();
-                if (SettingsWithPrefix(L"plugins.") != pluginsBefore) PluginRuntimeSettingsChanged();
+                TellPlugins();
             }
             return 0;
         case WM_TD_STUDIO:
@@ -1464,6 +1701,7 @@ static int Install(bool on) {
         RegSetValueExW(run, L"TourneDesktop", 0, REG_SZ, (const BYTE*)cmd.c_str(), (DWORD)((cmd.size() + 1) * sizeof(wchar_t)));
     } else {
         RegDeleteValueW(run, L"TourneDesktop");
+        RestoreWindowsAccent(true);  // Windows' colours as they were before Tourne, if it changed them
     }
     RegCloseKey(run);
     return 0;
@@ -1558,6 +1796,11 @@ bool WriteStudioSettings(const std::vector<std::pair<std::wstring, std::wstring>
     return ok;
 }
 
+bool WriteSetting(const wchar_t* prefix, const std::wstring& key, const std::wstring& value) {
+    std::wstring full = IsFullName(key) ? key : std::wstring(prefix) + L"." + key;
+    return WriteStudioSettings({{full, value}}, L"", L"quick-settings");
+}
+
 // Tourne Studio from a part (any thread): at a page ("taskbar."), or with its search set (query).
 void OpenStudio(const std::wstring& page, const std::wstring& query) {
     if (!g_host) return;
@@ -1581,6 +1824,7 @@ static int Run(bool studio) {
     WriteStarterConfig();
     WriteDefaults();
     AutoImportTable();
+    SyncTableStyles();
     LoadConfig();
     Log(L"Tourne Desktop starting, %d modules built in", kModuleCount);
     if (!older.empty()) Log(L"took over from an older build running at %ls", older.c_str());
@@ -1599,18 +1843,28 @@ static int Run(bool studio) {
 
     g_running.assign(kModuleCount, {});
     // (a part beside the suite first, started now: Icon Redirect before the desktop and bars load icons)
+    // Then what's seen first: the theme, the taskbar, the switcher and system icons, and the services that
+    // work out of sight after them (each part waits for the one before: crash.h).
     g_startup.clear();
     for (int i = 0; i < kModuleCount; i++)
         if (kModules[i].besideSuite) g_startup.push_back(std::wstring(L"module:") + kModules[i].prefix);
-    for (auto part : {L"theme", L"inject", L"glass", L"killswitch", L"keystrokes", L"shader", L"capture", L"launcher", L"sounds"}) g_startup.push_back(part);
-    for (int i = 0; i < kModuleCount; i++)
-        if (!kModules[i].besideSuite) g_startup.push_back(std::wstring(L"module:") + kModules[i].prefix);
+    for (auto part : {L"theme", L"module:taskbar", L"inject", L"glass", L"killswitch", L"module:switcher", L"module:systemIcons",
+                      L"keystrokes", L"shader", L"capture", L"launcher", L"flyouts", L"appStyler", L"sounds"})
+        g_startup.push_back(part);
+    for (int i = 0; i < kModuleCount; i++) {
+        std::wstring part = std::wstring(L"module:") + kModules[i].prefix;
+        if (!kModules[i].besideSuite && std::find(g_startup.begin(), g_startup.end(), part) == g_startup.end())
+            g_startup.push_back(part);
+    }
     g_startingUp = true;
     StartupStep();
     ShellApply();         // (a newer build kept for the shell, if it's on)
     NotifyApply();        // (Windows' pop-ups off while Tourne draws them; quiet hours)
     ShellSessionStart();  // (as the shell: Windows told, startup apps)
+    UpdateTray(g_host);   // (again: the first went to whatever tray was there before Tourne's own was up)
+    g_pluginsSeen = SettingsWithPrefix(L"plugins.");  // (what the runtime starts with)
     PluginRuntimeStart();  // installed plugins, on their own thread (their bar items reach the taskbar when it's up)
+    if (!SuiteInThisProcess()) DialogLookStart();  // (the suite's Theme Gaps would do the footer here itself)
 
     g_watchStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
     HANDLE watcher = CreateThread(nullptr, 0, WatchThread, nullptr, 0, nullptr);
@@ -1636,6 +1890,8 @@ static int Run(bool studio) {
     if (g_started.count(L"shader")) ScreenShaderStop();
     if (g_started.count(L"capture")) CaptureStop();
     if (g_started.count(L"launcher")) LauncherStop();
+    if (g_started.count(L"flyouts")) FlyoutsStop();
+    if (g_started.count(L"appStyler")) AppStylerStop();
     if (g_started.count(L"sounds")) UiSoundsStop();
     if (g_started.count(L"killswitch")) KillswitchStop();  // (after the taskbar's own: what was there first goes back last)
     DesktopHostStop();
@@ -1681,10 +1937,15 @@ static void HostSchema() {
     }
     SettingInfo& contrast = add(L"theme.contrast", L"Text contrast", L"Against its ground, as WCAG measures it: 4.5 is AA, 7 is AAA.");
     contrast.hasMin = contrast.hasMax = true, contrast.min = 3, contrast.max = 21;
+    add(L"theme.windows", L"Windows' own colours",
+        L"Windows' accent colour (title bars, Start, Settings, every app that asks Windows) set from this theme's accent "
+        L"each time it's made; \"both\" sets Windows' dark or light mode too, when the theme isn't following Windows' "
+        L"(Dark or light, above). It changes how every app looks.")
+        .options = {{L"off", L"Leave them (off)"}, {L"accent", L"The accent"}, {L"both", L"The accent and dark or light"}};
 
     add(L"inject", L"Style apps", L"Your own CSS in apps made of web pages. Nothing is injected until you turn an app on and say yes to the warning.");
     for (auto const& [key, value] : g_defaults) {
-        if (key.rfind(L"inject.", 0) != 0) continue;
+        if (key.rfind(L"inject.", 0) != 0 || key.rfind(L"inject.yours.", 0) == 0) continue;
         size_t dot = key.rfind(L'.');
         std::wstring app = key.substr(7, dot - 7), field = key.substr(dot + 1);
         std::wstring title = app;
@@ -1696,6 +1957,13 @@ static void HostSchema() {
         if (field == L"restart")
             add(key, L"Opened without styles", L"").options = {{L"ask", L"Ask to restart it"}, {L"always", L"Restart it"}, {L"never", L"Leave it"}};
     }
+    add(L"inject.yours", L"Your apps",
+        L"Style any program you add here, all with the same style sheets. Apps made of web pages (Chromium and Electron) "
+        L"take styles; others are left alone. Each asks first, once.");
+    add(L"inject.yours.programs", L"Programs", L"Add a running program, or find its file.");
+    add(L"inject.yours.css", L"Style sheets", L"In the css folder, comma between them. tourne\\ ones are made from your theme.");
+    add(L"inject.yours.restart", L"Opened without styles", L"").options = {
+        {L"ask", L"Ask to restart it"}, {L"always", L"Restart it"}, {L"never", L"Leave it"}};
 }
 
 static void InstallCrashGuard() { CrashGuardInstall(DataDir()); }
@@ -1712,6 +1980,8 @@ static void LoadDefaults() {
     ScreenShaderDefaults(g_defaults);
     CaptureDefaults(g_defaults);
     LauncherDefaults(g_defaults);
+    FlyoutsDefaults(g_defaults);
+    AppStylerDefaults(g_defaults);
     UiSoundsDefaults(g_defaults);
     ShellDefaults(g_defaults);
     NotifyDefaults(g_defaults);
@@ -1724,6 +1994,8 @@ static void LoadDefaults() {
     ScreenShaderDescribe(g_info);
     CaptureDescribe(g_info);
     LauncherDescribe(g_info);
+    FlyoutsDescribe(g_info);
+    AppStylerDescribe(g_info);
     UiSoundsDescribe(g_info);
     ShellDescribe(g_info);
     NotifyDescribe(g_info);
@@ -1843,6 +2115,12 @@ int BindsSettingsOnly() {
     return 0;
 }
 
+// --glass-admin: the glass for admin apps, from its logon task (glass.cpp).
+int GlassAdminOnly() {
+    LoadConfig();
+    return GlassAdminRun(&LoadConfig);
+}
+
 }  // namespace td
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR cmd, int) {
@@ -1859,6 +2137,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR cmd, int) {
         return td::StudioWriteKinds(path) ? 0 : 1;
     }
     if (args.find(L"--glass-preview") != std::wstring::npos) return td::GlassPreview(args);
+    if (args.find(L"--glass-admin-setup") != std::wstring::npos) return td::GlassAdminSetup();
+    if (args.find(L"--glass-admin") != std::wstring::npos) return td::GlassAdminOnly();
     if (size_t at = args.find(L"--shader-shot "); at != std::wstring::npos) {  // --shader-shot EFFECT SCREEN out.bmp
         std::vector<std::wstring> words;
         for (size_t i = at + 14; i < args.size() && words.size() < 3;) {
@@ -1886,6 +2166,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR cmd, int) {
     if (args.find(L"--uninstall") != std::wstring::npos) return td::Install(false);
     if (args.find(L"--install") != std::wstring::npos) return td::Install(true);
     if (args.find(L"--restore") != std::wstring::npos) return td::RestoreWindowsTaskbar();
+    if (args.find(L"--panic") != std::wstring::npos) return td::ShellPanic();
     if (args.find(L"--shell") != std::wstring::npos && !td::StartedAsShell(args)) return td::ShellWatchdog();
     if (args.find(L"--stop") != std::wstring::npos) {
         if (HWND w = FindWindowW(td::kHostClass, nullptr)) PostMessageW(w, WM_CLOSE, 0, 0);

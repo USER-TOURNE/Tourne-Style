@@ -16,6 +16,7 @@
 
 namespace td {
 
+void TrayCollectorStart();  // the watchdog, at sign-in: a stand-in tray until TrayHostStart takes its icons on
 void TrayHostStart();
 void TrayHostStop();
 void TrayHostRaise();   // with Explorer underneath: this tray first in line, where apps look for one

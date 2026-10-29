@@ -320,9 +320,34 @@ struct TrayPlaces {
         return kPlaceDefault;
     }
 
-    // Where an icon goes: its own place, else where Explorer's tray has it.
+    // A place its program's icons were given under other ids, when they all agree. Some programs take a new
+    // icon id each run (MSI Afterburner: 66130, 66354, 66544; HWiNFO), so an icon put in the overflow (or a
+    // folder there) came back in the tray as a stranger, gone from where it was put (2026-10-16).
+    int OfProgram(std::wstring const& key) const {
+        size_t bar = key.rfind(L'|');
+        if (key.starts_with(L"plugin:") || bar == std::wstring::npos || bar == 0) {
+            return kPlaceDefault;
+        }
+        std::wstring program = key.substr(0, bar + 1);
+        int found = kPlaceDefault;
+        for (auto const& [k, place] : places) {
+            if (!k.starts_with(program) || k.find(L'|', program.size()) != std::wstring::npos) {
+                continue;
+            }
+            if (found != kPlaceDefault && found != place) {
+                return kPlaceDefault;
+            }
+            found = place;
+        }
+        return found;
+    }
+
+    // Where an icon goes: its own place, else its program's, else where Explorer's tray has it.
     int For(HiddenIcon const& icon, std::wstring const& key) const {
         int place = Of(key);
+        if (place == kPlaceDefault) {
+            place = OfProgram(key);
+        }
         return place != kPlaceDefault ? place : icon.overflow ? kPlaceOverflow : kPlaceTray;
     }
 

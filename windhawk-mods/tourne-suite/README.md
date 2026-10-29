@@ -30,6 +30,9 @@ on or off on its own.
 | System Text Color, Menu No Icons, Menu No Duplicates | Text colour; menus without icons or doubles | Their Processes lists |
 | Icon Redirect | Icon themes and single-app icon swaps | Every program, while it has a theme or a row |
 | Tweaks | Winaero Tweaker's options, 312 of them | Windhawk's own process; every program for the live font swap |
+| Square Corners | Every window and menu at 0 corner radius, except programs you exclude (switched from Tourne Desktop's Studio) | Every program |
+
+What changed in each build: [CHANGELOG](CHANGELOG.md).
 
 ## What it looks like
 

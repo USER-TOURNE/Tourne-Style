@@ -833,6 +833,17 @@ const Grid kArtAccess = P({".....##.....", ".....##.....", "", ".##########.", "
                            ".....##.....", ".....##.....", "....#..#....", "...#....#...", "..#......#.."});
 const Grid kArtKeyboard = P({"", "", "", "############", "#..........#", "#.#.#.#.#..#",
                              "#..........#", "#.#......#.#", "#..........#", "############"});
+// The media keys, for Tourne Desktop's flyouts (the same pixel look as the tray's).
+const Grid kArtMediaPlay = P({"", "", "...#........", "...##.......", "...###......", "...####.....", "...#####....",
+                              "...####.....", "...###......", "...##.......", "...#........"});
+const Grid kArtMediaPlayPause = P({"", "", "", ".#.....##.##", ".##....##.##", ".###...##.##", ".####..##.##",
+                                   ".###...##.##", ".##....##.##", ".#.....##.##"});
+const Grid kArtMediaNext = P({"", "", "", "#....#....##", "##...##...##", "###..###..##", "####.####.##",
+                              "###..###..##", "##...##...##", "#....#....##"});
+const Grid kArtMediaPrev = P({"", "", "", "##....#....#", "##...##...##", "##..###..###", "##.####.####",
+                              "##..###..###", "##...##...##", "##....#....#"});
+const Grid kArtMediaStop = P({"", "", "..########..", "..########..", "..########..", "..########..",
+                              "..########..", "..########..", "..########..", "..########.."});
 const Grid kArtPower = P({".....##.....", ".....##.....", "..#..##..#..", ".#...##...#.", "#....##....#",
                           "#..........#", "#..........#", "#..........#", ".#........#.", "..########.."});
 const Grid kArtMic = P({"....####....", "....#..#....", "....#..#....", "....#..#....", "..#.#..#.#..",
@@ -1108,6 +1119,11 @@ Art ArtFor(std::string_view id) {
     if (id == "accessibility") return {kArtAccess};
     if (id == "power") return {kArtPower};
     if (id == "keyboard") return {kArtKeyboard};
+    if (id == "media-play") return {kArtMediaPlay};
+    if (id == "media-playpause") return {kArtMediaPlayPause};
+    if (id == "media-next") return {kArtMediaNext};
+    if (id == "media-prev") return {kArtMediaPrev};
+    if (id == "media-stop") return {kArtMediaStop};
     if (id == "app-bin") return {kArtTrash};
     if (id == "app-clipboard") return {kArtClipboard};
     if (id == "app-capture") return {kArtCamera};
@@ -7407,6 +7423,20 @@ int HomeFolder(HiddenIcon const& icon, FolderLayout const& layout) {
             if (std::find(setups[i].pins.begin(), setups[i].pins.end(), placed) != setups[i].pins.end()) return i;
         if (std::find(layout.loose.begin(), layout.loose.end(), placed) != layout.loose.end()) return -1;
     }
+    // Pinned under another id of its program (some take a new one each run: MSI Afterburner), when every such
+    // pin is in the one folder and none of them was dragged out.
+    if (!file.empty() && icon.plugin.empty()) {
+        std::wstring program = file + L"|";
+        auto ofProgram = [&](std::wstring const& k) { return k.starts_with(program) && k.find(L'|', program.size()) == std::wstring::npos; };
+        int found = -1;
+        bool split = std::any_of(layout.loose.begin(), layout.loose.end(), ofProgram);
+        for (int i = 0; i < (int)setups.size() && !split; i++)
+            if (std::any_of(setups[i].pins.begin(), setups[i].pins.end(), ofProgram)) {
+                if (found >= 0) split = true;
+                found = i;
+            }
+        if (!split && found >= 0) return found;
+    }
     std::wstring stem = file.ends_with(L".exe") ? file.substr(0, file.size() - 4) : file;
     std::wstring tip = icon.tip;
     CharLowerBuffW(tip.data(), (DWORD)tip.size());
@@ -13211,6 +13241,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         msg = WM_APP_WHEEL;
     } else if (g_msgRelayMiddle && msg == g_msgRelayMiddle) {
         msg = WM_APP_MIDDLE;
+    }
+
+    // A bind's "flyout" (binds.cpp): one of these flyouts opened, or closed again if it's open. wParam: its kind.
+    static const UINT openFlyout = RegisterWindowMessageW(L"TourneTray_Flyout");
+    if (msg == openFlyout && openFlyout) {
+        int kind = (int)wParam;
+        if (kind > kFlyoutNone && kind <= kFlyoutDevices) {
+            if (IsFlyoutOpen(kind)) CloseFlyout();
+            else ShowFlyout(kind, kind == kFlyoutMixer ? kVolume : -1);
+        }
+        return 0;
     }
 
     static const UINT notificationCentre = RegisterWindowMessageW(L"TourneTray_NotificationCenter");

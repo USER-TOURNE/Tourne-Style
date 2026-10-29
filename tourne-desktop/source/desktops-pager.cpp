@@ -57,6 +57,7 @@ bool g_pagerCarryFromBar = false;  // carried off the bar: letting go on the bar
 bool g_pagerOverBar = false;     // carried from the bar and over it, where letting go docks it
 POINT g_pagerDragStart{};        // where the press was, in the pressed window
 POINT g_pagerGrab{};             // the pointer's place in the floating pager while carried
+int g_pagerDropHot = -1;         // the mark a window being dragged is over (lit as if pointed at)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Its choices and the desktops
@@ -513,7 +514,8 @@ void PlaceDockedPager(RECT area) {
 void DrawDockedPager(HDC dc, uint32_t* bits, int w, int h) {
     if (IsRectEmpty(&g_pagerRect)) return;
     PagerTarget t{bits, w, h, dc, false};
-    DrawPagerItems(t, g_pagerItems, PagerIndexOf(g_hot), PagerIndexOf(g_pressed), Vertical());
+    DrawPagerItems(t, g_pagerItems, g_pagerDropHot >= 0 ? g_pagerDropHot : PagerIndexOf(g_hot), PagerIndexOf(g_pressed),
+                   Vertical());
 }
 
 int DockedPagerHit(POINT pt) {
@@ -1278,6 +1280,134 @@ void PagerSendWindow(int target) {
     if (follow) PagerShowCurrent(target);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// A window dropped on a mark ("Send a window by dropping it on the pager"): dragged there by its title bar,
+// it goes back where it was picked up and is sent to that desktop. Windows says when a drag by hand starts
+// and ends (an out-of-context event hook on the bar's thread, two events a drag); only while one is under
+// way does a timer look for the mark under the pointer, to light it.
+
+struct PagerWindowDrag {
+    HWND wnd = nullptr;
+    WINDOWPLACEMENT was{sizeof(WINDOWPLACEMENT)};
+    RECT rect{};
+    UINT_PTR timer = 0;
+};
+PagerWindowDrag g_pagerWindowDrag;
+HWINEVENTHOOK g_pagerDragHook = nullptr;
+
+// The mark nearest the point, when it's within a few pixels of the run of marks (the marks are small and
+// the gaps between them count too); -1 for none.
+int NearestPagerMark(std::vector<RECT> const& items, POINT pt) {
+    int count = std::min((int)items.size(), g_pagerDesktops.count);
+    if (count <= 0) return -1;
+    RECT run = items[0];
+    for (int i = 1; i < count; i++) UnionRect(&run, &run, &items[i]);
+    InflateRect(&run, Px(8), Px(8));
+    if (!PtInRect(&run, pt)) return -1;
+    int best = -1, distance = INT_MAX;
+    for (int i = 0; i < count; i++) {
+        RECT const& r = items[i];
+        int dx = pt.x < r.left ? r.left - pt.x : pt.x >= r.right ? pt.x - r.right + 1 : 0;
+        int dy = pt.y < r.top ? r.top - pt.y : pt.y >= r.bottom ? pt.y - r.bottom + 1 : 0;
+        if (dx + dy < distance) distance = dx + dy, best = i;
+    }
+    return best;
+}
+
+// The desktop whose mark is at this point on the screen, floating or docked; -1 for none.
+int PagerDropTarget(POINT screen) {
+    if (g_pagerWnd && IsWindowVisible(g_pagerWnd)) {
+        POINT pt = screen;
+        ScreenToClient(g_pagerWnd, &pt);
+        return NearestPagerMark(g_pagerFloatItems, pt);
+    }
+    BarScope scope(&g_mainBar);
+    HWND bar = g_wnd;
+    if (!bar || IsRectEmpty(&g_pagerRect)) return -1;
+    POINT pt = screen;
+    ScreenToClient(bar, &pt);
+    return NearestPagerMark(g_pagerItems, pt);
+}
+
+// Whether a drag that just started is a move, not a resize: what the window says is under the pointer
+// (it's in its own move loop, which answers). A window that doesn't answer in time is taken as moved.
+bool PagerDragIsMove(HWND h) {
+    POINT pt;
+    if (!GetCursorPos(&pt)) return true;
+    DWORD_PTR hit = HTCAPTION;
+    if (!SendMessageTimeoutW(h, WM_NCHITTEST, 0, MAKELPARAM(pt.x, pt.y), SMTO_ABORTIFHUNG | SMTO_BLOCK, 100, &hit))
+        return true;
+    return !((hit >= HTLEFT && hit <= HTBOTTOMRIGHT) || hit == HTGROWBOX);
+}
+
+void PagerDropLight(int target) {
+    if (target == g_pagerDropHot) return;
+    g_pagerDropHot = target;
+    g_pagerFloatHot = target;
+    PagerMoveRedraw();
+}
+
+void PagerWindowDragEnd() {
+    auto& d = g_pagerWindowDrag;
+    if (d.timer) KillTimer(nullptr, d.timer);
+    d = {};
+    PagerDropLight(-1);
+}
+
+void CALLBACK PagerWindowDragTick(HWND, UINT, UINT_PTR, DWORD) {
+    POINT pt;
+    if (g_pagerWindowDrag.wnd && GetCursorPos(&pt)) PagerDropLight(PagerDropTarget(pt));
+}
+
+void CALLBACK PagerDragEvent(HWINEVENTHOOK, DWORD event, HWND wnd, LONG object, LONG child, DWORD, DWORD) {
+    if (object != OBJID_WINDOW || child != CHILDID_SELF || !wnd) return;
+    auto& d = g_pagerWindowDrag;
+    HWND top = GetAncestor(wnd, GA_ROOT);
+    if (event == EVENT_SYSTEM_MOVESIZESTART) {
+        PagerWindowDragEnd();
+        if (!g_settings.dropOnPager || !g_settings.desktops || !PagerShown() || g_pagerDesktops.ids.size() < 2 || !top)
+            return;
+        if (!PagerDragIsMove(top)) return;
+        WCHAR cls[64] = L"";
+        GetClassNameW(top, cls, ARRAYSIZE(cls));
+        Wh_Log(L"pager drop: a drag of %s started", cls);
+        d.wnd = top;
+        GetWindowPlacement(top, &d.was);
+        GetWindowRect(top, &d.rect);
+        d.timer = SetTimer(nullptr, 0, 30, PagerWindowDragTick);
+        return;
+    }
+    if (event != EVENT_SYSTEM_MOVESIZEEND || !d.wnd || top != d.wnd) return;
+    POINT pt{};
+    GetCursorPos(&pt);
+    int target = PagerDropTarget(pt);
+    PagerWindowDrag was = d;
+    PagerWindowDragEnd();
+    if (target < 0) return;
+    WCHAR cls[64] = L"";
+    GetClassNameW(was.wnd, cls, ARRAYSIZE(cls));
+    if (target >= (int)g_pagerDesktops.ids.size() || target == g_pagerDesktops.current) {
+        Wh_Log(L"pager drop: %s on desktop %d, the one showing (or unknown): nothing to do", cls, target + 1);
+        return;
+    }
+    // Back where it was picked up (it was let go of over the bar), maximized again if it was. (A window
+    // snapped to half the screen leaves its snap as it's picked up, so its size is no sign of a resize.)
+    if (was.was.showCmd == SW_SHOWMAXIMIZED) SetWindowPlacement(was.wnd, &was.was);
+    else
+        SetWindowPos(was.wnd, nullptr, was.rect.left, was.rect.top, was.rect.right - was.rect.left, was.rect.bottom - was.rect.top,
+                     SWP_NOZORDER | SWP_NOACTIVATE);
+    bool follow = g_settings.followMoved;
+    if (!VdmSendWindow(was.wnd, g_pagerDesktops.ids[target], follow)) {
+        Wh_Log(L"pager drop: %s on desktop %d: Windows' desktop manager wouldn't move it", cls, target + 1);
+        MessageBeep(MB_ICONWARNING);
+        return;
+    }
+    Wh_Log(L"pager drop: %s sent to desktop %d", cls, target + 1);
+    HideDesktopPreview();
+    CssDesktopsChanged();
+    if (follow) PagerShowCurrent(target);
+}
+
 // The taskbar's "Desktop keys", while the pager is on (it knows which desktop is showing). A key another
 // program already holds just isn't taken.
 void UnregisterDesktopKeys(HWND wnd) {
@@ -1694,9 +1824,15 @@ void RegisterPagerClass(HINSTANCE instance) {
     rename.hCursor = LoadCursorW(nullptr, IDC_IBEAM);
     rename.lpszClassName = kRenameClass;
     RegisterClassW(&rename);
+    if (!g_pagerDragHook)
+        g_pagerDragHook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, nullptr, PagerDragEvent, 0, 0,
+                                          WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 }
 
 void ClosePager() {
+    if (g_pagerDragHook) UnhookWinEvent(g_pagerDragHook);
+    g_pagerDragHook = nullptr;
+    PagerWindowDragEnd();
     PagerMoveStop();
     CloseRenameBox(false);
     if (g_pagerInstance) UnregisterClassW(kRenameClass, g_pagerInstance);

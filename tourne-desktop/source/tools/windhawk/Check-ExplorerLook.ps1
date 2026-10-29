@@ -1,6 +1,6 @@
 # Why doesn't Explorer look like it should? Reads (never writes) every piece that shapes
 # Explorer's look and prints what it finds, with a "!" in front of anything that would change it.
-# No administrator rights needed. Run it as yourself (not from Claude Code, whose HKCU and
+# No administrator rights needed. Run it as yourself (not from a packaged app's shell, whose HKCU and
 # %LOCALAPPDATA% reads are virtualized):
 #
 #   powershell -ExecutionPolicy Bypass -File .\tools\windhawk\Check-ExplorerLook.ps1

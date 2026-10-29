@@ -8,7 +8,7 @@ On my PC it runs as the Windows shell (shell mode), with Explorer kept underneat
 
 ## Get it
 
-- **Ready to run:** [`release/TourneDesktop-77a6918.zip`](release/) holds `TourneDesktop.exe`, its manifest, `tournectl.exe` (control it from scripts) and the README. Built from commit `77a6918` (2026-10-15), the newest build published here. My own PC already runs a few later fixes that aren't in this zip yet: startup apps in shell mode, tray icons that come back after a restart, and plugins that apply their settings at once.
+- **Ready to run:** [`release/TourneDesktop-d9e86c2.zip`](release/) holds `TourneDesktop.exe`, its manifest, `tournectl.exe` (control it from scripts), the App Styler's `TourneAppStyler.dll` and `tourne-appstyler-attach.exe`, and the README. Built from commit `d9e86c2` (2026-10-29), a beta: what changed since the last build is in the [CHANGELOG](CHANGELOG.md). Square window corners need [Tourne'Suite b65](../windhawk-mods/tourne-suite/).
 - **Build it yourself:** the whole source is in [`source/`](source/). From PowerShell:
 
       .\source\desktop\Build-TourneDesktop.ps1                    # every module

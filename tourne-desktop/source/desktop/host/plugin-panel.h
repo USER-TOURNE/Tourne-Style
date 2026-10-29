@@ -107,4 +107,8 @@ void SetGlyphLookup(std::function<std::wstring(const std::string&)> lookup);
 // closed it, doesn't open it again at once).
 ULONGLONG LastDismissed();
 
+// Edit desktop mode (plugin-runtime.cpp's toolbar): while on, a desktop widget is dragged from anywhere on it,
+// controls included, and wears a frame in the accent so it's seen as movable.
+void SetEditingDesktop(bool on);
+
 }  // namespace td::panel

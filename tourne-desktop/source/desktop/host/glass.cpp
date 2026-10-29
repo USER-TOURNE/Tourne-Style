@@ -599,6 +599,19 @@ std::vector<AppRule> ReadRules() {
     }
     for (auto& [name, rule] : apps)
         if (on[name] && !rule.exe.empty()) out.push_back(rule);
+    // Your apps: any programs, one kind and opacity for all of them. A program with its own row above keeps that row's.
+    std::wstring backdrop = Text(L"yours.backdrop");
+    int opacity = std::clamp(ToInt(Text(L"yours.opacity")), 30, 100);
+    std::wstring list = Text(L"yours.programs");
+    for (size_t at = 0; at <= list.size();) {
+        size_t comma = list.find(L',', at);
+        if (comma == std::wstring::npos) comma = list.size();
+        std::wstring exe = list.substr(at, comma - at);
+        exe.erase(0, exe.find_first_not_of(L" \t"));
+        exe.erase(exe.find_last_not_of(L" \t") + 1);
+        if (!exe.empty() && backdrop != L"none") out.push_back({exe, backdrop, opacity});
+        at = comma + 1;
+    }
     return out;
 }
 
@@ -637,6 +650,35 @@ void Undo(HWND w, const Applied& a) {
     else if (ex & WS_EX_LAYERED) SetLayeredWindowAttributes(w, 0, 255, LWA_ALPHA);
 }
 
+// Admin apps (Task Manager, Windhawk) run elevated, and Windows doesn't let a normal program change their windows. The
+// admin helper (TourneDesktop.exe --glass-admin, started by a logon task with the highest rights) takes those; this
+// process takes the rest. A process whose token can't be read counts as elevated.
+bool g_adminHelper = false;
+constexpr wchar_t kAdminClass[] = L"TourneDesktop_GlassAdmin";
+constexpr wchar_t kAdminTask[] = L"Tourne\\Glass for admin apps";
+
+bool WindowElevated(HWND w) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(w, &pid);
+    HANDLE p = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!p) return true;
+    HANDLE token = nullptr;
+    TOKEN_ELEVATION e{};
+    DWORD n = 0;
+    bool elevated = true;
+    if (OpenProcessToken(p, TOKEN_QUERY, &token)) {
+        if (GetTokenInformation(token, TokenElevation, &e, sizeof(e), &n)) elevated = e.TokenIsElevated != 0;
+        CloseHandle(token);
+    }
+    CloseHandle(p);
+    return elevated;
+}
+
+UINT AdminReloadMessage() {
+    static UINT msg = RegisterWindowMessageW(L"TourneDesktop.GlassAdminReload");
+    return msg;
+}
+
 void ApplyTo(HWND w) {
     if (!w || g_rules.empty() || g_applied.count(w)) return;
     wchar_t cls[64] = L"";
@@ -648,6 +690,7 @@ void ApplyTo(HWND w) {
     for (auto const& rule : g_rules) {
         if (_wcsicmp(rule.exe.c_str(), exe.c_str())) continue;
         if (!_wcsicmp(exe.c_str(), L"explorer.exe") && wcscmp(cls, L"CabinetWClass")) return;  // its folder windows only
+        if (WindowElevated(w) != g_adminHelper) return;  // the other process's window
         Applied a{rule.backdrop};
         int type = rule.backdrop == L"mica" ? 2 : rule.backdrop == L"acrylic" ? 3 : rule.backdrop == L"tabbed" ? 4 : 0;
         if (type) SetBackdropType(w, type);
@@ -767,6 +810,10 @@ void GlassDefaults(Settings& out) {
         out[base + L".backdrop"] = a.backdrop;
         out[base + L".opacity"] = a.opacity;
     }
+    out[L"glass.yours.programs"] = L"";
+    out[L"glass.yours.backdrop"] = L"mica";
+    out[L"glass.yours.opacity"] = L"100";
+    out[L"glass.yours.admin"] = L"0";
 }
 
 void GlassDescribe(SchemaInfo& info) {
@@ -818,6 +865,18 @@ void GlassDescribe(SchemaInfo& info) {
         SettingInfo& o = add(base + L".opacity", L"Opacity (%)", L"Below 100 the whole window is see-through, text too.");
         o.hasMin = o.hasMax = true, o.min = 30, o.max = 100;
     }
+    add(L"glass.yours", L"Your apps",
+        L"Glass in any program you add here, all with the same kind and opacity. A program with its own row above keeps that row's.");
+    add(L"glass.yours.programs", L"Programs", L"Add a running program, or find its file.");
+    add(L"glass.yours.backdrop", L"Kind", L"Mica, Acrylic and Tabbed show where the app lets them; Frosted works in any app.").options = {
+        {L"mica", L"Mica"}, {L"acrylic", L"Acrylic"}, {L"tabbed", L"Tabbed"}, {L"frosted", L"Frosted (any app)"}, {L"none", L"None"}};
+    SettingInfo& yo = add(L"glass.yours.opacity", L"Opacity (%)", L"Below 100 the whole window is see-through, text too.");
+    yo.hasMin = yo.hasMax = true, yo.min = 30, yo.max = 100;
+    add(L"glass.yours.admin", L"Admin apps too",
+        L"Task Manager, Windhawk and other apps that run as administrator: Windows only lets a program with admin rights change "
+        L"their windows, so a small helper with admin rights puts the glass on them (for every app above). Turning it on asks "
+        L"Windows once, to set the helper up to start when you sign in.")
+        .isSwitch = true;
 }
 
 void GlassStart(HWND host) {
@@ -851,6 +910,113 @@ void GlassApply() {
     }
     ApplyRules();
     WatchForeground(g_wanted.rims || !g_rules.empty());
+    GlassAdminSync();
+}
+
+namespace {
+DWORD RunHidden(std::wstring line) {
+    STARTUPINFOW si{sizeof(si)};
+    PROCESS_INFORMATION pi{};
+    if (!CreateProcessW(nullptr, line.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi)) return (DWORD)-1;
+    WaitForSingleObject(pi.hProcess, 15000);
+    DWORD code = (DWORD)-1;
+    GetExitCodeProcess(pi.hProcess, &code);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+    return code;
+}
+
+std::wstring SelfPath() {
+    wchar_t path[MAX_PATH];
+    GetModuleFileNameW(nullptr, path, MAX_PATH);
+    return path;
+}
+}  // namespace
+
+// Starts or stops the admin helper to match glass.yours.admin. Asks Windows (one UAC prompt) only when the setting has
+// just been turned on and the logon task isn't there yet.
+void GlassAdminSync() {
+    if (g_adminHelper) return;
+    static int last = -1;
+    bool want = GetInt(L"glass", L"enabled") && GetInt(L"glass", L"yours.admin");
+    HWND helper = FindWindowExW(HWND_MESSAGE, nullptr, kAdminClass, nullptr);
+    if (!want) {
+        if (helper) PostMessageW(helper, AdminReloadMessage(), 0, 0);  // it reads the settings, finds itself off and quits
+        last = 0;
+        return;
+    }
+    bool turnedOn = last == 0;
+    last = 1;
+    if (helper) {
+        PostMessageW(helper, AdminReloadMessage(), 0, 0);
+        return;
+    }
+    if (RunHidden(L"schtasks.exe /Run /TN \"" + std::wstring(kAdminTask) + L"\"") == 0) {
+        Log(L"admin helper started");
+        return;
+    }
+    if (!turnedOn) return;  // (no prompt at start-up; only when you turn it on)
+    SHELLEXECUTEINFOW ex{sizeof(ex)};
+    ex.fMask = SEE_MASK_NOASYNC;
+    ex.lpVerb = L"runas";
+    std::wstring self = SelfPath();
+    ex.lpFile = self.c_str();
+    ex.lpParameters = L"--glass-admin-setup";
+    ex.nShow = SW_HIDE;
+    Log(L"admin helper: setting up %s", ShellExecuteExW(&ex) ? L"(asked)" : L"(declined)");
+}
+
+// TourneDesktop.exe --glass-admin-setup (elevated): the logon task, then start it.
+int GlassAdminSetup() {
+    wchar_t user[256] = L"", domain[256] = L"";
+    GetEnvironmentVariableW(L"USERNAME", user, 256);
+    GetEnvironmentVariableW(L"USERDOMAIN", domain, 256);
+    std::wstring task = L"\"" + std::wstring(kAdminTask) + L"\"";
+    std::wstring create = L"schtasks.exe /Create /F /TN " + task + L" /SC ONLOGON /RL HIGHEST /IT /RU \"" + domain + L"\\" + user +
+                          L"\" /TR \"\\\"" + SelfPath() + L"\\\" --glass-admin\"";
+    DWORD made = RunHidden(create);
+    if (made == 0) RunHidden(L"schtasks.exe /Run /TN " + task);
+    return (int)made;
+}
+
+// TourneDesktop.exe --glass-admin (from the task, elevated): app glass for admin windows only. Waits on window
+// events and on the main program's "settings changed" message; nothing else.
+int GlassAdminRun(bool (*reload)()) {
+    if (FindWindowExW(HWND_MESSAGE, nullptr, kAdminClass, nullptr)) return 0;
+    g_adminHelper = true;
+    auto wanted = [] { return GetInt(L"glass", L"enabled") && GetInt(L"glass", L"yours.admin"); };
+    if (!wanted()) return 0;
+    WNDCLASSW wc{};
+    wc.hInstance = GetModuleHandleW(nullptr);
+    wc.lpszClassName = kAdminClass;
+    wc.lpfnWndProc = [](HWND wnd, UINT msg, WPARAM wp, LPARAM lp) -> LRESULT {
+        if (GlassMessage(wnd, msg, wp, lp)) return 0;
+        return DefWindowProcW(wnd, msg, wp, lp);
+    };
+    RegisterClassW(&wc);
+    HWND wnd = CreateWindowExW(0, kAdminClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, wc.hInstance, nullptr);
+    if (!wnd) return 1;
+    ChangeWindowMessageFilterEx(wnd, AdminReloadMessage(), MSGFLT_ALLOW, nullptr);
+    g_host = wnd;
+    ApplyRules();
+    WatchForeground(!g_rules.empty());
+    Log(L"admin helper running, %d app rules", (int)g_rules.size());
+    MSG m;
+    while (GetMessageW(&m, nullptr, 0, 0) > 0) {
+        if (m.message == AdminReloadMessage()) {
+            reload();
+            if (!wanted()) break;
+            ApplyRules();
+            WatchForeground(!g_rules.empty());
+            continue;
+        }
+        TranslateMessage(&m);
+        DispatchMessageW(&m);
+    }
+    WatchForeground(false);
+    for (auto const& [w, a] : g_applied) Undo(w, a);
+    g_applied.clear();
+    return 0;
 }
 
 void GlassStop() {

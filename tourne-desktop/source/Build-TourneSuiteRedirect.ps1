@@ -110,6 +110,7 @@ $parts = @(
     @{ Id = 'local@tourne-theme-gaps';           Ns = 'part_theme_gaps';          Prefix = 'themeGaps';        Title = 'Theme Gaps';           Win64 = $false; Source = (Join-Path $PSScriptRoot 'theme-gaps.cpp') }
     @{ Id = 'local@tourne-dark-magic';           Ns = 'part_dark_magic';          Prefix = 'darkMagic';        Title = 'Dark Magic';           Win64 = $false; Source = (Join-Path $PSScriptRoot 'dark-magic.cpp') }
     @{ Id = 'local@tourne-classic-menus';        Ns = 'part_classic_menus';       Prefix = 'classicMenus';     Title = 'Classic Menus';        Win64 = $false; Source = (Join-Path $PSScriptRoot 'immersive-menus.cpp') }
+    @{ Id = 'local@tourne-square-corners';       Ns = 'part_square_corners';      Prefix = 'squareCorners';    Title = 'Square Corners';       Win64 = $false; Source = (Join-Path $PSScriptRoot 'square-corners.cpp') }
 )
 
 # Parts that start switched off: the test taskbar, and the switcher, which
@@ -123,10 +124,18 @@ function Read-Source($part) {
     $path = if ($part.Source) { $part.Source } else { Join-Path $ModsSource "$($part.Id).wh.cpp" }
     $text = [IO.File]::ReadAllText($path) -replace "`r`n", "`n"
     $dir = Split-Path $path
-    [regex]::Replace($text, '(?m)^// @inline (\S+)$', {
-        param($m)
-        ([IO.File]::ReadAllText((Join-Path $dir $m.Groups[1].Value)) -replace "`r`n", "`n").TrimEnd("`n")
-    })
+    # Inlined files can inline others; each file comes in once per part, where it's first named.
+    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $expand = $null
+    $expand = {
+        param($body)
+        [regex]::Replace($body, '(?m)^// @inline (\S+)$', {
+            param($m)
+            if (-not $seen.Add($m.Groups[1].Value)) { return '' }
+            & $expand (([IO.File]::ReadAllText((Join-Path $dir $m.Groups[1].Value)) -replace "`r`n", "`n").TrimEnd("`n"))
+        })
+    }
+    & $expand $text
 }
 
 # A part's current settings, from the installed suite, where each is stored as

@@ -31,6 +31,10 @@
 #include <utility>
 #include <vector>
 
+// An item may hold a Tourne command, and the help says what it would do: the
+// part that runs commands is asked, through tournectl's pipe (repo root).
+#include "tourne-pipe.cpp"
+
 #include "standalone.h"
 #include "td.h"
 
@@ -510,6 +514,20 @@ std::wstring HelpFor(Node const* n) {
         if (c == a.command) return std::wstring(L"Tourne's own action: ") + a.label + L".";
     for (auto const& a : kLive)
         if (c == a.command) return std::wstring(L"A submenu that fills itself each time it opens: ") + a.label + L".";
+    // The command language: one or more steps, the same words a key bind uses.
+    // The part that runs them is asked what this one would do, so the steps
+    // read back here before the item is ever clicked.
+    if (c.rfind(L"tourne:do", 0) == 0) {
+        std::wstring command = c.size() > 9 ? c.substr(9) : L"";
+        while (!command.empty() && (command.front() == L' ' || command.front() == L'\t')) command.erase(0, 1);
+        if (command.empty()) return L"A Tourne command, but there's none after tourne:do. Try tourne:do workspace 2.";
+        std::wstring said = AskTourne(L"check " + command);
+        if (said.empty())
+            return L"A Tourne command. It needs Key binds on with \"Let scripts control Tourne\", which is off just now, "
+                   L"so this item would do nothing.";
+        if (said.rfind(L"error", 0) == 0) return L"A Tourne command, but " + said.substr(said.find(L' ') + 1);
+        return L"A Tourne command, in steps:\r\n" + said;
+    }
     if (c.rfind(L"tourne:folder:", 0) == 0) return L"A submenu that fills itself with this folder's contents each time it opens.";
     if (c.rfind(L"tourne:desktop:", 0) == 0) return L"Goes to that virtual desktop.";
     if (c.rfind(L"shell:AppsFolder\\", 0) == 0) return L"Opens this app (its app id). Parameters aren't used.";

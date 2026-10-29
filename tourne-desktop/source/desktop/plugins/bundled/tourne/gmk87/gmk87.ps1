@@ -167,13 +167,19 @@ public static class Gmk {
     Send(0x02, null, 0);
     var cfg = new byte[48];
     for (int p = 0; p < 48; p += 4) {
-      var r = Send(0x05, new byte[4], p);  // (data starts at reply byte 8: r[4..7])
-      Array.Copy(r, 4, cfg, p, 4);
+      // (the reply's 4 bytes start right after the command, report byte 4: r[0..3]. Read at r[4..7], every
+      // setting came back 0, and a write then put those zeros on the keyboard; checked on the PC 2026-10-20)
+      var r = Send(0x05, new byte[4], p);
+      Array.Copy(r, 0, cfg, p, 4);
     }
     return cfg;
   }
 
   public static void WriteConfig(byte[] cfg) {
+    // (never write a read that came back empty: the keyboard always has an effect or a brightness, a clock)
+    bool any = false;
+    foreach (var x in cfg) if (x != 0) { any = true; break; }
+    if (!any) throw new InvalidOperationException("the keyboard's settings read as all zeros; not writing them back");
     Send(0x01, null, 0);
     Send(0x06, cfg, 0);
     Send(0x02, null, 0);

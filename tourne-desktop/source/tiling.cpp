@@ -9,28 +9,7 @@
 // Windows are placed by their visible frames (DWM's extended frame bounds),
 // so the gaps are what the eye sees, not the invisible resize borders.
 
-enum class TileLayout {
-    Off,
-    Same,  // other screens: as the main screen
-    Columns,
-    Rows,
-    VerticalStack,
-    RightMainVerticalStack,
-    HorizontalStack,
-    UltrawideVerticalStack,
-    Grid,
-    Bsp,
-    Monocle,
-    Layers,  // threes laid over each other: 1 fills, 2 halves, 3 main and two; the 4th starts a layer on top
-};
-
-constexpr TileLayout kLayoutCycle[] = {
-    TileLayout::Columns,        TileLayout::Rows,
-    TileLayout::VerticalStack,  TileLayout::RightMainVerticalStack,
-    TileLayout::HorizontalStack, TileLayout::UltrawideVerticalStack,
-    TileLayout::Grid,           TileLayout::Bsp,
-    TileLayout::Monocle,        TileLayout::Layers,
-};
+// @inline tiling-geometry.cpp
 
 struct TilingSettings {
     UINT leaderMods = 0, leaderVk = 0;  // the tiling key (MOD_ flags and a key); none when 0
@@ -43,10 +22,26 @@ struct TilingSettings {
     bool restoreMaximized = true;
     bool tileElevated = false;
     bool keepResized = true;
+    int newWindow = 0;  // kNewEnd, kNewFirst, kNewAfterFocused or kNewBeforeFocused
     bool rememberAll = true;
     int fit = 0;  // kFitForce, kFitOverlap or kFitFloat
     int minWidth = 0, minHeight = 0;
     std::wstring floatApps, floatTitles, floatClasses;
+    // Slice: which window keeps the strip (its program, class or title, with *
+    // and ?; empty: the first window on the screen), which edge, how much of
+    // the screen it takes and what lays out the rest.
+    std::wstring sliceWindow;
+    SliceSpec slice;
+    // ScreenSplit: the screen's regions, from the tiling.split lines.
+    struct Region {
+        std::wstring name, match;              // match: programs, classes or titles; empty: everything left over
+        int l = 0, t = 0, w = 100, h = 100;    // its share of the screen, in percent
+        TileLayout layout = TileLayout::Columns;
+    };
+    std::vector<Region> regions;
+    // Script: a layout of the user's own, from tiling.script ("spread, 3": the
+    // file in the Layouts folder, then whatever the script reads as options).
+    std::wstring script, scriptOptions;
     int focusBorder = 0;        // kBorderNone, kBorderTiled or kBorderAll
     bool focusAccent = true;    // Windows' accent colour, or focusColor
     COLORREF focusColor = 0;
@@ -84,6 +79,7 @@ constexpr UINT_PTR kTimerTile = 3;
 
 // The running state, on the switcher's thread.
 std::vector<HWND> g_tileOrder;  // every tiled window, in its order
+HWND g_focused, g_focusedBefore;  // the window in front, and the one before it (where a new window lands)
 std::vector<HWND> g_floating;   // set floating with the tiling key and Space
 bool g_autoTile = false;
 bool g_userMoving = false;
@@ -134,6 +130,11 @@ TileLayout ParseLayout(std::wstring const& v, TileLayout fallback) {
     if (v == L"ultrawideVerticalStack") return TileLayout::UltrawideVerticalStack;
     if (v == L"grid") return TileLayout::Grid;
     if (v == L"bsp") return TileLayout::Bsp;
+    if (v == L"spiral") return TileLayout::Spiral;
+    if (v == L"threeColumn") return TileLayout::ThreeColumn;
+    if (v == L"slice") return TileLayout::Slice;
+    if (v == L"screenSplit") return TileLayout::ScreenSplit;
+    if (v == L"script") return TileLayout::Script;
     if (v == L"monocle") return TileLayout::Monocle;
     if (v == L"layers") return TileLayout::Layers;
     return fallback;
@@ -201,6 +202,59 @@ bool ParseColor(std::wstring v, COLORREF* out) {
 
 void LoadLayoutChoices();
 
+// The ScreenSplit regions, one a line, as the window rules are written:
+//
+//     region = sidebar, 0 0 25 100, verticalStack, Spotify.exe, Discord.exe
+//     region = main, 25 0 75 100, grid
+//
+// The name is for reading, the four numbers are the region's share of the
+// screen in percent (left top width height), then its layout, then the
+// programs, classes or titles whose windows go in it. A region with none named
+// takes everything left over; with no such region, the last one does.
+std::vector<TilingSettings::Region> ReadRegions() {
+    std::vector<TilingSettings::Region> out;
+    // Its own trim: the one in binds.cpp comes after this file.
+    auto trim = [](std::wstring const& text) {
+        size_t a = text.find_first_not_of(L" \t\r\n"), b = text.find_last_not_of(L" \t\r\n");
+        return a == std::wstring::npos ? std::wstring() : text.substr(a, b - a + 1);
+    };
+    int empty = 0;
+    for (int i = 0; i < 64 && empty < 4; i++) {
+        PCWSTR value = Wh_GetStringSetting(L"tiling.split[%d]", i);
+        std::wstring line = trim(value ? value : L"");
+        Wh_FreeStringSetting(value);
+        if (line.empty() || line[0] == L'#') {
+            empty++;
+            continue;
+        }
+        empty = 0;
+        if (size_t eq = line.find(L'='); eq != std::wstring::npos && Lower(trim(line.substr(0, eq))) == L"region")
+            line = trim(line.substr(eq + 1));
+        std::vector<std::wstring> parts;
+        for (size_t at = 0; at <= line.size();) {
+            size_t comma = line.find(L',', at);
+            parts.push_back(trim(line.substr(at, comma == std::wstring::npos ? comma : comma - at)));
+            if (comma == std::wstring::npos) break;
+            at = comma + 1;
+        }
+        if (parts.size() < 2) {
+            Wh_Log(L"tiling: a region needs a name and its share of the screen: %s", line.c_str());
+            continue;
+        }
+        TilingSettings::Region r;
+        r.name = parts[0];
+        if (swscanf(parts[1].c_str(), L"%d %d %d %d", &r.l, &r.t, &r.w, &r.h) != 4) {
+            Wh_Log(L"tiling: a region's share reads as four numbers, left top width height: %s", parts[1].c_str());
+            continue;
+        }
+        if (parts.size() > 2 && !parts[2].empty()) r.layout = ParseLayout(parts[2], TileLayout::Columns);
+        for (size_t i2 = 3; i2 < parts.size(); i2++)
+            if (!parts[i2].empty()) r.match += (r.match.empty() ? L"" : L",") + parts[i2];
+        out.push_back(std::move(r));
+    }
+    return out;
+}
+
 void LoadTilingSettings() {
     TilingSettings s;
     ParseHotkey(TextSetting(L"tiling.leader"), &s.leaderMods, &s.leaderVk);
@@ -221,8 +275,26 @@ void LoadTilingSettings() {
     s.floatApps = TextSetting(L"tiling.floatApps");
     s.floatTitles = TextSetting(L"tiling.floatTitles");
     s.floatClasses = TextSetting(L"tiling.floatClasses");
+    s.sliceWindow = TextSetting(L"tiling.sliceWindow");
+    std::wstring edge = TextSetting(L"tiling.sliceEdge");
+    s.slice.edge = edge == L"right" ? kSliceRight : edge == L"top" ? kSliceTop : edge == L"bottom" ? kSliceBottom : kSliceLeft;
+    s.slice.percent = IntSetting(L"tiling.sliceSize", 0, 90);
+    s.slice.fallback = ParseLayout(TextSetting(L"tiling.sliceLayout"), TileLayout::VerticalStack);
+    s.regions = ReadRegions();
+    // "spread, 3": the file, then the rest of the line for the script itself.
+    std::wstring script = TextSetting(L"tiling.script");
+    size_t comma = script.find(L',');
+    s.script = script.substr(0, comma);
+    s.scriptOptions = comma == std::wstring::npos ? L"" : script.substr(comma + 1);
+    while (!s.script.empty() && iswspace(s.script.back())) s.script.pop_back();
+    while (!s.scriptOptions.empty() && iswspace(s.scriptOptions.front())) s.scriptOptions.erase(0, 1);
     s.tileElevated = Wh_GetIntSetting(L"tiling.tileElevated") != 0;
     s.keepResized = Wh_GetIntSetting(L"tiling.keepResized") != 0;
+    std::wstring landing = TextSetting(L"tiling.newWindow");
+    s.newWindow = landing == L"first" ? kNewFirst
+                  : landing == L"afterFocused" ? kNewAfterFocused
+                  : landing == L"beforeFocused" ? kNewBeforeFocused
+                                                 : kNewEnd;
     s.rememberAll = Wh_GetIntSetting(L"tiling.rememberAll") != 0;
     std::wstring fit = TextSetting(L"tiling.tooSmall");
     s.fit = fit == L"overlap" ? kFitOverlap : fit == L"float" ? kFitFloat : kFitForce;
@@ -493,123 +565,6 @@ TileLayout LayoutFor(HMONITOR monitor, int n) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Layouts
-
-// A length cut into pieces with gaps between; the odd pixels go to the first.
-std::vector<std::pair<int, int>> Cut(int start, int length, int count, int gap) {
-    std::vector<std::pair<int, int>> pieces;
-    int room = std::max(0, length - gap * (count - 1));
-    int each = room / count, extra = room % count;
-    for (int i = 0, at = start; i < count; i++) {
-        int size = each + (i < extra ? 1 : 0);
-        pieces.push_back({at, at + size});
-        at += size + gap;
-    }
-    return pieces;
-}
-
-// A length cut in two by a share (percent) of it for the first part.
-std::pair<std::pair<int, int>, std::pair<int, int>> CutShare(int start, int length, int percent, int gap) {
-    int room = std::max(0, length - gap);
-    int first = room * percent / 100;
-    return {{start, start + first}, {start + first + gap, start + length}};
-}
-
-void Bsp(RECT area, int count, bool across, int percent, int gap, std::vector<RECT>* out) {
-    if (count == 1) {
-        out->push_back(area);
-        return;
-    }
-    RECT a = area, b = area;
-    if (across) {
-        auto [l, r] = CutShare(area.left, area.right - area.left, percent, gap);
-        a.left = l.first, a.right = l.second, b.left = r.first, b.right = r.second;
-    } else {
-        auto [t, u] = CutShare(area.top, area.bottom - area.top, percent, gap);
-        a.top = t.first, a.bottom = t.second, b.top = u.first, b.bottom = u.second;
-    }
-    out->push_back(a);
-    Bsp(b, count - 1, !across, 50, gap, out);
-}
-
-std::vector<RECT> LayoutRects(TileLayout layout, RECT area, int n, int gap, int percent) {
-    std::vector<RECT> rects;
-    if (n <= 0) return rects;
-    int w = area.right - area.left, h = area.bottom - area.top;
-    auto column = [&](int left, int right, int count) {
-        for (auto [t, b] : Cut(area.top, h, count, gap)) rects.push_back({left, t, right, b});
-    };
-    auto row = [&](int top, int bottom, int count) {
-        for (auto [l, r] : Cut(area.left, w, count, gap)) rects.push_back({l, top, r, bottom});
-    };
-    if (n == 1 || layout == TileLayout::Monocle) {
-        rects.assign(n, area);
-        return rects;
-    }
-    switch (layout) {
-        case TileLayout::Rows:
-            column(area.left, area.right, n);
-            break;
-        case TileLayout::VerticalStack: {
-            auto [main, stack] = CutShare(area.left, w, percent, gap);
-            rects.push_back({main.first, area.top, main.second, area.bottom});
-            column(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::RightMainVerticalStack: {
-            auto [stack, main] = CutShare(area.left, w, 100 - percent, gap);
-            rects.push_back({main.first, area.top, main.second, area.bottom});
-            column(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::HorizontalStack: {
-            auto [main, stack] = CutShare(area.top, h, percent, gap);
-            rects.push_back({area.left, main.first, area.right, main.second});
-            row(stack.first, stack.second, n - 1);
-            break;
-        }
-        case TileLayout::UltrawideVerticalStack: {
-            if (n == 2) return LayoutRects(TileLayout::VerticalStack, area, n, gap, percent);
-            // The main window in the middle, one to its left, the rest stacked
-            // to its right.
-            int mainW = std::max(0, w - 2 * gap) * percent / 100;
-            int side = std::max(0, w - 2 * gap - mainW) / 2;
-            int mainLeft = area.left + side + gap;
-            rects.push_back({mainLeft, area.top, mainLeft + mainW, area.bottom});
-            rects.push_back({area.left, area.top, area.left + side, area.bottom});
-            column(mainLeft + mainW + gap, area.right, n - 2);
-            break;
-        }
-        case TileLayout::Grid: {
-            int columns = (int)std::ceil(std::sqrt((double)n));
-            auto spans = Cut(area.left, w, columns, gap);
-            for (int c = 0; c < columns; c++) {
-                int count = n / columns + (c < n % columns ? 1 : 0);
-                if (count) column(spans[c].first, spans[c].second, count);
-            }
-            break;
-        }
-        case TileLayout::Bsp:
-            Bsp(area, n, true, percent, gap, &rects);
-            break;
-        case TileLayout::Layers: {
-            // The first three as the vertical stack grows (one fills, two halves, then the main and two
-            // stacked); each three after is a layer over them in the three places, the 4th in the main.
-            for (int at = 0; at < n; at += 3) {
-                int count = at == 0 ? std::min(3, n) : 3;
-                auto layer = LayoutRects(TileLayout::VerticalStack, area, count, gap, percent);
-                for (int i = 0; i < count && at + i < n; i++) rects.push_back(layer[i]);
-            }
-            break;
-        }
-        default:  // Columns
-            row(area.top, area.bottom, n);
-            break;
-    }
-    return rects;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Tiling
 
 // A program running as administrator places its own window, through the
@@ -837,10 +792,55 @@ std::vector<std::pair<HWND, HMONITOR>> ScanTileable() {
     return scan.windows;
 }
 
-// A screen's tiled windows in their order: the known ones as they were, new
-// ones after them by where they are (or all by where they are, when asked).
 std::vector<HWND> FoldGroups(std::vector<HWND> const& windows);
 
+// The windows that have just opened, put where tiling.newWindow says
+// (NewWindowAt, in tiling-geometry.cpp, which the order check covers).
+void InsertFresh(std::vector<HWND>* ordered, std::vector<HWND> const& fresh) {
+    if (fresh.empty()) return;
+    size_t at = NewWindowAt(*ordered, fresh, g_tiling.newWindow, g_focused, g_focusedBefore);
+    ordered->insert(ordered->begin() + at, fresh.begin(), fresh.end());
+}
+
+// A window against a list of programs, classes or titles (commas between, * and
+// ? matching any text): what the Slice layout's strip and the ScreenSplit
+// regions name their windows with.
+bool MatchesWindow(std::wstring const& list, HWND h) {
+    if (list.empty()) return false;
+    std::wstring program = ProgramOf(h);
+    if (MatchesList(list, program.substr(program.find_last_of(L'\\') + 1))) return true;
+    WCHAR cls[64] = L"";
+    GetClassNameW(h, cls, ARRAYSIZE(cls));
+    return MatchesList(list, cls) || MatchesList(list, Title(h));
+}
+
+// The windows of each ScreenSplit region, in the regions' own order: a window
+// goes in the first region that names it, and the rest in the first region that
+// names none (the last region if every one of them names something).
+std::vector<std::vector<HWND>> SplitGroups(std::vector<HWND> const& windows) {
+    std::vector<std::vector<HWND>> groups(g_tiling.regions.size());
+    if (groups.empty()) return groups;
+    size_t spare = groups.size() - 1;
+    for (size_t r = 0; r < g_tiling.regions.size(); r++)
+        if (g_tiling.regions[r].match.empty()) {
+            spare = r;
+            break;
+        }
+    for (HWND h : windows) {
+        size_t to = spare;
+        for (size_t r = 0; r < g_tiling.regions.size(); r++)
+            if (MatchesWindow(g_tiling.regions[r].match, h)) {
+                to = r;
+                break;
+            }
+        groups[to].push_back(h);
+    }
+    return groups;
+}
+
+// A screen's tiled windows in their order: the known ones as they were, new
+// ones where tiling.newWindow says (the end unless it's changed), sorted among
+// themselves by where they are. byPosition: all of them by where they are.
 std::vector<HWND> WindowsOn(HMONITOR monitor, bool byPosition) {
     std::erase_if(g_tileOrder, [](HWND h) { return !IsWindow(h); });
     std::vector<HWND> here, fresh;
@@ -859,16 +859,104 @@ std::vector<HWND> WindowsOn(HMONITOR monitor, bool byPosition) {
         int bx = (rb.left + rb.right) / 2, by = (rb.top + rb.bottom) / 2;
         return vertical ? std::tie(ay, ax) < std::tie(by, bx) : std::tie(ax, ay) < std::tie(bx, by);
     });
-    ordered.insert(ordered.end(), fresh.begin(), fresh.end());
+    InsertFresh(&ordered, fresh);
+    // Slice: the window the strip is for goes first, because the strip is the
+    // layout's first place.
+    if (!g_tiling.sliceWindow.empty() && LayoutFor(monitor, (int)here.size()) == TileLayout::Slice)
+        for (size_t i = 1; i < ordered.size(); i++)
+            if (MatchesWindow(g_tiling.sliceWindow, ordered[i])) {
+                std::rotate(ordered.begin(), ordered.begin() + i, ordered.begin() + i + 1);
+                break;
+            }
+    // ScreenSplit: region by region, so a window and its place in the layout
+    // are the same number along (RectsFor groups them the same way).
+    if (!g_tiling.regions.empty() && LayoutFor(monitor, (int)here.size()) == TileLayout::ScreenSplit) {
+        std::vector<HWND> byRegion;
+        for (auto const& group : SplitGroups(ordered))
+            for (HWND h : group) byRegion.push_back(h);
+        ordered = std::move(byRegion);
+    }
     // The order kept: this screen's, after the others'.
     std::erase_if(g_tileOrder, [&](HWND h) { return std::find(ordered.begin(), ordered.end(), h) != ordered.end(); });
     g_tileOrder.insert(g_tileOrder.end(), ordered.begin(), ordered.end());
     return FoldGroups(ordered);  // (a group of windows takes one tile: tiling-groups.cpp)
 }
 
+// A layout of the user's own: the windows handed to the script in the Layouts
+// folder (layout-scripts.cpp), and what it answered with. Empty when there is
+// no script, when it stopped, or when it answered with something else, and
+// empty in the Windhawk suite, which has no Luau in it.
+std::vector<RECT> ScriptRects(RECT box, std::vector<HWND> const& windows, int gap, int percent) {
+#ifdef TD_PREFIX
+    if (g_tiling.script.empty() || windows.empty()) return {};
+    td::LayoutScriptAsk ask;
+    ask.script = g_tiling.script;
+    ask.options = g_tiling.scriptOptions;
+    ask.screen = box;
+    ask.gap = gap;
+    ask.ratio = percent;
+    HWND front = GetForegroundWindow();
+    for (HWND h : windows) {
+        td::LayoutScriptWindow w;
+        w.rect = FrameOf(h);
+        std::wstring program = ProgramOf(h);
+        w.program = program.substr(program.find_last_of(L'\\') + 1);
+        WCHAR cls[64] = L"";
+        GetClassNameW(h, cls, ARRAYSIZE(cls));
+        w.cls = cls;
+        w.title = Title(h);
+        w.focused = h == front;
+        ask.windows.push_back(std::move(w));
+    }
+    return td::LayoutScriptRects(ask);
+#else
+    (void)box, (void)windows, (void)gap, (void)percent;
+    return {};
+#endif
+}
+
+// A layout's places for these windows in this box. The same as LayoutRects,
+// except that a script layout is handed the windows themselves, and columns
+// stand in for a script that didn't answer.
+std::vector<RECT> RectsIn(TileLayout layout, RECT box, std::vector<HWND> const& windows, int gap, int percent) {
+    if (layout == TileLayout::Script) {
+        std::vector<RECT> out = ScriptRects(box, windows, gap, percent);
+        if (!out.empty()) return out;
+        layout = TileLayout::Columns;
+    }
+    return LayoutRects(layout, box, (int)windows.size(), gap, percent, g_tiling.slice);
+}
+
 std::vector<RECT> RectsFor(HMONITOR monitor, int n) {
     UINT dpi = MonitorDpi(monitor);
-    return LayoutRects(LayoutFor(monitor, n), TileArea(monitor), n, MulDiv(g_tiling.gapInner, dpi, 96), RatioFor(monitor));
+    return LayoutRects(LayoutFor(monitor, n), TileArea(monitor), n, MulDiv(g_tiling.gapInner, dpi, 96), RatioFor(monitor),
+                       g_tiling.slice);
+}
+
+// With the windows themselves, which is what ScreenSplit needs: each region
+// lays out its own windows in its own share of the screen, in the order
+// WindowsOn put them in. Every other layout only needs the count.
+std::vector<RECT> RectsFor(HMONITOR monitor, std::vector<HWND> const& windows) {
+    int n = (int)windows.size();
+    TileLayout layout = LayoutFor(monitor, n);
+    UINT dpi = MonitorDpi(monitor);
+    int gap = MulDiv(g_tiling.gapInner, dpi, 96), percent = RatioFor(monitor);
+    RECT area = TileArea(monitor);
+    if (layout != TileLayout::ScreenSplit || g_tiling.regions.empty())
+        return RectsIn(layout, area, windows, gap, percent);
+    std::vector<std::vector<HWND>> groups = SplitGroups(windows);
+    std::vector<RECT> out;
+    for (size_t r = 0; r < groups.size(); r++) {
+        if (groups[r].empty()) continue;
+        TilingSettings::Region const& region = g_tiling.regions[r];
+        TileLayout inside = region.layout == TileLayout::ScreenSplit || region.layout == TileLayout::Off ||
+                                    region.layout == TileLayout::Same
+                                ? TileLayout::Columns
+                                : region.layout;
+        RECT box = RegionArea(area, region.l, region.t, region.w, region.h, gap);
+        for (RECT const& rect : RectsIn(inside, box, groups[r], gap, percent)) out.push_back(rect);
+    }
+    return out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -978,7 +1066,7 @@ void TileMonitor(HMONITOR monitor, bool byPosition) {
     // without it (a few times at most).
     for (int pass = 0; pass < 4; pass++) {
         std::vector<HWND> windows = WindowsOn(monitor, byPosition && pass == 0);
-        std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
+        std::vector<RECT> rects = RectsFor(monitor, windows);
         bool again = false;
         for (size_t i = 0; i < windows.size() && i < rects.size(); i++) {
             if (PlaceGroupTile(windows[i], rects[i])) continue;
@@ -1049,7 +1137,7 @@ void TileCommandRun(WPARAM command, LPARAM arg) {
         case kTileMove:
         case kTileFocus: {
             std::vector<HWND> windows = WindowsOn(monitor, false);
-            std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
+            std::vector<RECT> rects = RectsFor(monitor, windows);
             int n = (int)windows.size();
             int from = (int)(std::find(windows.begin(), windows.end(), fg) - windows.begin());
             int to = -1;
@@ -1089,7 +1177,18 @@ void TileCommandRun(WPARAM command, LPARAM arg) {
         case kTileLayout: {
             TileLayout now = LayoutFor(monitor, (int)WindowsOn(monitor, false).size());
             auto it = std::find(std::begin(kLayoutCycle), std::end(kLayoutCycle), now);
-            TileLayout next = it == std::end(kLayoutCycle) || it + 1 == std::end(kLayoutCycle) ? kLayoutCycle[0] : *(it + 1);
+            TileLayout next = kLayoutCycle[0];
+            // The cycle skips a layout there is nothing to lay out with: the
+            // split screen with no regions written, a script with no file
+            // named. Both would look like columns and leave no way back.
+            for (size_t step = 0; step < std::size(kLayoutCycle); step++) {
+                size_t at = it == std::end(kLayoutCycle) ? step
+                                                         : (size_t)(it - std::begin(kLayoutCycle)) + 1 + step;
+                next = kLayoutCycle[at % std::size(kLayoutCycle)];
+                bool nothingToUse = (next == TileLayout::ScreenSplit && g_tiling.regions.empty()) ||
+                                    (next == TileLayout::Script && g_tiling.script.empty());
+                if (!nothingToUse) break;
+            }
             SetLayoutChoice(monitor, next);
             TileMonitor(monitor, false);
             break;
@@ -1124,7 +1223,7 @@ void DropTiled(HWND h) {
     GetCursorPos(&pt);
     HMONITOR monitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
     std::vector<HWND> windows = WindowsOn(monitor, false);
-    std::vector<RECT> rects = RectsFor(monitor, (int)windows.size());
+    std::vector<RECT> rects = RectsFor(monitor, windows);
     // The place under the pointer; where places lie over each other (Layers), the window seen there.
     std::vector<HWND> under;
     for (size_t i = 0; i < rects.size() && i < windows.size(); i++)
@@ -1190,6 +1289,7 @@ void CALLBACK TileEventProc(HWINEVENTHOOK, DWORD event, HWND h, LONG object, LON
     if (!h || object != OBJID_WINDOW || child != CHILDID_SELF) return;
     PlacesEvent(event, h);
     if (event == EVENT_SYSTEM_FOREGROUND) {
+        if (h != g_focused) g_focusedBefore = g_focused, g_focused = h;
         UpdateFocusBorder(h);
         return;
     }
@@ -1234,9 +1334,11 @@ void StartTileEvents() {
         g_tileHooks[1] = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_HIDE, nullptr, TileEventProc, 0, 0, flags);
         g_tileHooks[2] = SetWinEventHook(EVENT_OBJECT_CLOAKED, EVENT_OBJECT_UNCLOAKED, nullptr, TileEventProc, 0, 0, flags);
     }
-    // The focus moving: for the border, and for the places, whose frames are
-    // noted as windows are left (rather than at every move any window makes).
-    if (g_tiling.rememberAll || g_tiling.focusBorder != kBorderNone)
+    // The focus moving: for the border, for the places, whose frames are noted
+    // as windows are left (rather than at every move any window makes), and to
+    // know which window a new one opens beside.
+    bool beside = g_tiling.newWindow == kNewAfterFocused || g_tiling.newWindow == kNewBeforeFocused;
+    if (g_tiling.rememberAll || g_tiling.focusBorder != kBorderNone || (tiling && beside))
         g_tileHooks[3] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, TileEventProc, 0, 0, flags);
     if (g_tiling.rememberAll) TrackOpenWindows();
     UpdateFocusBorder(GetForegroundWindow());

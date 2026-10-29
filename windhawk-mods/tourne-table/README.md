@@ -1,6 +1,8 @@
 ![Tourne'Table - a ghost in your desktop's shell](https://raw.githubusercontent.com/USER-TOURNE/Tourne-Style/main/windhawk-mods/tourne-table/media/tourne-header.png)
 
 > **Status: in the Windhawk Explore catalog.** 2.1.0 passed review on October 17, 2026 ([ramensoftware/windhawk-mods#6269](https://github.com/ramensoftware/windhawk-mods/pull/6269)), so you can install it straight from Windhawk. This file is the same as the catalog's; what changed over the earlier 2.1 copy is in the [CHANGELOG](CHANGELOG.md).
+>
+> **New beta: 2.3.0.** [`tourne-table-2.3.0-beta.wh.cpp`](tourne-table-2.3.0-beta.wh.cpp) adds Bass, the Bass Line lane, Depth, Glass Bars, Engine Cores, a quick settings panel and a new Style Editor. It installs over the catalog version and keeps your settings. Everything in it is in the [CHANGELOG](CHANGELOG.md).
 
 # `Tourne'Table` **[Audio Visualizer]**
 

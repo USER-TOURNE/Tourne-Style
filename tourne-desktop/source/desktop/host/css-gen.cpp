@@ -19,6 +19,24 @@ constexpr Named kRoles[] = {{"ground", &Roles::ground}, {"raised", &Roles::raise
                             {"accent", &Roles::accent}, {"muted", &Roles::muted},   {"dim", &Roles::dim},
                             {"warn", &Roles::warn},     {"bad", &Roles::bad},       {"good", &Roles::good}};
 
+// A role's name may carry a state: "accent-hover". Takes it off the name and
+// gives the colour that state asks for, or the role itself.
+uint32_t WithState(uint32_t role, const Roles& roles, const std::string& state) {
+    if (state.empty()) return role;
+    bool light = Contrast(roles.ground, 0xFFFFFF) < Contrast(roles.ground, 0x000000);
+    Steps s = StepsFor(role, roles.ground, light);
+    if (state == "hover") return s.hover;
+    if (state == "press") return s.press;
+    if (state == "off") return s.off;
+    if (state == "edge") return s.edge;
+    if (state == "on") return s.on;
+    return role;
+}
+
+bool IsState(const std::string& name) {
+    return name == "hover" || name == "press" || name == "off" || name == "edge" || name == "on";
+}
+
 std::string Format(uint32_t c, const std::string& form) {
     int r = c >> 16 & 0xFF, g = c >> 8 & 0xFF, b = c & 0xFF;
     char text[48];
@@ -59,38 +77,79 @@ constexpr const char kGeneric[] = R"css(:root {
   --tourne-warn: {{warn}};
   --tourne-bad: {{bad}};
   --tourne-good: {{good}};
+  /* The states, worked out from the roles above. */
+  --tourne-hover: {{raised-hover}};
+  --tourne-press: {{raised-press}};
+  --tourne-disabled: {{text-off}};
+  --tourne-accent-hover: {{accent-hover}};
+  --tourne-accent-press: {{accent-press}};
+  --tourne-accent-on: {{accent-on}};
+  /* Tourne's menus: their frame line (where its colour gradient ends). */
+  --tourne-frame: {{frame}};
+  /* The glass (Studio, Glass): how see-through pages and panels are, so the app's Mica or Acrylic shows where the
+     app lets it, and the frosted glass drawn on floating parts (menus, popups, tooltips, dialogs). */
+  --tourne-glass-tint: {{glass.tint}};
+  --tourne-glass-page: {{glass.page}};
+  --tourne-glass-panel: {{glass.panel}};
+  --tourne-glass-float: {{glass.float}};
+  --tourne-glass-filter: {{glass.filter}};
+  --tourne-glass-shadow: {{glass.shadow}};
 }
 
-::selection { background: {{accent}}; color: {{ground}}; }
-::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
+/* The menus' look: square corners, thin lines, the accent for focus and selection. */
+*, *::before, *::after { border-radius: 0 !important; }
+::selection { background: var(--tourne-accent); color: var(--tourne-ground); }
+:focus-visible { outline: 1px solid var(--tourne-accent) !important; outline-offset: 0 !important; }
+html { background: var(--tourne-glass-page) !important; color: var(--tourne-text); }
+body { background: transparent !important; }
+hr { border: 0; border-top: 1px solid var(--tourne-line); }
+::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
 ::-webkit-scrollbar-corner { background: transparent; }
-::-webkit-scrollbar-thumb { background: {{line}}; border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: {{edge}}; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb { background: var(--tourne-line); border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--tourne-edge); border: 2px solid transparent; background-clip: padding-box; }
+
+/* What floats (menus, popups, tooltips, dialogs) is a Tourne menu: frosted glass, the frame's line, its shadow. */
+[role="menu"], [role="listbox"], [role="tooltip"], [role="dialog"], dialog, menu, select, datalist {
+  background-color: var(--tourne-glass-float) !important;
+  -webkit-backdrop-filter: var(--tourne-glass-filter) !important;
+  backdrop-filter: var(--tourne-glass-filter) !important;
+  border: 1px solid var(--tourne-frame) !important;
+  box-shadow: var(--tourne-glass-shadow) !important;
+  color: var(--tourne-text) !important;
+}
+[role="menuitem"]:hover, [role="menuitem"][aria-selected="true"], [role="menuitem"]:focus,
+[role="option"]:hover, [role="option"][aria-selected="true"], [role="option"]:focus {
+  background-color: var(--tourne-hover) !important;
+  color: var(--tourne-text) !important;
+}
+[role="separator"] { background-color: var(--tourne-line) !important; }
+input, textarea, button { border-radius: 0 !important; }
+input:focus, textarea:focus { border-color: var(--tourne-edge) !important; }
 )css";
 
 // Discord's own colour variables, both the older names and those of its
 // 2025 look. A starting point: Discord renames them now and then.
 constexpr const char kDiscord[] = R"css(
 .theme-dark, .theme-light, .theme-darker, .theme-midnight, .visual-refresh {
-  --background-primary: {{ground}} !important;
-  --background-secondary: {{raised}} !important;
-  --background-secondary-alt: {{line}} !important;
-  --background-tertiary: {{raised}} !important;
-  --background-floating: {{raised}} !important;
+  --background-primary: var(--tourne-glass-page) !important;
+  --background-secondary: var(--tourne-glass-panel) !important;
+  --background-secondary-alt: var(--tourne-glass-panel) !important;
+  --background-tertiary: var(--tourne-glass-panel) !important;
+  --background-floating: var(--tourne-glass-float) !important;
   --background-accent: {{edge}} !important;
-  --background-base-lowest: {{ground}} !important;
-  --background-base-lower: {{ground}} !important;
-  --background-base-low: {{raised}} !important;
-  --background-surface-high: {{raised}} !important;
-  --background-surface-higher: {{line}} !important;
-  --background-surface-highest: {{line}} !important;
+  --background-base-lowest: var(--tourne-glass-page) !important;
+  --background-base-lower: var(--tourne-glass-page) !important;
+  --background-base-low: var(--tourne-glass-panel) !important;
+  --background-surface-high: var(--tourne-glass-panel) !important;
+  --background-surface-higher: var(--tourne-glass-float) !important;
+  --background-surface-highest: var(--tourne-glass-float) !important;
   --background-modifier-hover: rgba({{line.rgb}}, 0.6) !important;
   --background-modifier-active: rgba({{edge.rgb}}, 0.6) !important;
   --background-modifier-selected: rgba({{edge.rgb}}, 0.7) !important;
-  --chat-background-default: {{ground}} !important;
-  --channeltextarea-background: {{raised}} !important;
-  --modal-background: {{raised}} !important;
-  --input-background: {{raised}} !important;
+  --chat-background-default: var(--tourne-glass-page) !important;
+  --channeltextarea-background: var(--tourne-glass-panel) !important;
+  --modal-background: var(--tourne-glass-float) !important;
+  --input-background: var(--tourne-glass-panel) !important;
   --text-normal: {{text}} !important;
   --text-default: {{text}} !important;
   --text-strong: {{text}} !important;
@@ -150,11 +209,11 @@ constexpr const char kClaude[] = R"css(
 // Spotify's desktop app (its Encore colour variables).
 constexpr const char kSpotify[] = R"css(
 :root, .encore-dark-theme, .encore-base-set, .encore-dark-theme .encore-base-set {
-  --background-base: {{ground}} !important;
-  --background-highlight: {{raised}} !important;
-  --background-press: {{line}} !important;
-  --background-elevated-base: {{raised}} !important;
-  --background-elevated-highlight: {{line}} !important;
+  --background-base: var(--tourne-glass-page) !important;
+  --background-highlight: var(--tourne-hover) !important;
+  --background-press: var(--tourne-press) !important;
+  --background-elevated-base: var(--tourne-glass-panel) !important;
+  --background-elevated-highlight: var(--tourne-hover) !important;
   --background-tinted-base: rgba({{text.rgb}}, 0.07) !important;
   --background-tinted-highlight: rgba({{text.rgb}}, 0.1) !important;
   --text-base: {{text}} !important;
@@ -182,13 +241,16 @@ std::string FillTemplate(const std::string& text, const Roles& roles) {
         size_t close = text.find("}}", open + 2);
         if (close == std::string::npos) break;
         out.append(text, at, open - at);
-        std::string name = text.substr(open + 2, close - open - 2), form;
+        std::string name = text.substr(open + 2, close - open - 2), form, state;
         size_t dot = name.find('.');
         if (dot != std::string::npos) form = name.substr(dot + 1), name.resize(dot);
+        size_t dash = name.rfind('-');
+        if (dash != std::string::npos && IsState(name.substr(dash + 1)))
+            state = name.substr(dash + 1), name.resize(dash);
         bool known = false;
         for (auto const& r : kRoles)
             if (name == r.name) {
-                out += Format(roles.*r.role, form);
+                out += Format(WithState(roles.*r.role, roles, state), form);
                 known = true;
                 break;
             }
@@ -204,12 +266,39 @@ const std::vector<std::string>& StyledApps() {
     return apps;
 }
 
-std::string AppCss(const std::string& app, const Roles& roles) {
+std::string AppCss(const std::string& app, const Roles& roles, const CssGlass& glass) {
     std::string text = std::string(kHeader) + kGeneric;
     if (app == "discord") text += kDiscord;
     else if (app == "claude") text += kClaude;
     else if (app == "spotify") text += kSpotify;
-    return FillTemplate(text, roles);
+    text = FillTemplate(text, roles);
+    // The glass: pages and panels see-through by the tint's strength (more tint, more solid; glass off, solid),
+    // floating parts frosted with the glass's blur, saturation and brightness.
+    auto rgba = [](uint32_t c, double a) {
+        char b[64];
+        snprintf(b, sizeof(b), "rgba(%d, %d, %d, %.2f)", (int)(c >> 16 & 0xFF), (int)(c >> 8 & 0xFF), (int)(c & 0xFF), a);
+        return std::string(b);
+    };
+    double t = std::clamp(glass.tintAmount / 100.0, 0.0, 1.0);
+    double page = glass.on ? std::clamp(0.55 + t * 0.4, 0.55, 0.95) : 1.0, panel = glass.on ? std::min(1.0, page + 0.05) : 1.0;
+    double floating = glass.on ? std::clamp(0.62 + t * 0.3, 0.62, 0.92) : 1.0;
+    char filter[96];
+    snprintf(filter, sizeof(filter), "blur(%dpx) saturate(%d%%) brightness(%d%%)", glass.on ? std::max(8, glass.blur * 2 + 12) : 0,
+             glass.saturation, 100 + glass.brightness);
+    char shadow[64];
+    snprintf(shadow, sizeof(shadow), "0 6px 22px rgba(0, 0, 0, %.2f)", std::clamp(glass.shadow / 100.0, 0.0, 1.0) * 0.6);
+    const std::pair<const char*, std::string> values[] = {
+        {"{{glass.tint}}", Format(glass.tint, "")},
+        {"{{glass.page}}", rgba(roles.ground, page)},
+        {"{{glass.panel}}", rgba(roles.raised, panel)},
+        {"{{glass.float}}", rgba(glass.tint, floating)},
+        {"{{glass.filter}}", glass.on ? filter : "none"},
+        {"{{glass.shadow}}", shadow},
+        {"{{frame}}", Format(glass.frame, "")},
+    };
+    for (auto const& [key, value] : values)
+        for (size_t at; (at = text.find(key)) != std::string::npos;) text.replace(at, strlen(key), value);
+    return text;
 }
 
 }  // namespace td

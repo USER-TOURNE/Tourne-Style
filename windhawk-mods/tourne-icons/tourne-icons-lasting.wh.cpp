@@ -2,7 +2,7 @@
 // @id              tourne-icons-lasting
 // @name            Tourne'Icons Lasting
 // @description     Change program, folder and file type icons from one picker, written into Windows' own settings so they stay with the mod off
-// @version         1.7.3
+// @version         1.7.4
 // @author          USER-TOURNE
 // @github          https://github.com/USER-TOURNE
 // @donateUrl       https://ko-fi.com/tourne
@@ -381,6 +381,18 @@ run together.
     stubborn redirects are watched anyway). On: every change you made in the
     picker is watched too, and put back a few seconds after an app remakes its
     shortcut. Nothing runs between changes.
+- repairIcons: true
+  $name: Put back icons Windows resets
+  $description: >-
+    When a theme, an app or an update writes over a file type's or Windows'
+    own icon you changed, it's set again once things settle. Only Tourne'Icons
+    Lasting uses this; here it does nothing.
+- repairExclude: ""
+  $name: Don't put these back
+  $description: >-
+    What to leave as Windows or the app set it: program file names, .ext file
+    types or the names shown in Your changes, separated by commas; * matches
+    any text.
 - allResourceRedirect: true
   $name: All resource types
   $description: >-
@@ -3386,6 +3398,45 @@ bool ExplorerRunning() {
     return found;
 }
 
+// Start's own copy of its tiles' and list's icons (TileCache_*_Data.bin and _Header.bin, in the Start host's
+// package folder; the older Windows 10 one too), deleted and Start closed so it draws them again from what's set
+// now; Windows starts it again when it's next opened. Returns how many files couldn't be deleted.
+int ClearStartTileCache() {
+    PWSTR local = nullptr;
+    std::wstring packages;
+    if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &local)) && local) {
+        packages = std::wstring(local) + L"\\Packages\\";
+    }
+    CoTaskMemFree(local);
+    if (packages.empty()) return -1;
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snapshot != INVALID_HANDLE_VALUE) {
+        PROCESSENTRY32W entry{.dwSize = sizeof(entry)};
+        for (BOOL more = Process32FirstW(snapshot, &entry); more; more = Process32NextW(snapshot, &entry)) {
+            if (_wcsicmp(entry.szExeFile, L"StartMenuExperienceHost.exe") != 0) continue;
+            if (HANDLE process = OpenProcess(PROCESS_TERMINATE, FALSE, entry.th32ProcessID)) {
+                TerminateProcess(process, 1);
+                CloseHandle(process);
+            }
+        }
+        CloseHandle(snapshot);
+        Sleep(300);
+    }
+    int left = 0;
+    for (PCWSTR package : {L"Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy",
+                           L"Microsoft.Windows.ShellExperienceHost_cw5n1h2txyewy"}) {
+        std::wstring folder = packages + package + L"\\TempState";
+        WIN32_FIND_DATAW find;
+        HANDLE search = FindFirstFileW((folder + L"\\TileCache_*").c_str(), &find);
+        if (search == INVALID_HANDLE_VALUE) continue;
+        do {
+            if (!DeleteFileW((folder + L"\\" + find.cFileName).c_str())) left++;
+        } while (FindNextFileW(search, &find));
+        FindClose(search);
+    }
+    return left;
+}
+
 // Explorer's icon and thumbnail caches deleted (what Clear Icon Cache.ps1
 // does), for icons that still show old pictures after Refresh icons. Explorer
 // holds them open and starts again the moment it's closed, so it's closed and
@@ -3415,6 +3466,7 @@ int ClearExplorerCaches() {
         }
         if (!left) break;
     }
+    ClearStartTileCache();
     // Windows (or Tourne Desktop, as the shell) starts Explorer again by
     // itself; only when neither did is it started here.
     for (int wait = 0; wait < 20 && !ExplorerRunning(); wait++) Sleep(200);
@@ -3431,6 +3483,7 @@ int ClearExplorerCaches() {
 // Windows' icon cache, refreshed: what "Refresh icons" does.
 void RefreshIconCache() {
     TellWindowsIconsChanged();
+    ClearStartTileCache();
     WCHAR system[MAX_PATH];
     if (GetSystemDirectoryW(system, ARRAYSIZE(system))) {
         std::wstring program = std::wstring(system) + L"\\ie4uinit.exe";
@@ -4245,6 +4298,8 @@ bool CanLast(std::wstring const& original) {
     return before.count(id) != 0;
 }
 
+std::atomic<int> g_registryWrites;  // values actually written (not ones that were so already), for the repair
+
 // "HKCU|key|value" or "HKLM|key|value".
 std::wstring RegWhere(bool machine, std::wstring const& key, std::wstring const& value) {
     return (machine ? L"HKLM|" : L"HKCU|") + key + L"|" + value;
@@ -4254,19 +4309,20 @@ bool SetValue(std::vector<Saved>& saved, ListRow const& row, bool machine, std::
               std::wstring const& value, std::wstring const& data) {
     HKEY root = machine ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
     std::wstring where = RegWhere(machine, key, value);
-    if (!IsSaved(saved, row, L"reg", where)) {
-        WCHAR buffer[2048];
-        DWORD size = sizeof(buffer);
-        bool exists = RegGetValueW(root, key.c_str(), value.empty() ? nullptr : value.c_str(),
-                                   RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND, nullptr, buffer, &size) ==
-                      ERROR_SUCCESS;
-        saved.push_back({row.kind, row.original, L"reg", where, exists ? L"=" + std::wstring(buffer) : L"-"});
-    }
+    WCHAR buffer[2048];
+    DWORD size = sizeof(buffer);
+    bool exists = RegGetValueW(root, key.c_str(), value.empty() ? nullptr : value.c_str(),
+                               RRF_RT_REG_SZ | RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND, nullptr, buffer, &size) ==
+                  ERROR_SUCCESS;
+    bool fresh = !IsSaved(saved, row, L"reg", where);
+    if (fresh) saved.push_back({row.kind, row.original, L"reg", where, exists ? L"=" + std::wstring(buffer) : L"-"});
+    if (exists && _wcsicmp(buffer, data.c_str()) == 0) return true;  // (already so: nothing written)
     if (RegSetKeyValueW(root, key.c_str(), value.empty() ? nullptr : value.c_str(), REG_EXPAND_SZ, data.c_str(),
                         (DWORD)((data.size() + 1) * sizeof(WCHAR))) == ERROR_SUCCESS) {
+        g_registryWrites++;
         return true;
     }
-    saved.pop_back();
+    if (fresh) saved.pop_back();
     return false;
 }
 
@@ -4402,16 +4458,62 @@ std::vector<ListRow> StubbornRows() {
     return rows;
 }
 
+// The repair's exclusions (repairExclude): what was changed (a program's file name, a .ext, an icon), or the
+// name shown for it, separated by commas; * matches any text.
+bool RepairExcluded(ListRow const& row) {
+    std::wstring list = RedirectSetting(L"repairExclude");
+    size_t at = 0;
+    while (at <= list.size()) {
+        size_t comma = list.find(L',', at);
+        std::wstring item = Lower(CleanPath(list.substr(at, comma == std::wstring::npos ? std::wstring::npos : comma - at)));
+        if (!item.empty()) {
+            std::wstring original = Lower(row.original), label = Lower(row.label);
+            std::wstring name = original.substr(original.find_last_of(L"\\/") == std::wstring::npos ? 0 : original.find_last_of(L"\\/") + 1);
+            if (WildcardMatch(item, original) || WildcardMatch(item, name) || WildcardMatch(item, label))
+                return true;
+        }
+        if (comma == std::wstring::npos) break;
+        at = comma + 1;
+    }
+    return false;
+}
+
+// A file type's icon still where it was set: Windows (an app taking the type over, a reset) can put another
+// one there.
+bool FileTypeHolds(ListRow const& row) {
+    std::wstring want = row.icon + L",0";
+    bool exists = false;
+    if (OwnFileType(row)) {
+        return _wcsicmp(ReadDefaultValue(HKEY_CURRENT_USER, L"Software\\Classes\\" + row.original, &exists).c_str(),
+                        OwnProgId(row).c_str()) == 0 &&
+               _wcsicmp(ReadDefaultValue(HKEY_CURRENT_USER, L"Software\\Classes\\" + OwnProgId(row) + L"\\DefaultIcon",
+                                         &exists).c_str(),
+                        want.c_str()) == 0;
+    }
+    return row.progId.empty() ||
+           _wcsicmp(ReadDefaultValue(HKEY_CURRENT_USER, L"Software\\Classes\\" + row.progId + L"\\DefaultIcon", &exists)
+                        .c_str(),
+                    want.c_str()) == 0;
+}
+
 // Shortcuts made since (a program installed or pinned later, or one an
-// update remade) get their icons too, each time the tool starts. Returns how
-// many shortcuts were changed.
-int ApplyAll() {
-    std::vector<ListRow> programs, icons, stubborn = StubbornRows();
+// update remade) get their icons too, each time the tool starts, and Windows'
+// icons and file types Windows has put back are set again. Repairing (the
+// watch below), the exclusions are left alone. Returns how many places were
+// written.
+int ApplyAll(bool repairing = false) {
+    std::vector<ListRow> programs, icons, types, stubborn = StubbornRows();
     for (auto const& row : ReadList()) {
+        if (repairing && RepairExcluded(row)) continue;
         if (row.kind == L"program") programs.push_back(row);
         if (row.kind == L"icon") icons.push_back(row);
+        if (row.kind == L"filetype" && !row.previous.empty()) types.push_back(row);
     }
+    if (repairing) std::erase_if(stubborn, RepairExcluded);
     programs.insert(programs.end(), stubborn.begin(), stubborn.end());
+    int before = g_registryWrites;
+    for (auto& row : types)
+        if (!FileTypeHolds(row) && SetFileTypeIcon(&row)) g_registryWrites++;
     Locked locked;
     std::vector<Saved> saved = ReadSaved();
     // Stubborn rows taken out of the settings: their shortcuts go back.
@@ -4427,7 +4529,7 @@ int ApplyAll() {
     ApplyPrograms(programs, saved, &written);
     for (auto const& row : icons) ApplyWindowsIcon(row, saved);
     WriteSaved(saved);
-    return written;
+    return written + (g_registryWrites - before);
 }
 
 // Watching Start's folders, the desktops and the pinned buttons: when a
@@ -4461,7 +4563,10 @@ DWORD WINAPI WatchThread(LPVOID) {
     return 0;
 }
 
+void StopRepair();
+
 void StopWatching() {
+    StopRepair();
     if (!g_watchThread) return;
     SetEvent(g_watchStop);
     WaitForSingleObject(g_watchThread, 5000);
@@ -4470,8 +4575,98 @@ void StopWatching() {
     g_watchThread = g_watchStop = nullptr;
 }
 
+// The repair (repairIcons, on unless turned off): when Windows writes over the places icons were set (a theme
+// applied, an app taking a file type, an update or a reset putting its own back), once things settle the icons
+// go back where they were. It watches the registry keys those places are in and does nothing between changes;
+// what it writes itself, and changes that leave every icon as it is, start nothing.
+HANDLE g_repairThread, g_repairStop;
+
+DWORD WINAPI RepairThread(LPVOID) {
+    HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    struct Watched {
+        HKEY root;
+        PCWSTR key;
+    };
+    static const Watched kWatched[] = {
+        {HKEY_CURRENT_USER, L"Software\\Classes"},
+        {HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts"},
+        {HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Icons"},
+        {HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\DriveIcons"},
+    };
+    std::vector<HKEY> keys;
+    std::vector<HANDLE> handles{g_repairStop};
+    auto arm = [](HKEY key, HANDLE event) {
+        return RegNotifyChangeKeyValue(key, TRUE, REG_NOTIFY_CHANGE_NAME | REG_NOTIFY_CHANGE_LAST_SET, event, TRUE) ==
+               ERROR_SUCCESS;
+    };
+    for (auto const& w : kWatched) {
+        HKEY key;
+        if (RegOpenKeyExW(w.root, w.key, 0, KEY_NOTIFY, &key) != ERROR_SUCCESS) continue;
+        HANDLE event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+        if (!event || !arm(key, event)) {
+            if (event) CloseHandle(event);
+            RegCloseKey(key);
+            continue;
+        }
+        keys.push_back(key);
+        handles.push_back(event);
+    }
+    bool pending = false;
+    for (;;) {
+        DWORD result = WaitForMultipleObjects((DWORD)handles.size(), handles.data(), FALSE, pending ? 3000 : INFINITE);
+        if (result == WAIT_OBJECT_0 || result == WAIT_FAILED) break;
+        if (result == WAIT_TIMEOUT) {
+            pending = false;
+            int written = ApplyAll(true);
+            if (written) {
+                Wh_Log(L"Put back %d icon places Windows had changed", written);
+                TellWindowsIconsChanged();
+                // (its own writes come back as changes: let them go by)
+                Sleep(500);
+                for (size_t i = 1; i < handles.size(); i++) {
+                    ResetEvent(handles[i]);
+                    arm(keys[i - 1], handles[i]);
+                }
+            }
+            continue;
+        }
+        size_t i = result - WAIT_OBJECT_0;
+        arm(keys[i - 1], handles[i]);
+        pending = true;
+    }
+    for (size_t i = 1; i < handles.size(); i++) CloseHandle(handles[i]);
+    for (HKEY key : keys) RegCloseKey(key);
+    if (SUCCEEDED(com)) CoUninitialize();
+    return 0;
+}
+
+void StopRepair() {
+    if (!g_repairThread) return;
+    SetEvent(g_repairStop);
+    WaitForSingleObject(g_repairThread, 5000);
+    CloseHandle(g_repairThread);
+    CloseHandle(g_repairStop);
+    g_repairThread = g_repairStop = nullptr;
+}
+
+void Repair() {
+    bool on = Wh_GetIntSetting(L"repairIcons") != 0;
+    if (on == (g_repairThread != nullptr)) return;
+    if (!on) {
+        StopRepair();
+        return;
+    }
+    g_repairStop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_repairThread = g_repairStop ? CreateThread(nullptr, 0, RepairThread, nullptr, 0, nullptr) : nullptr;
+    if (!g_repairThread && g_repairStop) {
+        CloseHandle(g_repairStop);
+        g_repairStop = nullptr;
+    }
+}
+
 // On when the setting is, or when there are stubborn redirects.
 void Watch() {
+    Repair();
     bool on = Wh_GetIntSetting(L"watchShortcuts") != 0 ||
               !RedirectSetting(L"stubbornRedirects[%d].target", 0).empty();
     if (on == (g_watchThread != nullptr)) return;
@@ -7302,6 +7497,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
             if (wParam == kNotifyTimer) {
                 KillTimer(window, kNotifyTimer);
                 TellWindowsIconsChanged();
+                ClearStartTileCache();  // (Start keeps its own copy of the icons it shows)
             }
             return 0;
         case WM_CLOSE:

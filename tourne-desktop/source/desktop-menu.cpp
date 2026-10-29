@@ -163,6 +163,8 @@ void AddDesktopViewItems(HMENU popup, DesktopRequest const& r) {
     if (!display || !personalize) AppendMenuW(popup, MF_SEPARATOR, 0, nullptr);
     if (!display) AppendMenuW(popup, MF_STRING, kDvFirstId + 50, L"Display settings");
     if (!personalize) AppendMenuW(popup, MF_STRING, kDvFirstId + 51, L"Personalize");
+    // Tourne's own: its desktop widgets placed and moved in one go (plugin-runtime.cpp's Edit desktop mode).
+    if (FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr)) AppendMenuW(popup, MF_STRING, kDvFirstId + 52, L"Edit desktop");
 }
 
 // The shell's menu for the items (or the empty space), built: false when there's none.
@@ -309,7 +311,16 @@ void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
     }
     if (r.items.empty()) AddDesktopViewItems(g_shellMenu.popup, r);
     IContextMenu* shell = g_shellMenu.menu;
-    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, g_settings.menuRules, [&](UINT id) {
+    MenuContext context;
+    context.menu = L"desktop";
+    context.app = MenuAppName();
+    context.known = true;
+    context.files = r.items;
+    if (PWSTR desk = nullptr; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Desktop, 0, nullptr, &desk))) {
+        context.folder = desk;
+        CoTaskMemFree(desk);
+    }
+    MenuRulesUndo rules = ApplyMenuRules(g_shellMenu.popup, MenuRulesFor(LoadMenuFile(), context, g_settings.menuRules), [&](UINT id) {
         return id < kDvFirstId ? ShellMenuVerb(shell, id) : std::wstring();
     });
     GetCursorPos(&g_shellMenu.pt);
@@ -321,16 +332,24 @@ void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
     SetForegroundWindow(wnd);
     g_menuLook = BarMenuLook();
     g_shellMenu.open = true;
+    t_passedClick = {};
+    HHOOK pass = SetWindowsHookExW(WH_MSGFILTER, PassClickFilter, nullptr, GetCurrentThreadId());
     int cmd = (int)TrackStyledMenu(g_shellMenu.popup, TPM_RETURNCMD | TPM_RIGHTBUTTON, g_shellMenu.pt.x, g_shellMenu.pt.y, wnd, true);
+    if (pass) UnhookWindowsHookEx(pass);
     g_shellMenu.open = false;
     UndoMenuRules(rules);
     PostMessageW(wnd, WM_NULL, 0, 0);
     g_inMenu = false;
+    if (RunMenuRule(rules, (UINT)cmd, context)) cmd = 0;
 
     if (cmd >= (int)kDvFirstId) {
         int view = cmd - (int)kDvFirstId;
         if (view == 50) ShellExecuteW(nullptr, nullptr, L"ms-settings:display", nullptr, nullptr, SW_SHOWNORMAL);
         else if (view == 51) ShellExecuteW(nullptr, nullptr, L"ms-settings:personalization", nullptr, nullptr, SW_SHOWNORMAL);
+        else if (view == 52) {
+            if (HWND plugins = FindWindowExW(HWND_MESSAGE, nullptr, L"TourneDesktopPlugins", nullptr))
+                PostMessageW(plugins, RegisterWindowMessageW(L"TourneDesktop.EditDesktop"), 0, 0);
+        }
         else if (view >= kDvWallRecent && view < kDvWallRecent + 8 && view - kDvWallRecent < (int)r.recent.size()) {
             // The picture itself, as listed: the desktop's own list could be in another order by now.
             std::wstring const& path = r.recent[view - kDvWallRecent];
@@ -356,5 +375,6 @@ void ShowDesktopMenu(HWND wnd, HWND desktop, std::wstring const& text) {
         }
     }
     CloseShellMenu();
+    PassClickOn();
     ReadyMenuSoon(wnd, 1000);
 }

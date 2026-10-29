@@ -2,10 +2,13 @@
 //
 // One thread of its own holds the keyboard hook, its window (which owns the clipboard and gets the key from the
 // hook), the window picker, the hint and the recording's red dot. The hook only posts: tap, double tap and hold
-// are told apart here, on timers. Pictures are read off the screen (a window's with PrintWindow, so one covered by
-// others still comes out whole), put on the clipboard as a bitmap and as PNG, and saved as PNG. A recording is
-// ffmpeg reading the screen (gdigrab) into an MP4, h264 on the graphics card when ffmpeg can (NVENC), else on the
-// processor; it's told to stop with "q", so the file is whole, and the file goes on the clipboard.
+// are told apart here, on timers. Pictures are read off the screen, a window's too while nothing from another app
+// is over it, so what Tourne draws on it (the visualizer in the taskbar, glass, panels) comes out as it's seen;
+// a covered window is asked to draw itself (PrintWindow) so it still comes out whole. They go on the clipboard
+// as a bitmap and as PNG, and are saved as PNG. A recording is ffmpeg reading an area of the screen (a window:
+// its area) into an MP4, by Desktop Duplication (ddagrab) when ffmpeg has it and the area is on one screen, else
+// GDI (gdigrab); on the graphics card when ffmpeg can (NVENC), else on the processor. It's told to stop with "q",
+// so the file is whole, and the file goes on the clipboard; ffmpeg's complaints go to a log, read when it fails.
 // While Screen Toolkit runs, a recording is its job instead (recordRect: its codec, sound, frame rate, folder and
 // copy to the clipboard), and pictures go to its screenshot folder; it tells this side how its recording stands
 // (CaptureToolkit), so the key and the red dot stop one it started too. What to record is picked on a bar at the
@@ -13,17 +16,23 @@
 
 #include "capture.h"
 
+#include <d2d1.h>
 #include <dwmapi.h>
+#include <dwrite.h>
+#include <dxgi.h>
 #include <mmdeviceapi.h>
 #include <shellapi.h>
 #include <shlobj.h>
 #include <wincodec.h>
+#include <windowsx.h>
 
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 #include <memory>
 #include <mutex>
 #include <cstdarg>
+#include <functional>
 #include <string>
 #include <thread>
 #include <vector>
@@ -49,6 +58,7 @@ struct Config {
     std::wstring encoder = L"auto", codec = L"hevc", method = L"dda", soundDevice = L"default", micDevice, after = L"none";
     int quality = 23, height = 0;
     bool sound = true, mic = false, afterCopy = true;
+    bool annotate = false;  // screenshots marked up before they're kept (capture-annotate.inl)
     bool cursor = true;
     std::wstring pictures, videos, ffmpeg;
     UINT keyMods = 0, keyVk = VK_SNAPSHOT;  // the key (capture.hotkey; empty: Print Screen alone)
@@ -96,6 +106,7 @@ Config ReadConfig() {
     c.sound = GetInt(L"capture", L"sound") != 0;
     c.mic = GetInt(L"capture", L"mic") != 0;
     c.afterCopy = GetInt(L"capture", L"afterCopy") != 0;
+    c.annotate = GetInt(L"capture", L"annotate") != 0;
     auto word = [](const wchar_t* key, const wchar_t* fallback) {
         std::wstring out = fallback;
         if (const wchar_t* v = GetString(L"capture", key)) {
@@ -135,7 +146,8 @@ HWND g_host = nullptr, g_wnd = nullptr;
 DWORD g_threadId = 0;
 std::thread g_thread;
 std::atomic<bool> g_on{false};
-HHOOK g_hook = nullptr;
+HHOOK g_hook = nullptr;  // (owned by its thread, g_hookThread)
+std::atomic<DWORD> g_hookThread{0};
 std::atomic<UINT> g_keyVk{VK_SNAPSHOT}, g_keyMods{0};  // (g_cfg's, for the hook)
 bool g_keyTaken = false;  // the key went down as ours: its release is ours too (hook thread)
 
@@ -322,10 +334,48 @@ RECT FrameOf(HWND h) {
     return r;
 }
 
-// A window as it draws itself (PrintWindow: whole even when covered), cut to its frame; off the screen
-// instead when it gives back nothing (some games and video players draw where PrintWindow can't see).
+bool Cloaked(HWND h);
+
+RECT VirtualScreen() {
+    RECT v{GetSystemMetrics(SM_XVIRTUALSCREEN), GetSystemMetrics(SM_YVIRTUALSCREEN), 0, 0};
+    v.right = v.left + GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    v.bottom = v.top + GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    return v;
+}
+
+DWORD ProcessOf(HWND h) {
+    DWORD pid = 0;
+    GetWindowThreadProcessId(h, &pid);
+    return pid;
+}
+
+// Whether what's on the screen over r is h as it's seen: nothing from another app above it there. Its own
+// app's windows (its menus, popups) and Tourne's (the visualizer, glass, panels drawn over the taskbar) belong
+// in the picture; windows left out of captures and see-through overlays that never take clicks don't count.
+bool SeenWhole(HWND h, RECT r) {
+    RECT v = VirtualScreen(), in;
+    if (!IntersectRect(&in, &r, &v) || !EqualRect(&in, &r)) return false;  // (partly off the screens)
+    DWORD app = ProcessOf(h), own = GetCurrentProcessId();
+    for (HWND w = GetWindow(h, GW_HWNDPREV); w; w = GetWindow(w, GW_HWNDPREV)) {
+        if (!IsWindowVisible(w) || IsIconic(w) || Cloaked(w)) continue;
+        DWORD pid = ProcessOf(w);
+        if (pid == app || pid == own) continue;
+        DWORD affinity = 0;
+        if (GetWindowDisplayAffinity(w, &affinity) && affinity == WDA_EXCLUDEFROMCAPTURE) continue;
+        LONG ex = GetWindowLongW(w, GWL_EXSTYLE);
+        if ((ex & WS_EX_TRANSPARENT) && (ex & WS_EX_LAYERED)) continue;
+        RECT f = FrameOf(w), x;
+        if (IntersectRect(&x, &f, &r)) return false;
+    }
+    return true;
+}
+
+// A window as it's seen (the screen, with what Tourne draws over it), when nothing else covers it; else as it
+// draws itself (PrintWindow: whole even when covered), cut to its frame; off the screen instead when that gives
+// back nothing (some games and video players draw where PrintWindow can't see).
 Picture GrabWindow(HWND h) {
     RECT window, frame = FrameOf(h);
+    if (SeenWhole(h, frame)) return GrabScreenRect(frame);
     GetWindowRect(h, &window);
     int w = window.right - window.left, hh = window.bottom - window.top;
     Picture whole;
@@ -399,9 +449,14 @@ HGLOBAL Global(const void* data, size_t size) {
     return mem;
 }
 
+#include "capture-annotate.inl"
+
 // On the clipboard as a bitmap (any app) and as PNG (browsers, chat apps keep it sharp), and kept as a file.
-void PictureOut(Picture const& p, std::wstring const& what) {
-    if (p.px.empty()) return Hint(L"Nothing to capture there");
+// With capture.annotate on, marked up first (capture-annotate.inl); Esc there keeps it plain.
+void PictureOut(Picture const& shot, std::wstring const& what) {
+    if (shot.px.empty()) return Hint(L"Nothing to capture there");
+    Picture p = shot;
+    if (g_cfg.annotate) annotate::Run(p);
     std::vector<BYTE> png = EncodePng(p);
     std::wstring path = FolderFor(false) + L"\\Tourne " + Stamp() + L".png";
     if (!png.empty()) {
@@ -597,14 +652,17 @@ struct Recording {
     std::wstring path, what;
     ULONGLONG started = 0;
     RECT area{};
+    std::function<void()> soundStop;  // (the PC's sound, ended once ffmpeg is done with it)
 };
 Recording g_rec;
+std::wstring g_firstMic;  // the first microphone ffmpeg lists (DirectShow), for Microphone left empty
 HWND g_dot = nullptr;  // the red dot over the recorded screen (left out of the recording; a click stops)
 ULONGLONG g_dotStarted = 0;
 // Handed to Screen Toolkit: asked (until it says it's recording, or gives up), and recording.
 bool g_pending = false, g_delegated = false;
 RECT g_pendingArea{};
 std::atomic<int> g_nvenc{-1};  // whether ffmpeg has NVENC (-1: not known yet; asked off this thread, as the hook lives here)
+std::atomic<int> g_dda{-1};    // whether it has Desktop Duplication (ddagrab), the same way
 
 std::wstring FindFfmpeg() {
     if (!g_cfg.ffmpeg.empty() && GetFileAttributesW(g_cfg.ffmpeg.c_str()) != INVALID_FILE_ATTRIBUTES) return g_cfg.ffmpeg;
@@ -776,7 +834,65 @@ void ToolkitChanged() {
     }
 }
 
+// Desktop Duplication's screen for an area: ffmpeg's ddagrab reads outputs of the first graphics adapter, by
+// their place in its list. False when the area isn't wholly on one of them (it then goes by GDI).
+bool DdaOutput(RECT area, int* index, POINT* origin) {
+    IDXGIFactory1* factory = nullptr;
+    if (FAILED(CreateDXGIFactory1(IID_PPV_ARGS(&factory)))) return false;
+    bool found = false;
+    IDXGIAdapter1* adapter = nullptr;
+    if (SUCCEEDED(factory->EnumAdapters1(0, &adapter))) {
+        IDXGIOutput* out = nullptr;
+        for (UINT i = 0; !found && adapter->EnumOutputs(i, &out) != DXGI_ERROR_NOT_FOUND; i++) {
+            DXGI_OUTPUT_DESC d{};
+            if (out && SUCCEEDED(out->GetDesc(&d)) && d.AttachedToDesktop && d.Rotation <= DXGI_MODE_ROTATION_IDENTITY) {
+                RECT r = d.DesktopCoordinates, in;
+                if (IntersectRect(&in, &area, &r) && EqualRect(&in, &area)) {
+                    *index = (int)i;
+                    *origin = {r.left, r.top};
+                    found = true;
+                }
+            }
+            if (out) out->Release(), out = nullptr;
+        }
+        adapter->Release();
+    }
+    factory->Release();
+    return found;
+}
+
+std::wstring FfmpegLog() {
+    wchar_t temp[MAX_PATH];
+    GetTempPathW(MAX_PATH, temp);
+    return std::wstring(temp) + L"tourne-capture-ffmpeg.log";
+}
+
+// ffmpeg's last words, for the log when a recording didn't come out.
+std::wstring FfmpegSaid() {
+    HANDLE f = CreateFileW(FfmpegLog().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (f == INVALID_HANDLE_VALUE) return L"";
+    char buf[1024];
+    DWORD got = 0;
+    LARGE_INTEGER size{};
+    GetFileSizeEx(f, &size);
+    if (size.QuadPart > (LONGLONG)sizeof(buf) - 1) {
+        LARGE_INTEGER at;
+        at.QuadPart = size.QuadPart - (LONGLONG)sizeof(buf) + 1;
+        SetFilePointerEx(f, at, nullptr, FILE_BEGIN);
+    }
+    ReadFile(f, buf, sizeof(buf) - 1, &got, nullptr);
+    CloseHandle(f);
+    std::string s(buf, got);
+    while (!s.empty() && (s.back() == '\n' || s.back() == '\r')) s.pop_back();
+    for (char& c : s)
+        if (c == '\n' || c == '\r') c = ' ';
+    return std::wstring(s.begin(), s.end());
+}
+
 void StartRecording(RECT area, HWND window, std::wstring const& what) {
+    // A window is recorded as its area, here and by Screen Toolkit: what's drawn over it (the taskbar's visualizer)
+    // is in it, and apps drawn on the graphics card don't come out black, as they do when ffmpeg reads the window.
+    window = nullptr;
     if (ToolkitState() != L"off") return Delegate(area, window, what);
     std::wstring ffmpeg = FindFfmpeg();
     if (ffmpeg.empty()) {
@@ -785,14 +901,13 @@ void StartRecording(RECT area, HWND window, std::wstring const& what) {
     }
 
     // Inside the virtual screen, even sizes (h264 needs them).
-    RECT v{GetSystemMetrics(SM_XVIRTUALSCREEN), GetSystemMetrics(SM_YVIRTUALSCREEN), 0, 0};
-    v.right = v.left + GetSystemMetrics(SM_CXVIRTUALSCREEN);
-    v.bottom = v.top + GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    RECT v = VirtualScreen();
     IntersectRect(&area, &area, &v);
     int w = (area.right - area.left) & ~1, h = (area.bottom - area.top) & ~1;
     if (w < 16 || h < 16) return Hint(L"Nothing to record there");
+    area.right = area.left + w, area.bottom = area.top + h;
     std::wstring path = FolderFor(true) + L"\\Tourne " + Stamp() + L".mp4";
-    // Capture's codec, encoder and quality (no sound without Screen Toolkit).
+    // Capture's codec, encoder and quality.
     std::wstring family = EncoderFamily(), q = std::to_wstring(g_cfg.quality);
     std::wstring codecName = g_cfg.codec == L"av1" ? L"av1" : g_cfg.codec == L"h264" ? L"h264" : L"hevc";
     std::wstring codec;
@@ -802,37 +917,76 @@ void StartRecording(RECT area, HWND window, std::wstring const& what) {
     else codec = codecName == L"av1" ? L"-c:v libsvtav1 -preset 8 -crf " + q : codecName == L"h264" ? L"-c:v libx264 -preset veryfast -crf " + q
                                                                                     : L"-c:v libx265 -preset veryfast -crf " + q;
     if (codecName == L"hevc") codec += L" -tag:v hvc1";
-    if (!window && g_cfg.height > 0 && g_cfg.height < h) codec = L"-vf scale=-2:" + std::to_wstring(g_cfg.height) + L" " + codec;
-    wchar_t hwnd[32];
-    swprintf(hwnd, 32, L"hwnd=0x%llx", (unsigned long long)(ULONG_PTR)window);
-    // A window: GDI reads the window itself (followed when it moves; its inside, at most 60 fps).
-    std::wstring input = window ? L" -i " + std::wstring(hwnd) + L" -vf crop=trunc(iw/2)*2:trunc(ih/2)*2 "
-                                : L" -offset_x " + std::to_wstring(area.left) + L" -offset_y " + std::to_wstring(area.top) + L" -video_size " +
-                                      std::to_wstring(w) + L"x" + std::to_wstring(h) + L" -i desktop ";
-    int fps = window ? std::min(g_cfg.fps, 60) : g_cfg.fps;
-    std::wstring args = L"-hide_banner -loglevel error -y -f gdigrab -framerate " + std::to_wstring(fps) + L" -draw_mouse " +
-                        (g_cfg.cursor ? L"1" : L"0") + input + codec + L" -pix_fmt yuv420p -movflags +faststart \"" + path + L"\"";
+    std::wstring fps = std::to_wstring(g_cfg.fps), mouse = g_cfg.cursor ? L"1" : L"0";
+    // Desktop Duplication when it's asked for, ffmpeg has it and the area is on one screen: the graphics card's
+    // copy of the screen, brought down for the encoder. Else GDI. Either way the area as it's seen (a window too:
+    // its area, so what Tourne draws over it is in it, and apps drawn on the graphics card don't come out black).
+    int output = -1;
+    POINT origin{};
+    bool dda = g_cfg.method == L"dda" && g_dda == 1 && DdaOutput(area, &output, &origin);
+    std::wstring filters = dda ? L"hwdownload,format=bgra" : L"";
+    if (g_cfg.height > 0 && g_cfg.height < h) filters += (filters.empty() ? L"" : L",") + std::wstring(L"scale=-2:") + std::to_wstring(g_cfg.height);
+    std::wstring input = dda ? L"-f lavfi -i ddagrab=output_idx=" + std::to_wstring(output) + L":framerate=" + fps + L":offset_x=" +
+                                   std::to_wstring(area.left - origin.x) + L":offset_y=" + std::to_wstring(area.top - origin.y) +
+                                   L":video_size=" + std::to_wstring(w) + L"x" + std::to_wstring(h) + L":draw_mouse=" + mouse
+                             : L"-f gdigrab -framerate " + fps + L" -draw_mouse " + mouse + L" -offset_x " + std::to_wstring(area.left) +
+                                   L" -offset_y " + std::to_wstring(area.top) + L" -video_size " + std::to_wstring(w) + L"x" +
+                                   std::to_wstring(h) + L" -i desktop";
+    // The PC's sound (Tourne's own loopback, as Screen Toolkit gets it) and a microphone, mixed.
+    std::wstring audio;
+    int inputs = 0;
+    RecorderSoundTap sound;
+    if (g_cfg.sound) {
+        if (RecorderSound(g_cfg.soundDevice, &sound)) {
+            audio += L" -thread_queue_size 1024 -f " + sound.format + L" -ar " + std::to_wstring(sound.rate) + L" -ac " +
+                     std::to_wstring(sound.channels) + L" -i \"" + sound.input + L"\"";
+            inputs++;
+        } else {
+            Log(L"recording without the PC's sound: %ls", sound.why.c_str());
+        }
+    }
+    std::wstring mic = g_cfg.micDevice;
+    if (mic.empty()) {
+        std::lock_guard lock(g_linkLock);
+        mic = g_firstMic;
+    }
+    if (g_cfg.mic && !mic.empty()) {
+        audio += L" -thread_queue_size 1024 -f dshow -i \"audio=" + mic + L"\"";
+        inputs++;
+    } else if (g_cfg.mic) {
+        Log(L"recording without a microphone: ffmpeg lists none");
+    }
+    if (inputs == 2) audio += L" -filter_complex [1:a][2:a]amix=inputs=2:duration=longest:normalize=0[a] -map 0:v -map [a]";
+    else if (inputs == 1) audio += L" -map 0:v -map 1:a";
+    std::wstring args = L"-hide_banner -loglevel error -y " + input + audio + (filters.empty() ? L"" : L" -vf " + filters) + L" " +
+                        codec + L" -pix_fmt yuv420p" + (inputs ? L" -c:a aac -b:a 160k" : L"") + L" -movflags +faststart \"" + path + L"\"";
     SECURITY_ATTRIBUTES sa{sizeof(sa), nullptr, TRUE};
     HANDLE read = nullptr, write = nullptr;
     if (!CreatePipe(&read, &write, &sa, 0)) return;
     SetHandleInformation(write, HANDLE_FLAG_INHERIT, 0);
+    HANDLE said = CreateFileW(FfmpegLog().c_str(), GENERIC_WRITE, FILE_SHARE_READ, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     STARTUPINFOW si{sizeof(si)};
     si.dwFlags = STARTF_USESTDHANDLES;
     si.hStdInput = read;
+    si.hStdError = said != INVALID_HANDLE_VALUE ? said : nullptr;
     PROCESS_INFORMATION pi{};
     std::wstring line = L"\"" + ffmpeg + L"\" " + args;
-    if (!CreateProcessW(nullptr, line.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW | BELOW_NORMAL_PRIORITY_CLASS, nullptr, nullptr, &si, &pi)) {
+    BOOL started = CreateProcessW(nullptr, line.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW | BELOW_NORMAL_PRIORITY_CLASS, nullptr,
+                                  nullptr, &si, &pi);
+    if (said != INVALID_HANDLE_VALUE) CloseHandle(said);
+    if (!started) {
         CloseHandle(read);
         CloseHandle(write);
+        if (sound.stop) sound.stop();
         return Hint(L"ffmpeg didn't start");
     }
     CloseHandle(read);
     CloseHandle(pi.hThread);
-    g_rec = {pi.hProcess, write, path, what, GetTickCount64(), area};
-    Log(L"recording %ls (%dx%d at %d,%d, %ls) to %ls", what.c_str(), w, h, (int)area.left, (int)area.top,
-        g_nvenc == 1 ? L"NVENC" : L"x264", path.c_str());
+    g_rec = {pi.hProcess, write, path, what, GetTickCount64(), area, sound.stop};
+    Log(L"recording %ls (%dx%d at %d,%d, %ls, %ls, %ls) to %ls", what.c_str(), w, h, (int)area.left, (int)area.top,
+        dda ? L"Desktop Duplication" : L"GDI", EncoderFamily().c_str(),
+        inputs == 2 ? L"PC sound and microphone" : inputs ? (sound.stop ? L"PC sound" : L"microphone") : L"no sound", path.c_str());
     ShowDot(area);
-    (void)window;
 }
 
 // Told to stop: ffmpeg finishes the file on a thread of its own (the keyboard hook lives on this one, and can't
@@ -850,6 +1004,7 @@ void StopRecording() {
     std::thread([done, to] {
         if (WaitForSingleObject(done->process, 15000) != WAIT_OBJECT_0) TerminateProcess(done->process, 1);
         CloseHandle(done->process);
+        if (done->soundStop) done->soundStop();
         if (!to || !PostMessageW(to, kMsgRecorded, 0, (LPARAM)done)) delete done;
     }).detach();
 }
@@ -857,8 +1012,10 @@ void StopRecording() {
 void Recorded(Recording const& done) {
     WIN32_FILE_ATTRIBUTE_DATA fa{};
     if (!GetFileAttributesExW(done.path.c_str(), GetFileExInfoStandard, &fa) || (!fa.nFileSizeHigh && fa.nFileSizeLow < 1024)) {
-        Log(L"recording didn't come out (%ls)", done.path.c_str());
-        return Hint(L"The recording didn't come out");
+        std::wstring said = FfmpegSaid();
+        Log(L"recording didn't come out (%ls): %ls", done.path.c_str(), said.empty() ? L"ffmpeg said nothing" : said.c_str());
+        DeleteFileW(done.path.c_str());
+        return Hint(L"The recording didn't come out (the reason is in Tourne's log)", 3500);
     }
     FileOut(done.path);
     ULONGLONG s = (GetTickCount64() - done.started) / 1000;
@@ -1270,6 +1427,9 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
                 PictureOut(GrabScreenRect(ScreenUnderPointer()), L"the screen");
             } else if (wp == kTimerHint) {
                 if (g_hint) ShowWindow(g_hint, SW_HIDE);
+            } else if (wp == kTimerRec && g_rec.process && WaitForSingleObject(g_rec.process, 0) == WAIT_OBJECT_0) {
+                Log(L"ffmpeg ended on its own while recording");
+                StopRecording();  // (the dot goes, and what it left is looked at)
             } else if (wp == kTimerRec && g_dot) {
                 InvalidateRect(g_dot, nullptr, FALSE);
             } else if (wp == kTimerDelegate && g_pending) {
@@ -1288,6 +1448,21 @@ void Thread() {
         std::thread([] {
             std::wstring ffmpeg = FindFfmpeg();
             g_nvenc = !ffmpeg.empty() && RunFor(ffmpeg, L"-hide_banner -encoders").find("h264_nvenc") != std::string::npos ? 1 : 0;
+            g_dda = !ffmpeg.empty() && RunFor(ffmpeg, L"-hide_banner -filters").find("ddagrab") != std::string::npos ? 1 : 0;
+            // The first microphone, as DirectShow names it: [dshow @ ...] "Microphone (Realtek Audio)" (audio)
+            std::string list = ffmpeg.empty() ? "" : RunFor(ffmpeg, L"-hide_banner -list_devices true -f dshow -i dummy");
+            for (size_t at = 0; (at = list.find("(audio)", at)) != std::string::npos; at++) {
+                size_t end = list.rfind('"', at), start = end == std::string::npos ? end : list.rfind('"', end - 1);
+                size_t line = list.rfind('\n', at);
+                if (start == std::string::npos || (line != std::string::npos && start < line)) continue;
+                std::string name = list.substr(start + 1, end - start - 1);
+                int n = MultiByteToWideChar(CP_UTF8, 0, name.data(), (int)name.size(), nullptr, 0);
+                std::wstring wide(n, L'\0');
+                MultiByteToWideChar(CP_UTF8, 0, name.data(), (int)name.size(), wide.data(), n);
+                std::lock_guard lock(g_linkLock);
+                g_firstMic = wide;
+                break;
+            }
         }).detach();
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     HINSTANCE inst = GetModuleHandleW(nullptr);
@@ -1306,8 +1481,25 @@ void Thread() {
     reg(L"TourneCaptureBar", BarProc);
     // (a real window, never shown: the recording menu needs one in front to close as menus do)
     g_wnd = CreateWindowExW(WS_EX_TOOLWINDOW, L"TourneCapture", L"", WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, inst, nullptr);
-    g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, KeyProc, inst, 0);
-    Log(g_hook ? L"on: Print Screen is Tourne's (tap, double tap, hold)" : L"couldn't watch the keyboard (error %lu)", GetLastError());
+    // The key's hook on a thread of its own that does nothing else: Windows drops a keyboard hook, without a
+    // word, whose thread is once too slow to answer (this one is busy taking and saving pictures), and then
+    // Print Screen goes to Snipping Tool. Taken again each minute too, so it's first in line again.
+    std::thread([inst] {
+        g_hookThread = GetCurrentThreadId();
+        g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, KeyProc, inst, 0);
+        Log(g_hook ? L"on: Print Screen is Tourne's (tap, double tap, hold)" : L"couldn't watch the keyboard (error %lu)", GetLastError());
+        SetTimer(nullptr, 0, 60000, nullptr);
+        MSG m;
+        while (GetMessageW(&m, nullptr, 0, 0) > 0) {
+            if (m.message != WM_TIMER) continue;
+            if (HHOOK again = SetWindowsHookExW(WH_KEYBOARD_LL, KeyProc, inst, 0)) {
+                if (g_hook) UnhookWindowsHookEx(g_hook);
+                g_hook = again;
+            }
+        }
+        if (g_hook) UnhookWindowsHookEx(g_hook);
+        g_hook = nullptr;
+    }).detach();
     MSG m;
     while (GetMessageW(&m, nullptr, 0, 0) > 0) {
         TranslateMessage(&m);
@@ -1316,8 +1508,8 @@ void Thread() {
     StopRecording();
     EndPick();
     EndBar();
-    if (g_hook) UnhookWindowsHookEx(g_hook);
-    g_hook = nullptr;
+    if (g_hookThread) PostThreadMessageW(g_hookThread, WM_QUIT, 0, 0);  // (the hook goes with its thread)
+    g_hookThread = 0;
     for (HWND* w : {&g_hint, &g_dot}) {
         if (*w) DestroyWindow(*w);
         *w = nullptr;
@@ -1346,6 +1538,7 @@ void CaptureDefaults(Settings& out) {
     out[L"capture.micDevice"] = L"";
     out[L"capture.after"] = L"none";
     out[L"capture.afterCopy"] = L"1";
+    out[L"capture.annotate"] = L"0";
     out[L"capture.cursor"] = L"1";
     out[L"capture.pictures"] = L"";
     out[L"capture.videos"] = L"";
@@ -1373,7 +1566,7 @@ void CaptureDescribe(SchemaInfo& info) {
     h.hasMin = h.hasMax = true, h.min = 250, h.max = 2000;
     SettingInfo& d = add(L"capture.doubleTapMs", L"Double tap within (ms)", L"Two taps closer than this pick a window; one tap waits this long.");
     d.hasMin = d.hasMax = true, d.min = 150, d.max = 800;
-    SettingInfo& f = add(L"capture.fps", L"Recording frame rate", L"Frames a second, 10 to 240 (a window: at most 60).");
+    SettingInfo& f = add(L"capture.fps", L"Recording frame rate", L"Frames a second, 10 to 240.");
     f.hasMin = f.hasMax = true, f.min = 10, f.max = 240;
     add(L"capture.encoder", L"Encoder",
         L"What makes the video. The graphics card's are quick and leave the processor alone; the processor's are slower and "
@@ -1392,10 +1585,11 @@ void CaptureDescribe(SchemaInfo& info) {
         .options = {{L"0", L"As the screen"}, {L"2160", L"2160p"}, {L"1440", L"1440p"}, {L"1080", L"1080p"}, {L"720", L"720p"}};
     add(L"capture.method", L"Capture",
         L"Desktop Duplication copies the screen on the graphics card and keeps up at high frame rates; GDI is the old way, "
-        L"slow past 30 to 60 fps (a window is always GDI, so it follows the window).")
+        L"slow past 30 to 60 fps. An area across two screens, or on a second graphics card, is always GDI. A window is "
+        L"recorded as its area, as it's seen, so what Tourne draws over it (the taskbar's visualizer) is in it.")
         .options = {{L"dda", L"Desktop Duplication (ddagrab)"}, {L"gdi", L"GDI (gdigrab)"}};
     add(L"capture.cursor", L"Pointer in recordings", L"").isSwitch = true;
-    add(L"capture.sound", L"Record the PC's sound", L"What you hear, from the output below (needs Screen Toolkit running).").isSwitch = true;
+    add(L"capture.sound", L"Record the PC's sound", L"What you hear, from the output below.").isSwitch = true;
     std::vector<std::pair<std::wstring, std::wstring>> outputs{{L"default", L"Windows' default output"}}, mics{{L"", L"The first ffmpeg finds"}};
     // The sound devices now, by name (an output by its id, which the recorder takes; a microphone by the name ffmpeg lists).
     // (on a thread of its own, so the caller's COM is left as it is)
@@ -1433,7 +1627,7 @@ void CaptureDescribe(SchemaInfo& info) {
         if (SUCCEEDED(com)) CoUninitialize();
     }).join();
     add(L"capture.soundDevice", L"Sound from", L"The output whose sound is recorded.").options = outputs;
-    add(L"capture.mic", L"Record a microphone", L"Mixed in with the PC's sound (needs Screen Toolkit running).").isSwitch = true;
+    add(L"capture.mic", L"Record a microphone", L"Mixed in with the PC's sound.").isSwitch = true;
     add(L"capture.micDevice", L"Microphone", L"").options = mics;
     add(L"capture.after", L"After it's copied",
         L"Once the recording is on the clipboard, also make a copy of it: smaller (AV1 on the graphics card, the best size "
@@ -1443,6 +1637,10 @@ void CaptureDescribe(SchemaInfo& info) {
                     {L"discord10", L"Under 10 MB (Discord)"}, {L"discord50", L"Under 50 MB (Discord Nitro Basic)"},
                     {L"discord500", L"Under 500 MB (Discord Nitro)"}, {L"gif", L"A GIF"}};
     add(L"capture.afterCopy", L"Copy that instead", L"When the copy is made, it replaces the recording on the clipboard.").isSwitch = true;
+    add(L"capture.annotate", L"Mark up screenshots",
+        L"Each screenshot opens over the screen first, to draw on: pen, arrow, box, highlighter, text, numbered markers and "
+        L"redact (squares over what's private, the pixels themselves replaced). 1 to 7 pick a tool, C the colour, Ctrl+Z undoes, "
+        L"Enter keeps it marked, Esc keeps it plain.").isSwitch = true;
     add(L"capture.pictures", L"Pictures folder", L"Empty: Pictures\\Screenshots.");
     add(L"capture.videos", L"Recordings folder", L"Empty: Videos\\Captures.");
     add(L"capture.ffmpeg", L"ffmpeg", L"Recording uses ffmpeg. Empty: the one installed, or the copy Convertify brings.");

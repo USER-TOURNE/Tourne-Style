@@ -211,6 +211,17 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
     - mission: Mission Control
     - ring: Ring
     - shelf: Shelf
+    - canvas: Canvas (PrinceWM's infinite canvas)
+  - overview: canvas
+    $name: Overview (Win+Tab and the overview command)
+    $description: >-
+      The canvas (PrinceWM's): every window live on a canvas you pan, flick and
+      zoom, tiles kept where you put them, an app's windows in one stack
+      (middle click opens it), a tile dropped on another puts the two side by
+      side, notes and pasted pictures pinned, and paint. Or Mission Control.
+    $options:
+    - canvas: Canvas
+    - mission: Mission Control
   - live: true
     $name: Live windows
     $description: >-
@@ -463,6 +474,11 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
     - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
     - grid: Grid
     - bsp: BSP (each window halves the space left)
+    - spiral: Spiral (each window takes a side of what's left, winding inwards)
+    - threeColumn: Three columns (main in the middle, a column each side)
+    - slice: Slice (one window keeps a strip along an edge, the rest laid out in what's left)
+    - screenSplit: Split screen (named regions, each with its own layout and its own windows)
+    - script: Your own layout (a .luau file in the Layouts folder)
     - monocle: Monocle (every window fills the screen)
     - layers: Layers of three (one fills, two halves, three main and two; the 4th to 6th lie over them the same way)
   - otherLayout: same
@@ -478,6 +494,11 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
     - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
     - grid: Grid
     - bsp: BSP (each window halves the space left)
+    - spiral: Spiral (each window takes a side of what's left, winding inwards)
+    - threeColumn: Three columns (main in the middle, a column each side)
+    - slice: Slice (one window keeps a strip along an edge, the rest laid out in what's left)
+    - screenSplit: Split screen (named regions, each with its own layout and its own windows)
+    - script: Your own layout (a .luau file in the Layouts folder)
     - monocle: Monocle (every window fills the screen)
     - layers: Layers of three (one fills, two halves, three main and two; the 4th to 6th lie over them the same way)
   - layoutRules: ''
@@ -547,6 +568,80 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
     - force: Force it to fit
     - overlap: Let it overlap its neighbours
     - float: Leave it floating
+  - newWindow: end
+    $name: Where a window that opens goes
+    $description: >-
+      A new window joins the screen's order at the end, which is the last tile
+      in the layout. First makes it the main window instead; the other two put
+      it either side of the window you were in, as qtile's
+      new_client_position does.
+    $options:
+    - end: At the end
+    - first: First (the main window, in layouts that have one)
+    - afterFocused: After the window you were in
+    - beforeFocused: Before the window you were in
+  - sliceWindow: ''
+    $name: 'Slice: the window with the strip'
+    $description: >-
+      For the Slice layout. The program, class or title of the window that
+      keeps the strip along the edge, with * and ? matching any text
+      (Spotify.exe, or Discord). Empty: whichever window is first on the
+      screen. Several, separated by commas: the first one found takes it.
+  - sliceEdge: left
+    $name: 'Slice: which edge'
+    $options:
+    - left: Left
+    - right: Right
+    - top: Top
+    - bottom: Bottom
+  - sliceSize: 0
+    $name: 'Slice: how much of the screen the strip takes (%)'
+    $description: 0 uses the main window's share above.
+  - sliceLayout: verticalStack
+    $name: 'Slice: the rest of the windows'
+    $description: The layout for everything that isn't in the strip.
+    $options:
+    - columns: Columns
+    - rows: Rows
+    - verticalStack: Vertical stack (main on the left)
+    - rightMainVerticalStack: Vertical stack (main on the right)
+    - horizontalStack: Horizontal stack (main on top)
+    - ultrawideVerticalStack: Ultrawide vertical stack (main in the middle)
+    - threeColumn: Three columns (main in the middle, a column each side)
+    - grid: Grid
+    - bsp: BSP (each window halves the space left)
+    - spiral: Spiral (each window takes a side of what's left, winding inwards)
+    - monocle: Monocle (every window fills what's left)
+    - layers: Layers of three
+  - split: ['']
+    $name: 'Split screen: the regions'
+    $description: >-
+      For the Split screen layout, one region a line, as qtile's ScreenSplit
+      does it: a name, the region's share of the screen as four numbers
+      (left top width height, in percent), its own layout, then the programs,
+      classes or titles whose windows go in it (* and ? match any text).
+
+      region = sidebar, 0 0 25 100, verticalStack, Spotify.exe, Discord.exe
+
+      region = main, 25 0 75 100, grid
+
+      The "region =" in front is optional. A region that names no windows
+      takes everything left over; with every region naming something, the last
+      one does. The gap between tiles is the gap between regions too, so the
+      shares can add up to 100 without the tiles touching.
+  - script: ''
+    $name: 'Your own layout: which file'
+    $description: >-
+      For the Your own layout choice. The name of a .luau file in
+      %LOCALAPPDATA%\Tourne\Layouts (without the .luau), and after a comma
+      anything you want the layout itself to read: spread, 3. The folder is
+      made with three commented examples in it the first time Tourne looks for
+      it, and saving a file is all it takes: the next window that moves uses
+      the new one. A layout is handed the screen, the gap, the ratio and the
+      windows (with each one's program, class and title) and answers with where
+      each window goes; it can't reach anything else, and a layout that stops
+      or answers with the wrong thing lays out in columns and says so in the
+      log. Tourne Desktop only: in the Windhawk suite this lays out in columns.
   - keepResized: true
     $name: Leave a window you resize where you put it
     $description: >-
@@ -757,12 +852,24 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
       bindm = WIN, mouse:272, movewindow drags the window under the pointer
       with the left button (273 right, 274 middle; resizewindow resizes from
       the nearest corner), floating it; it needs a modifier.
+      bindk runs on a double press (the key twice within the double press
+      time below) and bindo when held (for the hold time below, or bindo800
+      for its own); a key can have a bind, a bindk and a bindo at once, and
+      then a single press waits out the double press time before it runs.
       "$mod = WIN" lines name a value for later lines; "submap = resize" puts
       the lines after it in a mode of their own (submap = reset ends it), and
       "submap, resize" as a bind's command enters it; catchall as the key
-      takes every other key in a mode. Commands: exec, killactive,
+      takes every other key in a mode. Commands: run (several steps in one,
+      separated by semicolons, with wait between them: run, workspace 2;
+      wait 200; exec notepad. A wait takes 200, 200ms or 0.2s; write \; for
+      a semicolon of your own. The same line is a menu item's command when
+      written tourne:do workspace 2; wait 200; exec notepad, and tournectl
+      run does it from a script, while tournectl check prints what it would
+      do without doing any of it), exec, killactive,
       forcekillactive, closewindow, killwindow, togglefloating, setfloating,
-      settiled, fullscreen, minimize, pin, movefocus, movewindow, swapwindow,
+      settiled, tileall (every window on the screen tiled, an even split),
+      monocle (one window given the screen, again puts it back; tileothers
+      after it tiles the rest behind it), fullscreen, minimize, pin, movefocus, movewindow, swapwindow,
       resizeactive, moveactive, resizewindowpixel, movewindowpixel,
       centerwindow, cyclenext, focuswindow, focusmonitor, focuscurrentorlast,
       workspace, movetoworkspace, movetoworkspacesilent, renameworkspace
@@ -771,6 +878,10 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
       it back floating over any desktop, or puts it away again), layoutmsg (cycle, tile, auto, layouts, apply N,
       mfact N), splitratio, submap, sendshortcut, alterzorder,
       bringactivetotop, movecursor, movecursortocorner, dpms, lockscreen,
+      flyout NAME (a system icons flyout: mixer, notifications, network, power,
+      bluetooth, devices, brightness, vpn, security; again closes it),
+      explorerbar (Explorer's own taskbar in place of Tourne's bar, and
+      back: explorer, tourne, or nothing to swap; shell mode only),
       overview (every window on every screen, as the switcher's Mission
       Control; again closes it), pickcolor (the colour under the pointer
       copied as #rrggbb),
@@ -792,13 +903,23 @@ keys from the switcher and its own Alt+Tab shows. Turn off other Alt+Tab mods
       A file of more lines written the same way (like a hyprland.conf's
       binds), read with the settings, for example
       %APPDATA%\Tourne\binds.conf. Empty for none.
+  - doubleMs: 300
+    $name: Double press time (ms)
+    $description: >-
+      How quickly the second press must follow the first for a bindk. A
+      single press on a key that also has one waits this long before it runs.
+  - holdMs: 500
+    $name: Hold time (ms)
+    $description: How long a key is held before its bindo runs (bindo800 sets its own).
   - control: false
     $name: Let scripts control Tourne (tournectl)
     $description: >-
       Programs you run (tournectl, a bar, a script) can run these commands
       and hear events (activewindow, openwindow, closewindow, workspace,
       submap), as Hyprland's hyprctl and event socket do. Only programs of
-      yours on this PC can reach it. Nothing runs while nothing calls.
+      yours on this PC can reach it. Nothing runs while nothing calls. The
+      Tourne Menu's own items ask through this as well, so an item whose
+      command starts with tourne:do needs it on.
   $name: Key binds and control
 - customHeaders:
   - - program: ''
@@ -972,7 +1093,8 @@ struct Settings {
     Minimized minimized = Minimized::InPlace;
     std::wstring excludeTitles, excludeApps;
     std::vector<CustomHeader> headers;
-    int view = 0;  // 0 the list, 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf (switcher-views.cpp)
+    int view = 0;  // 0 the list, 1 Flip 3D, 2 Cover Flow, 3 Grid, 4 Mission Control, 5 Ring, 6 Shelf (switcher-views.cpp), 7 Canvas
+    int overviewView = 7;  // the overview's (Win+Tab, the overview command): 4 Mission Control or 7 Canvas
     bool viewLive = true;
     int viewDim = 55, viewBlur = 6;
 };
@@ -1159,7 +1281,9 @@ Settings LoadSettings() {
     std::wstring view = TextSetting(L"view.style");
     s.view = view == L"flip3d" ? 1 : view == L"coverflow" ? 2 : view == L"grid" ? 3 : view == L"mission" ? 4 : view == L"ring" ? 5
            : view == L"shelf"  ? 6
+           : view == L"canvas" ? 7
                                : 0;
+    s.overviewView = TextSetting(L"view.overview") == L"mission" ? 4 : 7;
     s.viewLive = Wh_GetIntSetting(L"view.live") != 0;
     s.viewDim = IntSetting(L"view.dim", 0, 95);
     s.viewBlur = IntSetting(L"view.blur", 0, 10);
@@ -2257,9 +2381,14 @@ void PressDummyKey() {
 }
 
 void Activate(HWND h) {
-    if (IsIconic(h)) ShowWindow(h, SW_RESTORE);
+    // (a minimised admin window ignores the restore, as Windows keeps our messages from it: SwitchToThisWindow
+    // restores it itself)
+    if (IsIconic(h)) {
+        ShowWindow(h, SW_RESTORE);
+        if (IsIconic(h)) SwitchToThisWindow(h, TRUE);
+    }
     PressDummyKey();
-    if (!SetForegroundWindow(h)) SwitchToThisWindow(h, TRUE);
+    if (!SetForegroundWindow(h) || IsIconic(h)) SwitchToThisWindow(h, TRUE);
 }
 
 LRESULT CALLBACK MouseProc(int code, WPARAM wParam, LPARAM lParam);
@@ -2273,6 +2402,7 @@ void WatchWheel(bool on) {
 
 // The 3D views (switcher-views.cpp), shown instead of the list when chosen.
 bool ViewOpen();
+int ViewKind();
 bool ViewShown();
 void ViewRefit();
 void ViewClose();
@@ -2327,7 +2457,7 @@ void Begin(HWND wnd, int dir, bool sameApp, bool sticky, bool allMonitors) {
     g_entries = BuildEntries(sameApp ? &key : nullptr);
     if (g_entries.empty()) return;
     g_open = true;
-    g_sticky = sticky;
+    g_sticky = sticky || ViewKind() == 7;  // (the canvas stays until something is picked, as PrinceWM's does)
     g_first = 0;
     int n = (int)g_entries.size();
     g_sel = n > 1 ? (dir > 0 ? 1 : n - 1) : 0;
@@ -2421,6 +2551,7 @@ bool Undrill(HWND wnd) {
 }
 
 // @inline switcher-views.cpp
+// @inline switcher-canvas.cpp
 // @inline tiling.cpp
 // @inline tiling-layouts.cpp
 // @inline borders.cpp
@@ -2495,6 +2626,12 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
     if (isAlt || vk == VK_SHIFT || vk == VK_LSHIFT || vk == VK_RSHIFT || vk == VK_LWIN || vk == VK_RWIN)
         return CallNextHookEx(nullptr, code, wParam, lParam);
     g_ctrlTap = false;
+    // Print Screen and Win's keys still reach Windows and the screenshot tools (the canvas can be captured).
+    if (CanvasShown() && (vk == VK_SNAPSHOT || WinDown())) return CallNextHookEx(nullptr, code, wParam, lParam);
+    if (CanvasShown()) {  // (every key: the canvas has its own, and notes are typed into)
+        PostMessageW(wnd, WM_APP_CANVASKEY, vk, (k->scanCode & 0xFFFF) | (shift ? 1 << 16 : 0) | (ctrl ? 1 << 17 : 0));
+        return 1;
+    }
     switch (vk) {
         case VK_ESCAPE: PostMessageW(wnd, WM_APP_CANCEL, 0, 0); break;
         case VK_RETURN:
@@ -2669,7 +2806,7 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             WORD from = LOWORD(lParam), flags = HIWORD(lParam);
             bool backtick = from == kFromBacktick;
             if (!g_open) {
-                if (from == kFromWinTab) g_viewFor = 4;  // Mission Control
+                if (from == kFromWinTab) g_viewFor = g_settings.overviewView;  // the canvas, or Mission Control
                 // Alt+`: backwards, or this app's windows only.
                 bool sameApp = backtick && g_settings.backtickSameApp;
                 Begin(wnd, sameApp ? 1 : dir, sameApp, flags & kFlagSticky, flags & kFlagAllMonitors);
@@ -2700,15 +2837,26 @@ LRESULT CALLBACK WndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_APP_WHEEL: {
             if (!g_open) return 0;
+            if (CanvasShown()) {
+                CanvasWheel((short)wParam);
+                return 0;
+            }
             int dir = ((short)wParam > 0) != g_settings.reverseWheel ? -1 : 1;
             bool page = g_settings.wheelPages != (lParam != 0);
             Show(wnd);
             Step(wnd, page ? dir * std::max(1, g_m.rows * g_m.columns) : dir);
             return 0;
         }
+        case WM_APP_CANVASKEY:
+            if (g_open) CanvasKey((UINT)wParam, LOWORD(lParam), (lParam >> 16) & 1, (lParam >> 17) & 1);
+            return 0;
         case WM_APP_MOVE: {
             if (!g_open) return 0;
             int dx = (int)(INT_PTR)wParam, dy = (int)lParam;
+            if (CanvasShown()) {
+                CanvasMove(dx, dy, GetAsyncKeyState(VK_SHIFT) < 0);
+                return 0;
+            }
             Step(wnd, g_settings.grid ? dx + dy * std::max(1, g_m.columns) : dx + dy);
             return 0;
         }

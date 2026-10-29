@@ -6,6 +6,114 @@
 
 ---
 
+## ❀ v2.3.0 (beta): the Style Editor in red
+
+> **Style Editor:** its text is drawn in the menus' frame red, as the quick panel's search hint, and the Base style, Color mode and Saved style lists (Windows drew their text white, and its own red highlight) in the menus' green against it, the hovered choice in the menus' hover with the accent text, as the buttons light. The header's close goes red under the mouse and the pin gets the hover overlay. Under the mouse only the text changes, to the menus' hover text (no neon outline, nothing behind it): buttons, toggles and the style names. An open list's row under the mouse takes the menus' hover colour behind it too, as a menu's does. Resized big, every part redraws (labels, tiles and the note kept stale pixels) and the controls stop growing at twice their size.
+
+## ❀ v2.3.0 (beta): the card's options on its page
+
+> **Quick settings:** the Media Controls page (where the card's right-click opens) starts with Open Player and Show Now Playing, and ends with the card's main options, In the Art's Place, Backdrop, Card Art Size and Card Art Height, as well as having them in Card.
+
+---
+
+## ❀ v2.3.0 (beta): fix
+
+> **Beta fix:** in the Style Editor, tiles scrolled up showed through the My Styles and Community tabs. The tabs are drawn last now, over their own band with a line under it.
+
+---
+
+## ❀ v2.3.0 (beta): Style Editor at any size
+
+> **Style Editor:** resizes to any width and height, laying itself out again: wider stretches the controls, narrow puts each label on a line over its controls, taller gives the style tiles the room, and when it's too short for everything the settings under the tiles scroll with the wheel (a thin bar shows where).
+
+---
+
+## ❀ v2.3.0 (beta): tips that explain every choice
+
+> **Quick settings:** a choice's tip now has a line for each of its options, saying what that option does (Sensitivity Curve: what Exponential, Knee and Power each do to loud hits), before the value to try. The tip is a little wider for them.
+
+---
+
+## ❀ v2.3.0 (beta): more for the art's place
+
+> **In the Art's Place** gains: **Mini visualizer** (the Table's bars as they are now, drawn small in its colours, 30 frames a second while it plays), **Big type** (the title as large as it fits, the artist under it), **Colour block** (the art's main colours side by side, no picture), and the playing app's **Player badge** now shows its icon (as the Start menu has it) over its name. Buttons only is now named **Nothing**: the card is just its text and controls.
+
+---
+
+## ❀ v2.3.0 (beta): the card's own menu, sides and art
+
+> **Media card:** right-clicking it (or the strip) opens quick settings over it, on the Media Controls page, in a place and size of its own (kept apart from the visualizer's). Its sides now drag its width and its top and bottom its height, each on its own (new **Card Art Height**, 0 square); the corners still drag both together. New **In the Art's Place**: the album art, the buttons on their own (a short card), a clock with the time left in the track, or the playing app's name. Art that isn't square is cut to cover its tile.
+
+---
+
+## ❀ v2.3.0 (beta): Style Editor in the Tourne menu look
+
+> **Style Editor:** drawn as Tourne's menus are, after the styles page: the menus' frame, font, capitals and colours, square corners, no Windows title bar. Its header (TOURNE'TABLE // STYLE EDITOR) moves it, with the pin and a close button at its right; every edge and corner resizes it (Windows' frame didn't). Buttons read [ LABEL ] with Save filled in the accent, tick boxes are the menus' toggles, and the tiles name their styles > NAME. Without Tourne Desktop (Windhawk) it keeps the same layout in the styles page's colours.
+
+---
+
+## ❀ v2.3.0 (beta): drag the song text, resize the card
+
+> **Now Playing:** with Enable Drag-to-Move on, the song text drags on its own with the same button and key as the visualizer, by the words themselves. Where it's let go is kept like a keyboard nudge (and cleared the same way).
+
+> **Media card:** its corners now show the resize arrows and drag its size, keeping its proportions and the opposite corner where it was. The size is kept as Card Art Size.
+
+---
+
+## ❀ v2.3.0 (beta): setting tips
+
+> **Quick settings:** rest the pointer on any setting for a moment and a tip opens beside the panel, in the menus' look: what the setting is, what it changes and where it shows, then a value to try for a certain look. Every setting has one, written in plain words (`tools/table/setting-tips.txt`, read into the settings table by `make-settings-table.py`).
+
+---
+
+## ❀ v2.3.0 (beta): no style changes on hover
+
+> **Beta fix:** hovering a style tile in the Style Editor put that style on at once, and it could stay. Hovering now changes nothing; clicking a tile puts it on and asks whether to keep it, and No puts yours back.
+
+---
+
+## ❀ v2.3.0 (beta): Style Editor window
+
+> **Style Editor:** it can now be resized from any edge (taller gives the style tiles more rows, wider more columns), moved by its title bar as before, and pinned on top or not with the pin at its top right. Its place, size and pin are kept between openings.
+
+---
+
+## ❀ v2.3.0 (beta): scroll to change numbers
+
+> **Quick settings:** with the pointer over a number's value, the mouse wheel now turns it up or down, live, and it's saved once you stop. How far each notch goes is the **Scroll step** (0.1, 0.25, 0.5, 1, 5, 10, 15, 20 or 25), picked from any number's right-click menu; whole-number settings such as Bar count move by at least 1. Scrolling anywhere else still scrolls the list.
+
+---
+
+## ❀ v2.3.0 (beta): search hint
+
+> **Quick settings:** the search box's "Search every setting" hint is drawn in the menus' frame line colour (where a frame gradient ends; the edge colour without a frame) instead of Windows' grey.
+
+---
+
+## ❀ v2.3.0 (beta): style previews
+
+> **Style Editor:** every style is now a small tile at the top of the Style Editor, playing on a test beat, with **My Styles** and **Community** tabs. Hover a tile for a moment and the visualizer tries that style; move away and yours comes back. Click a tile to keep it. Community styles are read from the styles page's list on GitHub only when that tab is opened, and a community style never moves your visualizer (its Place part is left out). The tiles are drawn on the CPU, 30 times a second, only while the editor is open and only the ones in view, so the visualizer itself isn't slowed.
+
+---
+
+## ❀ v2.3.0 (beta): fix
+
+> **Beta fix:** in Tourne Desktop with Place In = Desktop, a visualizer sitting under Tourne's bar didn't open its right-click menu or drag there: the click landed on the bar, which only counted as the visualizer's home with Place In = Taskbar. Tourne's bar now counts with either, inside the visualizer's own box only, so glass bars (desktop only) and the menu and drag work together. Windows' own taskbar still counts only with Place In = Taskbar.
+
+> **Media card (from the media card fix build):** the card shows the **title and artist** under the art (Card Track Title: both, title only or off), a long title scrolls on hover (Card Title Scrolling), and **clicking the title opens the player**, even one hidden in the tray (Click Title to Open Player). **Open Player** and **Show Now Playing** join the right-click menu; Show Now Playing brings the Now Playing text back without a track change.
+
+> **Media card and strip drag:** with Enable Drag-to-Move on they move with the visualizer's drag button and key. With Drag Modifier Key = None only their padding and gaps start a drag, so their buttons, seek bar, slider and title stay clicks; a press that doesn't move is still a click. The spot is kept like a keyboard move (cleared with the move combo + Home) and wins over Anchor To Panel until then.
+
+> **Media card and strip Backdrop:** Solid (as before), Clear (no fill; the card still takes clicks), Blur or Acrylic (what is behind blurs, tinted by Card Background or Backing Plate Color), the same accent Tourne's bar uses, rounded on Windows 11. It goes in a style with the other card settings.
+
+> **Quick settings panel:** right-click opens a panel with every setting instead of the menu (Shift + right-click, or its More row, still opens the menu for the audio device, cut-outs and the panel). A search over names, groups and choices; a page per group, long ones split into sub-pages (Appearance into Shape and Bars, Colours, Effects, Sensitivity, Oscilloscope, Now Playing and Readout; Media Controls into Strip, Card and Place; and so on; no setting renamed); rows edit in place (switches flip, choices drop down, numbers drag left and right with Shift for fine steps or take a typed value on a click, colours open the picker, text is typed); right-click a row to reset it. Drag it by its header, size it from any edge or corner, and pin it (the pin in its header) to keep it open and on top; its place, size and pin are kept between openings. Built once and only shown and hidden; only rows in view are drawn; while dragging, the visualizer follows at most every 50 ms, and settings that rebuild the engine or the device wait for the release. In Tourne Desktop a change is written to its settings (the Studio shows it), taking the setting out of an applied style and the quick settings so it shows; in Windhawk it goes in the applied-style layer. One settings list feeds it: `tools/table/make-settings-table.py` builds the shared keys and the panel's table from the settings block (and keeps the cutter command out of styles).
+
+> **Card corners:** Card Corner Radius takes one value or four (top-left, top-right, bottom-right, bottom-left); 0 makes the card and its border square. New **Card Art Corner Radius** rounds the art on its own (one or four values), or -1 to follow the card as before.
+
+> **Beta fix:** Depth's cut-outs always failed (exit 1) after **Install Background Remover (rembg)**: newer rembg releases leave out onnxruntime unless asked, so `rembg` stopped with "No onnxruntime backend found". The installer now asks for `rembg[cpu,cli]`. Running it again fixes an earlier install.
+
+---
+
 ## ❀ v2.0.0 (beta): Every Bar Its Own Band, Your Choice of Silicon, and a Renderer That Idles to Nothing
 
 Beta build, in `BETA_BUILD_2.0/`. Same `@id` as the 1.4 beta, so it upgrades that install in place and keeps its settings. The release build is untouched at 1.1.0.

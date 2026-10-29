@@ -15,6 +15,9 @@
 //     soon after starts Explorer and turns shell mode off.
 //   - Hold Shift while signing in: Explorer, this time only.
 //   - --restore (and turning the switch off) puts Explorer back as the shell.
+//   - --panic does the same and starts Explorer straight away, for when
+//     there's no working desktop left to click in (run it from Task
+//     Manager's "Run new task").
 //
 // In shell mode Tourne Desktop also starts your startup apps (the Run keys
 // and Startup folders, as Task Manager's Startup page has them), once per
@@ -26,7 +29,8 @@
 // as Windows' own kiosk shell host does), and Tourne Desktop keeps its
 // taskbars and desktop hidden underneath, takes the tray icons over (its tray
 // window first in line, where apps look) and starts Explorer again if it ends.
-// Explorer starts the startup apps then. Quitting shows Explorer's taskbar.
+// Tourne Desktop still starts the startup apps (Explorer started this way
+// doesn't count itself the shell, so it skips them). Quitting shows Explorer's taskbar.
 // When Explorer is slow (after a restart) and comes up after Tourne Desktop,
 // it is taken on then, the same way, for up to two minutes.
 #pragma once
@@ -51,6 +55,7 @@ int ShellWatchdog();                    // TourneDesktop.exe --shell
 bool StartedAsShell(const std::wstring& args);  // --shell-child: run by the watchdog
 void ShellSessionStart();               // Tourne Desktop is up as the shell: ready, startup apps
 void ShellRestore();                    // --restore: Explorer the shell again
+int ShellPanic();                       // --panic: Explorer the shell again and running, now
 void ShellSessionStop();                // Tourne Desktop quitting: Explorer underneath shown again
 
 bool ShellUnderneath();                    // Explorer runs hidden under Tourne (Windows apps)
@@ -58,5 +63,6 @@ bool ShellExplorerExpected();              // ... or will: it's still coming up 
 HWND ExplorerWindow(const wchar_t* cls);   // Explorer's own top-level window of that class
 void ShellRelaunchExplorer();              // Explorer underneath ended: started again, Tourne's tray aside meanwhile (main thread)
 void ShellExplorerRestarted();            // Explorer said "TaskbarCreated": hidden again, tray taken back
+bool ShellShowExplorerBar(bool show);      // Explorer's own taskbars shown in Tourne's place (or hidden again); false without Explorer underneath
 
 }  // namespace td

@@ -2072,8 +2072,10 @@ void TogglePanel(const std::wstring& id) {
     for (auto& p : g_plugins)
         for (auto& e : p->entries) {
             if (e->kind != "panel" || Name(*e) != id) continue;
-            if (e->panel) ClosePanel(*e);
-            else if (GetTickCount64() - panel::LastDismissed() > 300) OpenPanel(*e);  // (the click that just closed it)
+            if (e->panel) {
+                SetIntValue(L"plugins", (id + L".panelDetached").c_str(), 0);  // (closed by you: not back at the next start)
+                ClosePanel(*e);
+            } else if (GetTickCount64() - panel::LastDismissed() > 300) OpenPanel(*e);  // (the click that just closed it)
             return;
         }
     Log(L"no panel %ls to open", id.c_str());
@@ -2111,6 +2113,187 @@ void OpenDesktopWidget(Entry& e) {
     host.color = [](const std::string& role) { return RoleColor(role); };
     e.panel = panel::Window::Open(where, std::move(host));
     if (!e.panel) Problem(e, L"its desktop window couldn't open");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Edit desktop mode (Vitreus' idea): a toolbar across the top of the main screen with a button for every desktop
+// widget the plugins have, lit when it's on the desktop; a click puts it there or takes it away (its Studio
+// switch, plugins.<id>.desktop_<widget>). While it's up the widgets drag from anywhere and wear a frame.
+// Done (or the command again) ends it. Its look is the menus'.
+
+HWND g_editBar = nullptr;
+struct EditButton {
+    RECT r;
+    std::wstring key;  // the widget's switch (empty: Done)
+    bool on;
+};
+std::vector<EditButton> g_editButtons;
+
+struct MenuLookC {
+    uint32_t ground, line, edge, text, accent, dim, hover, hoverText, band;
+    HFONT font;
+    int scale, frame, caps;
+    uint32_t frameLine;
+};
+
+void PaintEditBar(HWND wnd, HDC dc) {
+    RECT rc;
+    GetClientRect(wnd, &rc);
+    MenuLookC look{0x121C21, 0x1E2F36, 0x4F8F6A, 0x66EA97, 0x15FFA2, 0x5D8D6F, 0x1F3D34, 0xFFFFFFFF, 0x151F24, nullptr, 1, 0, 0, 0xFFFFFFFF};
+    using LookFn = BOOL (*)(MenuLookC*, int);
+    using FrameFn = void (*)(HDC, int, int, RECT*);
+    static auto lookFor = (LookFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuLookFor");
+    static auto frame = (FrameFn)GetProcAddress(GetModuleHandleW(nullptr), "TourneMenuPaintFrame");
+    if (lookFor) lookFor(&look, (int)sizeof(look));
+    auto rgb = [](uint32_t c) { return RGB(c >> 16 & 255, c >> 8 & 255, c & 255); };
+    HDC mem = CreateCompatibleDC(dc);
+    HBITMAP bmp = CreateCompatibleBitmap(dc, rc.right, rc.bottom);
+    HGDIOBJ oldBmp = SelectObject(mem, bmp);
+    RECT in{1, 1, rc.right - 1, rc.bottom - 1};
+    if (frame) frame(mem, rc.right, rc.bottom, &in);
+    else {
+        SetDCBrushColor(mem, rgb(look.ground));
+        FillRect(mem, &rc, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+    SetBkMode(mem, TRANSPARENT);
+    HGDIOBJ oldFont = SelectObject(mem, look.font ? look.font : GetStockObject(DEFAULT_GUI_FONT));
+    auto caps = [&](std::wstring t) {
+        if (look.caps)
+            for (auto& c : t) c = towupper(c);
+        return t;
+    };
+    int x = in.left + 12;
+    RECT title{x, in.top, in.right, in.bottom};
+    std::wstring head = caps(L"Edit desktop:");
+    SetTextColor(mem, rgb(look.dim));
+    DrawTextW(mem, head.c_str(), -1, &title, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+    SIZE size{};
+    GetTextExtentPoint32W(mem, head.c_str(), (int)head.size(), &size);
+    x += size.cx + 14;
+    // Every desktop widget the plugins have, from their manifests: on when it's loaded (its switch is on).
+    g_editButtons.clear();
+    auto button = [&](std::wstring const& label, std::wstring const& key, bool on) {
+        std::wstring t = L"[ " + caps(label) + L" ]";
+        GetTextExtentPoint32W(mem, t.c_str(), (int)t.size(), &size);
+        RECT r{x, in.top, x + size.cx + 8, in.bottom};
+        SetTextColor(mem, rgb(key.empty() ? look.accent : on ? look.accent : look.text));
+        DrawTextW(mem, t.c_str(), -1, &r, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+        g_editButtons.push_back({r, key, on});
+        x = r.right + 6;
+    };
+    int count = 0;
+    for (auto& p : g_plugins)
+        for (auto const& w : p->manifest["desktop_widget"].items) {
+            std::wstring id = W(w["id"].text);
+            if (id.empty()) continue;
+            bool on = false;
+            for (auto& e : p->entries) on |= e->kind == "desktop_widget" && W(e->id) == id;
+            std::wstring name = W(w["name"].text);
+            if (name.empty()) name = W(p->manifest["name"].text) + (p->manifest["desktop_widget"].items.size() > 1 ? L" " + id : L"");
+            if (name.empty()) name = id;
+            button(name, L"plugins." + p->id + L".desktop_" + id, on);
+            count++;
+        }
+    if (!count) {
+        RECT none{x, in.top, in.right, in.bottom};
+        SetTextColor(mem, rgb(look.dim));
+        DrawTextW(mem, L"No plugin has a desktop widget yet: install one on the Extensions page.", -1, &none,
+                  DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+    }
+    // Done at the far end, and what to do in words before it.
+    std::wstring done = L"[ " + caps(L"Done") + L" ]";
+    GetTextExtentPoint32W(mem, done.c_str(), (int)done.size(), &size);
+    x = in.right - 12 - size.cx - 8;
+    RECT tip{0, in.top, x - 16, in.bottom};
+    SetTextColor(mem, rgb(look.dim));
+    if (count) DrawTextW(mem, L"Click a name to put it on or take it off. Drag a widget anywhere.", -1, &tip, DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+    button(L"Done", L"", true);
+    BitBlt(dc, 0, 0, rc.right, rc.bottom, mem, 0, 0, SRCCOPY);
+    SelectObject(mem, oldFont);
+    SelectObject(mem, oldBmp);
+    DeleteObject(bmp);
+    DeleteDC(mem);
+}
+
+void EndEditDesktop() {
+    if (!g_editBar) return;
+    DestroyWindow(g_editBar);
+    g_editBar = nullptr;
+    panel::SetEditingDesktop(false);
+    Log(L"edit desktop: done");
+}
+
+LRESULT CALLBACK EditBarProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
+    switch (msg) {
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC dc = BeginPaint(wnd, &ps);
+            PaintEditBar(wnd, dc);
+            EndPaint(wnd, &ps);
+            return 0;
+        }
+        case WM_ERASEBKGND:
+            return 1;
+        case WM_LBUTTONUP: {
+            POINT pt{GET_X_LPARAM(lp), GET_Y_LPARAM(lp)};
+            for (auto const& b : g_editButtons) {
+                if (!PtInRect(&b.r, pt)) continue;
+                if (b.key.empty()) {
+                    PostMessageW(wnd, WM_CLOSE, 0, 0);
+                } else {
+                    std::wstring key = b.key, value = b.on ? L"0" : L"1";
+                    Later([key, value] { WriteStudioSettings({{key, value}}, key, L"edit desktop"); });
+                    if (g_window) PostMessageW(g_window, kMsgWake, 0, 0);
+                    SetTimer(wnd, 1, 700, nullptr);  // (shown again once the plugins have it, or not)
+                    SetTimer(wnd, 2, 2000, nullptr);
+                }
+                return 0;
+            }
+            return 0;
+        }
+        case WM_TIMER:
+            KillTimer(wnd, wp);
+            InvalidateRect(wnd, nullptr, FALSE);
+            if (g_editBar) panel::SetEditingDesktop(true);  // (widgets opened since: framed too)
+            return 0;
+        case WM_SETCURSOR:
+            SetCursor(LoadCursorW(nullptr, IDC_HAND));
+            return TRUE;
+        case WM_KEYDOWN:
+            if (wp == VK_ESCAPE || wp == VK_RETURN) PostMessageW(wnd, WM_CLOSE, 0, 0);
+            return 0;
+        case WM_CLOSE:
+            EndEditDesktop();
+            return 0;
+    }
+    return DefWindowProcW(wnd, msg, wp, lp);
+}
+
+void ToggleEditDesktop() {
+    if (g_editBar) return EndEditDesktop();
+    static bool registered = false;
+    if (!registered) {
+        WNDCLASSW wc{};
+        wc.lpfnWndProc = EditBarProc;
+        wc.hInstance = GetModuleHandleW(nullptr);
+        wc.lpszClassName = L"TourneEditDesktop";
+        registered = RegisterClassW(&wc) != 0;
+    }
+    MONITORINFO mi{sizeof(mi)};
+    GetMonitorInfoW(MonitorFromPoint({0, 0}, MONITOR_DEFAULTTOPRIMARY), &mi);
+    HDC screen = GetDC(nullptr);
+    int h = MulDiv(44, GetDeviceCaps(screen, LOGPIXELSY), 96);
+    ReleaseDC(nullptr, screen);
+    RECT w = mi.rcWork;
+    g_editBar = CreateWindowExW(WS_EX_TOPMOST | WS_EX_TOOLWINDOW, L"TourneEditDesktop", L"Tourne: edit desktop", WS_POPUP, w.left + 12, w.top + 12,
+                                w.right - w.left - 24, h, nullptr, nullptr, GetModuleHandleW(nullptr), nullptr);
+    if (!g_editBar) return;
+    DWORD square = 1;
+    DwmSetWindowAttribute(g_editBar, 33, &square, sizeof(square));
+    ShowWindow(g_editBar, SW_SHOW);
+    SetForegroundWindow(g_editBar);
+    panel::SetEditingDesktop(true);
+    Log(L"edit desktop: on");
 }
 
 // noctalia.togglePanel("author/plugin:panel"): open, or close when it's open.
@@ -2508,6 +2691,15 @@ bool Start(Entry& e) {
         return false;
     }
     if (e.kind == "desktop_widget") OpenDesktopWidget(e);  // (before its script: it may render at once)
+    // A panel dragged off the bar last time: open again where it was put (plugin-panel.cpp, KeepPlace).
+    if (e.kind == "panel" && GetIntValue(L"plugins", (Name(e) + L".panelDetached").c_str(), 0)) {
+        std::wstring id = Name(e);
+        Later([id] {
+            for (auto& p : g_plugins)
+                for (auto& x : p->entries)
+                    if (x->kind == "panel" && Name(*x) == id && !x->panel) OpenPanel(*x);
+        });
+    }
     if (!Call(e, 0)) return false;  // (kept: its callbacks may still work)
     // A widget's update() runs every second unless it asks for another pace.
     Guarded(e, [&] {
@@ -2968,8 +3160,19 @@ LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wp, LPARAM lp) {
         StartAll();
         return 0;
     }
-    if (msg == kMsgSettings) {
+    if (msg == kMsgSettings) {  // (the Studio's live changes come a keystroke or a slider step at a time: once they settle)
+        SetTimer(wnd, 2, 120, nullptr);
+        return 0;
+    }
+    if (msg == WM_TIMER && wp == 2) {
+        KillTimer(wnd, 2);
         ApplySettings();
+        return 0;
+    }
+    // Edit desktop mode, from the desktop's menu or a bind's "editdesktop": on, or off again.
+    static UINT editAsked = RegisterWindowMessageW(L"TourneDesktop.EditDesktop");
+    if (msg == editAsked && editAsked) {
+        ToggleEditDesktop();
         return 0;
     }
     // A bind's "plugin" dispatcher (binds.cpp): a global atom of "author/plugin:panel" in wParam.
@@ -3074,6 +3277,27 @@ DWORD WINAPI RuntimeThread(LPVOID started) {
 }
 
 }  // namespace
+
+bool RecorderSound(const std::wstring& device, RecorderSoundTap* out) {
+    auto c = std::make_shared<Capture>();  // (entry 0: no plugin's, so no plugin's ending stops it)
+    if (!c->ready || !c->stop) return out->why = L"no events", false;
+    {
+        std::lock_guard lock(g_capturesLock);
+        g_captures.push_back(c);
+    }
+    std::thread(CaptureSound, c, device).detach();
+    if (WaitForSingleObject(c->ready, 5000) != WAIT_OBJECT_0) {
+        SetEvent(c->stop);
+        return out->why = L"Windows' sound didn't answer", false;
+    }
+    if (!c->why.empty()) return out->why = std::wstring(c->why.begin(), c->why.end()), false;
+    out->input = c->pipe;
+    out->format = std::wstring(c->format.begin(), c->format.end());
+    out->rate = c->rate;
+    out->channels = c->channels;
+    out->stop = [c] { SetEvent(c->stop); };
+    return true;
+}
 
 void PluginRuntimeStart() {
     if (g_thread) return;

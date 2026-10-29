@@ -1420,18 +1420,35 @@ void ReadProgKids(ProgNode& node) {
         apps.name = L"Apps";
         apps.parsing = L"shell:AppsFolder";
         apps.folder = apps.read = true;
-        ProgNode& into = g_startConfig.appsInFolder ? apps : node;
+        // A Start Menu folder of your own called Apps (shortcuts for the packaged
+        // apps, with your icons) takes them in, rather than a second Apps folder
+        // listing each one twice. Your shortcut wins over the app of the same name.
+        ProgNode* own = nullptr;
+        if (g_startConfig.appsInFolder) {
+            for (auto& k : node.kids)
+                if (k.folder && !_wcsicmp(k.name.c_str(), L"Apps")) own = &k;
+            if (own) ReadProgKids(*own);
+        }
+        ProgNode& into = !g_startConfig.appsInFolder ? node : own ? *own : apps;
+        auto named = [](std::vector<ProgNode> const& kids, std::wstring const& name) {
+            return std::any_of(kids.begin(), kids.end(),
+                               [&](ProgNode const& k) { return !k.folder && !_wcsicmp(k.name.c_str(), name.c_str()); });
+        };
         for (auto const& app : g_startApps) {
             if (app.parsing.find(L'!') == std::wstring::npos) continue;
-            bool have = std::any_of(node.kids.begin(), node.kids.end(),
-                                    [&](ProgNode const& k) { return !k.folder && !_wcsicmp(k.name.c_str(), app.name.c_str()); });
-            if (have) continue;
+            if (named(node.kids, app.name) || (own && named(own->kids, app.name))) continue;
             ProgNode kid;
             kid.name = app.name;
             kid.parsing = app.parsing;
             into.kids.push_back(std::move(kid));
         }
-        if (g_startConfig.appsInFolder && !apps.kids.empty()) {
+        if (own) {
+            int order = g_startConfig.sortOrder;
+            std::sort(own->kids.begin(), own->kids.end(), [order](ProgNode const& a, ProgNode const& b) {
+                if (a.folder != b.folder && order != 2) return order == 1 ? a.folder : !a.folder;
+                return StartCompare(a.name, b.name) < 0;
+            });
+        } else if (g_startConfig.appsInFolder && !apps.kids.empty()) {
             std::sort(apps.kids.begin(), apps.kids.end(),
                       [](ProgNode const& a, ProgNode const& b) { return StartCompare(a.name, b.name) < 0; });
             node.kids.push_back(std::move(apps));

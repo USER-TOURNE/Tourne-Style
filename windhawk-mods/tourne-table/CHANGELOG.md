@@ -6,6 +6,69 @@
 
 ---
 
+## ❀ v2.3.0 beta: Bass, Depth, Glass and a Settings Panel
+
+**Status:** beta. The file is [`tourne-table-2.3.0-beta.wh.cpp`](tourne-table-2.3.0-beta.wh.cpp). It has the catalog's id, so it installs over 2.1.1 and keeps your settings: in Windhawk, Create a new mod, paste the file over the template, then Compile. To go back, install Tourne'Table from the catalog again. Everything new is off or neutral until you turn it on.
+
+### ✦ Bass (new group)
+- Bass Range edges, Bass Gain, Bass Attack and Release, Bass Hit Sensitivity and Window, Low Zone Edge.
+- Oscilloscope Bass Focus: a low-pass on the trace so low bass reads as a clean shape and holds still.
+
+### ✦ Bass Line (new lane, off by default)
+- A small, fast lane that follows only the bass on its own auto-range. Kicks and 808s pop in the Kick colour, snares and claps in the Snare colour, and hi-hats stay out.
+- Line, Fill or Bar style. Below, above, inside or covering the bars. Move it by drag, offsets or keyboard target 5.
+- Layer: in front of the bars or behind them, so a scope or wave can run over the lane.
+- Works with every engine, workload and style, and costs nothing when it's off.
+
+### ✦ Depth (new group, off by default)
+- Puts the visualizer behind your wallpaper's subject, the way a phone lock screen tucks the clock behind a person.
+- The cut-out comes from a folder (it follows your wallpaper), a single file, or a colour key. Fit, scale and offsets.
+- Optional Auto Cut-out with rembg. The right-click menu can install it for your user only, with no admin, after telling you exactly what it downloads. The mod itself never downloads anything.
+
+### ✦ Glass Bars (new group, off by default)
+- Each bar becomes glass over your wallpaper: bent like a lens, tinted with the bar's colour, with light along the edge. Bend, Bend Style (Lens or Edge), Edge Band, Edge Light, Tint and Frost.
+- It reads the wallpaper file once and never captures the screen, so it stays light.
+
+### ✦ Engine Cores (Hardware)
+- Pick which CPU cores the audio and drawing threads run on: Auto, Efficiency (least power), Performance (steadiest timing) or Custom. When nothing is playing it always drops to low power.
+- The NPU workload is in too, as an experimental option.
+- The rest of Hardware is the same as 2.1.1, Smooth Mode included. The frame pacing experiments from my 2.2 betas (Frame Sync, Low Latency, Frame Generation) aren't in this build.
+
+### ✦ Quick settings panel
+- Right-click opens a panel with every setting (Shift + right-click still opens the old menu). Search, a page per group, edit in place, and right-click a row to reset it.
+- Every setting has a tip: what it changes, what each choice does, and a value to try.
+- Scroll over a number to change it live, with your own Scroll step.
+- Colours are typed, so `#AARRGGBB` keeps its alpha. The swatch, or the row's right-click menu, opens the colour picker.
+- Drag it, resize it and pin it on top. It remembers where you left it.
+
+### ✦ Style Editor
+- Style tiles playing on a test beat, with My Styles and Community tabs. Click one to try it, and it asks whether to keep it.
+- Resizes to any size and lays itself out again. Pin, move, and a remembered spot.
+
+### ✦ Media card and strip
+- Title and artist under the art, long titles scroll, and clicking the title opens the player.
+- Open Player and Show Now Playing in the right-click menu.
+- Drag the card and the strip. Drag the card's sides and corners to resize it (new Card Art Height).
+- In the Art's Place: album art, Nothing, a clock with the time left, Player badge, Mini visualizer, Big type or Colour block.
+- Backdrop: Solid, Clear, Blur or Acrylic. Card corners take one value or four, and the art can round on its own.
+- The Now Playing text drags on its own.
+
+### ✦ Sharing
+- Share Mine to the Community names your post after your style and puts a screenshot of your visualizer on the clipboard. Press Ctrl+V in the issue to add it.
+- Bass, Bass Line, Depth and Glass settings travel with shared styles. Styles that use them are tagged "needs 2.3".
+
+### ✦ Menu Font and Menu Font Size (Interaction)
+- Any installed font for the right-click menu, quick settings and Style Editor. Cozette at 13 or 26 stays pixel sharp. These stay on your PC and never go into a shared style.
+
+### ✦ Fixes
+- A keyboard nudge to the Now Playing or frequency text redraws it straight away.
+- Ending a drag works on a second press and on a desktop switch.
+- Depth's cut-outs failed after installing rembg, because newer rembg leaves out a part it needs. The installer now asks for the full package. Run it again to fix an older install.
+- No warnings in Windhawk's editor.
+
+---
+
+
 ## ❀ v2.1.1: A Styles Page, and Imports That Can't Hurt
 
 **Status:** submitted to the Windhawk Explore catalog ([ramensoftware/windhawk-mods#6351](https://github.com/ramensoftware/windhawk-mods/pull/6351)), in review.
