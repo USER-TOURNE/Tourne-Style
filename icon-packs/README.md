@@ -17,3 +17,7 @@ See every icon in every pack on the [icon packs page](https://user-tourne.github
 ## Left out
 
 Rows that only pointed at files on my PC (Tourne'Icons' own cache, Downloads) can't match on anyone else's, so they were dropped: 85 from the ink pack and 34 from the red and green pack.
+
+## Licence
+
+My icons are [CC BY-NC-SA 4.0](../LICENSE-CC-BY-NC-SA-4.0.txt): use them and change them, credit me (Tourne, USER-TOURNE), don't sell them, and share what you make from them under the same licence.

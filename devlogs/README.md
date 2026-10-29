@@ -19,3 +19,5 @@ And the short versions:
 - **[Fuck me, this was pain](fuck-me-this-was-pain.md):** the bugs that cost the most, one line each.
 - **[Dev insights](dev-insights.md):** the rules I don't break any more.
 - **[Tourne'Table's changelog](../windhawk-mods/tourne-table/CHANGELOG.md):** every version from 0.1 to the 2.3 beta.
+
+These devlogs are [CC BY-NC-SA 4.0](../LICENSE-CC-BY-NC-SA-4.0.txt): quote and share them with credit, not for sale.
