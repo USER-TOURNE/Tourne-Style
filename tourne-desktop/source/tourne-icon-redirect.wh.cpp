@@ -9,7 +9,7 @@
 // @include         *
 // @exclude         vgc.exe
 // @compilerOptions -luser32 -lshell32 -lole32
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

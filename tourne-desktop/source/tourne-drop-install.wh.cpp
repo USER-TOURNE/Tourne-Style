@@ -9,7 +9,7 @@
 // @include         windhawk-mod-elevated.exe
 // @include         windhawk-mod.exe
 // @compilerOptions -luser32 -lshell32 -lcomdlg32 -lgdi32 -ladvapi32
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

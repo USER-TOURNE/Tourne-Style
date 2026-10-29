@@ -6,7 +6,7 @@
 // @author          Salyts
 // @github          https://github.com/Salyts
 // @donateUrl       https://ko-fi.com/salyts
-// @license         MIT
+// @license         GPL-3.0
 // @include         windhawk.exe
 // @compilerOptions -lshell32 -lgdi32 -luser32 -lole32 -lshlwapi -luxtheme -ladvapi32
 // ==/WindhawkMod==

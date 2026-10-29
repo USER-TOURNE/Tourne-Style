@@ -8,7 +8,7 @@
 // @include         explorer.exe
 // @architecture    x86-64
 // @compilerOptions -luxtheme -lgdi32 -lcomctl32 -lshell32 -lole32
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

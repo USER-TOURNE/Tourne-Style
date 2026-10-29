@@ -5,7 +5,7 @@
 // @version         1.0.0
 // @author          USER-TOURNE
 // @include         windhawk.exe
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // This file is generated from tourne-tweaks.engine.cpp and tweaks.def by

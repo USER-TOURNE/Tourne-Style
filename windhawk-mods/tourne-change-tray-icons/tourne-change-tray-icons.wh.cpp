@@ -5,7 +5,7 @@
 // @version             1.1.0
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
-// @license             MIT
+// @license             GPL-3.0
 // @compilerOptions     -lshell32 -lgdi32
 // ==/WindhawkMod==
 

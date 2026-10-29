@@ -11,7 +11,7 @@
 // @exclude         TourneDesktop.exe
 // @exclude         vgc.exe
 // @compilerOptions -lcomctl32 -ldwmapi -luxtheme -lgdi32 -lshlwapi -lole32 -ladvapi32
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

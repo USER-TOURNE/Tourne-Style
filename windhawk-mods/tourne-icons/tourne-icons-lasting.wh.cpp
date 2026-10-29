@@ -8,7 +8,7 @@
 // @donateUrl       https://ko-fi.com/tourne
 // @include         windhawk.exe
 // @compilerOptions -luser32 -lshell32 -lole32 -lgdi32 -ladvapi32 -luuid
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

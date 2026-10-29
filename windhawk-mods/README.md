@@ -26,7 +26,7 @@ Run either the standalone or the suite with that part on, not both.
 | [Tourne'Menu [No Duplicates]](tourne-menu-no-duplicates/) | 1.0.0 | Removes doubled context menu entries. |
 | [Tourne'Tray [Classic Tray Folders]](tourne-classic-tray-folders/) | 1.0.0 | Group tray icons into folders in StartAllBack's classic tray. |
 | [Tourne'Tray [Clock]](tourne-tray-clock/) | 1.1.0 | Restyles StartAllBack's classic clock. |
-| [Tourne'Icons [Icon Redirect]](tourne-icon-redirect/) | 1.0.1 | Icon themes by redirecting resources (an MIT rewrite that replaces Resource Redirect). Superseded by Tourne'Icons. |
+| [Tourne'Icons [Icon Redirect]](tourne-icon-redirect/) | 1.0.1 | Icon themes by redirecting resources (my own rewrite that replaces Resource Redirect). Superseded by Tourne'Icons. |
 | [Tourne'Suite Tweaks](tourne-tweaks/) | 1.0.0 | Winaero Tweaker's options as switches. |
 
 ## On their own

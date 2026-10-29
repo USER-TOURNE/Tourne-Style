@@ -8,7 +8,7 @@
 // @include         windhawk.exe
 // @architecture    x86-64
 // @compilerOptions -luxtheme -ldwmapi -lole32 -lshell32 -lshlwapi -lgdi32 -luser32 -lversion
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

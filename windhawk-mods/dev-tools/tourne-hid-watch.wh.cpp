@@ -7,7 +7,7 @@
 // @include         AlienFXSubAgent.exe
 // @include         AWCC.UCSubAgent.exe
 // @include         AWCC.exe
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

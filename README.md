@@ -81,4 +81,4 @@ Right-click the visualizer, then **My Styles > Style Editor > Community > Share 
 
 ## Licenses
 
-My own code, mods, icons and docs are MIT ([`LICENSE`](LICENSE)). Third-party pieces keep their own licenses, listed in [`CREDITS.md`](CREDITS.md).
+My own code, mods, icons and docs are GPL-3.0 ([`LICENSE`](LICENSE)) from October 29, 2026 on: share a changed version and you share its source too. What was published before that stays MIT for anyone who already has it, and so does the catalog's Tourne'Table 2.1.1. Tourne Desktop's plugins and other third-party pieces keep their own licenses, listed in [`CREDITS.md`](CREDITS.md) and beside each plugin.

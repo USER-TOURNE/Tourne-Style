@@ -10,7 +10,7 @@
 // @include         windhawk.exe
 // @exclude         vgc.exe
 // @compilerOptions -luser32 -lshell32 -lole32 -lgdi32 -ladvapi32 -luuid
-// @license         MIT
+// @license         GPL-3.0
 // ==/WindhawkMod==
 
 // ==WindhawkModReadme==

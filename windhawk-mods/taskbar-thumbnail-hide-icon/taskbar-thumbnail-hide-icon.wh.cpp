@@ -6,7 +6,7 @@
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
 // @donateUrl           https://ko-fi.com/tourne
-// @license             MIT
+// @license             GPL-3.0
 // @include             explorer.exe
 // @architecture        x86-64
 // @compilerOptions     -lcomctl32 -ldwmapi -lgdi32 -luser32 -luxtheme

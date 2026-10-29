@@ -7,7 +7,7 @@
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
 // @donateUrl           https://ko-fi.com/tourne
-// @license             MIT
+// @license             GPL-3.0
 // @include             windhawk.exe
 // @compilerOptions     -lcabinet -ldxgi -ld2d1 -ld3d11 -ldcomp -ldwmapi -ldwrite -lgdi32 -lshcore -lshlwapi -lole32 -lshell32 -lksuser -lwindowscodecs -lruntimeobject -lwindowsapp -luuid -luser32 -ladvapi32 -lcomctl32 -lcomdlg32 -lurlmon
 // ==/WindhawkMod==
@@ -663,45 +663,30 @@ To be explicit about attribution: **I did not borrow from or reference NeiZ or S
 
 ## ◘ LICENSE
 
-Released under the **MIT License**.
+Released under the **GNU General Public License v3.0** (GPL-3.0), from 2.3.0 on.
 
 ```
-MIT License
-
+Tourne'Table
 Copyright (c) 2026 USER-TOURNE
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, version 3.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details:
+https://www.gnu.org/licenses/gpl-3.0.html
 ```
 
-### In the spirit of the WTFPL
+### What that means
 
-> **0. You just do what the fuck you want to.**
+> Take it, fork it, learn from it, rewrite the parts I got wrong. If you
+> share a changed version, share its source too, under the same licence, so
+> it stays open for the next person. Nobody gets to close it up and sell it.
 >
-> Take it. Fork it. Gut it. Rewrite the parts I got wrong. Ship it. Sell it.
-> Learn something from it and never speak to me again.
->
-> The only thing MIT actually asks is that the copyright line rides along: 
-> keep the notice, and we're square.
->
-> *(I went with MIT over the real WTFPL for one boring reason: this thing
-> runs a DLL loaded by Windhawk, and MIT comes with a warranty disclaimer.
-> The WTFPL does not. Same energy, fewer ways for my life to get complicated.)*
+> *(Versions up to 2.1.1 were MIT, and the copies people already have stay
+> MIT.)*
 
 ### Third-party notices
 

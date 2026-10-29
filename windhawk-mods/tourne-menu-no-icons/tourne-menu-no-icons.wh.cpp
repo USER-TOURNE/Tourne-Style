@@ -5,7 +5,7 @@
 // @version             1.0.0
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
-// @license             MIT
+// @license             GPL-3.0
 // @include             *
 // @architecture        x86-64
 // @compilerOptions     -luser32
