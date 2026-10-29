@@ -134,7 +134,7 @@ function look(s) {
     } : null,
     // Bass Line (2.3): a small lane that follows only the bass, kicks and snares popping in their own colours.
     bassLine: (q('bassLine') || V['bassLine.enabled']) === '1' ? {
-      style: V['bassLine.style'] || 'line', place: V['bassLine.placement'] || 'below',
+      style: V['bassLine.style'] || 'line', place: V['bassLine.placement'] || 'below', behind: V['bassLine.layer'] === 'behind',
       height: Math.max(6, num(V['bassLine.height'], 28)), gap: num(V['bassLine.gap'], 6), thick: Math.max(0.5, num(V['bassLine.thickness'], 1.5)),
       body: rgba(V['bassLine.bodyColor'], [255, 255, 255, 1]), kick: rgba(V['bassLine.kickColor'], [255, 59, 59, 1]),
       snare: rgba(V['bassLine.snareColor'], [255, 210, 59, 1]), window: Math.max(0.25, num(V['bassLine.window'], 2)),
@@ -304,6 +304,13 @@ function draw(card, t) {
   if (L.edge) { ctx.strokeStyle = css(L.edge); ctx.lineWidth = 1; ctx.strokeRect(left - 7.5, base - mh - 7.5, fullW * k + 15, mh + 15); }
   const colOf = i => flash(L, barColour(L, i, n, S.y[i], t), S.pulse);
   const sizeOf = i => (L.idle + S.y[i] * Math.max(0, L.maxSize - L.idle)) * kh;
+  // Where the lane goes: below or above the bars (in the room kept for it), along their bottom, or over all of them.
+  const lane = () => {
+    const lw = fullW * k, gap = BL.gap * k, lh = BL.place === 'cover' ? mh : Math.max(10, BL.height * k);
+    const ly = BL.place === 'below' ? base + gap : BL.place === 'above' ? top - gap - lh : base - lh;
+    bassLane(ctx, BL, t, left, ly, lw, lh, Math.max(1, BL.thick * k));
+  };
+  if (BL && BL.behind) lane();  // Layer: Behind the bars
   ctx.shadowBlur = L.glow * 14; ctx.shadowColor = css(colOf(Math.floor(n / 2)), 1);
   const shape = L.shape, xOf = i => left + i * (bw + gp);
   if (shape === 'led') {
@@ -356,12 +363,7 @@ function draw(card, t) {
     }
   }
   ctx.shadowBlur = 0;
-  if (BL) {
-    // Where the lane goes: below or above the bars (in the room kept for it), along their bottom, or over all of them.
-    const lw = fullW * k, gap = BL.gap * k, lh = BL.place === 'cover' ? mh : Math.max(10, BL.height * k);
-    const ly = BL.place === 'below' ? base + gap : BL.place === 'above' ? top - gap - lh : base - lh;
-    bassLane(ctx, BL, t, left, ly, lw, lh, Math.max(1, BL.thick * k));
-  }
+  if (BL && !BL.behind) lane();  // Layer: In front of the bars
   if (L.reflect > 0) {
     ctx.save(); ctx.globalAlpha = L.reflect * 0.45; ctx.translate(0, base * 2); ctx.scale(1, -1);
     ctx.drawImage(cv, 0, 0, cv.width, base * dpr, 0, 0, W, base); ctx.restore();

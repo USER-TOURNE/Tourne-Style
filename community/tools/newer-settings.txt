@@ -36,6 +36,7 @@ glass.frost|0|1
 bassLine.enabled|0|4
 bassLine.style|line|1
 bassLine.placement|below|1
+bassLine.layer|front|1
 bassLine.height|28|1
 bassLine.width|0|1
 bassLine.gap|6|1
