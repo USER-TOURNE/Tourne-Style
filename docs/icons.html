@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tourne Icon Packs</title>
-<meta name="description" content="Every icon in Tourne's icon packs: the ink pack, the red and green pack, the pixel tray icons, Start orbs and button icons.">
+<meta name="description" content="Every icon in Tourne's icon packs: the ink pack, the UI vector icons, the red and green pack, the pixel tray icons, Start orbs and button icons.">
 <link rel="stylesheet" href="tourne.css">
 <script src="tourne.js"></script>
 <style>
@@ -20,6 +20,10 @@
   .tile:hover { border-color: var(--edge); background: var(--panel); }
   .tile i { display: block; background-repeat: no-repeat; flex: none; }
   .pixel .tile i { image-rendering: pixelated; }
+  .vector .tile i { background: linear-gradient(90deg, #66ea97, #e57474); -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+  .vector .tile { cursor: pointer; }
+  .vector .tile:hover i { background: #66ea97; }
+  .vector .tile[aria-pressed=true] i { background: linear-gradient(90deg, #e57474, #66ea97); filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.75)); }
   .tile span { font-size: 10.5px; color: var(--dim); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .tile:hover span { color: var(--text); }
   .more { margin: 0 14px 14px; }
@@ -41,7 +45,7 @@
         <li><span class="k">&gt; KEEP</span><span class="v">say yes to keep icons you set yourself</span><span class="s">[ 02 ]</span></li>
       </ul>
     </div>
-    <p class="lede">Every picture in my icon packs, drawn from the pack files themselves at their real pixel size. Hover an icon for what it replaces. Get a pack from the repo and apply it with Tourne'Icons; the tray icons are drawn live by Tourne'Tray and the suite.</p>
+    <p class="lede">Every picture in my icon packs, drawn from the pack files themselves at their real pixel size, and the UI icons as the vectors they are. Hover an icon for what it replaces. Get a pack from the repo and apply it with Tourne'Icons; the tray icons are drawn live by Tourne'Tray and the suite.</p>
   </div>
   <div class="bar">
     <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search icons: discord, folder, txt, wifi" aria-label="Search icons"></label>
@@ -53,7 +57,7 @@
 <script>
 pixelWord(document.getElementById('word'), 'ICONS');
 const REPO = 'https://github.com/USER-TOURNE/Tourne-Style/tree/main/icon-packs/';
-const KINDS = { program: 'program', package: 'Store app', icon: 'Windows icon', filetype: 'file type', button: 'taskbar button', tray: 'tray icon', orb: 'Start orb' };
+const KINDS = { ui: 'UI icon', program: 'program', package: 'Store app', icon: 'Windows icon', filetype: 'file type', button: 'taskbar button', tray: 'tray icon', orb: 'Start orb' };
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 let packs = [], pick = 'all';
 
@@ -76,7 +80,7 @@ async function load() {
   chip('all', 'All');
   packs.forEach((p, n) => {
     chip(p.id, p.name.replace(/^Tourne /, ''));
-    const sec = el('section', 'pack' + (p.pixel ? ' pixel' : ''));
+    const sec = el('section', 'pack' + (p.pixel ? ' pixel' : '') + (p.vector ? ' vector' : ''));
     const head = el('div', 'head'); head.append(el('span', null, `▣ ${String(n + 1).padStart(2, '0')} // ${p.id}`));
     p.count = el('span', 'live'); head.append(p.count); sec.append(head);
     const body = el('div', 'body');
@@ -86,7 +90,8 @@ async function load() {
     const grid = el('div', 'icons'); const s = p.show, scale = s / p.cell;
     p.tiles = p.icons.map((ic, i) => {
       const t = el('div', 'tile'), pic = el('i');
-      pic.style.cssText = `width:${s}px;height:${s}px;background-image:url(icons/${p.id}.png);background-size:${p.cols * s}px auto;background-position:-${(i % p.cols) * s}px -${Math.floor(i / p.cols) * s}px`;
+      if (p.vector) { pic.style.cssText = `width:${s}px;height:${s}px;--svg:url(icons/${p.id}/${ic.f})`; t.onclick = () => t.setAttribute('aria-pressed', t.getAttribute('aria-pressed') !== 'true'); }
+      else pic.style.cssText = `width:${s}px;height:${s}px;background-image:url(icons/${p.id}.png);background-size:${p.cols * s}px auto;background-position:-${(i % p.cols) * s}px -${Math.floor(i / p.cols) * s}px`;
       const kind = KINDS[ic.k] || ic.k;
       t.title = `${ic.n}\n${kind}${ic.w ? ' · ' + ic.w.toLowerCase() : ''}`;
       t.append(pic, el('span', null, ic.n)); grid.append(t);

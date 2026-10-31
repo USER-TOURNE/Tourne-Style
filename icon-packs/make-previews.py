@@ -63,5 +63,26 @@ btn = sorted(glob.glob(os.path.join(ROOT, 'tourne-button-icons', '*.ico')))
 add('buttons', 'tourne-button-icons', "Tourne button icons", "Taskbar button icons in the Bouquet taskbar set's style.",
     [{'n': os.path.basename(p)[:-4], 'k': 'button', 'w': '', 'f': p} for p in btn], 64, 48, lambda it: ico(it['f'], 64), pixel=True)
 
+# The UI icons are vectors: copied as they are into docs/icons/ui/, listed by name, drawn by the page itself
+import shutil
+UI_WHERE = {}
+for where, names in [
+    ('Channel list', 'text announcement voice stage forum rules thread locked media'),
+    ('Server rows', 'events channels members boosts browse home friends dms group-add'),
+    ('Header', 'threads bell pin inbox help search invite minimize maximize close'),
+    ('Message box', 'plus gift gif sticker emoji apps send'),
+    ('User panel', 'mic mic-off headphones headphones-off settings gamepad chevron'),
+    ('Hover bar and menus', 'reaction reply forward more edit trash check')]:
+    for n in names.split(): UI_WHERE[n] = where
+os.makedirs(os.path.join(OUT, 'ui'), exist_ok=True)
+ui = []
+for path in sorted(glob.glob(os.path.join(ROOT, 'tourne-ui-icons', 'svg', '*.svg'))):
+    name = os.path.basename(path)[:-4]
+    shutil.copyfile(path, os.path.join(OUT, 'ui', name + '.svg'))
+    ui.append({'n': name, 'k': 'ui', 'w': UI_WHERE.get(name, ''), 'f': name + '.svg'})
+packs.insert(1, {'id': 'ui', 'folder': 'tourne-ui-icons', 'name': 'Tourne UI icons',
+    'about': "Vector line icons for an app's chrome: channel kinds, header buttons, the message box, the user panel and the hover bar. Drawn for my Discord theme on a 24 grid with square 2-unit strokes, sharp at any size, one colour (currentColor) so they take any palette. Hover one for green, click it for the on state.",
+    'show': 28, 'vector': True, 'icons': ui})
+
 json.dump(packs, open(os.path.join(OUT, 'packs.json'), 'w'), separators=(',', ':'))
 print('\n'.join(f"{p['name']}: {len(p['icons'])}" for p in packs))
