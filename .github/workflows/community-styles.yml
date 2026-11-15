@@ -10,9 +10,9 @@ on:
     types: [opened, edited, labeled]
   push:
     branches: [main]
-    paths: ["community/**", "windhawk-mods/tourne-table/**"]
+    paths: ["community/**", "docs/settings-list.json"]
   pull_request:
-    paths: ["community/**"]
+    paths: ["community/**", "docs/settings-list.json"]
   workflow_dispatch:
     inputs:
       files:
