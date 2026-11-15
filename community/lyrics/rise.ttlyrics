@@ -1,0 +1,8 @@
+name = Rise
+unit = word
+in.ms = 420
+in.stagger = 45
+in.y = 16
+out.ms = 320
+out.y = -12
+react.beat = 0.04

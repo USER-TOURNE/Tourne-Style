@@ -1,0 +1,5 @@
+# Tourne'Table community lyrics animations: one line each, file|name|author|about.
+# The gallery's Lyrics page and Tourne'Table's Animation editor (Community) read this file from the main branch of USER-TOURNE/Tourne-Style.
+rise.ttlyrics|Rise|Tourne'Table|Each word floats up into place, a small swell on the beat
+drop.ttlyrics|Drop|Tourne'Table|Letters fall in from above and settle with a little bounce
+lantern-lift.ttlyrics|Lantern Lift|USER-TOURNE|Web engine: words lift out of a blur and settle, one after another

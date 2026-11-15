@@ -1,0 +1,17 @@
+name = Lantern Lift
+unit = word
+in.ms = 700
+in.stagger = 70
+in.opacity = 0
+in.y = 14
+in.scale = 0.92
+out.ms = 360
+out.y = -10
+engine = web
+# css source: written for Tourne'Style, CC BY-NC-SA 4.0
+#| @keyframes lantern-lift {
+#|   0% { opacity: 0; filter: blur(6px); transform: translateY(14px) scale(0.92); }
+#|   60% { opacity: 1; filter: blur(0); }
+#|   100% { opacity: 1; filter: none; transform: none; }
+#| }
+#| .lantern-lift { animation: lantern-lift 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }

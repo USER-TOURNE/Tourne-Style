@@ -1,0 +1,8 @@
+name = Drop
+unit = letter
+in.ms = 380
+in.stagger = 18
+in.y = -26
+in.ease = back
+out.ms = 300
+out.y = 18

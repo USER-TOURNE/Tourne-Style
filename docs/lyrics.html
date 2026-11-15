@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tourne'Table Lyrics Animations</title>
+<meta name="description" content="Community lyrics animations for Tourne'Table: how each line of a song's lyrics comes in, plays and leaves. Copy one, take it in the Animation editor.">
+<link rel="stylesheet" href="tourne.css">
+<script src="tourne.js"></script>
+<style>
+  .stage { width: 100%; height: 150px; display: block; border: 0; border-bottom: 1px solid var(--edge); background: #0c1417; }
+  .file { font-size: 11.5px; color: var(--green); background: #0c1417; border: 1px solid var(--edge); padding: 8px 10px; margin: 4px 0 0; white-space: pre-wrap; max-height: 0; overflow: hidden; transition: max-height .2s; }
+  .card.open .file { max-height: 360px; overflow: auto; }
+</style>
+</head>
+<body>
+<header>
+  <nav><a href="./">STYLES</a><a href="lyrics.html" aria-current="page">LYRICS</a><a href="icons.html">ICON PACKS</a></nav>
+  <div class="frame" data-label="TOURNE'STYLE // LYRICS">
+    <div class="top">
+      <div>
+        <svg id="word" role="img" aria-label="Lyrics"></svg>
+        <p class="tag">TOURNE'TABLE <b>//</b> LYRICS ANIMATIONS</p>
+      </div>
+      <ul class="term">
+        <li><span class="k">&gt; COPY</span><span class="v">an animation</span><span class="s">[ 01 ]</span></li>
+        <li><span class="k">&gt; OPEN</span><span class="v">lyrics menu, Animation, Animation editor</span><span class="s">[ 02 ]</span></li>
+        <li><span class="k">&gt; TAKE</span><span class="v">Community, Take the one I copied there</span><span class="s">[ 03 ]</span></li>
+        <li><span class="k">&gt; LIST</span><span class="v" id="count">reading the list</span><span class="s" id="state">[ LOADING ]</span></li>
+      </ul>
+    </div>
+    <p class="lede">How each line of a song's lyrics comes in, plays and leaves on your desktop, made by people in Tourne'Table's Animation editor. The previews play made-up lines, never a real song's. An animation is only timing and movement: a web one carries CSS, which runs with no scripts and nothing online, here and in the Table.</p>
+  </div>
+  <div class="bar">
+    <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search by name, author or engine" aria-label="Search lyrics animations"></label>
+    <a class="btn primary" id="share" href="#">Share yours</a>
+    <a class="btn" id="get" href="#">Get Tourne'Table</a>
+  </div>
+</header>
+<main>
+  <div class="grid" id="grid"></div>
+  <p class="note">Previews follow the animation's own keys (how each line, word or letter comes in, its stagger and easing), or for a web animation its CSS as written, on made-up lines in Tourne'Table's default lyrics colours, a word at a time sung. Beat swell, the wave, glow and the living wallpapers' letter effects are the Table's own and show only there; a card says when one is in it. Previews start still with animation effects off; click one to play it.</p>
+</main>
+<footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Animations are shared by their authors under CC BY-NC-SA 4.0; the bot keeps only the keys Tourne'Table reads and CSS without a way online. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
+<div class="toast" id="toast">Copied.</div>
+<script>
+pixelWord(document.getElementById('word'), 'LYRICS');
+const REPO = 'USER-TOURNE/Tourne-Style';
+const RAW = new URLSearchParams(location.search).has('local') ? '../community/lyrics/'
+  : `https://raw.githubusercontent.com/${REPO}/main/community/lyrics/`;
+document.getElementById('repo').href = `https://github.com/${REPO}`;
+document.getElementById('get').href = `https://github.com/${REPO}/tree/main/windhawk-mods/tourne-table`;
+document.getElementById('share').href = `https://github.com/${REPO}/issues/new?template=share-a-lyrics-animation.md&title=${encodeURIComponent('Lyrics: ')}`;
+
+// Made up for these previews: no real song's lines.
+const LINES = ['Paper lanterns drift above the quiet bay', 'Count the windows lit along the hill', 'Every streetlight hums a different key',
+  'We left the radio on all night long', 'Salt and static on the evening air', 'Fold the map and follow where it bends'];
+const EASE = { linear: 'linear', out: 'ease-out', inout: 'ease-in-out', back: 'cubic-bezier(.34,1.56,.64,1)' };
+
+// As the Table's VizParseLyricAnim: key = value lines, # comments, the kept CSS in "#| " lines.
+function parse(text) {
+  const a = { unit: 'word', 'in.ms': 420, 'in.stagger': 45, 'in.ease': 'out', 'in.opacity': 0, 'in.x': 0, 'in.y': 16, 'in.scale': 1,
+    'out.ms': 320, 'out.y': -12, karaoke: 'on', engine: 'ours', glyph: 'none', css: '', extras: [] };
+  for (const raw of text.split(/\r?\n/)) {
+    if (raw.startsWith('#| ')) { a.css += raw.slice(3) + '\n'; continue; }
+    if (raw === '#|') { a.css += '\n'; continue; }
+    const line = raw.replace(/#.*/, ''), eq = line.indexOf('=');
+    if (eq <= 0) continue;
+    const k = line.slice(0, eq).trim().toLowerCase(), v = line.slice(eq + 1).trim();
+    a[k] = /^-?[\d.]+$/.test(v) ? parseFloat(v) : v.toLowerCase();
+  }
+  if (+a['react.beat'] > 0) a.extras.push('beat swell');
+  if (+a['react.wave'] > 0) a.extras.push('wave');
+  if (+a.glow > 0) a.extras.push('glow');
+  if (a.glyph && a.glyph !== 'none') a.extras.push('letter effect: ' + a.glyph);
+  a.web = a.engine === 'web';
+  return a;
+}
+
+// A shared CSS's first animation declarations, as the Table's web engine takes them.
+function animDecls(css) {
+  const rules = css.replace(/@(-webkit-)?keyframes[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '');
+  const m = rules.match(/\{([^{}]*)\}/g) || [];
+  for (const block of m) {
+    const d = block.slice(1, -1).split(';').map(x => x.trim()).filter(x => /^(-webkit-)?animation/i.test(x));
+    if (d.length) return d.join(';') + ';';
+  }
+  return '';
+}
+// Nothing in a preview can reach out (its frame's policy refuses it too).
+const clean = css => css.split('\n').filter(l => !/url\(|@import|expression\(|javascript:|<\//i.test(l)).join('\n');
+
+function previewDoc(a, line) {
+  let css = a.web ? clean(a.css) : '', decls = a.web ? animDecls(css) : '';
+  if (!decls) {
+    css += `@keyframes ttIn{from{opacity:${+a['in.opacity'] || 0};transform:translate(${+a['in.x'] || 0}px,${+a['in.y'] || 0}px) scale(${a['in.scale'] === undefined ? 1 : +a['in.scale']})}to{opacity:1;transform:none}}`;
+    decls = `animation:ttIn ${Math.max(1, +a['in.ms'] || 420)}ms ${EASE[a['in.ease']] || 'ease-out'} both;`;
+  }
+  const stagger = +a['in.stagger'] || 0, unit = a.unit;
+  const parts = unit === 'line' ? [line] : unit === 'letter' ? [...line] : line.split(/(\s+)/).filter(Boolean);
+  let i = 0, w = 0, spans = '';
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const karaoke = a.karaoke !== 'off' && a.karaoke !== 0;
+  for (const p of parts) {
+    if (/^\s+$/.test(p)) { spans += `<span>${esc(p)}</span>`; w++; continue; }
+    spans += `<span class="u" data-w="${unit === 'line' ? 0 : w}" style="${decls.replace(/"/g, '&quot;')}animation-delay:${i * stagger}ms;color:${karaoke ? 'var(--wait)' : 'var(--sung)'}">${esc(p)}</span>`;
+    i++;
+  }
+  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<style>:root{--sung:#e78e8f;--wait:#7eb7b4;--other:rgba(162,165,166,.6)}html,body{margin:0;height:100%;background:#0c1417;overflow:hidden}
+body{display:flex;flex-direction:column;justify-content:center;align-items:center;font:17px/1.55 "Segoe UI Variable Display","Segoe UI",system-ui,sans-serif}
+.o{color:var(--other);font-size:12.5px}.l{white-space:pre;padding:0 10px;max-width:100%;overflow:hidden;text-overflow:ellipsis}.u{display:inline-block;white-space:pre}
+${css}</style></head><body><div class="o">${esc(LINES[(LINES.indexOf(line) + LINES.length - 1) % LINES.length])}</div><div class="l">${spans}</div></body></html>`;
+}
+
+function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1600); }
+
+const cards = [];
+function card(entry, text) {
+  if (!text) return null;
+  const a = parse(text);
+  const el = document.createElement('article'); el.className = 'card';
+  el.dataset.search = `${entry.name} ${entry.author} ${entry.about} ${a.web ? 'web' : 'ours'} ${a.unit}`.toLowerCase();
+  const head = document.createElement('div'); head.className = 'head';
+  const h1 = document.createElement('span'), h2 = document.createElement('span');
+  h1.textContent = `▣ ${String(cards.length + 1).padStart(2, '0')} // ${a.web ? 'web' : 'ours'} // ${a.unit}`; h2.className = 'live'; h2.textContent = '[ PLAYING ]';
+  head.append(h1, h2); el.appendChild(head);
+  // A frame of its own with no scripts and a policy that refuses anything from outside.
+  // (allow-same-origin without allow-scripts: nothing in it runs, and this page lights its words as they're sung)
+  const stage = document.createElement('iframe'); stage.className = 'stage'; stage.setAttribute('sandbox', 'allow-same-origin'); stage.setAttribute('title', entry.name + ' preview');
+  stage.setAttribute('aria-hidden', 'true'); stage.tabIndex = -1; el.appendChild(stage);
+  const body = document.createElement('div'); body.className = 'body';
+  const add = (tag, cls, txt) => { const e = document.createElement(tag); e.className = cls; if (txt != null) e.textContent = txt; body.appendChild(e); return e; };
+  add('div', 'name', entry.name);
+  add('div', 'by', 'by ' + entry.author);
+  add('div', 'about', entry.about);
+  const tags = add('div', 'tags');
+  [a.web ? 'web engine' : 'our engine', a.unit, ...a.extras].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
+  const file = add('pre', 'file', text);
+  const actions = add('div', 'actions');
+  const copy = document.createElement('button'); copy.className = 'btn primary'; copy.textContent = 'Copy';
+  copy.onclick = async () => { try { await navigator.clipboard.writeText(text); toast('Copied. Animation editor > Community > Take the one I copied there.'); } catch { toast('Copy failed: Download it instead.'); } };
+  const dl = document.createElement('a'); dl.className = 'btn'; dl.textContent = 'Download .ttlyrics';
+  dl.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); dl.download = entry.file;
+  const show = document.createElement('button'); show.className = 'btn'; show.textContent = 'File';
+  show.onclick = () => el.classList.toggle('open');
+  actions.append(copy, dl, show);
+  el.appendChild(body);
+  const c = { el, stage, a, line: cards.length % LINES.length, sung: 0, words: 0 };
+  cards.push(c);
+  return el;
+}
+
+// Each preview: a made-up line comes in (its animation), its words are sung one by one, the next one comes.
+function step(c) {
+  const line = LINES[c.line % LINES.length];
+  c.words = line.split(/\s+/).length;
+  c.sung = 0;
+  c.stage.srcdoc = previewDoc(c.a, line);
+}
+function sing(c) {
+  let d = null;
+  try { d = c.stage.contentDocument; } catch {}
+  if (!d || c.a.karaoke === 'off' || c.a.karaoke === 0) return;
+  d.querySelectorAll('.u').forEach(u => { u.style.color = +u.dataset.w < c.sung ? 'var(--sung)' : 'var(--wait)'; });
+}
+
+function setState(count, state) { document.getElementById('count').textContent = count; document.getElementById('state').textContent = state; }
+
+async function load() {
+  const grid = document.getElementById('grid');
+  let index;
+  try { index = await (await fetch(RAW + 'index.txt', { cache: 'no-store' })).text(); }
+  catch { setState('none', '[ OFFLINE ]'); grid.innerHTML = '<div class="empty">Couldn\'t reach the list. Try again in a moment.</div>'; return; }
+  const entries = index.split(/\r?\n/).filter(l => l && !l.startsWith('#')).map(l => { const f = l.split('|'); return { file: f[0], name: f[1], author: f[2], about: f.slice(3).join('|') }; })
+    .filter(e => /^[A-Za-z0-9_.-]+\.ttlyrics$/.test(e.file));
+  if (!entries.length) { setState('0 animations', '[ EMPTY ]'); grid.innerHTML = '<div class="empty">No animations yet: be the first to share one.</div>'; return; }
+  const texts = await Promise.all(entries.map(e => fetch(RAW + e.file).then(r => r.ok ? r.text() : '').catch(() => '')));
+  entries.forEach((e, i) => { const c = card(e, texts[i]); if (c) grid.appendChild(c); });
+  setState(`${cards.length} animation${cards.length === 1 ? '' : 's'}, live from the repo`, '[ LIVE ]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  cards.forEach(c => {
+    step(c);
+    if (reduced) c.stage.addEventListener('load', () => { c.sung = 99; sing(c); }, { once: true });
+    c.el.addEventListener('click', e => { if (!e.target.closest('.actions')) { c.playing = true; c.line++; step(c); } });
+  });
+  // A word sung every 0.65 s (its colour only: the animation runs once, as the line comes in), then the next line.
+  setInterval(() => cards.forEach(c => {
+    if ((reduced && !c.playing) || c.el.style.display === 'none') return;
+    c.sung++;
+    if (c.sung > c.words + 1) { c.line++; step(c); } else sing(c);
+  }), 650);
+}
+document.getElementById('q').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  cards.forEach(c => c.el.style.display = !q || c.el.dataset.search.includes(q) ? '' : 'none');
+});
+load();
+</script>
+</body>
+</html>
