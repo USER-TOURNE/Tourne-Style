@@ -9,6 +9,7 @@
 <script src="tourne.js?v=7"></script>
 <style>
   .stage { width: 100%; height: 170px; display: block; border: 0; border-bottom: 1px solid var(--edge); background: #0c1417; }
+  .swatches { display: flex; gap: 4px; margin-top: 8px; } .swatches span { width: 18px; height: 12px; border: 1px solid var(--edge); }
   .file { display: none; font: 12px/1.6 var(--mono); color: var(--green); background: #0c1417; border: 1px solid var(--edge); border-width: 6px 1px; border-color: #0c1417; outline: 1px solid var(--edge); padding: 0 10px; margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; box-sizing: content-box; max-height: calc(12 * 1.6em); overflow: auto; }
   .card.open .file { display: block; }
   .head span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -58,24 +59,42 @@ document.getElementById('share').href = `https://github.com/${REPO}/issues/new?t
 const LINES = ['Paper lanterns drift above the quiet bay', 'Count the windows lit along the hill', 'Every streetlight hums a different key',
   'We left the radio on all night long', 'Salt and static on the evening air', 'Fold the map and follow where it bends'];
 const EASE = { linear: 'linear', out: 'ease-out', inout: 'ease-in-out', back: 'cubic-bezier(.34,1.56,.64,1)' };
+// The Table's own Lyrics look, as a fresh install draws it (Lyrics page defaults). An animation's own colours go over it.
+const LOOK = { sung: '#e78e8f', wait: '#7eb7b4', other: 'rgba(162,165,166,.6)', before: 1, after: 1,
+  font: '"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif' };
+// A comment starts at the first # that isn't a colour (#rrggbb or #rrggbbaa), as the Table reads it.
+const COMMENT = /#(?![0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?(?:$|[\s,])).*/;
+const HEX = /^#([0-9a-f]{6}|[0-9a-f]{8})$/i;
 
-// As the Table's VizParseLyricAnim: key = value lines, # comments, the kept CSS in "#| " lines.
+// As the Table's VizParseLyricAnim: key = value lines, # notes, the kept CSS in "#| " lines.
 function parse(text) {
   const a = { unit: 'word', 'in.ms': 420, 'in.stagger': 45, 'in.ease': 'out', 'in.opacity': 0, 'in.x': 0, 'in.y': 16, 'in.scale': 1,
-    'out.ms': 320, 'out.y': -12, karaoke: 'on', engine: 'ours', glyph: 'none', css: '', extras: [] };
+    'out.ms': 320, 'out.ease': 'out', 'out.opacity': 1, 'out.x': 0, 'out.y': -12, 'out.scale': 1, karaoke: 'on', engine: 'ours', glyph: 'none',
+    css: '', extras: [], inStops: [], outStops: [], colours: [], base: '', step: 'sweep' };
   for (const raw of text.split(/\r?\n/)) {
     if (raw.startsWith('#| ')) { a.css += raw.slice(3) + '\n'; continue; }
     if (raw === '#|') { a.css += '\n'; continue; }
-    const line = raw.replace(/#.*/, ''), eq = line.indexOf('=');
+    const line = raw.replace(COMMENT, ''), eq = line.indexOf('=');
     if (eq <= 0) continue;
     const k = line.slice(0, eq).trim().toLowerCase(), v = line.slice(eq + 1).trim();
+    if (k === 'in.stop' || k === 'out.stop') {
+      const n = v.split(/\s+/).map(Number);
+      if (n.length && n.every(isFinite)) (k === 'in.stop' ? a.inStops : a.outStops).push(n);
+      continue;
+    }
+    if (k === 'karaoke.colors' || k === 'karaoke.colours') { a.colours = v.split(',').map(s => s.trim()).filter(s => HEX.test(s)).slice(0, 12); continue; }
+    if (k === 'karaoke.base') { if (HEX.test(v)) a.base = v; continue; }
+    if (k === 'karaoke.step') { a.step = ['word', 'current'].includes(v.toLowerCase()) ? v.toLowerCase() : 'sweep'; continue; }
     a[k] = /^-?[\d.]+$/.test(v) ? parseFloat(v) : v.toLowerCase();
   }
-  if (+a['react.beat'] > 0) a.extras.push('beat swell');
+  if (+a['react.beat'] > 0) a.extras.push('beat swell (a steady beat here)');
   if (+a['react.wave'] > 0) a.extras.push('wave');
   if (+a.glow > 0) a.extras.push('glow');
-  if (a.glyph && a.glyph !== 'none') a.extras.push('letter effect: ' + a.glyph);
+  if (a.glyph && a.glyph !== 'none') a.extras.push('letter effect: ' + a.glyph + ' (not drawn here)');
+  if (a.colours.length) a.extras.push(a.colours.length + ' sung colours');
+  if (a.step !== 'sweep') a.extras.push(a.step === 'current' ? 'a word at a time' : 'whole words');
   a.web = a.engine === 'web';
+  a.karaokeOn = a.karaoke !== 'off' && a.karaoke !== 0;
   return a;
 }
 
@@ -92,30 +111,79 @@ function animDecls(css) {
 // Nothing in a preview can reach out (its frame's policy refuses it too).
 const clean = css => css.split('\n').filter(l => !/url\(|@import|expression\(|javascript:|<\//i.test(l)).join('\n');
 
-function previewDoc(a, line) {
+// A transform as the Table draws a unit: moved, turned, then sized (the width and height apart).
+const tf = (x, y, s, sx, sy, turn) => `translate(${x}px,${y}px) rotate(${turn}deg) scale(${s * sx},${s * sy})`;
+// Keyframes from in. or out. keys, or from their in-between stops (at x y width height turn opacity, at in per cent).
+function moveFrames(a, way) {
+  const stops = way === 'in' ? a.inStops : a.outStops;
+  if (stops.length) {
+    return [...stops].sort((p, q) => p[0] - q[0]).map(s => {
+      const [at = 0, x = 0, y = 0, sx = 1, sy = 1, turn = 0, op = 1] = s;
+      return `${Math.min(100, Math.max(0, at))}%{opacity:${op};transform:${tf(x, y, 1, sx, sy, turn)}}`;
+    }).join('');
+  }
+  const g = k => a[`${way}.${k}`];
+  const n = (k, d) => (g(k) === undefined || g(k) === '' ? d : +g(k));
+  const moved = `opacity:${n('opacity', way === 'in' ? 0 : 1)};transform:${tf(n('x', 0), n('y', 0), n('scale', 1), n('sx', 1), n('sy', 1), n('turn', 0))}`;
+  const still = 'opacity:1;transform:none';
+  return way === 'in' ? `from{${moved}}to{${still}}` : `from{${still}}to{${moved}}`;
+}
+
+// The made-up wallpaper the Styles cards use, so both pages look like one desktop.
+const walls = new Map();
+function wallpaper(W, H) {
+  const key = `${W}x${H}`;
+  if (walls.has(key)) return walls.get(key);
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const sky = x.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#1d3a52'); sky.addColorStop(.4, '#4d6f8a'); sky.addColorStop(.7, '#d99590'); sky.addColorStop(.88, '#f2b38a'); sky.addColorStop(1, '#5a3a48');
+  x.fillStyle = sky; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 7; i++) { x.fillStyle = `rgba(255,255,255,${.08 + .05 * (i % 3)})`; x.beginPath(); x.ellipse((i * 97) % W, 14 + (i * 23) % (H * .35), 60, 10, 0, 0, 7); x.fill(); }
+  x.fillStyle = '#2a3340'; x.beginPath(); x.moveTo(0, H * .6);
+  for (let i = 0; i <= 12; i++) x.lineTo(W * i / 12, H * (.56 + .07 * Math.sin(i * 1.7)));
+  x.lineTo(W, H * .7); x.lineTo(0, H * .7); x.fill();
+  for (let i = 0; i < 18; i++) { x.fillStyle = i % 3 ? '#ffd27a' : '#ff6f9a'; x.beginPath(); x.arc((i * 53) % W, H * (.74 + (i * 7 % 22) / 100), 2 + i % 3, 0, 7); x.fill(); }
+  // (the desktop's dim behind the lyrics: what they're drawn over, a little darker, as on a real desktop)
+  x.fillStyle = 'rgba(8,12,14,.45)'; x.fillRect(0, 0, W, H);
+  const url = c.toDataURL('image/png');
+  walls.set(key, url);
+  return url;
+}
+
+function previewDoc(a, prev, line, next) {
+  const L = LOOK, esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   let css = a.web ? clean(a.css) : '', decls = a.web ? animDecls(css) : '';
   if (!decls) {
-    css += `@keyframes ttIn{from{opacity:${+a['in.opacity'] || 0};transform:translate(${+a['in.x'] || 0}px,${+a['in.y'] || 0}px) scale(${a['in.scale'] === undefined ? 1 : +a['in.scale']})}to{opacity:1;transform:none}}`;
+    css += `@keyframes ttIn{${moveFrames(a, 'in')}}`;
     decls = `animation:ttIn ${Math.max(1, +a['in.ms'] || 420)}ms ${EASE[a['in.ease']] || 'ease-out'} both;`;
   }
+  // The line before: its leave animation in the sung colour, then dim back in its place (as the Table keeps it above).
+  const outMs = Math.max(1, +a['out.ms'] || 320);
+  css += `@keyframes ttOut{${moveFrames(a, 'out').replace(/\{/g, `{color:${L.sung};`)}}`;
+  const beat = +a['react.beat'] || 0, wave = +a['react.wave'] || 0, glow = +a.glow || 0;
+  if (beat > 0) css += `@keyframes ttBeat{0%{transform:scale(${1 + beat})}40%,100%{transform:scale(1)}}`;
+  if (wave > 0) css += `@keyframes ttWave{0%,100%{transform:translateY(${wave}px)}50%{transform:translateY(${-wave}px)}}`;
   const stagger = +a['in.stagger'] || 0, unit = a.unit;
   const parts = unit === 'line' ? [line] : unit === 'letter' ? [...line] : line.split(/(\s+)/).filter(Boolean);
-  let i = 0, w = 0, spans = '';
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const karaoke = a.karaoke !== 'off' && a.karaoke !== 0;
-  let open = false;  // (letters: each word's kept together, so a line breaks between words only)
+  let i = 0, w = 0, spans = '', open = false;  // (letters: each word's kept together, so a line breaks between words only)
   for (const p of parts) {
     if (/^\s+$/.test(p)) { if (open) spans += '</span>', open = false; spans += `<span>${esc(p)}</span>`; w++; continue; }
     if (unit === 'letter' && !open) spans += '<span class="w">', open = true;
-    spans += `<span class="u" data-w="${unit === 'line' ? 0 : w}" style="${decls.replace(/"/g, '&quot;')}animation-delay:${i * stagger}ms;color:${karaoke ? 'var(--wait)' : 'var(--sung)'}">${esc(p)}</span>`;
+    const bob = wave > 0 ? `<span class="b" style="animation-delay:${-(i * 0.6 / (Math.PI * 2)) * 1.571}s">${esc(p)}</span>` : esc(p);
+    spans += `<span class="u" data-w="${unit === 'line' ? 0 : w}" style="${decls.replace(/"/g, '&quot;')}animation-delay:${i * stagger}ms">${bob}</span>`;
     i++;
   }
   if (open) spans += '</span>';
-  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; font-src ${location.origin}">
-<style>@font-face{font-family:"Departure Mono";src:url(${new URL('fonts/DepartureMonoNerdFontMono-Regular.otf', location.href).href}) format("opentype")}:root{--sung:#e78e8f;--wait:#7eb7b4;--other:rgba(162,165,166,.6)}html,body{margin:0;height:100%;background:#0c1417;overflow:hidden}
-body{display:flex;flex-direction:column;justify-content:center;align-items:center;font:22px/33px "Departure Mono",ui-monospace,monospace;-webkit-font-smoothing:none}
-.o{color:var(--other);font-size:11px;line-height:22px;padding:0 12px;text-align:center}.l{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box}.u{display:inline-block;white-space:pre}.w{display:inline-block;white-space:nowrap}
-${css}</style></head><body><div class="o">${esc(LINES[(LINES.indexOf(line) + LINES.length - 1) % LINES.length])}</div><div class="l">${spans}</div></body></html>`;
+  const wall = wallpaper(320, 180);
+  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
+<style>:root{--sung:${L.sung};--wait:${a.base || L.wait};--other:${L.other}}html,body{margin:0;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;background:#0c1417 url(${wall}) center/cover;font:600 4.4vw/1.55 ${L.font}}
+.o,.l,.p{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.o{color:var(--other)}.p{color:var(--other);animation:ttOut ${outMs}ms ${EASE[a['out.ease']] || 'ease-out'} backwards}
+${a.karaokeOn ? '.l{color:var(--wait)' : '.l{color:var(--sung)'}${beat > 0 ? ';animation:ttBeat 500ms ease-out infinite' : ''}}.u{display:inline-block;white-space:pre${glow > 0 ? `;text-shadow:0 0 ${6 * glow}px currentColor` : ''}}
+.w{display:inline-block;white-space:nowrap}.b{display:inline-block;animation:ttWave 1.571s ease-in-out infinite}
+${css}</style></head><body>${L.before > 0 ? `<div class="p">${esc(prev)}</div>` : ''}<div class="l">${spans}</div>${L.after > 0 ? `<div class="o">${esc(next)}</div>` : ''}</body></html>`;
 }
 
 function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1600); }
@@ -141,7 +209,13 @@ function card(entry, text) {
   add('div', 'about', entry.about);
   const tags = add('div', 'tags');
   [a.web ? 'web engine' : 'our engine', a.unit, ...a.extras].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
-  const file = add('pre', 'file', text);
+  if (a.colours.length || a.base) {  // (the animation's own colours, as swatches)
+    const sw = add('div', 'swatches');
+    [...a.colours, ...(a.base ? [a.base] : [])].forEach((c, k) => {
+      const s = document.createElement('span'); s.style.background = c; s.title = k < a.colours.length ? `sung colour ${k + 1}: ${c}` : `waiting colour: ${c}`; sw.appendChild(s);
+    });
+  }
+  add('pre', 'file', text);
   const actions = add('div', 'actions');
   const copy = document.createElement('button'); copy.className = 'btn primary'; copy.textContent = 'Copy';
   copy.onclick = async () => { try { await navigator.clipboard.writeText(text); toast('Copied. Animation editor > Community > Take the one I copied there.'); } catch { toast('Copy failed: Download it instead.'); } };
@@ -156,18 +230,26 @@ function card(entry, text) {
   return el;
 }
 
-// Each preview: a made-up line comes in (its animation), its words are sung one by one, the next one comes.
+// Each preview: a made-up line comes in (its animation) as the one before leaves, its words are sung one by one,
+// the next one comes.
 function step(c) {
-  const line = LINES[c.line % LINES.length];
+  const n = LINES.length, k = c.line % n, line = LINES[k];
   c.words = line.split(/\s+/).length;
   c.sung = 0;
-  c.stage.srcdoc = previewDoc(c.a, line);
+  c.stage.srcdoc = previewDoc(c.a, LINES[(k + n - 1) % n], line, LINES[(k + 1) % n]);
 }
+// The sung colour by the word's place, taking turns (karaoke.colors), or the Lyrics page's; karaoke.step: sweep and
+// word light every word sung so far, current only the one being sung.
 function sing(c) {
   let d = null;
   try { d = c.stage.contentDocument; } catch {}
-  if (!d || c.a.karaoke === 'off' || c.a.karaoke === 0) return;
-  d.querySelectorAll('.u').forEach(u => { u.style.color = +u.dataset.w < c.sung ? 'var(--sung)' : 'var(--wait)'; });
+  if (!d) return;
+  const a = c.a, cur = c.sung - 1;
+  d.querySelectorAll('.u').forEach(u => {
+    const wi = +u.dataset.w;  // (the word's place in the line)
+    const lit = !a.karaokeOn || (a.step === 'current' ? wi === cur : wi <= cur);
+    u.style.color = lit ? (a.colours.length ? a.colours[wi % a.colours.length] : 'var(--sung)') : 'var(--wait)';
+  });
 }
 
 function setState(count, state) { document.getElementById('count').textContent = count; document.getElementById('state').textContent = state; }
