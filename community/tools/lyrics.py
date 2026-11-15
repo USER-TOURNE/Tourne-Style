@@ -44,7 +44,11 @@ COMMENT = re.compile(r"#(?![0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?(?:$|[\s,]))")
 # in the one settings list.
 LOOK_KEYS = ["color", "colorWaiting", "colorOther", "font", "size", "align", "before", "after", "shadow", "shadowColor", "shadowX",
              "shadowY", "shadowSoftness", "glow", "glowRadius", "bloom", "bloomRadius", "outline", "outlineColor", "highlight",
-             "highlightColor", "background", "backgroundColor", "backgroundPadding", "backgroundCornerRadius", "borderSize", "borderColor"]
+             "highlightColor", "background", "backgroundColor", "backgroundPadding", "backgroundCornerRadius", "borderSize", "borderColor",
+             "fill", "fillText", "fillOpacity", "fillBeat", "fillBeforeFirst", "fillAfterLast", "fillFadeIn", "fillFadeOut",
+             "fillLeaveEarly", "fillNoLyrics"]
+# Show During Instrumentals is shared only as text (a picture or page is a file on the sharer's PC).
+LOOK_ONLY = {"fill": ("none", "text")}
 LOOK_NOTE = "# The sharer's Lyrics look (the gallery's preview uses it; Take its look too puts it on yours)"
 _LIST = os.path.join(os.path.dirname(COMMUNITY), "docs", "settings-list.json")
 
@@ -115,6 +119,8 @@ def clean(text):
         if k.startswith("look."):
             spec = kinds.get(k[5:])
             good = spec and look_value(spec[1], spec[2], v)
+            if good and spec[0] in LOOK_ONLY and good not in LOOK_ONLY[spec[0]]:
+                good = None
             if good:
                 look.append(f"look.{spec[0]} = {good}")
             else:
