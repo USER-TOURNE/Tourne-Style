@@ -25,12 +25,26 @@ WORDS = {"unit": {"line", "word", "letter"}, "in.ease": {"linear", "out", "inout
          "karaoke": {"on", "off"}, "engine": {"ours", "web"},
          "glyph": {"none", "flip", "decode", "bonsaidrop", "ripple", "split", "type", "focus", "flap", "prompt"}}
 REACHES_OUT = re.compile(r"url\(|@import|expression\(|javascript:|<\s*/?\s*script|</", re.I)
+# A pen's markup kept for the web engine ("#< " lines): plain structure only, as the Table's cleaner keeps it.
+TPL_BAD = re.compile(r"<\s*(script|style|iframe|frame|object|embed|svg|math|img|picture|video|audio|source|link|meta|base|form|input|"
+                     r"button|select|textarea|canvas|template|portal|dialog)\b|\s(src|href|action|formaction|srcset|poster|xlink:href)\s*=|"
+                     r"\son[a-z]+\s*=|javascript:|url\(|@import|expression\(", re.I)
+TPL_KEYS = {"tpl.holder": re.compile(r"[0-9]+(/[0-9]+){0,30}"), "tpl.unit": re.compile(r"text|word|letter"),
+            "tpl.attrs": re.compile(r"data-[a-z0-9-]{1,30}(,\s*data-[a-z0-9-]{1,30}){0,5}")}
+# Scripts and the libraries they load stay on the PC they were imported on: never shared.
+SCRIPTED = re.compile(r"(?m)^(#\$|\s*lib\s*=|\s*script\s*=)")
 
 
 def clean(text):
     """The animation as the community keeps it, and notes on what was left out."""
-    keys, css, source, notes, name = [], [], "", [], ""
+    keys, css, tpl, source, notes, name = [], [], [], "", [], ""
     for raw in text.replace("\r", "").split("\n"):
+        if raw.startswith("#< "):
+            if TPL_BAD.search(raw[3:]):
+                notes.append("a markup line that could reach online or run code")
+                continue
+            tpl.append(raw[3:])
+            continue
         if raw.startswith("#|"):
             line = raw[3:] if raw.startswith("#| ") else ""
             if REACHES_OUT.search(line):
@@ -48,6 +62,12 @@ def clean(text):
         k = k.lower()
         if k == "name":
             name = v[:60]
+            continue
+        if k in TPL_KEYS:
+            if TPL_KEYS[k].fullmatch(v):
+                keys.append(f"{k} = {v}")
+            else:
+                notes.append(f"`{k} = {v[:20]}` (not one the Table knows)")
             continue
         if k in NUMBERS:
             try:
@@ -69,12 +89,15 @@ def clean(text):
     refused = None
     if re.search(r"animate\.css|animate\.style", text, re.I):
         refused = "Its CSS came from Animate.css, whose licence doesn't allow sharing it here."
+    elif SCRIPTED.search(text):
+        refused = "It carries scripts or the libraries they load, and those stay on your own PC: they're never shared."
     elif css_text and not source:
         notes.append("its CSS has no `# css source:` line (where it came from and its licence); added as unknown")
         source = "not given"
     out = (f"name = {name}\n" if name else "") + "\n".join(keys) + "\n"
     if css_text:
         out += f"# css source: {source}\n" + "".join(f"#| {l}\n" if l else "#|\n" for l in css_text.split("\n"))
+        out += "".join(f"#< {l}\n" for l in tpl if l.strip())
     return out, notes, refused, bool(keys or css_text)
 
 
@@ -101,7 +124,8 @@ def cmd_check():
             print(f"{r['file']}: missing or a bad name"); bad += 1; continue
         text = open(p, encoding="utf-8").read()
         out, notes, refused, any_ = clean(text)
-        if refused or not any_ or REACHES_OUT.search(text):
+        plain = "\n".join(l for l in text.split("\n") if not l.startswith("#< "))
+        if refused or not any_ or REACHES_OUT.search(plain):
             print(f"{r['file']}: {refused or 'nothing the Table reads, or a way online'}"); bad += 1
         elif notes:
             print(f"{r['file']}: would lose {', '.join(notes)}"); bad += 1
