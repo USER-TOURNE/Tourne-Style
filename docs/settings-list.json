@@ -1644,7 +1644,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "A source softer than this is quiet; between this and Loud above, medium. -80 to -10."
+   "tip": "A source softer than this is quiet; between this and Loud above, medium. -80 to -10 dB.\nTry: -50 if quiet passages still read as medium."
   },
   {
    "key": "audio.shapeLoudDb",
@@ -1659,7 +1659,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "A source louder than this is loud. -40 to 0."
+   "tip": "A source louder than this is loud. -40 to 0 dB.\nTry: -10 for music mastered very loud."
   },
   {
    "key": "audio.shapeHiss",
@@ -1674,7 +1674,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "How much more (up) or less (down: the bars see less of it) of every source's hiss moves the bars, -24 to +24. Your sound is untouched.\nA source's own: in Source Boost after its percent, e.g. \"Spotify=100 hiss:-6\"."
+   "tip": "How much more (up) or less (down: the bars see less of it) of every source's hiss moves the bars, -24 to +24 dB. Your sound is untouched.\nA source's own: in Source Boost after its percent, e.g. \"Spotify=100 hiss:-6\".\nTry: -6 when cymbals and noise keep the high bars busy."
   },
   {
    "key": "audio.shapeRumble",
@@ -1689,7 +1689,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The same for the rumble, -24 to +24 (a source's own: rumble:+6)."
+   "tip": "The same for the rumble, -24 to +24 dB (a source's own: rumble:+6).\nTry: -6 for a subwoofer that swamps the low bars."
   },
   {
    "key": "audio.shapeQuiet",
@@ -1719,7 +1719,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The same at medium volume (a source's own: medium:0)."
+   "tip": "The same at medium volume, -24 to +24 dB (a source's own: medium:0).\nTry: +3 to lift everyday listening."
   },
   {
    "key": "audio.shapeLoud",
@@ -1749,7 +1749,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The bands made in Tune by ear (right-click > Audio Source > Tune by ear, or the panel's Audio Source page): type, Hz, dB, Q, on."
+   "tip": "The bands made in Tune by ear (right-click > Audio Source > Tune by ear, or the panel's Audio Source page): type, Hz, dB, Q, on.\nTry: Tune by ear rather than typing them."
   },
   {
    "key": "audio.tuneToBars",
@@ -1764,7 +1764,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The bands shape what the visualizer sees, for every source. Your sound is untouched."
+   "tip": "The bands shape what the visualizer sees, for every source. Your sound is untouched.\nTry: it on after Tune by ear, so a booming room doesn't pin the low bars."
   },
   {
    "key": "audio.tuneToneDb",
@@ -1794,7 +1794,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "How long the tone fades in and out, so it never clicks. 5 to 500."
+   "tip": "How long the tone fades in and out, so it never clicks. 5 to 500 ms.\nTry: 60 if you hear a click at the start."
   },
   {
    "key": "audio.tuneGlideMs",
@@ -2017,7 +2017,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "A translation of the words into your language, made by people, never by a machine: your own files, and NetEase's and Genius's translators, each with its own switch below. When none is found, the words show as they are, with nothing in their place. Also in the lines' right-click menu."
+   "tip": "A translation of the words into your language: your own files, NetEase's and Genius's translators, then (if you switch it on) a model on this PC, each with its own switch below. When none is found, the words show as they are. Also in the lines' right-click menu.\nTry: it on with Your Own Files, then add the others."
   },
   {
    "key": "lyrics.translateLanguage",
@@ -2056,7 +2056,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The translation alongside the words, or alone in their place (with the lines' times; the word times are the original's, so Karaoke fills by line)."
+   "tip": "The translation alongside the words, or alone in their place (with the lines' times; the word times are the original's, so Karaoke fills by line).\nTry: Translation only for a song you know by heart."
   },
   {
    "key": "lyrics.translatePlace",
@@ -2084,7 +2084,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Where the translation goes, with Original and translation: under or above each line, or its own block with its own place, dragged as the lyrics are (when unlocked below). Web animations (engine = web) show the original only for now."
+   "tip": "Where the translation goes, with Original and translation: under or above each line, or its own block with its own place, dragged as the lyrics are (when unlocked below). With a web animation (engine = web) its own block shows under the lines.\nTry: Its own block, moved to the other side of the screen."
   },
   {
    "key": "lyrics.translateX",
@@ -2099,7 +2099,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "With Its own block: where its middle is, across the screen, 0 to 100. Dragging it sets this."
+   "tip": "With Its own block: where its middle is, across the screen, 0 to 100%. Dragging it sets this.\nTry: dragging it instead."
   },
   {
    "key": "lyrics.translateY",
@@ -2114,7 +2114,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "With Its own block: where its middle is, down the screen, 0 to 100. -1: just under the lyrics, wherever they are. Dragging it sets this."
+   "tip": "With Its own block: where its middle is, down the screen, 0 to 100%. -1: just under the lyrics, wherever they are. Dragging it sets this.\nTry: -1 to keep it with the lyrics."
   },
   {
    "key": "lyrics.translateLocked",
@@ -2129,7 +2129,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "With Its own block: it stays put. Off, drag it with the lyrics' drag button and key. Also in the right-click menu."
+   "tip": "With Its own block: it stays put. Off, drag it with the lyrics' drag button and key. Also in the right-click menu.\nTry: off for a moment to place it, then on."
   },
   {
    "key": "lyrics.translateOwnLook",
@@ -2144,7 +2144,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Off: the translation takes the lyrics' font and colours (sung, other lines), smaller. On: the font, colour and opacity below."
+   "tip": "Off: the translation takes the lyrics' font and colours (sung, other lines), smaller. On: the font, colour and opacity below.\nTry: on with a quieter colour so the original stands out."
   },
   {
    "key": "lyrics.translateFont",
@@ -2159,7 +2159,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Any installed font's name, with Its own look. Empty: the lyrics' font."
+   "tip": "Any installed font's name, with Its own look. Empty: the lyrics' font.\nTry: a narrower font for long translations."
   },
   {
    "key": "lyrics.translateSize",
@@ -2174,7 +2174,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Of the lyrics' text size, 30 to 150."
+   "tip": "The translation's text size, as a share of the lyrics' size, 30 to 150%.\nTry: 60 under the lines, 90 in its own block."
   },
   {
    "key": "lyrics.translateColor",
@@ -2189,7 +2189,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "With Its own look."
+   "tip": "The translation's colour, with Its own look on (alpha first: #AARRGGBB).\nTry: a dimmer shade of the lyrics' colour."
   },
   {
    "key": "lyrics.translateOpacity",
@@ -2204,7 +2204,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "With Its own look, 0 to 100."
+   "tip": "How solid the translation is, with Its own look on, 0 to 100%.\nTry: 70 so it sits behind the words."
   },
   {
    "key": "lyrics.translateFiles",
@@ -2219,7 +2219,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "\"Artist - Title.<language>.lrc\" (or \"Title.<language>.lrc\") in the Lyrics Folder, timed or not: for example \"Artist - Title.en.lrc\". Needs no network."
+   "tip": "\"Artist - Title.<language>.lrc\" (or \"Title.<language>.lrc\") in the Lyrics Folder, timed or not: for example \"Artist - Title.en.lrc\". Needs no network.\nTry: saving one beside a song's lyrics file."
   },
   {
    "key": "lyrics.translateNetease",
@@ -2234,7 +2234,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "NetEase Cloud Music's translated lyrics, made by its listeners, timed with the song. Used only when they're in your language: most are Chinese, a few English. Sends the artist and title."
+   "tip": "NetEase Cloud Music's translated lyrics, made by its listeners, timed with the song. Used only when they're in your language: most are Chinese, a few English. Sends the artist and title.\nTry: it on for Chinese and Japanese songs."
   },
   {
    "key": "lyrics.translateGenius",
@@ -2249,7 +2249,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Genius's translation pages, written by its translators (Genius English Translations and the others), with your Genius Access Token. Untimed: laid line for line, and only used when the line counts agree. Sends the artist, title and language."
+   "tip": "Genius's translation pages, written by its translators (Genius English Translations and the others), with your Genius Access Token. Untimed: laid line for line, and only used when the line counts agree. Sends the artist, title and language.\nTry: it on for well known songs in other languages."
   },
   {
    "key": "lyrics.translateMachine",
@@ -2494,7 +2494,7 @@
    "shared": false,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Where the translation models are, one folder each named for its pair, like opus-mt-ru-en: an OPUS-MT model in ONNX form (encoder and decoder .onnx, source.spm, vocab.json, config.json). Empty: %LOCALAPPDATA%\\Tourne\\Table\\Models\\Translate."
+   "tip": "Where the translation models are, one folder each named for its pair, like opus-mt-ru-en: an OPUS-MT model in ONNX form (encoder and decoder .onnx, source.spm, vocab.json, config.json). Empty: %LOCALAPPDATA%\\Tourne\\Table\\Models\\Translate.\nTry: leaving it empty and putting the folders there."
   },
   {
    "key": "lyrics.translateListen",
@@ -2524,7 +2524,7 @@
    "shared": false,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Where whisper.dll and its many-language ggml model (ggml-small.bin or similar) are. Empty: %LOCALAPPDATA%\\Tourne\\Table\\Models\\Listen."
+   "tip": "Where whisper.dll and its many-language ggml model (ggml-small.bin or similar) are. Empty: %LOCALAPPDATA%\\Tourne\\Table\\Models\\Listen.\nTry: leaving it empty and putting both there."
   },
   {
    "key": "lyrics.translateRuntime",
@@ -2539,7 +2539,7 @@
    "shared": false,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "The folder with onnxruntime.dll (64-bit, 1.17 or newer) that runs the models. Empty: Tourne Desktop's own, else the models folder."
+   "tip": "The folder with onnxruntime.dll (64-bit, 1.17 or newer) that runs the models. Empty: Tourne Desktop's own, else the models folder.\nTry: leaving it empty."
   },
   {
    "key": "lyrics.translateNote",
@@ -2554,7 +2554,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "A small line under the lyrics: Translation: NetEase, Genius, your file."
+   "tip": "A small line under the lyrics: Translation: NetEase, Genius, your file.\nTry: it on while you choose which sources to keep."
   },
   {
    "key": "lyrics.offsetMs",
@@ -8283,7 +8283,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "How long the pointer rests on a button before its tooltip shows, 0 to 3000. 0: at once."
+   "tip": "How long the pointer rests on a button before its tooltip shows, 0 to 3000 ms. 0: at once.\nTry: 400 so passing over the strip shows nothing."
   },
   {
    "key": "media_controls.tooltipGap",
@@ -8298,7 +8298,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Between the strip and its tooltip, 0 to 64."
+   "tip": "The space between the strip and its tooltip, 0 to 64 px.\nTry: 10 to clear a glow round the strip."
   },
   {
    "key": "media_controls.tooltipPadding",
@@ -8313,7 +8313,7 @@
    "shared": true,
    "since": "2.5.0",
    "earlier": [],
-   "tip": "Inside the tooltip, round its text, 0 to 48."
+   "tip": "The space inside the tooltip, round its text, 0 to 48 px.\nTry: 10 for a roomier look."
   },
   {
    "key": "media_controls.backdrop",
