@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tourne'Table Styles</title>
 <meta name="description" content="Community styles for Tourne'Table, the Windows desktop audio visualizer. Copy a code, paste it in the Style Editor, keep it or not.">
-<link rel="stylesheet" href="tourne.css?v=7">
+<link rel="stylesheet" href="tourne.css?v=8">
 <script src="tourne.js?v=7"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@ document.getElementById('get').href = `https://github.com/${REPO}/tree/main/wind
 document.getElementById('share').href = `https://github.com/${REPO}/issues/new?template=share-a-style.md&title=${encodeURIComponent('Setup: ')}`;
 
 function parse(text) {
-  const s = { name: '', author: '', parts: [], values: {} };
+  const s = { name: '', author: '', build: '', parts: [], values: {} };
   let started = false;
   for (let line of text.split(/\r?\n/)) {
     line = line.trim();
@@ -59,11 +59,87 @@ function parse(text) {
     const eq = line.indexOf('=');
     if (eq <= 0) continue;
     const k = line.slice(0, eq), v = line.slice(eq + 1);
-    if (k === 'name') s.name = v; else if (k === 'author') s.author = v;
+    if (k === 'name') s.name = v; else if (k === 'author') s.author = v; else if (k === 'build') s.build = v;
     else if (k === 'parts') s.parts = v.split(',').map(x => x.trim()).filter(Boolean);
     else s.values[k] = v;
   }
   return started ? s : null;
+}
+
+// The one settings list (made from Tourne'Table's source, the same one the share bot reads): every setting, its
+// part of a style, its default and the build it arrived in, with earlier defaults. A style leaves out what is at
+// its build's default, so that is what a left-out setting means.
+let LIST = null;
+const PARTBIT = { look: 1, motion: 2, extras: 4, place: 8 };
+const vcmp = (a, b) => { const x = String(a || '0').split('.').map(n => parseInt(n, 10) || 0), y = String(b || '0').split('.').map(n => parseInt(n, 10) || 0);
+  for (let i = 0; i < Math.max(x.length, y.length); i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d; } return 0; };
+function renamed(s) {
+  const out = {};
+  for (const [k, v] of Object.entries(s.values)) {
+    const q = k.startsWith('quick.'), base = q ? k.slice(6) : k, now = (LIST && LIST.renamed[base]) || base;
+    out[q ? 'quick.' + now : now] = v;
+  }
+  return out;
+}
+function buildOf(s) {
+  if (s.build) return s.build;
+  let best = '2.1.1';
+  for (const k of Object.keys(s.values)) { const r = LIST.byKey[k.replace(/^quick\./, '')]; if (r && vcmp(r.since, best) > 0) best = r.since; }
+  return best;
+}
+function defaultIn(r, build) {
+  if (vcmp(build, LIST.build) >= 0) return r.default;
+  let found = null;
+  for (const [v, d] of r.earlier) if (vcmp(v, build) <= 0) found = d;
+  return found ?? r.default;
+}
+// Every shared setting as this style has it: its own value, else its build's default.
+function effective(s) {
+  const bits = (s.parts.length ? s.parts : ['look']).reduce((a, p) => a | (PARTBIT[p.toLowerCase()] || 0), 0), build = buildOf(s);
+  const E = {}, rows = [];
+  for (const r of LIST.settings) {
+    if (!r.shared) continue;
+    const set = r.key in s.values, v = set ? s.values[r.key] : defaultIn(r, build);
+    E[r.key] = v;
+    if (r.part & bits) rows.push({ r, v, set });
+  }
+  for (const [k, v] of Object.entries(s.values)) if (k.startsWith('quick.')) E[k] = v;
+  const unknown = Object.keys(s.values).filter(k => !k.startsWith('quick.') && !LIST.byKey[k]);
+  const needs = Object.keys(s.values).reduce((b, k) => { const r = LIST.byKey[k.replace(/^quick\./, '')]; return r && vcmp(r.since, b) > 0 ? r.since : b; }, '2.1.1');
+  return { E, rows, build, unknown, needs: vcmp(needs, '2.1.1') > 0 ? needs : '' };
+}
+function shown(r, v) {
+  if (r.kind === 'switch') return v === '1' ? 'on' : 'off';
+  if (r.kind === 'choice') { const o = r.options.find(o => o[0] === v); return o ? o[1] : v; }
+  return v === '' ? '(empty)' : v;
+}
+// Every setting the style's parts hold, by group and sub-page, the ones it sets first in each.
+function allSettings(body, X) {
+  const d = document.createElement('details'); d.className = 'all';
+  const sum = document.createElement('summary');
+  const mine = X.rows.filter(x => x.set).length;
+  sum.textContent = `All ${X.rows.length} settings (${mine} set by this style)`;
+  d.appendChild(sum);
+  d.addEventListener('toggle', () => {
+    if (!d.open || d.dataset.filled) return;
+    d.dataset.filled = '1';
+    const groups = new Map();
+    for (const x of X.rows) { const g = x.r.group + (x.r.section ? ' / ' + x.r.section : ''); if (!groups.has(g)) groups.set(g, []); groups.get(g).push(x); }
+    for (const [g, list] of groups) {
+      const h = document.createElement('div'); h.className = 'grp'; h.textContent = g; d.appendChild(h);
+      list.sort((a, b) => (b.set - a.set));
+      for (const x of list) {
+        const row = document.createElement('div'); row.className = 'row' + (x.set ? ' set' : '');
+        row.title = x.r.key + (x.r.since !== '2.1.1' ? ` (from ${x.r.since})` : '');
+        const k = document.createElement('span'); k.className = 'k'; k.textContent = x.r.name;
+        const v = document.createElement('span'); v.className = 'v'; v.textContent = shown(x.r, x.v);
+        if (x.r.kind === 'colour') { const i = document.createElement('i'); i.style.background = (rgba(x.v, null) ? `rgba(${rgba(x.v, null).slice(0, 3).join(',')},${rgba(x.v, null)[3]})` : 'transparent'); v.prepend(i); }
+        row.append(k, v); d.appendChild(row);
+      }
+    }
+    if (X.unknown.length) { const n = document.createElement('div'); n.className = 'grp'; n.textContent = 'From a newer build: ' + X.unknown.join(', '); d.appendChild(n); }
+  });
+  body.appendChild(d);
 }
 
 // Tourne's colours: #RRGGBB, #AARRGGBB (alpha first), rgba(r, g, b, a). Kept as [r, g, b, a], a in 0..1.
@@ -377,7 +453,10 @@ const b64 = text => btoa(String.fromCharCode(...new TextEncoder().encode(text)))
 
 function card(entry, text) {
   const s = parse(text); if (!s) return null;
-  const L = look(s);
+  s.values = renamed(s);
+  const X = effective(s);
+  const L = look({ ...s, values: X.E });
+  L.needs = X.needs;
   const el = document.createElement('article'); el.className = 'card';
   el.dataset.search = `${entry.name} ${entry.author} ${entry.about} ${L.shape}`.toLowerCase();
   const head = document.createElement('div'); head.className = 'head';
@@ -395,6 +474,7 @@ function card(entry, text) {
   [L.shape, ...(s.parts.length ? s.parts : ['look']), ...(L.glass ? ['glass'] : []), ...(L.needs ? ['needs ' + L.needs] : [])].forEach(x => { const sp = document.createElement('span'); sp.textContent = x; tags.appendChild(sp); });
   const sw = add('div', 'swatches');
   swatchesOf(L).forEach(c => { const i = document.createElement('i'); i.style.background = c; sw.appendChild(i); });
+  allSettings(body, X);
   const actions = add('div', 'actions');
   const copy = document.createElement('button'); copy.className = 'btn primary'; copy.textContent = 'Copy code';
   copy.onclick = async () => { try { await navigator.clipboard.writeText('TT2T:' + b64(text)); toast('Copied. Paste it in the Style Editor.'); } catch { toast('Copy failed: select the file text instead.'); } };
@@ -411,6 +491,8 @@ function setState(count, state) { document.getElementById('count').textContent =
 
 async function load() {
   const grid = document.getElementById('grid');
+  try { LIST = await (await fetch('settings-list.json', { cache: 'no-store' })).json(); LIST.byKey = Object.fromEntries(LIST.settings.map(r => [r.key, r])); }
+  catch { setState('none', '[ OFFLINE ]'); grid.innerHTML = '<div class="empty">Couldn\'t read the settings list. Try again in a moment.</div>'; return; }
   let index;
   try { index = await (await fetch(RAW + 'index.txt', { cache: 'no-store' })).text(); }
   catch { setState('none', '[ OFFLINE ]'); grid.innerHTML = '<div class="empty">Couldn\'t reach the style list. Try again in a moment.</div>'; return; }

@@ -180,7 +180,7 @@ TT2T:VG91cm5lJ1RhYmxlIHNldHVwIDEKbmFtZT1Qcm90b2NvbCA3ODEtQQphdXRob3I9eE0wREkKcGF
 
 by **USER-TOURNE** · Shared in #12
 
-Shape `oscilloscope` · Parts: Look, Motion, Extras · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d` · needs Tourne'Table 2.3 (older versions skip those settings)
+Shape `oscilloscope` · Parts: Look, Motion, Extras · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d` · needs Tourne'Table 2.3.0 (older builds skip those settings)
 
 [Open the file](setups/tt-oscibassline.ttstyle) · copy this code, then **Paste code** in the Style Editor:
 
@@ -192,7 +192,7 @@ TT2T:VG91cm5lJ1RhYmxlIHNldHVwIDEKbmFtZT1UVCBPc2NpQkFTU0xJTkUKYXV0aG9yPVVTRVItVE9
 
 by **USER-TOURNE** · Glass bars along the bottom of the screen, each bending the wallpaper behind it, in the Tourne palette
 
-Shape `stereo` · Parts: Look, Motion, Place · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d` · glass bars · needs Tourne'Table 2.3 (older versions skip those settings)
+Shape `stereo` · Parts: Look, Motion, Place · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d` · glass bars · needs Tourne'Table 2.3.0 (older builds skip those settings)
 
 [Open the file](setups/tourne-glass.ttstyle) · copy this code, then **Paste code** in the Style Editor:
 
@@ -204,7 +204,7 @@ TT2T:VG91cm5lJ1RhYmxlIHNldHVwIDEKbmFtZT1Ub3VybmUgR2xhc3MKYXV0aG9yPVVTRVItVE9VUk5
 
 by **USER-TOURNE** · Shared in #13
 
-Shape `oscilloscope` · Parts: Look, Motion, Extras, Place · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d`, `#FFE57474`, `#594CE38D`, `#FFA95D5D` · glass bars · needs Tourne'Table 2.3 (older versions skip those settings)
+Shape `oscilloscope` · Parts: Look, Motion, Extras, Place · Colours: `#e57474`, `rgba(76, 227, 141, .35)`, `#a95d5d`, `#FFE57474`, `#594CE38D`, `#FFA95D5D` · glass bars · needs Tourne'Table 2.4.0 (older builds skip those settings)
 
 [Open the file](setups/t-t-bassline-osci.ttstyle) · copy this code, then **Paste code** in the Style Editor:
 
@@ -216,7 +216,7 @@ TT2T:VG91cm5lJ1RhYmxlIHNldHVwIDEKbmFtZT1ULlQgQkFTU0xJTkUgT3NjaQphdXRob3I9VVNFUi1
 
 by **USER-TOURNE** · Shared in #14
 
-Shape `stereo` · Parts: Look, Motion, Extras · Colours: `#e57474`, `#64aa89` · needs Tourne'Table 2.3 (older versions skip those settings)
+Shape `stereo` · Parts: Look, Motion, Extras · Colours: `#e57474`, `#64aa89` · needs Tourne'Table 2.3.0 (older builds skip those settings)
 
 [Open the file](setups/testfor2point4.ttstyle) · copy this code, then **Paste code** in the Style Editor:
 

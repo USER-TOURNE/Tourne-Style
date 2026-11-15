@@ -7,9 +7,10 @@
     python community/tools/community.py add     OUT.json  # add the issue's setup to setups/ and the index
 
 A setup is the text Tourne'Table's Style Editor writes (Save file / Share Mine): a first line
-"Tourne'Table setup 1", then name=, author=, parts=, then setting=value lines. Only settings the mod
-itself shares are kept (its kSetupKeys and quick settings, read from the mod's source), so audio
-devices, hotkeys, paths and hardware choices can never come in through here.
+"Tourne'Table setup 1", then build=, name=, author=, parts=, then setting=value lines. Only settings the Table
+itself shares are kept (the one settings list, docs/settings-list.json, made from the Table's source with every
+setting, its part of a style and the build it arrived in), so audio devices, hotkeys, paths, tokens, keys and
+hardware choices can never come in through here.
 """
 import base64, json, os, re, sys
 
@@ -19,56 +20,67 @@ ROOT = os.path.dirname(COMMUNITY)
 SETUPS = os.path.join(COMMUNITY, "setups")
 INDEX = os.path.join(SETUPS, "index.txt")
 MOD = os.path.join(ROOT, "windhawk-mods", "tourne-table", "tourne-table.wh.cpp")
-NEWER = os.path.join(HERE, "newer-settings.txt")  # (shared settings of a newer Table than the public mod)
+LIST = os.path.join(ROOT, "docs", "settings-list.json")  # (the one settings list, shared with the gallery pages)
 README = os.path.join(COMMUNITY, "README.md")
 PARTS = {"look": 1, "motion": 2, "extras": 4, "place": 8}
 PART_NAMES = {v: k for k, v in PARTS.items()}
 PART_CONST = {"kPartLook": 1, "kPartMotion": 2, "kPartExtras": 4, "kPartPlace": 8}
 
 
+def vkey(v):
+    try:
+        return tuple(int(x) for x in v.split("."))
+    except ValueError:
+        return (0,)
+
+
+def load_list():
+    return json.load(open(LIST, encoding="utf-8"))
+
+
 def load_keys():
-    src = open(MOD, encoding="utf-8").read()
-    table = src[src.index("static const VizSetupKey kSetupKeys[]"):]
-    table = table[:table.index("};")]
-    keys = {m.group(1): (m.group(2), int(m.group(3)))
-            for m in re.finditer(r'\{L"([^"]+)", L"([^"]*)", (?:true|false), (\d+)\}', table)}
-    quick_t = src[src.index("static const VizQuickPart kQuickParts[]"):]
-    quick_t = quick_t[:quick_t.index("};")]
-    quick = {m.group(1): PART_CONST[m.group(2)] for m in re.finditer(r'\{L"([^"]+)", (kPart\w+)\}', quick_t)}
+    """{key: (default, part)} for every setting a style carries, and {quick key: part}."""
+    data = load_list()
+    keys = {r["key"]: (r["default"], r["part"]) for r in data["settings"] if r["shared"]}
+    quick = dict(data["quick"])
     if len(keys) < 100 or len(quick) < 10:
-        sys.exit("couldn't read the setting list from the mod's source")
-    newer, _ = load_newer()
-    for k, (default, part) in newer.items():
-        if k.startswith("quick."):
-            quick.setdefault(k[6:], part)
-        else:
-            keys.setdefault(k, (default, part))
+        sys.exit("couldn't read the settings list")
     return keys, quick
 
 
-def load_newer():
-    """The settings in newer-settings.txt, and the Table version they arrive with."""
-    out, since = {}, ""
-    if os.path.exists(NEWER):
-        for line in open(NEWER, encoding="utf-8"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if line.startswith("since="):
-                since = line[6:]
-                continue
-            f = line.split("|")
-            if len(f) == 3:
-                out[f[0]] = (f[1], int(f[2]))
-            elif len(f) == 2 and f[0].startswith("quick."):
-                out[f[0]] = ("", int(f[1]))
-    return out, since
+def own_pc_keys():
+    """Settings the Table has but keeps out of styles (devices, paths, tokens, hardware)."""
+    return {r["key"] for r in load_list()["settings"] if not r["shared"]}
+
+
+def public_build():
+    """The build of the Table in windhawk-mods/tourne-table (what most people run)."""
+    m = re.search(r"^// @version\s+(\S+)", open(MOD, encoding="utf-8").read(), re.M)
+    return m.group(1) if m else "2.1.1"
+
+
+def build_of(s):
+    """The build a setup was made with: its build= line, or the newest first build of what it sets."""
+    if s.get("build"):
+        return s["build"]
+    since = {r["key"]: r["since"] for r in load_list()["settings"]}
+    best = "2.1.1"
+    for k, _ in s["values"]:
+        v = since.get(k[6:] if k.startswith("quick.") else k)
+        if v and vkey(v) > vkey(best):
+            best = v
+    return best
 
 
 def needs_newer(s):
-    """The version a setup needs when it uses settings the public mod doesn't have yet, else ''."""
-    newer, since = load_newer()
-    return since if any(k in newer for k, _ in s["values"]) else ""
+    """The build a setup needs when it uses settings the public mod doesn't have yet, else ''."""
+    since = {r["key"]: r["since"] for r in load_list()["settings"]}
+    pub, best = vkey(public_build()), ""
+    for k, _ in s["values"]:
+        v = since.get(k[6:] if k.startswith("quick.") else k, "")
+        if v and vkey(v) > pub and (not best or vkey(v) > vkey(best)):
+            best = v
+    return best
 
 
 def parse(text):
@@ -80,7 +92,7 @@ def parse(text):
                 text = base64.b64decode(text[len(prefix):]).decode("utf-8")
             except Exception:
                 return None
-    started, s = False, {"name": "", "author": "", "parts": 0, "values": []}
+    started, s = False, {"name": "", "author": "", "build": "", "parts": 0, "values": []}
     for line in text.splitlines():
         line = line.strip()
         if not started:
@@ -96,6 +108,8 @@ def parse(text):
             s["name"] = v[:60]
         elif k == "author":
             s["author"] = v[:40]
+        elif k == "build":
+            s["build"] = v[:16] if re.fullmatch(r"\d+(\.\d+){0,3}", v[:16]) else ""
         elif k == "parts":
             s["parts"] = sum(PARTS.get(p.strip().lower(), 0) for p in v.split(","))
         elif len(s["values"]) < 2000:
@@ -110,6 +124,18 @@ def parse(text):
 PATHISH = re.compile(r"(^[a-zA-Z]:[\\/])|(\\\\)|(^/)|(%[A-Za-z]+%)")
 
 
+def never_shared(key, value):
+    """Mirrors the Table's VizNeverShared: tokens, passwords, secrets, long keys, and any path, file or web address."""
+    k, v = key.lower(), value.lower()
+    if k.endswith(("token", "password", "secret", "url", "folder", "path", "file")):
+        return True
+    if k.endswith("key") and len(value) >= 16:
+        return True
+    if re.match(r"^[a-z]:[\\/]", v) or v.startswith("\\\\") or re.search(r"%[\w()]+%", v) or "http:" in v or "https:" in v or "\\users\\" in v:
+        return True
+    return False
+
+
 def clean(s, keys, quick):
     """Keeps what the mod would share and drops the rest; returns (setup, notes)."""
     notes, values, seen = [], [], set()
@@ -120,12 +146,15 @@ def clean(s, keys, quick):
         elif k in keys:
             part = keys[k][1]
         if not part:
-            notes.append(f"`{k}` isn't a shared setting, left out")
+            if k in own_pc_keys():
+                notes.append(f"`{k}` stays on each PC (devices, paths, tokens, hardware), left out")
+            else:
+                notes.append(f"`{k}` isn't a shared setting, left out")
             continue
         if not part & s["parts"]:
             continue
-        if PATHISH.search(v) or "\n" in v:
-            notes.append(f"`{k}` looks like a file path, left out")
+        if never_shared(k[6:] if k.startswith("quick.") else k, v) or PATHISH.search(v) or "\n" in v:
+            notes.append(f"`{k}` looks like a token, key, path or web address, left out")
             continue
         if k in seen:
             continue
@@ -133,12 +162,13 @@ def clean(s, keys, quick):
         values.append((k, v))
     name = re.sub(r"[|\r\n]", " ", s["name"]).strip()
     author = re.sub(r"[|\r\n]", " ", s["author"]).strip()
-    return {"name": name, "author": author, "parts": s["parts"], "values": values}, notes
+    return {"name": name, "author": author, "build": s.get("build", ""), "parts": s["parts"], "values": values}, notes
 
 
 def text_of(s):
     parts = ",".join(PART_NAMES[b] for b in (1, 2, 4, 8) if s["parts"] & b)
-    lines = ["Tourne'Table setup 1", f"name={s['name']}", f"author={s['author']}", f"parts={parts}"]
+    lines = ["Tourne'Table setup 1"] + ([f"build={s['build']}"] if s.get("build") else [])
+    lines += [f"name={s['name']}", f"author={s['author']}", f"parts={parts}"]
     lines += [f"{k}={v}" for k, v in s["values"]]
     return "\n".join(lines) + "\n"
 
@@ -183,8 +213,11 @@ def cmd_check():
         if not s:
             print(f"{r['file']}: not a Tourne'Table setup"); bad += 1; continue
         c, notes = clean(s, keys, quick)
+        problems = [n for n in notes if "stays on each PC" not in n]
         if notes:
-            print(f"{r['file']}: " + "; ".join(n.replace("`", "") for n in notes)); bad += 1
+            print(f"{r['file']}: " + "; ".join(n.replace("`", "") for n in notes))
+        if problems:
+            bad += 1
     listed = {r["file"] for r in rows}
     for f in os.listdir(SETUPS):
         if f.endswith(".ttstyle") and f not in listed:
@@ -222,7 +255,7 @@ def cmd_gallery():
         if vals.get("glass.enabled") == "1":
             extra.append("glass bars")
         if since:
-            extra.append(f"needs Tourne'Table {since} (older versions skip those settings)")
+            extra.append(f"needs Tourne'Table {since} (older builds skip those settings)")
         blocks.append(
             f"### {r['name']}\n\n"
             f"by **{r['author']}** · {r['about']}\n\n"
@@ -291,7 +324,7 @@ def cmd_issue(out):
             msg = [f"Thanks, @{login}! **{c['name']}** reads fine: {len(c['values'])} settings across {parts}."]
             since = needs_newer(c)
             if since:
-                msg.append(f"\nIt uses settings from Tourne'Table {since} (glass bars, Bass Line, Depth and the like). "
+                msg.append(f"\nIt uses settings from Tourne'Table {since}. "
                            "They're kept; an older Tourne'Table applies the rest and skips those.")
             if notes:
                 msg.append("\nLeft out:\n" + "\n".join(f"- {n}" for n in notes[:20]))

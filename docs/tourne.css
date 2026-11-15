@@ -67,3 +67,13 @@
   header, footer { position: relative; }
   .weave.foot { top: auto; bottom: 12px; }
   .weave { position: absolute; top: 10px; right: 16px; pointer-events: none; image-rendering: pixelated; }
+
+/* every setting of a style, under its card */
+details.all { font-size: 11px; line-height: 22px; border-top: 1px solid var(--line); padding-top: 6px; }
+details.all summary { cursor: pointer; color: var(--green); text-transform: uppercase; letter-spacing: 1px; }
+details.all summary::marker { color: var(--dim); }
+details.all .grp { color: var(--neon); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+details.all .row { display: flex; justify-content: space-between; gap: 12px; color: var(--dim); }
+details.all .row.set { color: var(--text); }
+details.all .row .v { text-align: right; overflow-wrap: anywhere; display: inline-flex; align-items: center; gap: 6px; }
+details.all .row .v i { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--edge); }
