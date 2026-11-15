@@ -1,0 +1,16 @@
+name = ExportForEXE
+unit = letter
+in.ms = 175
+in.stagger = 5
+in.y = 16
+out.ms = 300
+out.y = -12
+react.beat = 0.75
+karaoke.step = current
+glyph = decode
+glyph.speed = 1.25
+engine = ours
+in.scale = 0
+out.ease = inout
+react.wave = 25
+out.scale = 0
