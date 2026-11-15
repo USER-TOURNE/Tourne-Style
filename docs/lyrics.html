@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tourne'Table Lyrics Animations</title>
 <meta name="description" content="Community lyrics animations for Tourne'Table: how each line of a song's lyrics comes in, plays and leaves. Copy one, take it in the Animation editor.">
-<link rel="stylesheet" href="tourne.css">
-<script src="tourne.js"></script>
+<link rel="stylesheet" href="tourne.css?v=4">
+<script src="tourne.js?v=4"></script>
 <style>
   .stage { width: 100%; height: 170px; display: block; border: 0; border-bottom: 1px solid var(--edge); background: #0c1417; }
   .file { display: none; font: 12px/1.6 var(--mono); color: var(--green); background: #0c1417; border: 1px solid var(--edge); border-width: 6px 1px; border-color: #0c1417; outline: 1px solid var(--edge); padding: 0 10px; margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; box-sizing: content-box; max-height: calc(12 * 1.6em); overflow: auto; }
@@ -43,7 +43,7 @@
   <div class="grid" id="grid"></div>
   <p class="note">Previews follow the animation's own keys (how each line, word or letter comes in, its stagger and easing), or for a web animation its CSS as written, on made-up lines in Tourne'Table's default lyrics colours, a word at a time sung. Beat swell, the wave, glow and the living wallpapers' letter effects are the Table's own and show only there; a card says when one is in it. Previews start still with animation effects off; click one to play it.</p>
 </main>
-<footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Animations are shared by their authors under CC BY-NC-SA 4.0; the bot keeps only the keys Tourne'Table reads and CSS without a way online. <a href="https://discord.gg/5JsHEMBxvY">Discord</a></footer>
+<footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Animations are shared by their authors under CC BY-NC-SA 4.0; the bot keeps only the keys Tourne'Table reads and CSS without a way online. <a href="https://discord.gg/5JsHEMBxvY">Discord</a> Type: <a href="fonts/OFL.txt">Departure Mono</a> by Helena Zhang (SIL OFL 1.1).</footer>
 <div class="toast" id="toast">Copied.</div>
 <script>
 pixelWord(document.getElementById('word'), 'LYRICS');
@@ -103,15 +103,18 @@ function previewDoc(a, line) {
   let i = 0, w = 0, spans = '';
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const karaoke = a.karaoke !== 'off' && a.karaoke !== 0;
+  let open = false;  // (letters: each word's kept together, so a line breaks between words only)
   for (const p of parts) {
-    if (/^\s+$/.test(p)) { spans += `<span>${esc(p)}</span>`; w++; continue; }
+    if (/^\s+$/.test(p)) { if (open) spans += '</span>', open = false; spans += `<span>${esc(p)}</span>`; w++; continue; }
+    if (unit === 'letter' && !open) spans += '<span class="w">', open = true;
     spans += `<span class="u" data-w="${unit === 'line' ? 0 : w}" style="${decls.replace(/"/g, '&quot;')}animation-delay:${i * stagger}ms;color:${karaoke ? 'var(--wait)' : 'var(--sung)'}">${esc(p)}</span>`;
     i++;
   }
-  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
-<style>:root{--sung:#e78e8f;--wait:#7eb7b4;--other:rgba(162,165,166,.6)}html,body{margin:0;height:100%;background:#0c1417;overflow:hidden}
-body{display:flex;flex-direction:column;justify-content:center;align-items:center;font:17px/1.55 "Segoe UI Variable Display","Segoe UI",system-ui,sans-serif}
-.o{color:var(--other);font-size:12.5px;padding:0 12px;text-align:center}.l{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box}.u{display:inline-block;white-space:pre}
+  if (open) spans += '</span>';
+  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; font-src ${location.origin}">
+<style>@font-face{font-family:"Departure Mono";src:url(${new URL('fonts/DepartureMonoNerdFontMono-Regular.otf', location.href).href}) format("opentype")}:root{--sung:#e78e8f;--wait:#7eb7b4;--other:rgba(162,165,166,.6)}html,body{margin:0;height:100%;background:#0c1417;overflow:hidden}
+body{display:flex;flex-direction:column;justify-content:center;align-items:center;font:22px/33px "Departure Mono",ui-monospace,monospace;-webkit-font-smoothing:none}
+.o{color:var(--other);font-size:11px;line-height:22px;padding:0 12px;text-align:center}.l{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box}.u{display:inline-block;white-space:pre}.w{display:inline-block;white-space:nowrap}
 ${css}</style></head><body><div class="o">${esc(LINES[(LINES.indexOf(line) + LINES.length - 1) % LINES.length])}</div><div class="l">${spans}</div></body></html>`;
 }
 
