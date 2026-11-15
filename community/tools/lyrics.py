@@ -20,9 +20,10 @@ INDEX = os.path.join(LYRICS, "index.txt")
 # The keys the Table's VizParseLyricAnim reads: number ranges, or the words allowed.
 NUMBERS = {"in.ms": (1, 5000), "in.stagger": (0, 2000), "in.opacity": (0, 1), "in.x": (-2000, 2000), "in.y": (-2000, 2000),
            "in.scale": (0, 10), "out.ms": (1, 5000), "out.opacity": (0, 1), "out.x": (-2000, 2000), "out.y": (-2000, 2000),
-           "out.scale": (0, 10), "react.beat": (0, 1), "react.wave": (0, 100), "glow": (0, 1), "glyph.speed": (0.1, 10)}
+           "out.scale": (0, 10), "react.beat": (0, 1), "react.wave": (0, 100), "glow": (0, 1), "glyph.speed": (0.1, 10),
+           "in.turn": (-3600, 3600), "out.turn": (-3600, 3600), "in.sx": (0, 10), "in.sy": (0, 10), "out.sx": (0, 10), "out.sy": (0, 10)}
 WORDS = {"unit": {"line", "word", "letter"}, "in.ease": {"linear", "out", "inout", "back"}, "out.ease": {"linear", "out", "inout", "back"},
-         "karaoke": {"on", "off"}, "engine": {"ours", "web"},
+         "karaoke": {"on", "off"}, "engine": {"ours", "web"}, "karaoke.step": {"sweep", "word", "current"},
          "glyph": {"none", "flip", "decode", "bonsaidrop", "ripple", "split", "type", "focus", "flap", "prompt"}}
 REACHES_OUT = re.compile(r"url\(|@import|expression\(|javascript:|<\s*/?\s*script|</", re.I)
 # A pen's markup kept for the web engine ("#< " lines): plain structure only, as the Table's cleaner keeps it.
@@ -31,6 +32,13 @@ TPL_BAD = re.compile(r"<\s*(script|style|iframe|frame|object|embed|svg|math|img|
                      r"\son[a-z]+\s*=|javascript:|url\(|@import|expression\(", re.I)
 TPL_KEYS = {"tpl.holder": re.compile(r"[0-9]+(/[0-9]+){0,30}"), "tpl.unit": re.compile(r"text|word|letter"),
             "tpl.attrs": re.compile(r"data-[a-z0-9-]{1,30}(,\s*data-[a-z0-9-]{1,30}){0,5}")}
+# Keys with a shape of their own: in-between stops (at x y width height turn opacity), and colours (hex only here).
+_NUM = r"-?[0-9]+(\.[0-9]+)?"
+_HEX = r"#([0-9a-f]{6}|[0-9a-f]{8})"
+SHAPED = {"in.stop": re.compile(rf"{_NUM}(\s+{_NUM}){{0,6}}"), "out.stop": re.compile(rf"{_NUM}(\s+{_NUM}){{0,6}}"),
+          "karaoke.colors": re.compile(rf"{_HEX}(\s*,\s*{_HEX}){{0,11}}"), "karaoke.base": re.compile(_HEX)}
+# A comment starts at the first # that isn't a colour (#rrggbb or #rrggbbaa), as the Table reads it.
+COMMENT = re.compile(r"#(?![0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?(?:$|[\s,]))")
 # Scripts and the libraries they load stay on the PC they were imported on: never shared.
 SCRIPTED = re.compile(r"(?m)^(#\$|\s*lib\s*=|\s*script\s*=)")
 
@@ -55,13 +63,21 @@ def clean(text):
         if raw.lower().startswith("# css source:"):
             source = raw.split(":", 1)[1].strip()[:200]
             continue
-        line = raw.split("#", 1)[0]
+        line = COMMENT.split(raw, 1)[0]
         if "=" not in line:
             continue
         k, v = (x.strip() for x in line.split("=", 1))
         k = k.lower()
         if k == "name":
             name = v[:60]
+            continue
+        if k == "karaoke.colours":
+            k = "karaoke.colors"
+        if k in SHAPED:
+            if SHAPED[k].fullmatch(v.lower()):
+                keys.append(f"{k} = {v.lower() if k.startswith('karaoke') else v}")
+            else:
+                notes.append(f"`{k} = {v[:30]}` (not in the shape the Table reads)")
             continue
         if k in TPL_KEYS:
             if TPL_KEYS[k].fullmatch(v):
