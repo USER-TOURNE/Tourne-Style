@@ -2,6 +2,74 @@
 
 *Newest first. Each beta updates the one before it in place and keeps its settings.*
 
+## ❀ v2.5.14 beta (Windhawk): icons for the instrumentals
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.13 beta in place and keeps its settings.
+
+### New: an icon as the instrumental picture
+
+- **Show During Instrumentals: Picture, GIF or icon** now takes an icon too: an .ico file, or an app's own icon from its .exe or .dll. Add a comma and a number after the file for another of its icons (app.exe,2).
+- An app's icon is taken at 256 px.
+
+### Fixed
+
+- An .ico file shows its biggest size, steady. Before, its sizes played one after another like a GIF's frames. The same goes for a .tiff with several pages.
+
+## ❀ v2.5.13 beta (Windhawk): instrumental text in shared animations
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.12 beta in place and keeps its settings.
+
+### New: shares carry your instrumental text
+
+- **Share mine to the community...** now also sends your Show During Instrumentals text and its timings (opacity, beat pulse, before the first line, after the last, fades, leaving early, songs without lyrics), as part of your Lyrics look.
+- Only text goes: a picture or GIF is a file on your PC, so with Picture or GIF picked, that choice stays out.
+- **Take its look too** puts them on yours along with the rest of the look. **Keep my own look** leaves yours as it is.
+
+## ❀ v2.5.12 beta (Windhawk): more for the instrumentals
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.11 beta in place and keeps its settings.
+
+### New: Songs Without Lyrics
+
+- **Lyrics > Instrumental > Songs Without Lyrics** shows your text or picture for the whole of a song no lyrics were found for, once the looking is done. Off by default.
+
+### New: tint for the picture
+
+- **Instrumental Picture Tint** lays a colour of yours over the picture or GIF where it isn't see-through (#RRGGBB or a colour name). Empty keeps its own colours.
+- **Instrumental Tint Strength** sets how much of it shows: 100 is a flat silhouette in the tint, lower mixes it with the picture.
+
+## ❀ v2.5.11 beta (Windhawk): two old editor bugs fixed
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.10 beta in place and keeps its settings.
+
+### Fixed: typing in the Lyrics Animations editor
+
+- Typing in any of the form's boxes no longer throws the cursor back to the start after each key. The box you're typing in keeps its text while the file below follows it.
+
+### Fixed: resizing the Style Editor
+
+- Dragging an edge now only moves that edge's side of the layout. The labels on the left (Share, Parts, Base style and the rest) stay in place instead of sliding out of view, which mostly happened at 125% and 150% scaling.
+- It can't be made so narrow that buttons run into each other: below a width the labels go above their controls, and that's as small as it gets.
+- The Lyrics Animations editor's smallest width is a little bigger, so its top row of buttons always fits.
+
+## ❀ v2.5.10 beta (Windhawk): something to watch in the instrumentals
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.9 beta in place and keeps its settings.
+
+### New: Show During Instrumentals
+
+- **Lyrics > Instrumental > Show During Instrumentals** puts something in the lyrics' spot while the song plays without words: **Text** (your own words or symbols) or **Picture or GIF** (a file of yours; a GIF plays). Off by default (Nothing).
+- It uses the same stretches Instrumental Disperse clears for: a long wait to the next line, or an empty timed line. With Disperse on, it comes in once the lines have cleared away.
+- Text is drawn in your Lyrics look and comes in with your lyrics animation's In keys.
+- Settings for the picture's height, how solid it is, a swell on each beat, fading in and out, and how long before the next line it leaves, so the line reads in on its own.
+- **Before the First Line** and **After the Last Line** switches show it there too.
+- It's also in the lyrics' own menu, under Instrumental.
+- The picture's file stays on this PC: it's never in a shared style or animation. Pictures are read once, and big ones are made smaller (512 px a side at most).
+
+### Lyrics Window stays on this PC
+
+- Lyrics Window describes your desktop, not a look, so it's no longer carried in shared styles.
+
 ## ❀ v2.5.9 beta (Windhawk): shares that look like your desktop
 
 This is a beta. It keeps the same mod id, so it updates the 2.5.8 beta in place and keeps its settings.
