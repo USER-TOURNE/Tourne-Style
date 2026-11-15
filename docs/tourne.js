@@ -18,40 +18,42 @@ function pixelWord(svg, word) {
   svg.innerHTML = r + `<rect x="0" y="${7 * P + 2}" width="${W - (P - Q)}" height="4" fill="#a95d5d"/>`;
 }
 
-// Tourne's mark (the Bonsai living wallpaper's TOURNE logo, its letters' outline) woven into the scanlines: across a
-// tile made once, the scanlines turn green where they cross the mark, a row thicker, and the tile repeats at an
-// angle with staggered rows over the whole page (content included; clicks pass through). Nothing runs after.
+// Tourne's mark (the Bonsai living wallpaper's TOURNE logo, its letters' outline), once, in the header's top right
+// corner beside the menu (no preview, button or box is ever there): drawn by the scanlines themselves, green where
+// they cross the letters and a row thicker. Made once; nothing runs after.
 const BONSAI_MARK = { w: 119, rows: ['7fffc07fe0380383ffc01c00707fff','7fffe07fe0380387ffc01c0070dfff','7fffe1fff8380387fff01f0070ffff','3fffe1fffc380387fff01f0070fffc','00f001c03c38038700701f0070f000','00f001c01c38038700701fe070f000','00f001c01c38038700701fe070f000','00f001c01c38038700701de070f000','00f001c01c38038700701de070ffe0','00f001c01c38038700701de070ffe0','00f001c01c380387fff01df870ffe0','00f001c01c380387ffe01df870ff80','00f001c01c380387ffc01c3870f000','00f001c01c380387fff01c3870f000','00f001c01c38038700701c3870f000','00f001c01c38038700701c3e70f000','00f001c01c38038700701c3f70f000','00f001c01c38038700701c0f70f000','00f001c01c38038700701c0f70f000','00f001c01c38038700701c0f70f000','00f001c03c38038700701c0ff0f000','00f000fffc1fff8700701c0ff0ffff','00f0007ff00ffc0700701c03f0ffff','00f0007ff007fc0700701c03f0fffe'] };
 function weaveMark() {
   if (document.querySelector('.weave')) return;
-  const TW = 432, TH = 252, S = 2, P = 3;  // tile, mark pixel size, scanline pitch
-  const mark = document.createElement('canvas');
-  mark.width = BONSAI_MARK.w * S; mark.height = BONSAI_MARK.rows.length * S;
-  const mc = mark.getContext('2d'); mc.fillStyle = '#000';
-  BONSAI_MARK.rows.forEach((hex, y) => {
-    const bits = BigInt('0x' + hex).toString(2).padStart(BONSAI_MARK.w, '0');
-    for (let x = 0; x < BONSAI_MARK.w; x++) if (bits[x] === '1') mc.fillRect(x * S, y * S, S, S);
-  });
-  const shape = document.createElement('canvas'); shape.width = TW; shape.height = TH;
-  const sc = shape.getContext('2d');
-  const put = (cx, cy) => { for (const dx of [-TW, 0, TW]) for (const dy of [-TH, 0, TH]) {
-    sc.save(); sc.translate(cx + dx, cy + dy); sc.rotate(-14 * Math.PI / 180); sc.drawImage(mark, -mark.width / 2, -mark.height / 2); sc.restore(); } };
-  put(TW * 0.27, TH * 0.28); put(TW * 0.77, TH * 0.78);  // (staggered rows)
-  const inside = sc.getImageData(0, 0, TW, TH).data;
-  const tile = document.createElement('canvas'); tile.width = TW; tile.height = TH;
-  const tc = tile.getContext('2d'), img = tc.createImageData(TW, TH), d = img.data;
-  for (let y = 0; y < TH; y++) {
-    const line = y % P === 0, thick = y % P === 1;
+  const header = document.querySelector('header');
+  if (!header) return;
+  // Whole pixels: 2 to a mark pixel where there's room right of the menu, 1 where there's less; with none (a very
+  // narrow window), the footer's bottom right instead.
+  const nav = header.querySelector('nav'), hr = header.getBoundingClientRect();
+  const navRight = nav ? Math.max(...[...nav.children].map(a => a.getBoundingClientRect().right)) - hr.left : 0;
+  const free = header.clientWidth - 16 - navRight - 24;
+  const S = free >= BONSAI_MARK.w * 2 ? 2 : free >= BONSAI_MARK.w ? 1 : 0, P = 3;
+  const host = S ? header : document.querySelector('footer');
+  if (!host) return;
+  const s = S || 1;
+  const W = BONSAI_MARK.w * s, H = BONSAI_MARK.rows.length * s;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), img = x.createImageData(W, H), d = img.data;
+  const bits = BONSAI_MARK.rows.map(hex => BigInt('0x' + hex).toString(2).padStart(BONSAI_MARK.w, '0'));
+  for (let y = 0; y < H; y++) {
+    const line = y % P === 0, thick = y % P === 1;  // (the scanlines: green where they cross the letters, a row thicker)
     if (!line && !thick) continue;
-    for (let x = 0; x < TW; x++) {
-      const i = (y * TW + x) * 4, on = inside[i + 3] > 127;
-      if (on) { d[i] = 21; d[i + 1] = 255; d[i + 2] = 162; d[i + 3] = line ? 15 : 8; }      // the mark: green, a row thicker
-      else if (line) { d[i] = 0; d[i + 1] = 0; d[i + 2] = 0; d[i + 3] = 18; }               // the scanline itself
+    const row = bits[Math.min(bits.length - 1, Math.floor(y / s))];
+    for (let px = 0; px < W; px++) {
+      if (row[Math.floor(px / s)] !== '1') continue;
+      const i = (y * W + px) * 4;
+      d[i] = 21; d[i + 1] = 255; d[i + 2] = 162; d[i + 3] = line ? 120 : 55;
     }
   }
-  tc.putImageData(img, 0, 0);
-  const layer = document.createElement('div'); layer.className = 'weave'; layer.setAttribute('aria-hidden', 'true');
-  layer.style.backgroundImage = `url(${tile.toDataURL('image/png')})`;
-  document.body.appendChild(layer);
+  x.putImageData(img, 0, 0);
+  c.className = 'weave'; c.setAttribute('aria-hidden', 'true'); c.style.width = W + 'px'; c.style.height = H + 'px';
+  if (!S) c.classList.add('foot');
+  host.appendChild(c);
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', weaveMark); else weaveMark();
+// (after the type has loaded: the menu's width decides the mark's size and place)
+const weaveWhenReady = () => (document.fonts ? document.fonts.ready : Promise.resolve()).then(weaveMark);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', weaveWhenReady); else weaveWhenReady();

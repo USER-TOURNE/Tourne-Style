@@ -1,7 +1,7 @@
   @font-face { font-family: "Departure Mono"; src: url("fonts/DepartureMonoNerdFontMono-Regular.otf") format("opentype"); font-display: swap; }
   :root {
     --ground: #121c21; --panel: #152025; --raised: #1b2a30; --edge: #24393f; --line: rgba(100,170,137,.28);
-    --text: #d3d6d8; --dim: #6ba6a0; --neon: #15ffa2; --green: #64aa89; --red: #ff8f8f; --brick: #a95d5d;
+    --text: #64aa89; --dim: #5d8d6f; --neon: #15ffa2; --green: #64aa89; --red: #ff8f8f; --brick: #a95d5d;
     --mono: "Departure Mono", ui-monospace, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
   }
   * { box-sizing: border-box; }
@@ -64,4 +64,6 @@
   nav { display: flex; flex-wrap: wrap; gap: 18px; padding: 18px 0 26px; font-size: 11px; letter-spacing: 3px; }
   nav a { color: var(--dim); } nav a[aria-current] { color: var(--neon); }
   nav a[aria-current]::before { content: "\25A3  "; }
-  .weave { position: fixed; inset: 0; pointer-events: none; z-index: 50; background-repeat: repeat; }
+  header, footer { position: relative; }
+  .weave.foot { top: auto; bottom: 12px; }
+  .weave { position: absolute; top: 10px; right: 16px; pointer-events: none; image-rendering: pixelated; }
