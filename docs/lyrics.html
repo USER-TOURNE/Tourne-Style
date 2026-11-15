@@ -8,9 +8,11 @@
 <link rel="stylesheet" href="tourne.css">
 <script src="tourne.js"></script>
 <style>
-  .stage { width: 100%; height: 150px; display: block; border: 0; border-bottom: 1px solid var(--edge); background: #0c1417; }
-  .file { font-size: 11.5px; color: var(--green); background: #0c1417; border: 1px solid var(--edge); padding: 8px 10px; margin: 4px 0 0; white-space: pre-wrap; max-height: 0; overflow: hidden; transition: max-height .2s; }
-  .card.open .file { max-height: 360px; overflow: auto; }
+  .stage { width: 100%; height: 170px; display: block; border: 0; border-bottom: 1px solid var(--edge); background: #0c1417; }
+  .file { display: none; font: 12px/1.6 var(--mono); color: var(--green); background: #0c1417; border: 1px solid var(--edge); border-width: 6px 1px; border-color: #0c1417; outline: 1px solid var(--edge); padding: 0 10px; margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; box-sizing: content-box; max-height: calc(12 * 1.6em); overflow: auto; }
+  .card.open .file { display: block; }
+  .head span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .head .live { white-space: nowrap; flex: none; }
 </style>
 </head>
 <body>
@@ -109,7 +111,7 @@ function previewDoc(a, line) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
 <style>:root{--sung:#e78e8f;--wait:#7eb7b4;--other:rgba(162,165,166,.6)}html,body{margin:0;height:100%;background:#0c1417;overflow:hidden}
 body{display:flex;flex-direction:column;justify-content:center;align-items:center;font:17px/1.55 "Segoe UI Variable Display","Segoe UI",system-ui,sans-serif}
-.o{color:var(--other);font-size:12.5px}.l{white-space:pre;padding:0 10px;max-width:100%;overflow:hidden;text-overflow:ellipsis}.u{display:inline-block;white-space:pre}
+.o{color:var(--other);font-size:12.5px;padding:0 12px;text-align:center}.l{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box}.u{display:inline-block;white-space:pre}
 ${css}</style></head><body><div class="o">${esc(LINES[(LINES.indexOf(line) + LINES.length - 1) % LINES.length])}</div><div class="l">${spans}</div></body></html>`;
 }
 
@@ -123,7 +125,7 @@ function card(entry, text) {
   el.dataset.search = `${entry.name} ${entry.author} ${entry.about} ${a.web ? 'web' : 'ours'} ${a.unit}`.toLowerCase();
   const head = document.createElement('div'); head.className = 'head';
   const h1 = document.createElement('span'), h2 = document.createElement('span');
-  h1.textContent = `▣ ${String(cards.length + 1).padStart(2, '0')} // ${a.web ? 'web' : 'ours'} // ${a.unit}`; h2.className = 'live'; h2.textContent = '[ PLAYING ]';
+  h1.textContent = `▣ ${String(cards.length + 1).padStart(2, '0')} // ${a.web ? 'web' : 'ours'}`; h2.className = 'live'; h2.textContent = '[ PLAYING ]';
   head.append(h1, h2); el.appendChild(head);
   // A frame of its own with no scripts and a policy that refuses anything from outside.
   // (allow-same-origin without allow-scripts: nothing in it runs, and this page lights its words as they're sung)
@@ -143,7 +145,7 @@ function card(entry, text) {
   const dl = document.createElement('a'); dl.className = 'btn'; dl.textContent = 'Download .ttlyrics';
   dl.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); dl.download = entry.file;
   const show = document.createElement('button'); show.className = 'btn'; show.textContent = 'File';
-  show.onclick = () => el.classList.toggle('open');
+  show.onclick = () => { el.classList.toggle('open'); show.textContent = el.classList.contains('open') ? 'Hide file' : 'File'; };
   actions.append(copy, dl, show);
   el.appendChild(body);
   const c = { el, stage, a, line: cards.length % LINES.length, sung: 0, words: 0 };
