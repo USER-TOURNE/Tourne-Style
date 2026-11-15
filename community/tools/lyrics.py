@@ -39,6 +39,46 @@ SHAPED = {"in.stop": re.compile(rf"{_NUM}(\s+{_NUM}){{0,6}}"), "out.stop": re.co
           "karaoke.colors": re.compile(rf"{_HEX}(\s*,\s*{_HEX}){{0,11}}"), "karaoke.base": re.compile(_HEX)}
 # A comment starts at the first # that isn't a colour (#rrggbb or #rrggbbaa), as the Table reads it.
 COMMENT = re.compile(r"#(?![0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?(?:$|[\s,]))")
+# The sharer's Lyrics look (look.<key> lines, the Table's lyrics.<key> settings): how the lines look, nothing tied to
+# a PC. The same list is in the Table's editor (kLeLookKeys) and the gallery's page. Each value is checked by its kind
+# in the one settings list.
+LOOK_KEYS = ["color", "colorWaiting", "colorOther", "font", "size", "align", "before", "after", "shadow", "shadowColor", "shadowX",
+             "shadowY", "shadowSoftness", "glow", "glowRadius", "bloom", "bloomRadius", "outline", "outlineColor", "highlight",
+             "highlightColor", "background", "backgroundColor", "backgroundPadding", "backgroundCornerRadius", "borderSize", "borderColor"]
+LOOK_NOTE = "# The sharer's Lyrics look (the gallery's preview uses it; Take its look too puts it on yours)"
+_LIST = os.path.join(os.path.dirname(COMMUNITY), "docs", "settings-list.json")
+
+
+def look_kinds():
+    """{key: (kind, options)} for the look keys, from the settings list."""
+    rows = {r["key"]: r for r in json.load(open(_LIST, encoding="utf-8"))["settings"]}
+    out = {}
+    for k in LOOK_KEYS:
+        r = rows.get("lyrics." + k)
+        if r and r.get("shared"):
+            out[k.lower()] = (k, r["kind"], [o[0] for o in r.get("options", [])])
+    return out
+
+
+def look_value(kind, options, v):
+    """The value as the Table takes it, or None."""
+    if kind == "colour":
+        return v.upper() if re.fullmatch(r"#[0-9A-Fa-f]{8}|#[0-9A-Fa-f]{6}", v) else None
+    if kind == "number":
+        try:
+            f = float(v)
+        except ValueError:
+            return None
+        return f"{min(1000.0, max(-1000.0, f)):g}"
+    if kind == "switch":
+        return v if v in ("0", "1") else None
+    if kind == "choice":
+        return v if v in options else None
+    if kind == "text":
+        return v if re.fullmatch(r"[^\\/:%<>\r\n]{1,64}", v) else None
+    return None
+
+
 # Scripts and the libraries they load stay on the PC they were imported on: never shared.
 SCRIPTED = re.compile(r"(?m)^(#\$|\s*lib\s*=|\s*script\s*=)")
 
@@ -46,6 +86,7 @@ SCRIPTED = re.compile(r"(?m)^(#\$|\s*lib\s*=|\s*script\s*=)")
 def clean(text):
     """The animation as the community keeps it, and notes on what was left out."""
     keys, css, tpl, source, notes, name = [], [], [], "", [], ""
+    look, kinds = [], look_kinds()
     for raw in text.replace("\r", "").split("\n"):
         if raw.startswith("#< "):
             if TPL_BAD.search(raw[3:]):
@@ -70,6 +111,14 @@ def clean(text):
         k = k.lower()
         if k == "name":
             name = v[:60]
+            continue
+        if k.startswith("look."):
+            spec = kinds.get(k[5:])
+            good = spec and look_value(spec[1], spec[2], v)
+            if good:
+                look.append(f"look.{spec[0]} = {good}")
+            else:
+                notes.append(f"`{k[:30]}` (not part of the Lyrics look the Table shares)" if not spec else f"`{k} = {v[:30]}` (not a value the Table takes)")
             continue
         if k == "karaoke.colours":
             k = "karaoke.colors"
@@ -111,6 +160,8 @@ def clean(text):
         notes.append("its CSS has no `# css source:` line (where it came from and its licence); added as unknown")
         source = "not given"
     out = (f"name = {name}\n" if name else "") + "\n".join(keys) + "\n"
+    if look:
+        out += LOOK_NOTE + "\n" + "\n".join(look) + "\n"
     if css_text:
         out += f"# css source: {source}\n" + "".join(f"#| {l}\n" if l else "#|\n" for l in css_text.split("\n"))
         out += "".join(f"#< {l}\n" for l in tpl if l.strip())

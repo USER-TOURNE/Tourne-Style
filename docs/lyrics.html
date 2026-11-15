@@ -42,7 +42,7 @@
 </header>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">Previews follow the animation's own keys (how each line, word or letter comes in, its stagger and easing), or for a web animation its CSS as written, on made-up lines in Tourne'Table's default lyrics colours, a word at a time sung. Beat swell, the wave, glow and the living wallpapers' letter effects are the Table's own and show only there; a card says when one is in it. Previews start still with animation effects off; click one to play it.</p>
+  <p class="note">Each preview is drawn the way Tourne'Table draws it on a desktop: the line before leaving, the playing line coming in word by word or letter by letter and being sung, the next one waiting, with the animation's own colours. A share made with Tourne'Table 2.5.9 or newer carries its sharer's Lyrics look (colours, font, size, glow, outline, shadow, panel, lines before and after), so its card shows what they see; older ones show the Table's default look. Taking one never changes your own look unless you pick Take its look too. Made-up lines only, sung at a steady pace; a steady beat stands in for the music, and the living wallpapers' letter effects show only in the Table (a card says when one is in it). Previews start still with animation effects off; click one to play it.</p>
 </main>
 <footer><span class="blk">&#9635;</span> Part of <a id="repo" href="#">Tourne'Style</a>. Animations are shared by their authors under CC BY-NC-SA 4.0; the bot keeps only the keys Tourne'Table reads and CSS without a way online. <a href="https://discord.gg/5JsHEMBxvY">Discord</a> Type: <a href="fonts/OFL.txt">Departure Mono</a> by Helena Zhang (SIL OFL 1.1).</footer>
 <div class="toast" id="toast">Copied.</div>
@@ -60,8 +60,19 @@ const LINES = ['Paper lanterns drift above the quiet bay', 'Count the windows li
   'We left the radio on all night long', 'Salt and static on the evening air', 'Fold the map and follow where it bends'];
 const EASE = { linear: 'linear', out: 'ease-out', inout: 'ease-in-out', back: 'cubic-bezier(.34,1.56,.64,1)' };
 // The Table's own Lyrics look, as a fresh install draws it (Lyrics page defaults). An animation's own colours go over it.
-const LOOK = { sung: '#e78e8f', wait: '#7eb7b4', other: 'rgba(162,165,166,.6)', before: 1, after: 1,
-  font: '"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif' };
+// The Table's own Lyrics look, as a fresh install draws it (the Lyrics page's defaults), in its settings' form. A share
+// made since the Table carries its sharer's look (look. lines), which goes over these, so the card shows what they see.
+const LOOK = { color: '#FFE78E8F', colorWaiting: '#FF7EB7B4', colorOther: '#99A2A5A6', font: 'Segoe UI Variable Display', size: 34,
+  align: 'center', before: 1, after: 1, shadow: 0, shadowColor: '#FF000000', shadowX: 2, shadowY: 3, shadowSoftness: 4, glow: 0, glowRadius: 6,
+  bloom: 0, bloomRadius: 16, outline: 0, outlineColor: '#B0000000', highlight: 0, highlightColor: '#FFFFFFFF', background: 0,
+  backgroundColor: '#60000000', backgroundPadding: 12, backgroundCornerRadius: 14, borderSize: 0, borderColor: '#40FFFFFF' };
+// The Table's colours are #AARRGGBB (#RRGGBB solid); a CSS colour for them.
+function argb(v, fallback) {
+  const m = /^#([0-9a-f]{2})?([0-9a-f]{6})$/i.exec(String(v || ''));
+  if (!m) return fallback === undefined ? 'transparent' : argb(fallback);
+  const a = m[1] === undefined ? 1 : parseInt(m[1], 16) / 255, n = parseInt(m[2], 16);
+  return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${+a.toFixed(3)})`;
+}
 // A comment starts at the first # that isn't a colour (#rrggbb or #rrggbbaa), as the Table reads it.
 const COMMENT = /#(?![0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?(?:$|[\s,])).*/;
 const HEX = /^#([0-9a-f]{6}|[0-9a-f]{8})$/i;
@@ -70,7 +81,7 @@ const HEX = /^#([0-9a-f]{6}|[0-9a-f]{8})$/i;
 function parse(text) {
   const a = { unit: 'word', 'in.ms': 420, 'in.stagger': 45, 'in.ease': 'out', 'in.opacity': 0, 'in.x': 0, 'in.y': 16, 'in.scale': 1,
     'out.ms': 320, 'out.ease': 'out', 'out.opacity': 1, 'out.x': 0, 'out.y': -12, 'out.scale': 1, karaoke: 'on', engine: 'ours', glyph: 'none',
-    css: '', extras: [], inStops: [], outStops: [], colours: [], base: '', step: 'sweep' };
+    css: '', extras: [], inStops: [], outStops: [], colours: [], base: '', step: 'sweep', look: {} };
   for (const raw of text.split(/\r?\n/)) {
     if (raw.startsWith('#| ')) { a.css += raw.slice(3) + '\n'; continue; }
     if (raw === '#|') { a.css += '\n'; continue; }
@@ -84,6 +95,15 @@ function parse(text) {
     }
     if (k === 'karaoke.colors' || k === 'karaoke.colours') { a.colours = v.split(',').map(s => s.trim()).filter(s => HEX.test(s)).slice(0, 12); continue; }
     if (k === 'karaoke.base') { if (HEX.test(v)) a.base = v; continue; }
+    if (k.startsWith('look.')) {  // (the sharer's Lyrics look: only its own keys, by their kind)
+      const key = Object.keys(LOOK).find(x => x.toLowerCase() === k.slice(5));
+      if (!key) continue;
+      if (typeof LOOK[key] === 'number') { if (/^-?[\d.]+$/.test(v)) a.look[key] = parseFloat(v); }
+      else if (/color$/i.test(key)) { if (/^#([0-9a-f]{6}|[0-9a-f]{8})$/i.test(v)) a.look[key] = v; }
+      else if (key === 'align') { if (['left', 'center', 'right'].includes(v.toLowerCase())) a.look[key] = v.toLowerCase(); }
+      else if (/^[^\\/:%<>"';{}()]{1,64}$/.test(v)) a.look[key] = v;
+      continue;
+    }
     if (k === 'karaoke.step') { a.step = ['word', 'current'].includes(v.toLowerCase()) ? v.toLowerCase() : 'sweep'; continue; }
     a[k] = /^-?[\d.]+$/.test(v) ? parseFloat(v) : v.toLowerCase();
   }
@@ -92,6 +112,7 @@ function parse(text) {
   if (+a.glow > 0) a.extras.push('glow');
   if (a.glyph && a.glyph !== 'none') a.extras.push('letter effect: ' + a.glyph + ' (not drawn here)');
   if (a.colours.length) a.extras.push(a.colours.length + ' sung colours');
+  if (Object.keys(a.look).length) a.extras.push("the sharer's look");
   if (a.step !== 'sweep') a.extras.push(a.step === 'current' ? 'a word at a time' : 'whole words');
   a.web = a.engine === 'web';
   a.karaokeOn = a.karaoke !== 'off' && a.karaoke !== 0;
@@ -151,8 +172,23 @@ function wallpaper(W, H) {
   return url;
 }
 
-function previewDoc(a, prev, line, next) {
-  const L = LOOK, esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function previewDoc(a, k) {
+  const L = { ...LOOK, ...a.look }, esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const n = LINES.length, line = LINES[k % n], at = d => LINES[((k + d) % n + n) % n];
+  const before = Math.max(0, Math.min(3, Math.round(+L.before))), after = Math.max(0, Math.min(3, Math.round(+L.after)));
+  // Sizes as the Table's (px at 100% scaling) against its default 34 px: the card's text is to its width as a 34 px line
+  // is to a desktop, and the rest grows with it.
+  const em = px => `${(+px || 0) / Math.max(10, +L.size || 34)}em`;
+  const sung = argb(L.color, LOOK.color), wait = a.base || argb(L.colorWaiting, LOOK.colorWaiting), other = argb(L.colorOther, LOOK.colorOther);
+  const shadows = [];
+  if (+L.shadow > 0) shadows.push(`${em(L.shadowX)} ${em(L.shadowY)} ${em(L.shadowSoftness)} ${argb(L.shadowColor, LOOK.shadowColor).replace(/,([\d.]+)\)$/, (m0, al) => `,${(+al * Math.min(1, +L.shadow / 100)).toFixed(3)})`)}`);
+  if (+L.glow > 0) shadows.push(`0 0 ${em(L.glowRadius)} color-mix(in srgb, currentColor ${Math.min(100, +L.glow)}%, transparent)`);
+  if (+L.bloom > 0) shadows.push(`0 0 ${em(L.bloomRadius)} color-mix(in srgb, currentColor ${Math.min(100, +L.bloom) / 2}%, transparent)`);
+  const ink = (shadows.length ? `text-shadow:${shadows.join(',')};` : '') +
+    (+L.outline > 0 ? `-webkit-text-stroke:${em(+L.outline * 2)} ${argb(L.outlineColor, LOOK.outlineColor)};paint-order:stroke fill;` : '');
+  const panel = +L.background ? `background:${argb(L.backgroundColor, LOOK.backgroundColor)};padding:${em(L.backgroundPadding)};border-radius:${em(L.backgroundCornerRadius)};` +
+    (+L.borderSize > 0 ? `border:${em(L.borderSize)} solid ${argb(L.borderColor, LOOK.borderColor)};` : '') : '';
+  const fontName = String(L.font || LOOK.font).replace(/["\\]/g, '');
   let css = a.web ? clean(a.css) : '', decls = a.web ? animDecls(css) : '';
   if (!decls) {
     css += `@keyframes ttIn{${moveFrames(a, 'in')}}`;
@@ -160,7 +196,7 @@ function previewDoc(a, prev, line, next) {
   }
   // The line before: its leave animation in the sung colour, then dim back in its place (as the Table keeps it above).
   const outMs = Math.max(1, +a['out.ms'] || 320);
-  css += `@keyframes ttOut{${moveFrames(a, 'out').replace(/\{/g, `{color:${L.sung};`)}}`;
+  css += `@keyframes ttOut{${moveFrames(a, 'out').replace(/\{/g, `{color:${sung};`)}}`;
   const beat = +a['react.beat'] || 0, wave = +a['react.wave'] || 0, glow = +a.glow || 0;
   if (beat > 0) css += `@keyframes ttBeat{0%{transform:scale(${1 + beat})}40%,100%{transform:scale(1)}}`;
   if (wave > 0) css += `@keyframes ttWave{0%,100%{transform:translateY(${wave}px)}50%{transform:translateY(${-wave}px)}}`;
@@ -177,13 +213,14 @@ function previewDoc(a, prev, line, next) {
   if (open) spans += '</span>';
   const wall = wallpaper(320, 180);
   return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
-<style>:root{--sung:${L.sung};--wait:${a.base || L.wait};--other:${L.other}}html,body{margin:0;height:100%;overflow:hidden}
-body{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;background:#0c1417 url(${wall}) center/cover;font:600 4.4vw/1.55 ${L.font}}
-.o,.l,.p{padding:0 12px;text-align:center;max-width:100%;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:clip}
+<style>:root{--sung:${sung};--wait:${wait};--other:${other}}html,body{margin:0;height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;justify-content:center;align-items:center;background:#0c1417 url(${wall}) center/cover;font:4.4vw/1.55 "${fontName}","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;font-size:${(4.4 * (+L.size || 34) / 34).toFixed(2)}vw}
+.k{display:flex;flex-direction:column;align-items:${L.align === 'left' ? 'flex-start' : L.align === 'right' ? 'flex-end' : 'center'};max-width:calc(100% - 16px);${panel}}
+.o,.l,.p{text-align:${L.align};max-width:100%;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:clip;${ink}}
 .o{color:var(--other)}.p{color:var(--other);animation:ttOut ${outMs}ms ${EASE[a['out.ease']] || 'ease-out'} backwards}
 ${a.karaokeOn ? '.l{color:var(--wait)' : '.l{color:var(--sung)'}${beat > 0 ? ';animation:ttBeat 500ms ease-out infinite' : ''}}.u{display:inline-block;white-space:pre${glow > 0 ? `;text-shadow:0 0 ${6 * glow}px currentColor` : ''}}
 .w{display:inline-block;white-space:nowrap}.b{display:inline-block;animation:ttWave 1.571s ease-in-out infinite}
-${css}</style></head><body>${L.before > 0 ? `<div class="p">${esc(prev)}</div>` : ''}<div class="l">${spans}</div>${L.after > 0 ? `<div class="o">${esc(next)}</div>` : ''}</body></html>`;
+${css}</style></head><body><div class="k">${Array.from({ length: before }, (_, j) => `<div class="${j === before - 1 ? 'p' : 'o'}">${esc(at(j - before))}</div>`).join('')}<div class="l">${spans}</div>${Array.from({ length: after }, (_, j) => `<div class="o">${esc(at(j + 1))}</div>`).join('')}</div></body></html>`;
 }
 
 function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1600); }
@@ -233,10 +270,10 @@ function card(entry, text) {
 // Each preview: a made-up line comes in (its animation) as the one before leaves, its words are sung one by one,
 // the next one comes.
 function step(c) {
-  const n = LINES.length, k = c.line % n, line = LINES[k];
-  c.words = line.split(/\s+/).length;
+  const k = c.line % LINES.length;
+  c.words = LINES[k].split(/\s+/).length;
   c.sung = 0;
-  c.stage.srcdoc = previewDoc(c.a, LINES[(k + n - 1) % n], line, LINES[(k + 1) % n]);
+  c.stage.srcdoc = previewDoc(c.a, k);
 }
 // The sung colour by the word's place, taking turns (karaoke.colors), or the Lyrics page's; karaoke.step: sweep and
 // word light every word sung so far, current only the one being sung.
