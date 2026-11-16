@@ -2,6 +2,16 @@
 
 *Newest first. Each beta updates the one before it in place and keeps its settings.*
 
+## ❀ v2.5.15 beta (Windhawk): the Style Editor resizes properly
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.14 beta in place and keeps its settings.
+
+### Fixed: resizing the Style Editor (for real this time)
+
+- The labels on the left (Saved style, Share, Parts, Base style, Corner radius and the rest) no longer slide off the left edge while the window is wider than it opens at. The editor was moving them along with the controls. 2.5.11 aimed at this but missed the cause.
+- At narrow widths nothing runs off the right edge any more (Delete, Community, Place, Gradient end). When the controls don't have their full width beside the labels, the labels go above them instead.
+- While an edge is dragged, the window is drawn fresh at each step, so nothing shows shifted or cut off mid-drag. The Lyrics Animations editor gets the same.
+
 ## ❀ v2.5.14 beta (Windhawk): icons for the instrumentals
 
 This is a beta. It keeps the same mod id, so it updates the 2.5.13 beta in place and keeps its settings.

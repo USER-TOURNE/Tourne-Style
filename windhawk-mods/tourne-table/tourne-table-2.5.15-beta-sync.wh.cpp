@@ -1,14 +1,15 @@
 // ==WindhawkMod==
-// @id                  tourne-table-2-5-beta
-// @name                Tourne'Table [Audio Visualizer] 2.5.14 (beta)
+// @id                  tourne-table-2-5-beta-sync
+// @name                Tourne'Table [Audio Visualizer] 2.5.15 (beta, two-way sync)
 // @description         A real-time audio visualizer for the Windows desktop: every bar its own frequency band, a Direct3D 11 renderer that idles to nothing, live right-click settings, My Styles, a Media Card and shareable setups.
 // @description:ru-RU   Аудиовизуализатор реального времени для рабочего стола Windows. Расширенные настройки без ущерба для экономии ресурсов. Практически безинтерфейсный (near-headless) поток рендеринга с оптимизацией процессора для захвата звука.
-// @version             2.5.14
+// @version             2.5.15
 // @author              USER-TOURNE
 // @github              https://github.com/USER-TOURNE
 // @donateUrl           https://ko-fi.com/tourne
 // @license             GPL-3.0
-// @include             windhawk.exe
+// @include             windhawk-mod-elevated.exe
+// @include             windhawk-mod.exe
 // @compilerOptions     -lcabinet -ldxgi -ld2d1 -ld3d11 -ldcomp -ldwmapi -ldwrite -lgdi32 -lshcore -lshlwapi -lole32 -lshell32 -lksuser -lwindowscodecs -lruntimeobject -lwindowsapp -luuid -luser32 -ladvapi32 -lcomctl32 -lcomdlg32 -lurlmon -lmsimg32 -lwininet -loleaut32
 // ==/WindhawkMod==
 
@@ -45,9 +46,303 @@ Tourne'Table doesn't live inside `explorer.exe`. It runs as its own dedicated pr
 
 ---
 
+This is the two-way sync build (`tourne-table-2-5-beta-sync`): changes made in the right-click menu are written back to this settings page too.
+
+## ✧ NEW IN 2.5.15 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.14 beta in place and keeps its settings.
+
+### Fixed: resizing the Style Editor (for real this time)
+
+- The labels on the left (Saved style, Share, Parts, Base style, Corner radius and the rest) no longer slide off the left edge while the window is wider than it opens at. The editor was moving them along with the controls. 2.5.11 aimed at this but missed the cause.
+- At narrow widths nothing runs off the right edge any more (Delete, Community, Place, Gradient end). When the controls don't have their full width beside the labels, the labels go above them instead.
+- While an edge is dragged, the window is drawn fresh at each step, so nothing shows shifted or cut off mid-drag. The Lyrics Animations editor gets the same.
+
+## ✧ NEW IN 2.5.14 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.13 beta in place and keeps its settings.
+
+### an icon as the instrumental picture
+
+- **Show During Instrumentals: Picture, GIF or icon** now takes an icon too: an .ico file, or an app's own icon from its .exe or .dll. Add a comma and a number after the file for another of its icons (app.exe,2).
+- An app's icon is taken at 256 px.
+
+### Fixed
+
+- An .ico file shows its biggest size, steady. Before, its sizes played one after another like a GIF's frames. The same goes for a .tiff with several pages.
+
+## ✧ NEW IN 2.5.13 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.12 beta in place and keeps its settings.
+
+### shares carry your instrumental text
+
+- **Share mine to the community...** now also sends your Show During Instrumentals text and its timings (opacity, beat pulse, before the first line, after the last, fades, leaving early, songs without lyrics), as part of your Lyrics look.
+- Only text goes: a picture or GIF is a file on your PC, so with Picture or GIF picked, that choice stays out.
+- **Take its look too** puts them on yours along with the rest of the look. **Keep my own look** leaves yours as it is.
+
+## ✧ NEW IN 2.5.12 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.11 beta in place and keeps its settings.
+
+### Songs Without Lyrics
+
+- **Lyrics > Instrumental > Songs Without Lyrics** shows your text or picture for the whole of a song no lyrics were found for, once the looking is done. Off by default.
+
+### tint for the picture
+
+- **Instrumental Picture Tint** lays a colour of yours over the picture or GIF where it isn't see-through (#RRGGBB or a colour name). Empty keeps its own colours.
+- **Instrumental Tint Strength** sets how much of it shows: 100 is a flat silhouette in the tint, lower mixes it with the picture.
+
+## ✧ NEW IN 2.5.11 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.10 beta in place and keeps its settings.
+
+### Fixed: typing in the Lyrics Animations editor
+
+- Typing in any of the form's boxes no longer throws the cursor back to the start after each key. The box you're typing in keeps its text while the file below follows it.
+
+### Fixed: resizing the Style Editor
+
+- Dragging an edge now only moves that edge's side of the layout. The labels on the left (Share, Parts, Base style and the rest) stay in place instead of sliding out of view, which mostly happened at 125% and 150% scaling.
+- It can't be made so narrow that buttons run into each other: below a width the labels go above their controls, and that's as small as it gets.
+- The Lyrics Animations editor's smallest width is a little bigger, so its top row of buttons always fits.
+
+## ✧ NEW IN 2.5.10 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.9 beta in place and keeps its settings.
+
+### Show During Instrumentals
+
+- **Lyrics > Instrumental > Show During Instrumentals** puts something in the lyrics' spot while the song plays without words: **Text** (your own words or symbols) or **Picture or GIF** (a file of yours; a GIF plays). Off by default (Nothing).
+- It uses the same stretches Instrumental Disperse clears for: a long wait to the next line, or an empty timed line. With Disperse on, it comes in once the lines have cleared away.
+- Text is drawn in your Lyrics look and comes in with your lyrics animation's In keys.
+- Settings for the picture's height, how solid it is, a swell on each beat, fading in and out, and how long before the next line it leaves, so the line reads in on its own.
+- **Before the First Line** and **After the Last Line** switches show it there too.
+- It's also in the lyrics' own menu, under Instrumental.
+- The picture's file stays on this PC: it's never in a shared style or animation. Pictures are read once, and big ones are made smaller (512 px a side at most).
+
+### Lyrics Window stays on this PC
+
+- Lyrics Window describes your desktop, not a look, so it's no longer carried in shared styles.
+
+## ✧ NEW IN 2.5.9 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.8 beta in place and keeps its settings.
+
+### a shared animation carries your Lyrics look
+
+- **Share mine to the community...** now sends your Lyrics look along with the animation: sung, waiting and other-line colours, font, size, alignment, lines before and after, shadow, glow, bloom, outline, highlight, and the panel and its border. The gallery's preview then shows it the way it looks on your desktop.
+- Nothing tied to your PC goes: no folders, files, tokens, keys, sites, screens or window places. A value that looks like a path or a web address is left out.
+
+### Take its look too
+
+- **Take the one I copied there** asks what to do when the animation comes with its sharer's look: **Keep my own look** or **Take its look too**. Your own colours and font only change if you pick the second.
+
+## ✧ NEW IN 2.5.8 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.7 beta in place and keeps its settings.
+
+### Fixed
+
+- **karaoke.colors and karaoke.base did nothing in 2.5.7.** An animation file treats `#` as the start of a note, so `#3060FF` was read as a note and the colours were dropped. A `#` followed by a colour (`#rrggbb` or `#rrggbbaa`) now stays part of the value. Notes after a space and `#` work as before.
+- **Sung colours... was cut off** at the editor's right edge. The link box is shorter now, so Fetch, Import a pen... and Sung colours... all fit.
+
+## ✧ NEW IN 2.5.7 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.6 beta in place and keeps its settings.
+
+### three Karaoke keys for your lyrics animations
+
+- **karaoke.step**: how a word lights. `sweep` runs through its letters as it's sung (as before), `word` lights the whole word at once, `current` lights only the word being sung while the rest wait.
+- **karaoke.colors**: sung colours that take turns word by word, like `#3060FF, #FF3040, #FFD020`. Empty means the Lyrics page's Sung colour.
+- **karaoke.base**: the waiting colour while this animation is on. Empty means the Lyrics page's Waiting colour.
+- Animations without these keys look exactly as before. The Lyrics page's own colours never change: these belong to the animation.
+
+### Sung colours... in the Animation editor
+
+- Next to Import a pen. It lists the animation's sung colours, and each one opens the colour picker. You can add a colour, remove the last, or go back to the Lyrics page's Sung colour.
+- **Karaoke step** and **Sung colours** are also rows in the editor's form.
+
+### Import a pen: its colours come with it
+
+- A word-by-word highlight pen now comes in with its colours taking turns, its waiting colour, and a word at a time, so it looks like the pen.
+- When a pen brings its own colours, you choose: keep the pen's colours, choose your own with the colour picker, or use the Lyrics page's colours.
+- Colours are read from hex, rgb() and common names. Anything else is listed as left out.
+
+## ✧ NEW IN 2.5.6 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.5 or 2.5.4 beta in place and keeps its settings.
+
+### Fixed: Import a pen asking about every word
+
+- A pen that wraps each word (or each syllable) in a span with its own class no longer asks "Which part holds the text?" with one row per word. Three or more sibling spans like that are the words, and their parent holds the line.
+- The question still comes up when a pen really has two or more places for the text, such as a heading and a paragraph, with just those.
+
+### word-by-word highlight pens come in as Karaoke
+
+- A pen where every word has keyframes of its own that only change its colour, one after another, now comes in as Karaoke by word, on our engine, with no movement. The words light as they're sung, timed by the song instead of the pen's fixed steps.
+- The status line names what didn't come over: the pen's colours taking turns (set the Sung colour to one of them), its instant colour jump (ours sweeps), and its page's font and frame.
+
+## ✧ NEW IN 2.5.4 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.3 beta in place and keeps its settings.
+
+### Fixed: lyrics shown but not seen
+
+- On some desktops the log said the lyrics were found and shown, but nothing appeared. They were drawn as part of Windows' desktop window, and that desktop didn't put them on screen.
+- **New: Lyrics > Hiding > Lyrics Window** picks where the lines are drawn. It's also in the Lyrics Menu, under Window.
+  - **Automatic** (the default): a see-through window of their own, just above the desktop. Your windows still sit over them, as before.
+  - **On the desktop, with the bars**: the old way, drawn as part of the desktop window.
+  - **Own window, just above the desktop**: the same as Automatic, chosen by hand.
+  - **Always on top**: over everything, windows included.
+
+### Log
+
+- With the mod's logging on, the log now says where the lyrics are each time they appear: their place on screen, which window they're in, whether Windows calls them visible, and the fade and scale. No song names.
+- The media strip no longer writes two lines on every repaint, only when its place changes.
+
+## ✧ NEW IN 2.5.3 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.2 beta in place and keeps its settings.
+
+### Fixed: lyrics that never showed
+
+- **Lyrics on their own now read the song.** Before, the Table only asked the player what's playing when the album art was wanted (Color Mode on Album Art, Now Playing Text, or the Media Controls card). With all of those off, turning on Lyrics found nothing to look up. Now Lyrics counts on its own, and the art isn't read when only the lyrics want the song.
+- **A desktop that won't draw them.** If Windows won't draw the lyrics on the desktop window, they now get a see-through window of their own just above the desktop (other windows still sit over them), instead of staying invisible.
+
+### the lyrics' menu without lyrics on screen
+
+- **Lyrics Menu...** is now in the quick panel (right-click the Table) and in the full menu (Shift+right-click). It opens the same menu the lyrics' own right-click does, at the pointer, so you can reach it when no words are showing. With Lyrics off, **Turn lyrics on** is at its top.
+
+### why the lyrics aren't showing, in the log
+
+- With the mod's logging turned on (Windhawk, the mod's Advanced tab), the Table writes one line each time the reason changes: Lyrics is off, no song read from the player yet, no lyrics for this song, the player hasn't said where in the song it is, hidden with the bars, and so on. Only the reasons: no song names in those lines.
+
+### Tidied
+
+- The Tune by ear graph's sums no longer show a note in Windhawk's editor (Problems list).
+
+## ✧ NEW IN 2.5.2 (BETA)
+
+This is a beta. It keeps the same mod id, so it updates the 2.5.1 beta in place and keeps its settings.
+
+### the Animation editor from the Table's own menus
+
+- **Lyrics Animation Editor...** is now in the quick panel (right-click the Table) and in the full menu (Shift+right-click), not only in the lyrics' own menu. It opens even with Lyrics off, so you can make an animation first.
+
+### lyrics turn, stretch and take in-between stops
+
+- **in.turn** and **out.turn** (degrees), **in.sx** / **in.sy** and **out.sx** / **out.sy** (width and height apart): where a word or letter comes in from, and where the line goes.
+- **in.stop** and **out.stop** lines (at x y width height turn opacity, at in per cent of the time): the whole way in or out, with as many stops between as you like.
+- **Paste keyframes** and **Import a pen** keep a pen's turning (rotate), stretch (scaleX, scaleY) and in-between stops (40%, 60%...) instead of listing them as left out.
+- Animations that don't use these keys look exactly as before.
+
+## ✧ NEW IN 2.5.1 (BETA)
+
+This is a beta. It keeps 2.5.0's mod id, so it updates the 2.5.0 beta in place and keeps its settings. 2.5.1 has 481 settings: 1 new.
+
+### Reset Positions Do
+
+- **Reset Positions Do** (Interaction): what Reset Positions does. **Back in place on its own screen** (the new default) puts each piece where its settings place it, on the screen it's on now, so resetting a piece on your second screen leaves it there. **Gather on the main screen** is what Reset Positions did before: the visualizer and the media strip or card centred side by side on your main screen, for when something is lost on a far or very large screen.
+- **The other one is a Shift away**: Shift+click any Reset Positions item in the right-click menu or the quick panel. Each item says what a click does and what Shift does.
+- **The keys, listed at last**: the move keys + Home reset the piece you're moving, as Reset Positions Do says, and the move keys + Shift+Home do it the other way. They're named in the Reset Positions menu and in the tips. (If Shift is one of your move keys, the keys + Home do it as set; use Shift+click in the menu for the other way.)
+
+## ✧ NEW IN 2.5.0 (BETA)
+
+This is a beta. It has a mod id of its own (`tourne-table-2-5-beta-sync` for this sync build), so it installs beside the 2.4.0 beta instead of over it; the 2.4.0 beta and its settings stay as they are, and 2.5.0 starts with its own settings. Every new option below starts off, or at a neutral value, so nothing changes until you turn it on. 2.4.0 had 288 settings; 2.5.0 has 480: 194 new, and 2 gone (Panel Colours and Panel Band, see the end). No default of a setting both builds have has changed.
+
+### Glass Frame (48 settings)
+
+- **A new shape, Glass Frame**: a liquid glass loop round your screen's edges that moves with the music. Pick it from the Shape list or the right-click menu, with or without the panel behind it.
+- **Light**: glow, highlight and edge line colours, line width, light angle, fringe, frost, tint, opacity and a see-through bend (the picture behind is bent only where the glass curves).
+- **Motion**: Height, Thickness, Inset, Columns, Smoothness (the levels glide between analysis updates), Rise Easing (a gentle two-step rise), Fill In Between (the edge moves on every frame), Dynamics (levels read against their own average, so hot settings don't pin the loop), and Mirror.
+- **From the bars**: Peak Line, Colour Mode, Afterimage and Shadow, cast from the real edge and only where the music lifts it.
+- **Beat Flash and Bass Glow inside the glass**, with the flash's own colour, fade and fill.
+- **Necks**: the glass parts round the mouse, windows, taskbar islands, the Table's own pieces and the Depth cut-out, sloping down to the band instead of cutting a wall. Swell (with Auto Swell, sized to each object), Swell Fade, Swell Blend, Neck Gap, Softness, Speed and Tuck.
+- **Sides**: hide the band, its line, glow and collars on any side. The surface stops at its own screen's edges.
+- With the Glass Frame on, the other parts keep their usual places (Now Playing, progress, the bass lane, the readout, an anchored media strip).
+
+### Lyrics (off by default)
+
+- **Finding**: your own folder of .lrc files first, then a cache, then (only if you allow it) lrclib.net. More sources, each its own switch: lrclib's looser search, NetEase, Genius (with your own token), your own site, and Last.fm name fixing. Untimed lyrics can be spread over the song or held.
+- **Timing**: LRC with word times, an offset, Pace With the Song, and Fill Follows the Singer (the sung colour moves word by word, from heard word starts on line-timed lyrics) with Fill Lead.
+- **On the desktop**: the lines with their own animations (Rise, Fade, Typewriter, Karaoke, Wave, Drop, Prompt) and letter styles (Flip, Decode, Drop, Ripple, Split, Type, Focus, Split-flap), or an animation file of your own.
+- **Animation editor**: a list, a form kept in step with the text, a live preview with a made-up song, Find animations, and a Community button to browse and share.
+- **Import a pen**: drop a CodePen pen's Export zip (or its .css and .html) on the Animation editor, or use Import a pen... Nothing goes online and nothing is unpacked to disk. The keyframes on the pen's text (or the one you pick from a list) become the animation's own keys, and the pen's address, author and licence go in its source line (public CodePen pens are MIT by default, but check the pen's own note). The pen's markup is kept in the file too, for my desktop app's web engine; here the keys draw it. A pen whose effect lives only in its JavaScript can't come in, and says so.
+- **From a link**: paste an https link to a .css file and press Fetch. Only that one file is fetched, 512 KB at most, with no cookies and no redirects; a sign-in or bot-check page is refused. CodePen itself isn't fetched (it turns tools away), so use its Export there. Animation Link Timeout (s) sets how long it waits.
+- **Look**: font, size, colours (sung, waiting, others), shadow, glow, bloom, outline, highlight, beat flash, a background with its own corner, padding and border, width and alignment.
+- **Word Pop**: each word pops with its loudness and the syllable tempo, with its own strength, motion, fade and scale rows.
+- **Beat Pop** with Pop Direction (In presses the line toward the desktop) and a choice of look, linked to the bars' or the Glass Frame's beat if you like.
+- **Depth**: the lyrics can pass behind the wallpaper's cut-out subject.
+- **Instrumental Disperse**: when the song goes instrumental, the lines clear away with a close effect (Wake, Derez, Shatter, Melt, Dust, Motion).
+- **Hiding**: with the bars, for fullscreen, when covered, or in silence. Lock in place, drag on the text, and their own right-click menu.
+
+### Translation of the lyrics (off by default)
+
+- **From people first**: your own files ("Artist - Title.<language>.lrc"), NetEase's translated lyrics and Genius's translation pages (with your token). Under each line, above it, in place of it, or in a block of its own you can move and lock.
+- **Machine translation on your PC** (64-bit only): small OPUS-MT models, one folder per language pair or family, in the Translation Models Folder, run by ONNX Runtime from the ONNX Runtime Folder. Into English only. The language is decided line by line, so a song that's part English keeps its English lines as sung. It never goes online, and it's tried only after the human sources.
+- **Translation by listening** (64-bit only): for timed lyrics nothing else could translate, what's sung is heard from the sound the Table already takes and put into English by whisper.cpp, a few seconds behind. Needs whisper.dll and a many-language model in the Listening Models Folder.
+- **Machine Translation Note**: a small "Machine translation" line under the lyrics, with its own switch. If a model is there but can't run, it says so instead of staying silent.
+- **Translation Drawn: Like the lyrics**: the translation takes the lyrics' animation, glow, beat pop and flash, sung colour and Depth, in every place, its own block included. Each part can differ: Translation Animation, Glow, Beat Pop and Flash, Sung Colour (sweeps over the line, or the whole line at once) and Depth (or always in front of the cut-out). Has Its Own Look keeps its font, colour and opacity. Plain brings back the simple fade.
+
+You bring the models yourself: an ONNX Runtime 64-bit `onnxruntime.dll` (1.17 or newer), OPUS-MT models in ONNX form (for example from Hugging Face's Xenova/opus-mt-* pages), and for listening a `whisper.dll` built from whisper.cpp with a `ggml-small.bin` or similar many-language model. Nothing is bundled.
+
+### Audio Source and sound
+
+- **Outputs and Inputs lists** on the settings page, offering your devices by name (Windhawk 2), with Extra Inputs Only While Live.
+- **Source Boost**: how strongly each device or program moves the bars (up to 1000%), its sound untouched. Programs by name capture only their own sound. Picks in the right-click panel.
+- **Source Shaping**: hiss, rumble, quiet, medium and loud amounts, for every source or per source, with their edges.
+- **Tune by ear**: sweep a tone, mark the bumps, and turn them into bands for the bars, Source Shaping edges, or parametric EQ text. Tone Glide, Fade and level rows.
+
+### Media strip and Now Playing
+
+- **Strip tooltips for Spotify** (off): hover Previous for the song played before, Play/Pause for the song playing with a live time-left countdown, and Next for the next song in Spotify's queue (read from Spotify's window while its queue panel is open). Styled like the right-click menu's panels, above the strip, kept on screen at the edges. Delay, Gap and Padding rows.
+- **Now Playing Backdrop**: Solid, Clear, Blur, Acrylic, Mica, Tabbed or Glass.
+- **Depth over the Media Card**.
+
+### Look, menus and moving things
+
+- **Lock everything in place**: no drag, resize or Keyboard Move.
+- **Reset Positions**: one piece, or everything gathered on the main screen.
+- The quick-settings panel: a number drag keeps to its own setting, colour rows keep their alpha, every option of a choice explained in its tip.
+- **A tooltip on every right-click row**: actions, groups, sub-pages, styles, inputs and players included. The newer settings' tips now say their units and give a "Try" value.
+
+### Styles across builds
+
+- **A style knows its build**: exporting writes the build it came from. Importing an older style fills any setting it leaves out with that build's own default, not today's, so it looks the way it did. If a setting is ever renamed, older styles still load it, and a style from a newer build loads what it can, with the log naming the settings this build doesn't have.
+- **Source Shaping and Tune by ear travel in styles** now.
+- **What never travels**: tokens and keys, folders, files and paths, site addresses and anything with an %ENVIRONMENT% name stay on your PC when you export or share a style. A lone % (as in a ramp of characters) is fine.
+
+### Performance
+
+- **Compiled shaders are kept** in `%LOCALAPPDATA%\Tourne\Table\ShaderCache`, so after the first start the Direct3D renderer is ready at once (the first start still compiles them, about a minute on a busy PC).
+- The analysis engine is rebuilt only when its settings change, so changing a setting no longer blanks the bars.
+- The Glass Frame's peak lookup is lighter (its shader compiles in seconds, not a minute).
+- Translation and listening run on their own threads, use two or three cores at most, and cost nothing while nothing needs them.
+
+### Fixes
+
+- Sizes, places, times and amounts that take decimals keep them (71 settings, among them the lyrics' place, padding and auto-hide, Source Shaping, Word Pop and the strip tooltips): they're stored as text, as the older size settings are, so 78.7% stays 78.7% instead of becoming 79. A whole number saved by an earlier build still reads the same.
+- The quick panel's colour reads no longer leak.
+- The media strip is never raised over the Table's own open menus.
+- The Studio's Audio Source and Inputs rows no longer show each other's devices.
+- 32-bit builds compile again; 0 errors and 0 warnings on x86, x64 and ARM64.
+
+### Not in the Windhawk build
+
+- **Panel Glass**: it lays the menu glass of my desktop app over the panel, which Windhawk doesn't have.
+- **Panel Colours and Panel Band**: picking my desktop app's menu colours for the right-click panel, and the frame band round it, belong to my desktop app. Here the panel always uses its own colour rows (Panel Ground, Text, Accent and the rest), which start neutral.
+- **Show Over Living Wallpapers** and **Show While Stepped Away**: they answer my desktop app's living wallpaper and Step away.
+- **The lyrics' web engine**: it needs WebView2's SDK header, which Windhawk's compiler doesn't have. The built-in animations all work, and an imported pen runs on its keys.
+- **Scripts in your own lyric animations**: they run only in that web engine, locked down, so the Allow Scripts settings aren't here and a pen's script is never taken.
+- **The Glass Frame bending a living wallpaper as drawn**: that's my desktop app's living wallpaper. Here the glass bends the Windows wallpaper, as before.
+- **Machine translation and listening on 32-bit Windows**: ONNX Runtime and whisper.cpp ship 64-bit only.
+- **Lyrics settings... and Every look setting...** in the lyrics menu: they open my desktop app's settings, so they don't show here.
+
 ## ✧ NEW IN 2.2 TO 2.4
 
-This 2.4 build is a beta with an id of its own, so it installs beside the catalog's Tourne'Table instead of over it, with its own settings. Run one or the other, not both.
+The 2.4 build was a beta with an id of its own, so it installed beside the catalog's Tourne'Table instead of over it, with its own settings. Run one Tourne'Table at a time, not two.
 
 **Several devices at once.** Right-click > Audio Source ticks as many outputs as you like and **Inputs** under it as many inputs, defaults included, and the visualizer hears them all together. A default that's also ticked by name is only heard once, and extra inputs can wait until an app has the mic open. On this settings page they're the **Outputs** and **Inputs** lists under Audio Source, offering your devices by name (Windhawk 2).
 
@@ -2293,16 +2588,6 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
       $description: Pixels the second piece moves across it (down, or right when vertical)
   $name: Position
 - interaction:
-    - menuChanges: c1
-      $name: Right-click menu changes
-      $description: What the right-click menu, the quick panel or an applied style has changed over this page (open the list to see them all). Each stays until you change that setting here, or save this page with On Save set to Replace
-      #! $dynamicSelect: true
-    - menuChangesOnSave: keep
-      $name: On save
-      $description: What saving this page does to those changes
-      $options:
-        - keep: Keep the menu's changes
-        - replace: Replace them with this page's values
     - keyMoveEnabled: false
       $name: Enable Keyboard Move
       $description: Off by default. While it is off the mod doesn't watch the keyboard at all. Hold the modifier below and tap a direction key to nudge the visualizer one pixel at a time, the way a window manager moves a tiled window. This is the precise way to place it -- it lands exactly where you put it, with no cursor to keep up with. Hold the Fast Key as well to jump by the larger step instead. The same combo with 1, 2, 3 or 4 switches what the direction keys steer -- 1 the visualizer, 2 the Now Playing text, 3 the frequency readout, 4 the Media Controls strip -- so everything movable is placed with one shortcut, and the choice sticks until you change it. Modifier + Home resets whichever is selected. Worth knowing -- the visualizer and the strip store a percentage that REPLACES their Position settings, so those fields stop having any effect until you reset; the two text overlays instead store a delta ADDED to their Offset settings, so those fields always still count. Also, if the strip is currently parked by Hide When Covered, nudging it still works but you will not see it move until it comes back
@@ -2772,7 +3057,87 @@ look at, you can throw something in the hat. Entirely optional, genuinely apprec
 */
 // ==/WindhawkModSettings==
 
-#define VIZ_PAGE_INFO 1
+#define VIZ_PAGE_SYNC 1
+// The settings Windhawk stores as numbers (written as such when the menu's changes go to the page).
+static const wchar_t* const kVizPageDwordKeys[] = {
+    L"appearance.barHollow",
+    L"appearance.barCount",
+    L"appearance.autoGain",
+    L"appearance.peakFreqEnabled",
+    L"appearance.oscilloscopeMultibandEnabled",
+    L"appearance.peakHoldEnabled",
+    L"appearance.beatFlashEnabled",
+    L"appearance.nowPlayingEnabled",
+    L"audio.extraLive",
+    L"audio.tuneToBars",
+    L"lyrics.enabled",
+    L"lyrics.online",
+    L"lyrics.srcLrclibLoose",
+    L"lyrics.srcNetease",
+    L"lyrics.srcGenius",
+    L"lyrics.srcMySite",
+    L"lyrics.fixLastfm",
+    L"lyrics.translate",
+    L"lyrics.translateLocked",
+    L"lyrics.translateOwnLook",
+    L"lyrics.translateFiles",
+    L"lyrics.translateNetease",
+    L"lyrics.translateGenius",
+    L"lyrics.translateMachine",
+    L"lyrics.translateMachineNote",
+    L"lyrics.translateListen",
+    L"lyrics.translateNote",
+    L"lyrics.fillFollows",
+    L"lyrics.pace",
+    L"lyrics.locked",
+    L"lyrics.fillBeat",
+    L"lyrics.fillBeforeFirst",
+    L"lyrics.fillAfterLast",
+    L"lyrics.fillNoLyrics",
+    L"lyrics.pop",
+    L"lyrics.wordPop",
+    L"lyrics.beatFlash",
+    L"lyrics.background",
+    L"lyrics.hideWithBars",
+    L"lyrics.hideFullscreen",
+    L"lyrics.hideCovered",
+    L"lyrics.autoHide",
+    L"progress.enabled",
+    L"progress.clickToSeek",
+    L"terminal.rows",
+    L"terminal.meterColumns",
+    L"analysis.loudnessResetOnTrack",
+    L"bassLine.enabled",
+    L"depth.enabled",
+    L"depth.mediaCard",
+    L"depth.autoCut",
+    L"glass.enabled",
+    L"frame.fillIn",
+    L"frame.necks",
+    L"frame.neckWindows",
+    L"frame.neckCutout",
+    L"frame.neckSwellAuto",
+    L"position.monitor",
+    L"position.pixelSnap",
+    L"position.split",
+    L"interaction.keyMoveEnabled",
+    L"interaction.lockAll",
+    L"interaction.dragEnabled",
+    L"interaction.dragSnap",
+    L"media_controls.monitor",
+    L"media_controls.enabled",
+    L"media_controls.hideWhenCovered",
+    L"media_controls.cardClickOpens",
+    L"media_controls.tooltips",
+    L"background.enabled",
+    L"performance.targetFps",
+    L"performance.pauseOnFullscreen",
+    L"performance.deepIdle",
+    L"performance.perfStats",
+    L"performance.autoHideEnabled",
+    L"performance.pauseWhenObscured",
+    L"validation.showErrors",
+};
 
 #include <windhawk_utils.h>
 
@@ -16142,7 +16507,8 @@ struct Settings {
     float lyrDisperseMs = 1000.f, lyrGapSec = 10.f, lyrHoldSec = 4.f;
     // Show During Instrumentals: 0 nothing, 1 your text, 2 your picture or GIF, in the lyrics' spot while it's instrumental.
     int lyrFill = 0;
-    std::wstring lyrFillText = L"* * *", lyrFillPic, lyrFillWeb;
+    std::wstring lyrFillText = L"* * *", lyrFillPic, lyrFillWeb, lyrFillIconAnim;
+    float lyrFillIconPause = 800.f;
     float lyrFillSize = 120.f, lyrFillOpacity = 100.f, lyrFillFadeIn = 400.f, lyrFillFadeOut = 300.f, lyrFillEarly = 600.f;
     bool lyrFillBeat = false, lyrFillBefore = false, lyrFillAfter = false, lyrFillNone = false;
     uint32_t lyrFillTint = 0;  // 0xAARRGGBB, 0: none
@@ -20458,6 +20824,12 @@ struct VizFillPicture {
 };
 VizFillPicture g_fillPic;
 
+// Show During Instrumentals' picture can play one of Tourne Desktop's icon animations (its own player, shared).
+#if defined(TD_PREFIX) && __has_include("icon-anim.h")
+#include "icon-anim.h"
+#define VIZ_FILL_ICON_ANIM 1
+#endif
+
 // The instrumental picture's file, without an icon number after it ("app.exe,3": that file's fourth icon).
 std::wstring VizFillPictureFile(const std::wstring& path, int* index) {
     const size_t comma = path.rfind(L','), dot = path.rfind(L'.');
@@ -21687,6 +22059,30 @@ void VizLyricsFrame() {
                 const float h = g_settings.lyrFillSize * dpi * (1.f + swell), w = bs.height > 0.f ? h * bs.width / bs.height : h;
                 const float x = lineX(w), y = midY - h / 2.f;
                 const D2D1_RECT_F at = D2D1::RectF(x, y, x + w, y + h);
+                float pose = 1.f;  // (the animation's fading)
+                D2D1_MATRIX_3X2_F was{};
+                bool posed = false;
+#ifdef VIZ_FILL_ICON_ANIM
+                if (!g_settings.lyrFillIconAnim.empty()) {  // (the animation, read again only when the setting changes)
+                    static std::wstring s_name;
+                    static iconanim::Anim s_anim;
+                    if (g_settings.lyrFillIconAnim != s_name) s_name = g_settings.lyrFillIconAnim, s_anim = iconanim::Named(VizLyricsLower(s_name).rfind(L"file:", 0) == 0 ? s_name : VizLyricsLower(s_name));
+                    if (!s_anim.Empty()) {
+                        const double cycle = std::max(1.f, s_anim.ms) + g_settings.lyrFillIconPause;
+                        const float t = (float)std::min(1.0, std::fmod(fillSince, cycle) / std::max(1.f, s_anim.ms));
+                        const iconanim::Stop st = iconanim::At(s_anim, t, 1.f);
+                        pose = st.opacity;
+                        const float k = h / (24.f * dpi);  // (moves sized with the picture, as on a 24 px icon)
+                        rtNow()->GetTransform(&was);
+                        const D2D1_POINT_2F mid = D2D1::Point2F(x + w / 2.f, y + h / 2.f);
+                        rtNow()->SetTransform(D2D1::Matrix3x2F::Scale(st.sx, st.sy, mid) * D2D1::Matrix3x2F::Rotation(st.turn, mid) *
+                                              D2D1::Matrix3x2F::Translation(st.x * dpi * k, st.y * dpi * k) * was);
+                        posed = true;
+                    }
+                }
+#endif
+                const float solidWas = solid;
+                const float solid = solidWas * pose;
                 const float tint = g_settings.lyrFillTint ? std::clamp(g_settings.lyrFillTintAmount / 100.f, 0.f, 1.f) : 0.f;
                 if (tint < 1.f) rtNow()->DrawBitmap(bmp, at, solid * (1.f - tint), D2D1_BITMAP_INTERPOLATION_MODE_LINEAR);
                 if (tint > 0.f) {  // (the tint where the picture isn't see-through: its alpha as the mask)
@@ -21697,6 +22093,7 @@ void VizLyricsFrame() {
                     t->FillOpacityMask(bmp, brush.Get(), D2D1_OPACITY_MASK_CONTENT_GRAPHICS, &at, nullptr);
                     t->SetAntialiasMode(was);
                 }
+                if (posed) rtNow()->SetTransform(was);
                 hitL = std::min(hitL, x), hitT = std::min(hitT, y), hitR = std::max(hitR, x + w), hitB = std::max(hitB, y + h);
             }
         }
@@ -45671,7 +46068,7 @@ static const VizSettingInfo kSettingsInfo[] = {
 
 // The build these settings are from, each setting's first build and its earlier defaults (build=value;...,
 // each from that build on), and renamed settings: an older style is read as that build would have.
-static const wchar_t kSettingsBuild[] = L"2.5.13";
+static const wchar_t kSettingsBuild[] = L"2.5.15";
 struct VizSettingPast {
     const wchar_t* key;
     const wchar_t* since;
@@ -45849,6 +46246,8 @@ static const VizSettingPast kSettingsPast[] = {
     {L"lyrics.fill", L"2.5.10", L""},
     {L"lyrics.fillText", L"2.5.10", L""},
     {L"lyrics.fillPictureFile", L"2.5.10", L""},
+    {L"lyrics.fillIconAnimation", L"2.5.15", L""},
+    {L"lyrics.fillIconPause", L"2.5.15", L""},
     {L"lyrics.fillWebFile", L"2.5.13", L""},
     {L"lyrics.fillSize", L"2.5.10", L""},
     {L"lyrics.fillOpacity", L"2.5.10", L""},
@@ -50809,8 +51208,9 @@ void EditorLayout(HWND hWnd) {
     auto px = [&](int v) { return MulDiv(v, dpi ? dpi : 96, 96); };
     const int L = px(12), labelW = px(96), ctlW0 = px(260), gap = px(10), bottom = px(10);
     const int width = std::max(px(60), (int)rc.right - 2 * L);
-    // Side by side while the controls get at least 200 px, else each label on a line of its own above them.
-    const bool stacked = width - labelW < px(200);
+    // Side by side while the controls get their built width, else each label on a line of its own above them (never
+    // narrower than built: below it they'd run off the right edge, as they did in 2.5.11).
+    const bool stacked = width - labelW < ctlW0;
     // The controls grow with the window up to twice their size, then stay (stretched past that they read badly).
     const int colX = stacked ? L : L + labelW, colW = std::min(stacked ? width : width - labelW, 2 * ctlW0);
     const float k = std::max(1.0f, colW / (float)ctlW0);  // (never below their built size: buttons would overlap)
@@ -51064,7 +51464,7 @@ void EditorBuild(HWND hWnd) {
         MapWindowPoints(nullptr, hWnd, (POINT*)&r, 2);
         WCHAR cls[32] = L"";
         GetClassNameW(c, cls, ARRAYSIZE(cls));
-        bool label = !_wcsicmp(cls, L"Static") && GetDlgCtrlID(c) == 0xFFFF;
+        bool label = !_wcsicmp(cls, L"Static") && (GetDlgCtrlID(c) & 0xFFFF) == 0xFFFF;  // (made with id -1: read back as -1, never 0xFFFF)
         // (a label is one in the label column: its left read back can be a pixel off at 125 or 150%, so not an exact match;
         // one taken for a control was scaled with the controls and slid off the left edge)
         int kind = label && r.right - r.left >= labelW + ctlW - px(2) ? 2 : label && r.left < ctlX - px(8) ? 0 : 1;
@@ -51155,6 +51555,11 @@ LRESULT CALLBACK StyleEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
         case WM_GETMINMAXINFO:
             if (s_edMin.cx) ((MINMAXINFO*)lParam)->ptMinTrackSize = {s_edMin.cx, s_edMin.cy};
             return 0;
+        case WM_WINDOWPOSCHANGING:
+            // Sized from an edge: drawn afresh, not the old picture copied across (from the left edge it showed the
+            // settings slid sideways and cut off until the layout caught up).
+            if (!(((WINDOWPOS*)lParam)->flags & SWP_NOSIZE)) ((WINDOWPOS*)lParam)->flags |= SWP_NOCOPYBITS;
+            break;
         case WM_EXITSIZEMOVE:
             EditorSavePlace(hWnd);
             return 0;
@@ -53416,6 +53821,9 @@ LRESULT CALLBACK LyricsEditorProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
             return 0;
         case WM_GETMINMAXINFO:
             ((MINMAXINFO*)lParam)->ptMinTrackSize = {MulDiv(600, GetDpiForWindow(hWnd), 96), MulDiv(520, GetDpiForWindow(hWnd), 96)};
+            return 0;
+        case WM_WINDOWPOSCHANGING:
+            if (!(((WINDOWPOS*)lParam)->flags & SWP_NOSIZE)) ((WINDOWPOS*)lParam)->flags |= SWP_NOCOPYBITS;  // (as the Style Editor)
             return 0;
         case WM_EXITSIZEMOVE:
             LeSavePlace(hWnd);
@@ -55835,6 +56243,8 @@ void LoadSettings() {
             s(L"lyrics.fillText", &g_settings.lyrFillText, L"* * *");
             s(L"lyrics.fillPictureFile", &g_settings.lyrFillPic, L"");
             s(L"lyrics.fillWebFile", &g_settings.lyrFillWeb, L"");
+            s(L"lyrics.fillIconAnimation", &g_settings.lyrFillIconAnim, L"");
+            g_settings.lyrFillIconPause = ReadSizeSetting(L"lyrics.fillIconPause", 0.f, 10000.f, 800.f);
             g_settings.lyrFillSize = ReadSizeSetting(L"lyrics.fillSize", 16.f, 600.f, 120.f);
             g_settings.lyrFillOpacity = ReadSizeSetting(L"lyrics.fillOpacity", 5.f, 100.f, 100.f);
             g_settings.lyrFillFadeIn = ReadSizeSetting(L"lyrics.fillFadeIn", 0.f, 5000.f, 400.f);
