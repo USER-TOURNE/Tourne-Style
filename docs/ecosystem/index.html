@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tourne Ecosystem</title>
+<meta name="description" content="Tourne Desktop, Tourne Studio, Tourne'Table, Tourne'Suite and my Windhawk mods: every part, with live previews of the motion, sound, tiling and key bind engines.">
+<link rel="stylesheet" href="showcase.css">
+</head>
+<body>
+<a class="skip" href="#engines">Skip to the previews</a>
+<header id="top">
+  <nav class="nav" aria-label="Sections">
+    <a href="#map">Ecosystem</a><a href="#engines">Engines</a><a href="#imports">Import</a><a href="#parts">Every part</a><a href="#mods">Windhawk mods</a><a href="#get">Get it</a>
+  </nav>
+  <div class="frame hero" data-label="TOURNE // THE WHOLE ECOSYSTEM">
+    <div class="hero-top">
+      <div class="hero-word">
+        <svg id="word" role="img" aria-label="Tourne"></svg>
+        <p class="tag">LINUX-LEVEL CUSTOMIZING FOR WINDOWS <b>//</b> NO PHONING HOME</p>
+        <p class="beta"><span class="beta-chip">BETA</span> Tourne Desktop, Tourne'Table 2.5 and the App Styler are beta. They run on my PC every day, and they change often.</p>
+      </div>
+      <ul class="term nums" aria-label="By the numbers">
+        <li><details><summary><span class="k">&gt; STUDIO</span><span class="v">settings, all searchable</span><span class="s">7,830</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>2,780 settings + 5,050 dropdown choices = 7,830, counted on my PC on Nov 18, with the sound list every sound row shares counted once. Rows made per app or per device (notifications, tray icons, window rules) come and go with what's on yours, so your count will differ.</dd><dt>By kind (Nov 17)</dt><dd>905 switches . 644 dropdowns . 320 numbers . 281 sliders . 144 colours . 138 picks . 119 text rows</dd><dt>Biggest pages (Nov 17)</dt><dd>notifications, which grow with every app that has sent one (each app gets its own rows, so no two PCs match) . the Table 546 . taskbar 347 . switcher and tiling 202 . shell 188 . Capture 109 . system icons and flyouts 103</dd><dt>Custom values</dt><dd>double-click any number and type any value in range <span class="wip">WIP</span> . Shift or Ctrl steps finely . colours from my own picker . text rows take anything . every font row opens the font dialog</dd><dt>Import / export</dt><dd>a whole look: a .tournelook pack (its wallpaper and plugin list come too), a .tourne file, or a hyprland.conf (gaps, border size and colours, rounding, blur, shadow, layout), listed page by page before it lands, with Undo and a backup . Export my look, and the look gallery from the tray . my Windhawk suite settings, any build, running or not . my Windhawk Tourne'Table setups . tourne.conf reads Hyprland's own animation, bezier and bind lines as they are . extensions: a folder with an extension.json (looks only, never programs) . cursors: Windows' cursor schemes, cursor folders, .cur and .ani . a calendar from an .ics file . icons and pictures (.ico, .png, .bmp) . programs and shortcuts (.exe, .lnk, .url, .bat, .cmd, .ps1, .msc, .cpl) for menus and binds . subtitles (.srt, .vtt, .ass) on Capture's videos . my CSS in Spotify (the Spicetify theme's colours kept), Discord, VS Code, Obsidian and any Electron app . any .exe for the per-program rows (glass apps, App Styler, left-alone programs, programs with their own sounds) . my sounds as a .tournesounds file <span class="wip">WIP</span> . the Viewer opens pictures through Windows' imaging (PNG, JPG, WebP, HEIC and more), videos through Windows' own decoders, text and code, Markdown, fonts, icons inside .exe and .dll, zip contents and any file's details . Copy diagnostics . presets swap everything in one click</dd><dt>Search</dt><dd>every row by name, section or page . type "added" to see settings by the day they arrived</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; THEME</span><span class="v">settings, one palette on all</span><span class="s">853</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>7 settings + 846 dropdown choices</dd><dt>Palettes</dt><dd>828 ready-made . from the wallpaper, one colour or a preset . 5 colour profiles . text contrast held to AA or AAA</dd><dt>Brought in</dt><dd>over 820 palettes and 127 full looks built in, from base16 and base24, Alacritty, Omarchy, HyDE, HyprPanel, gh0stzk's rices, the YASB gallery, JaKooLit's dots, Tokyo Night, Catppuccin, Rose Pine and windots, each keeping its name, source and licence . a hyprland.conf's active and inactive border colours . a .tournelook or .tourne brings its palette . extensions can carry a theme</dd><dt>Custom values</dt><dd>any colour typed as hex, rgb or hsl, with opacity . a dropper that picks from anywhere on screen</dd><dt>Export</dt><dd>Export my look carries the palette with everything else</dd><dt>Follows</dt><dd>Windows' own accent, the bar, menus, flyouts, Studio, the App Styler's apps</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; BAR</span><span class="v">settings, built from nothing</span><span class="s">1,945</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>350 settings + 1,595 dropdown choices</dd><dt>Import</dt><dd>Get a YASB theme straight from the right-click menu: the community gallery from GitHub, or paste a link (gallery, GitHub folder or file, raw file, yasb-themes://) or an id; nothing downloads until I press, only that repository's files, theme commands off by default . YASB themes read as they are: styles.css and config.yaml, with their widgets (clock, volume, power menu, active window, apps, systray, komorebi and GlazeWM workspaces, Windows' desktops, custom widgets) . install a theme or orb: .msstyles, orb pictures, YASB folders or zips, fonts, or a folder or zip of them, by menu or by dropping . a theme's Nerd Font used without installing it . StartAllBack's own Styles and Orbs folders read where it's installed, its four presets, and "Same as StartAllBack" follows its settings . StartIsBack's and StartAllBack's Start style settings . LiteMenu's menu copied into the Tourne Menu (its config.xml), then edited in a tree laid out like LiteMenu's own . <a href="#imports">everything that comes in</a></dd><dt>Icons</dt><dd>1,240 icon animation settings (82 + 1,158 dropdown choices) . paste CSS keyframes or import a pen (its Export zip, .css or .html) . a picture of my own per button (.ico, .png, .bmp)</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; SOUND</span><span class="v">sounds: 12 feels x 78 cues</span><span class="s">936</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>230 on the Sounds page: 200 settings + one shared list of 30 . "Programs with their own sounds": a growing list, no cap, picked from what is running or any exe found or typed, each ticked program its own section of 11 rows <span class="wip">WIP</span> . each row offers the full engine selection, with its entire list</dd><dt>Library</dt><dd>936 built in (12 feels x 78 cues) + 28 built-in cues . compare one cue across every feel</dd><dt>Custom values</dt><dd>any row takes any sound, or a file of my own . quiet window for repeats in ms . fades and ducking</dd><dt>Import</dt><dd>my own sound files: .wav, .mp3, .wma, .m4a, .aac, .flac . Windows' own sound scheme: "As Windows has it" keeps it, and a sound picked for one of Windows' events is written into its scheme . plugins can play and pick sounds . Import sounds and Export my sounds, on the Sounds page, as a .tournesounds file with the picks and the sound files <span class="wip">WIP</span></dd><dt>Sound mixing <span class="wip">WIP</span></dt><dd>"Add to mix" puts two or more sounds on one event, shown as "Mix: A + B" . each sound its own level, 25 to 200%, and its own start, at once or 25 to 800 ms later . a mix plays as one sound through the same mixer as the hover sounds: fades, ducking, blending</dd><dt>Coming soon</dt><dd>sounds that split apart by event type</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; TILING</span><span class="v">layouts, BSP to spiral to monocle</span><span class="s">15</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>33 settings + 60 dropdown choices = 93</dd><dt>Layouts</dt><dd>columns, rows, vertical and horizontal stacks, ultrawide, grid, BSP, spiral, three column, slice, screen split, layers, monocle, script</dd><dt>Custom values</dt><dd>gaps and ratios typed in . a layout per window count . my own layout from a script</dd><dt>Sets</dt><dd>one click to tile like the tilers people know: komorebi, Hyprland, GlazeWM, dwm, i3, or one window at a time, with their layouts, gaps, borders and motion</dd><dt>Import / export</dt><dd>a binds file written like a hyprland.conf's (bind, binde, bindr, bindl, bindn, bindd, $variables, submaps), plus my k and o flags . Hyprland windowrule lines . border colours and gradient angles written the Tacky Borders way . Hyprland-style window groups with a bar of tabs . idle lines as hypridle writes them . komorebi's layout_rules, as a komorebi.json writes them . YASB's komorebi and GlazeWM workspace widgets on the bar . the windows open now saved as a layout file and loaded back by name . my own layouts from a Lua script . tournectl for scripts and bars, like hyprctl and its event socket . every line in one text view in the binds editor</dd><dt>Coming soon</dt><dd>a komorebi.json or a GlazeWM config.yaml read straight in, with nothing to convert</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; MOTION</span><span class="v">motion lines, nothing just pops in</span><span class="s">45</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>45 motion lines: windows, menus, flyouts, pop-ups, switcher, borders, workspaces</dd><dt>Custom values</dt><dd>each line its own curve (linear, ease families, overshoot) and its own length in ms</dd><dt>Import</dt><dd>Import a look reads a hyprland.conf's animations and beziers into Motion . a Hyprland animations block pastes in as it is: animation lines, bezier curves, and the Lua form (hl.animation, hl.curve) . my own springs (mass, stiffness, damping) . ready-made sets, komorebi's and Hyprland's own among them . CSS keyframes and CodePen pens (Export zip, .css, .html) in the icon and lyric engines . an https link to a .css file for lyric animations . lyric animation files in and out . extensions can carry motion lines . Tourne Menus in Windhawk reads the same lines live</dd><dt>Close effects</dt><dd>dust, shatter, melt, derez, wake, motion . each on close, minimise and restore</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; TABLE</span><span class="v">settings, my music on the desktop</span><span class="s">986</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>546 settings + 440 dropdown choices . lyrics 235 more</dd><dt>Import / export</dt><dd>community styles as a code: copy, paste, keep or not . setups as .ttstyle files . parametric EQ as text . Share Mine (my device, hotkeys, paths and hardware never go) . Take its look too . lyric animations from a pen's Export zip, .css or .html, or an https .css link; Import... and Export... of animation files; share mine to the community . my Windhawk Tourne'Table setups straight into the built-in Table</dd><dt>Lyrics from</dt><dd>my own folder of .lrc files (any music player's), with a file per language for translations . lrclib . NetEase . Genius, with my own token . my own site . names fixed with Last.fm first . each source its own switch, off until I turn it on</dd><dt>Windhawk</dt><dd>the Tourne'Table mod reads the same style codes</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; PLUGINS</span><span class="v">built in, 30 more from cards</span><span class="s">37</span></summary>
+          <div class="dd"><dl><dt>Inside</dt><dd>37 built in: Bongo Cat, Typing Sounds, OCR, Power Menu, Caffeine and more . 30 more from cards</dd><dt>Safety</dt><dd>each in its own sandbox . internet, files, clipboard only if I say yes</dd><dt>Makes</dt><dd>bar widgets, panels, desktop widgets . written in Luau</dd><dt>Import</dt><dd>from cards on the Plugins page, installed from GitHub . a plugin's folder with its plugin.toml or tourne-plugin.json . extensions: looks as data, a folder with an extension.json . plugins can list my Steam and Epic games</dd></dl></div></details></li>
+        <li><details><summary><span class="k">&gt; WINDHAWK</span><span class="v">mods that reach inside Windows</span><span class="s">29</span></summary>
+          <div class="dd"><dl><dt>Import</dt><dd>Tourne'Icons: any picture (.ico, .png, .svg, .jpg, .bmp, .gif) or an icon inside another program, made at every size . Save lists and Apply a pack: a folder of pictures with its pack.tsv . takes in the icons set in Tourne'Suite's Icon Redirect and Tourne Desktop's button icons . whole icon theme files, or folders of pictures by resource id . 175 community icon themes, fetched once when picked . Tourne Drop Install: .wh.cpp files, or a folder of them, dropped in . Tourne'Suite Tweaks: 312 of Winaero Tweaker's options as switches . Tourne Menus reads Tourne Desktop's menu settings and motion lines as each menu opens . Tourne'Table: style codes, pens and lyric files, as in the Table</dd><dt>Inside</dt><dd>29 mods I made: 16 public . 5 more not public yet (Lock Screen, Lock Screen Motion, Icons Lasting, Task Manager graphs, the Table two-way sync beta) . 7 suite parts that also run as mods of their own . a classic taskbar <span class="wip">WIP</span></dd><dt>Use</dt><dd>each mod's own settings in Windhawk . most are also one switch inside Tourne'Suite</dd></dl></div></details></li>
+        <li class="plain"><span class="k">&gt; PARTS</span><span class="v">every one listed below</span><span class="s" id="partCount">73</span></li>
+      </ul>
+    </div>
+    <p class="lede">This is everything I've built to make Windows 11 answer only me. Tourne Desktop replaces the shell: the bar, the Start menu, the tray and its flyouts, Alt+Tab, tiling, notifications, the lock screen. Tourne Studio holds every setting it has. Tourne'Table puts my music on the desktop. Tourne'Suite and my Windhawk mods reach inside Windows' own programs, so Explorer, its menus and its icons match the rest. One look, one system, each job owned by one piece.</p>
+    <div class="cta">
+      <a class="btn primary" href="#engines">Play with the engines</a>
+      <a class="btn" href="#parts">Read every part</a>
+      <a class="btn" id="repoBtn" href="https://github.com/USER-TOURNE/Tourne-Style">Source on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ECOSYSTEM MAP -->
+<section id="map" class="sec">
+  <h2 class="h"><span class="h-n">01</span> How it fits together</h2>
+  <p class="sub">One owner per job. Nothing does the same work twice, and every piece wears the same look.</p>
+  <div class="map">
+    <article class="node big" data-label="SHELL">
+      <h3>Tourne Desktop</h3>
+      <p>My own desktop for Windows, as one program. It can run as the Windows shell with Explorer kept underneath, or as a normal program on top. Bar, Start menu, tray, flyouts, Alt+Tab, tiling, borders, motion, capture, phone, plugins, sounds, and Tourne'Table built in.</p>
+      <ul class="pills"><li>Shell mode</li><li>Watchdog</li><li>Luau plugins</li><li>tournectl</li></ul>
+    </article>
+    <article class="node" data-label="SETTINGS">
+      <h3>Tourne Studio</h3>
+      <p>The master control panel. Every setting of every piece, searchable, applied live. Presets swap the whole desktop's look in one click.</p>
+      <ul class="pills"><li>7,830 settings</li><li>Presets</li><li>Plugins page</li></ul>
+    </article>
+    <article class="node" data-label="MUSIC">
+      <h3>Tourne'Table</h3>
+      <p>The music visualizer and lyrics, built into Tourne Desktop. A Windhawk copy exists for people who don't run the desktop.</p>
+      <ul class="pills"><li>18 shapes</li><li>Lyrics</li><li>Glass frame</li></ul>
+    </article>
+    <article class="node" data-label="INSIDE WINDOWS">
+      <h3>Tourne'Suite</h3>
+      <p>Every Tourne part that has to live inside Windows' own programs, in one Windhawk mod, each part a switch: square corners, text colour, Explorer's style, tweaks and more.</p>
+      <ul class="pills"><li>Windhawk</li><li>One switch a part</li></ul>
+    </article>
+    <article class="node" data-label="MENUS">
+      <h3>Tourne Menus</h3>
+      <p>Explorer's, the file dialogs' and Windows' own menus in my look. No icons, dark green hover, green chevrons.</p>
+      <ul class="pills"><li>Windhawk</li></ul>
+    </article>
+    <article class="node" data-label="ICONS">
+      <h3>Tourne'Icons</h3>
+      <p>Change any icon everywhere from one picker, no admin. Applies my hand-drawn pixel packs.</p>
+      <ul class="pills"><li>Windhawk</li><li>Kit without Windhawk</li></ul>
+    </article>
+  </div>
+</section>
+
+<!-- ENGINES -->
+<section id="engines" class="sec">
+  <h2 class="h"><span class="h-n">02</span> The engines, live</h2>
+  <p class="sub">Small working copies of the real thing. Every number and name here is one you can set in Studio; these are a handful of them, not all.</p>
+
+  <!-- THEME -->
+  <div class="frame eng" data-label="TOURNE THEME // REPAINT THIS PAGE">
+    <div class="eng-head">
+      <p>Tourne Theme paints one palette on everything: the bar, menus, flyouts, Studio, even other apps. Pick one and this whole page follows, the way my desktop does. 828 ready-made palettes in the real one; five here.</p>
+    </div>
+    <div class="swatches" id="palettes" role="radiogroup" aria-label="Palette"></div>
+    <div class="tip-row"><span>Tooltip look, hover anything on this page:</span><div class="seg" id="tipStyles" role="radiogroup" aria-label="Tooltip look"></div></div>
+  </div>
+
+  <!-- MOTION -->
+  <div class="frame eng" data-label="MOTION ENGINE // NOTHING JUST POPS IN">
+    <div class="eng-grid">
+      <div class="controls">
+        <label>Curve<select id="mCurve"></select></label>
+        <label>Length <output id="mDurOut">320 ms</output><input type="range" id="mDur" min="80" max="1200" step="20" value="320"></label>
+        <label>What moves<select id="mWhat"><option value="window">A window opening</option><option value="menu">A menu dropping</option><option value="flyout">A flyout sliding up</option><option value="popup">A pop-up landing</option></select></label>
+        <div class="row-btns"><button class="btn" id="mPlay" type="button">Play</button></div>
+        <canvas id="mGraph" width="220" height="120" aria-label="The curve, drawn"></canvas>
+        <p class="hint">45 motion lines in Tourne Desktop, each with its own curve and length: windows in and out, menus, flyouts, pop-ups, the switcher, borders, workspaces.</p>
+      </div>
+      <div class="stage" id="mStage" aria-label="Motion preview">
+        <div class="desk"><div class="mini-bar"><span></span><span></span><span></span></div></div>
+        <div class="mwin" id="mObj"><div class="tb"><i></i><b>terminal</b></div><div class="lines"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+    <h3 class="eng-sub">Close effect</h3>
+    <div class="eng-grid">
+      <div class="controls">
+        <div class="seg" id="cEffects" role="radiogroup" aria-label="Close effect"></div>
+        <label>On<select id="cOn"><option>Close</option><option>Minimize</option><option>Restore</option></select></label>
+        <div class="row-btns"><button class="btn" id="cPlay" type="button">Close the window</button></div>
+        <p class="hint">My Closing Windows, Crumbling To Dust. Six effects, each on close, minimise and restore.</p>
+      </div>
+      <div class="stage"><canvas id="cCanvas" width="640" height="300" aria-label="Close effect preview"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SOUND -->
+  <div class="frame eng" data-label="SOUND ENGINE // EVERY CLICK WITH A VOICE">
+    <div class="eng-head">
+      <p>936 sounds built in: 12 feels, each with the same 78 cues. Any sound row in Studio can take any of them, or a file of my own. Pick a feel, press a pad. Ten cues of the 78 are here.</p>
+    </div>
+    <div class="feels" id="feels" role="radiogroup" aria-label="Feel"></div>
+    <p class="feel-about" id="feelAbout"></p>
+    <div class="pads" id="pads"></div>
+    <div class="row-btns">
+      <button class="btn" id="compare" type="button">Compare this cue across every feel</button>
+      <label class="inline">Volume<input type="range" id="vol" min="0" max="1" step="0.05" value="0.6"></label>
+    </div>
+    <p class="hint">Sounds: UI SFX by Yuki Capital, public domain (CC0). Nothing is left open between sounds, and the whole engine costs nothing while it's off.</p>
+  </div>
+
+  <!-- TILING + BINDS -->
+  <div class="frame eng" data-label="TILING + KEY BINDS // DRIVE IT FROM THE KEYBOARD">
+    <div class="eng-grid wide">
+      <div class="controls">
+        <label>Layout<select id="tLayout"></select></label>
+        <div class="row-btns">
+          <button class="btn" id="tAdd" type="button">Open a window</button>
+          <button class="btn" id="tKill" type="button">Close the focused one</button>
+        </div>
+        <label>Gaps <output id="tGapOut">8 px</output><input type="range" id="tGap" min="0" max="24" step="2" value="8"></label>
+        <label class="check"><input type="checkbox" id="tAuto"> Layout changes with the window count</label>
+        <label class="check"><input type="checkbox" id="tBorder" checked> Focus border</label>
+        <label class="check"><input type="checkbox" id="tSound" checked> Snap sound</label>
+        <p class="hint">Windows move with the Motion curve you picked above. Click a window to focus it.</p>
+      </div>
+      <div class="stage tile-stage" id="tStage" tabindex="0" aria-label="Tiling preview. Focus it and press bound keys."></div>
+    </div>
+    <h3 class="eng-sub">Key binds, written the Hyprland way</h3>
+    <div class="eng-grid wide">
+      <div class="controls">
+        <p class="hint">Edit the file, click the screen above, then press the keys. On this page $mod is Shift, since a browser never hears the Windows key; on my desktop it's Win. Flags: <code>k</code> a double press, <code>o</code> held down, <code>e</code> repeats while held, <code>r</code> on release.</p>
+        <div class="row-btns"><button class="btn" id="bReset" type="button">Put the file back</button></div>
+        <div class="log" id="bLog" aria-live="polite"></div>
+      </div>
+      <div class="binds-wrap">
+        <textarea id="binds" spellcheck="false" aria-label="Binds file"></textarea>
+        <div class="keys" id="keys" aria-label="Or press these"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWITCHER -->
+  <div class="frame eng" data-label="ALT+TAB VIEWS // WINDOWS FLY IN">
+    <div class="eng-grid">
+      <div class="controls">
+        <div class="seg" id="sViews" role="radiogroup" aria-label="Switcher view"></div>
+        <div class="row-btns"><button class="btn" id="sPrev" type="button">Back</button><button class="btn" id="sNext" type="button">Next</button></div>
+        <label class="check"><input type="checkbox" id="sDim" checked> Dimmed, blurred screen behind</label>
+        <p class="hint">Nine views in Tourne Desktop: the plain list plus eight drawn ones, among them Flip 3D, Cover Flow, Ring, Deck and a canvas I pan and zoom.</p>
+      </div>
+      <div class="stage sw-stage" id="sStage"><div class="sw-bg"></div><div class="sw-row" id="sRow"></div><p class="sw-name" id="sName"></p></div>
+    </div>
+  </div>
+
+  <!-- ICON ANIMATION -->
+  <div class="frame eng" data-label="ICON ANIMATION ENGINE // NEVER SITTING STILL">
+    <div class="eng-grid">
+      <div class="controls">
+        <label>Animation<select id="iAnim"></select></label>
+        <label>When<select id="iWhen"><option value="hover">Hover</option><option value="press">Press</option><option value="beat">To the music's beat</option><option value="attention">Attention, all the time</option></select></label>
+        <label>Speed <output id="iSpdOut">1.0x</output><input type="range" id="iSpd" min="0.4" max="2.5" step="0.1" value="1"></label>
+        <p class="hint">My own pixel icons, drawn by hand on a 16 px grid. The real engine has 15 built in plus my own, and takes pasted CSS keyframes or a whole imported pen.</p>
+      </div>
+      <div class="stage icon-stage"><div class="ibar" id="ibar"></div></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="frame eng" data-label="TOURNE'TABLE // MY MUSIC ON THE DESKTOP">
+    <div class="eng-grid">
+      <div class="controls">
+        <label>Shape<select id="vShape"><option value="bars">Bars</option><option value="floor">Bars mirrored on a floor</option><option value="led">LED segments</option><option value="bass">A bass-only lane</option><option value="scope">Oscilloscope</option><option value="ring">Ring</option><option value="spectro">Spectrogram</option></select></label>
+        <label>Bars <output id="vCountOut">48</output><input type="range" id="vCount" min="12" max="96" step="4" value="48"></label>
+        <label>Lyric comes in<select id="lMode"><option value="word">Word by word</option><option value="letter">Letter by letter</option><option value="line">Whole line</option></select></label>
+        <label class="check"><input type="checkbox" id="vRun" checked> Play the test beat (120 BPM)</label>
+        <p class="hint">The preview plays a made-up test beat, not music. The real one reads what my PC is playing and runs on the GPU, CPU or NPU.</p>
+      </div>
+      <div class="stage table-stage"><canvas id="vCanvas" width="720" height="300" aria-label="Visualizer preview"></canvas><p class="lyric" id="lyric" aria-hidden="true"></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPORT -->
+<section id="imports" class="sec">
+  <h2 class="h"><span class="h-n">03</span> Bring your setup with you</h2>
+  <p class="sub">Everything Tourne can take in from the programs and communities you already use, and everything it can hand back out. A whole look lists what it will change before it lands, a style plays first so you can keep it or not, and nothing that comes in can run code unless you turn that on.</p>
+  <div class="imp-grid">
+    <article class="imp" data-label="LOOKS">
+      <h3>Whole looks, in Studio</h3>
+      <dl>
+        <dt>Import a look</dt><dd>A .tournelook pack (its wallpaper, plugin list and extensions come with it), a .tourne file, or a hyprland.conf. From hyprland.conf I take the gaps, border size, active and inactive border colours, rounding, blur size, shadow and layout.</dd>
+        <dt>Shown before it lands</dt><dd>Before anything changes, Studio lists every setting the import would change, page by page. Nothing is saved until I press Save, Undo takes it back, and my settings as they were are kept as a backup file.</dd>
+        <dt>Safe by design</dt><dd>The plugins a look was made with are named, never installed from there. Paths, drives and anything tied to the other person's PC are left out. Only looks come in.</dd>
+        <dt>Export my look</dt><dd>Everything I've set, as one .tournelook pack with the wallpaper and the plugin list.</dd>
+        <dt>The look gallery</dt><dd>Save my look to the gallery from the tray menu, from anywhere. Each saved look keeps a screenshot beside it, and one click brings it back.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="COLOUR">
+      <h3>Palettes and presets</h3>
+      <dl>
+        <dt>Over 820 ready-made palettes</dt><dd>Built in, each with all twelve of Tourne Theme's colour roles. From base16 and base24 schemes, Alacritty's themes, Omarchy, HyDE, HyprPanel, gh0stzk's BSPWM rices, the YASB gallery, JaKooLit's Hyprland dots, Tokyo Night, Catppuccin, Rose Pine and windots.</dd>
+        <dt>127 full looks</dt><dd>Presets that carry more than colours: tiling gaps, window borders and their colours, and corner radii, applied in one click.</dd>
+        <dt>Credit kept</dt><dd>Every preset keeps its name, where it came from and its licence. Colours and names only; nobody's theme files are copied in.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="TASKBAR">
+      <h3>The bar</h3>
+      <dl>
+        <dt>Get a YASB theme</dt><dd>Straight from the bar's right-click menu. It lists the community themes of the YASB theme gallery from its GitHub repository, or I paste a link (the gallery's, a GitHub folder or file, a raw file, a yasb-themes:// link) or just a theme's id.</dd>
+        <dt>YASB, kept safe</dt><dd>Nothing is downloaded until I press the button. Only that repository's own files are fetched, whatever a theme's files say. A theme without its styles.css and config.yaml is refused. A theme's buttons can't run commands unless I turn that on (off by default).</dd>
+        <dt>Install a theme or orb</dt><dd>Also in the right-click menu, or by dropping files: a StartAllBack visual style (.msstyles), an orb picture, a YASB theme's folder or zip, a font, or a folder or zip holding any of them.</dd>
+        <dt>Fonts without installing</dt><dd>The Nerd Font a theme names can sit in Tourne's own fonts folder and be used by the bar without installing it into Windows.</dd>
+        <dt>LiteMenu's menu</dt><dd>"Copy LiteMenu's menu" reads its config.xml into the Tourne Menu, to edit in a tree laid out like LiteMenu's own. Nothing is saved until OK or Apply.</dd>
+        <dt>StartIsBack and StartAllBack Start styles</dt><dd>Their Start style settings read across.</dd>
+        <dt>StartAllBack <span class="wip">WIP</span></dt><dd>Its visual styles, Start orbs and four presets read as they are. YASB themes draw the whole bar, with my task buttons and tray added to themes that have none.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="WINDOWS">
+      <h3>Tiling, keys and rules</h3>
+      <dl>
+        <dt>Binds, the Hyprland way</dt><dd>bind, binde, bindr, bindl, bindn and bindd lines and submaps, as Hyprland writes them, plus my own k (double press) and o (hold) flags.</dd>
+        <dt>Window rules, the Hyprland way</dt><dd>windowrule lines: float, workspace, size, center and more, matched by class, exe or title.</dd>
+        <dt>Tiling sets after other tilers</dt><dd>One click sets the layout, gaps, focus border and motion the way komorebi, Hyprland, GlazeWM, dwm or i3 have them out of the box.</dd>
+        <dt>YASB workspace widgets</dt><dd>A YASB theme&#x27;s komorebi or GlazeWM workspace buttons work on the bar, as Windows&#x27; own desktops.</dd>
+        <dt>komorebi and GlazeWM setups <span class="wip">COMING SOON</span></dt><dd>A komorebi.json or a GlazeWM config.yaml read straight in: layouts, gaps, borders, rules and keys, with nothing to convert by hand.</dd>
+        <dt>Tacky Borders colours</dt><dd>Border colours and gradient angles written the way Tacky Borders writes them.</dd>
+        <dt>komorebi's layout rules</dt><dd>"1: bsp, 4: grid", written the way a komorebi.json writes them, so a layout follows the window count.</dd>
+        <dt>Layouts saved and loaded</dt><dd>The windows open now, saved as a layout file by name and loaded back. My own layouts from a script.</dd>
+        <dt>tournectl</dt><dd>Scripts and other bars drive Tourne and hear its window and workspace events, like hyprctl and its event socket.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="MOTION">
+      <h3>Animation engines</h3>
+      <dl>
+        <dt>Import a pen</dt><dd>Icon and lyric animations both take CodePen's Export zip, or a pen's .css and .html, dropped or picked.</dd>
+        <dt>Paste keyframes</dt><dd>Paste CSS @keyframes straight in; what I save shows in every row after the presets.</dd>
+        <dt>Lyric animations from a link</dt><dd>Paste an https link to a .css file. Only .css is fetched; anything else I paste in.</dd>
+        <dt>Export, save as, share</dt><dd>Save a copy anywhere to share by hand, or share mine to the community. Lines that could run code or go online are left out of what's shared.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="MUSIC">
+      <h3>Tourne'Table</h3>
+      <dl>
+        <dt>Style codes</dt><dd>Copy code and Paste code: a whole style in one line of text. It plays at once, and I choose Keep or No.</dd>
+        <dt>Community styles</dt><dd>Browse the community's styles, and share mine to the community. Only the parts I tick go; my audio device, hotkeys, paths and hardware never do.</dd>
+        <dt>Take its look too</dt><dd>A shared style can bring its sharer's lyrics look with it, if I want it.</dd>
+        <dt>Setups and EQ</dt><dd>Setups as .ttstyle files, and a parametric EQ pasted in as text.</dd>
+        <dt>Lyrics from anywhere</dt><dd>A folder of .lrc files from any music player, lrclib.net (asked once per song), NetEase, Genius, or my own lyrics address. Lyric animations as .ttlyrics files, in and out.</dd>
+        <dt>From Windhawk to the desktop</dt><dd>My Tourne'Table setups from the Windhawk mod come straight into the Table built into Tourne Desktop.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="MODS">
+      <h3>Windhawk and Windows</h3>
+      <dl>
+        <dt>Suite settings into Tourne Desktop</dt><dd>Import my Windhawk suite settings: any suite build, running or not, read into Tourne Desktop.</dd>
+        <dt>Tourne Drop Install</dt><dd>Drop .wh.cpp files on a small window and they compile and install as mods, new ones turned off.</dd>
+        <dt>Icon packs and themes</dt><dd>Tourne'Icons applies whole icon packs; 175 icon themes are fetched once, the first time one is picked.</dd>
+        <dt>Winaero Tweaker, as switches</dt><dd>Tourne'Suite Tweaks: 312 of Winaero Tweaker's options as plain switches.</dd>
+      </dl>
+    </article>
+    <article class="imp" data-label="EVERYWHERE">
+      <h3>Other apps and files</h3>
+      <dl>
+        <dt>My CSS in other apps</dt><dd>Style sheets for Spotify, Discord, VS Code, Obsidian and any Electron app, found wherever the app is installed. Off by default.</dd>
+        <dt>App Styler</dt><dd>My colours and glass pushed onto Settings, Terminal, Task Manager, the Store and more.</dd>
+        <dt>Sounds in and out <span class="wip">WIP</span></dt><dd>Import sounds and Export my sounds: a .tournesounds file carries my picks and the sound files with them. Any sound Windows reads works in Your files: WAV, MP3, WMA, M4A, AAC, FLAC.</dd>
+        <dt>The Viewer opens it all</dt><dd>Pictures through Windows' imaging (PNG, JPG, WebP, HEIC and more), videos through Windows' own decoders, subtitles (.srt, .vtt, .ass, .ssa), text and code, Markdown, fonts, .ico and .cur, icons inside .exe and .dll, what's in a zip, and any file's details.</dd>
+        <dt>My own files</dt><dd>Cursors (.cur, .ani), icons and pictures (.ico, .png, .bmp), sounds, wallpapers and fonts, picked with Windows' own dialogs.</dd>
+        <dt>Plugins from cards</dt><dd>Install from the Plugins page; each one asks before it gets internet, files or the clipboard.</dd>
+      </dl>
+    </article>
+  </div>
+  <p class="foot-note">This list is read from the code itself. Pieces built in the last two days are still being added to it.</p>
+</section>
+
+<!-- EVERY PART -->
+<section id="parts" class="sec">
+  <h2 class="h"><span class="h-n">04</span> Every part, in my words</h2>
+  <p class="sub">Each piece, what it is, and what it also does. Filter by where it lives, or search. Parts marked WIP are built and running on my PC, still being worked on.</p>
+  <div class="bar">
+    <label class="prompt"><span>&gt;</span><input type="search" id="q" placeholder="search any part or word" aria-label="Search parts"></label>
+    <div class="seg" id="fFrom" role="radiogroup" aria-label="Where it lives"></div>
+  </div>
+  <p class="count" id="shown"></p>
+  <div id="catalog"></div>
+  <h3 class="group-h"><span>Being added right now <span class="wip">WIP</span></span><small>Built and running on my PC, still being added to and tuned.</small></h3>
+  <div class="cards" id="wipCards"></div>
+  <p class="foot-note">Icon themes are fetched once, the first time one is picked. The moving wallpaper behind the lock screen is built and in testing.</p>
+</section>
+
+<!-- MODS -->
+<section id="mods" class="sec">
+  <h2 class="h"><span class="h-n">05</span> Windhawk mods I've made</h2>
+  <p class="sub">The parts that live inside Windows' own programs. Each is its own mod, and most are also a switch inside Tourne'Suite.</p>
+  <div class="mod-grid" id="modGrid"></div>
+  <h3 class="eng-sub">Tourne'Suite's parts</h3>
+  <div class="table-wrap">
+    <table class="t">
+      <thead><tr><th>Part</th><th>What it does</th><th>Runs in</th></tr></thead>
+      <tbody id="suiteRows"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GET -->
+<section id="get" class="sec">
+  <h2 class="h"><span class="h-n">06</span> Get it</h2>
+  <div class="frame get" data-label="TOURNE'STYLE">
+    <ul class="term">
+      <li><span class="k">&gt; DESKTOP</span><span class="v">a ready-to-run zip and the whole source</span><span class="s">[ BETA ]</span></li>
+      <li><span class="k">&gt; MODS</span><span class="v">every .wh.cpp, paste into Windhawk</span><span class="s">[ 01 ]</span></li>
+      <li><span class="k">&gt; ICONS</span><span class="v">the ink pack, tray, UI and button icons</span><span class="s">[ 02 ]</span></li>
+      <li><span class="k">&gt; STYLES</span><span class="v">community Table styles and lyrics</span><span class="s">[ 03 ]</span></li>
+    </ul>
+    <p class="lede">Windows 11, 64-bit. Nothing phones home. Back up first, and read "What can go wrong" in Tourne Desktop's README before turning on shell mode.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/USER-TOURNE/Tourne-Style/tree/main/tourne-desktop">Tourne Desktop</a>
+      <a class="btn" href="https://github.com/USER-TOURNE/Tourne-Style/tree/main/windhawk-mods">Windhawk mods</a>
+      <a class="btn" href="../">Table styles</a>
+      <a class="btn" href="../icons.html">Icon packs</a>
+      <a class="btn" href="https://discord.gg/5JsHEMBxvY">Discord</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>
+  <span class="blk">&#9635;</span> Made by Tourne. Code GPL-3.0; icons, docs and devlogs CC BY-NC-SA 4.0.
+  Sounds: <a href="https://uisfx.com">UI SFX</a> by Yuki Capital, CC0.
+  Type: <a href="fonts/OFL.txt">Departure Mono</a> by Helena Zhang (SIL OFL 1.1).
+  <a href="#top">Back to the top</a>
+</footer>
+<script src="parts.js"></script>
+<script src="showcase.js"></script>
+</body>
+</html>
